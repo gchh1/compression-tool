@@ -1,0 +1,4 @@
+python -m pip install pybind11
+g++ -O3 -Wall -shared -std=c++17 -ID:/Python/Include -ID:/Python/Lib/site-packages/pybind11/include c_api_test_pybind.cpp -LD:/Python/libs -lpython312 -o c_api_test.cp312-win_amd64.pyd
+powershell -NoProfile -Command "$bin = Split-Path (Get-Command gcc).Source; Copy-Item (Join-Path $bin 'libstdc++-6.dll') -Destination . -Force; Copy-Item (Join-Path $bin 'libgcc_s_seh-1.dll') -Destination . -Force; Copy-Item (Join-Path $bin 'libwinpthread-1.dll') -Destination . -Force"
+python test_ctypes_global.py

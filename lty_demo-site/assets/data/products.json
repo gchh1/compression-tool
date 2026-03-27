@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0",
+  "products": [
+    {
+      "id": "cmp-001",
+      "name": "Tokenizer Engine",
+      "category": "text",
+      "sizeBytes": 12840,
+      "estimateCompressedBytes": 4300,
+      "tags": ["lz77", "window", "tokens"]
+    },
+    {
+      "id": "cmp-002",
+      "name": "Entropy Mapper",
+      "category": "analysis",
+      "sizeBytes": 8212,
+      "estimateCompressedBytes": 3010,
+      "tags": ["frequency", "huffman", "codes"]
+    },
+    {
+      "id": "cmp-003",
+      "name": "Asset Packer",
+      "category": "archive",
+      "sizeBytes": 9544,
+      "estimateCompressedBytes": 3522,
+      "tags": ["manifest", "header", "binary"]
+    }
+  ]
+}
