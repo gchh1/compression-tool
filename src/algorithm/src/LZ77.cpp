@@ -91,8 +91,10 @@ std::vector<uint8_t> LZ77::decompress(const std::vector<uint8_t> &input) {
     }
 
     /* 1. Get the size of the original data */
-    uint32_t original_size =
-        (input[0] << 24) | (input[1] << 16) | (input[2]) << 8 | input[3];
+    uint32_t original_size = (static_cast<uint32_t>(input[0]) << 24) |
+                             (static_cast<uint32_t>(input[1]) << 16) |
+                             (static_cast<uint32_t>(input[2]) << 8) |
+                             static_cast<uint32_t>(input[3]);
 
     /* 2. Restore the data */
     size_t i = 4;
@@ -103,7 +105,7 @@ std::vector<uint8_t> LZ77::decompress(const std::vector<uint8_t> &input) {
         }
 
         // Read the tuple
-        uint16_t position = (input[i] >> 8) | input[i + 1];
+        uint16_t position = (input[i] << 8) | input[i + 1];
         uint8_t length = input[i + 2];
         uint8_t data = input[i + 3];
 
