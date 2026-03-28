@@ -24,8 +24,8 @@ extern "C" { //
 typedef uint8_t swd;
 #elif LZ77_SEARCH_WINDOW == 16
 typedef uint16_t swd;
-#elif LZ77_SEARCH_WINDOW == 32
-typedef uint32_t swd;
+// #elif LZ77_SEARCH_WINDOW == 32
+// typedef uint32_t swd;
 #else
 #error "LZ77_SEARCH_WINDOW must be one of: 8, 16, 32"
 #endif
@@ -38,22 +38,28 @@ typedef uint32_t swd;
 typedef uint8_t lwd;
 #elif LZ77_LOOKAHEAD_WINDOW == 16
 typedef uint16_t lwd;
-#elif LZ77_LOOKAHEAD_WINDOW == 32
-typedef uint32_t lwd;
+// #elif LZ77_LOOKAHEAD_WINDOW == 32
+// typedef uint32_t lwd;
 #else
 #error "LZ77_LOOKAHEAD_WINDOW must be one of: 8, 16, 32"
 #endif
 
 
 
-LZ77_API int lz77Compress(
+LZ77_API void lz77Compress(
     const uint8_t *input,
+    uint16_t search_size,    
     size_t input_len,// 这个长度不会存到压缩文件，直接size_t
-    uint16_t search_size,
     uint16_t lookahead_size,
-    uint8_t **out_buf,
-    size_t *out_len
-    
+    size_t *out_len, 
+    uint8_t **out_buf
+);
+
+LZ77_API void lz77Decompress(
+    const uint8_t* in_buf,
+    size_t in_len,
+    uint8_t* out_buf,
+    size_t* out_len
 );
 
 

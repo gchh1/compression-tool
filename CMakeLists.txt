@@ -1,21 +1,15 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.12)
+project(lz77_pybind)
 
-project(
-    compression-tool 
-    VERSION 1.0
-    LANGUAGES CXX) 
+set(CMAKE_CXX_STANDARD 14)
 
-# ========= set c++ standard =========
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+# Find Python and Pybind11
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+find_package(pybind11 REQUIRED)
 
-# ========= set variables for paths ========= 
-set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
-set(TESTS_DIR ${CMAKE_SOURCE_DIR}/tests)
+pybind11_add_module(lz77 
+    lty_cores/lz77_core.cpp
+    lty_cores/lz77_pybind.cpp
+)
 
-
-# ========= add subdirectories =========
-
-
-# ========= test =========
-add_executable(helloWorld ${TESTS_DIR}/helloWorld.cpp)
+target_include_directories(lz77 PRIVATE lty_cores)

@@ -1,11 +1,15 @@
 #include "lz77_core.h"
 // #include <cmath>
+#include <vector>
+#include <stdexcept>
+#include <cstring>
 
 namespace{// 作用域，名称和函数只在这个文件中可见
     // using std::max;
 
     
     typedef uint16_t u16;
+    typedef uint32_t u32;
     typedef uint8_t u8;
 
     inline u8* u16_to_u8_le(u16* src){// le:little endian 小端存储
@@ -34,9 +38,10 @@ class lz77MatchFunc{// 多态match函数类便于扩展
 };
 class BruteForce:public lz77MatchFunc{
     private:
-    const lwd* kmp_next(const u8* pattern, lwd len){
-        lwd* next = new lwd[len];//数字范围是lwd类型，长度也是lwd类型
-        lwd j=0;next[0]=0;
+    std::vector<lwd> kmp_next(const u8* pattern, lwd len){
+        std::vector<lwd> next(len, 0);
+        if (len == 0) return next;
+        lwd j=0;
         for (lwd i=1;i < len;i++){
             while(pattern[i]!=pattern[j]&&j!=0){
                 j = next[j-1];
@@ -59,10 +64,12 @@ class BruteForce:public lz77MatchFunc{
         本身两个window指针指向一个数组，所以overlap逻辑自洽
         */  
         u8* buffer = new u8[lookahead_window_size];// 缓冲区，用于存储匹配串
-        lwd maxlen = 4;// 记录最大匹配长度，最低要求是4：三元组的大小是2+1+1
+        lwd maxlen = 0;// 记录最大匹配长度
         swd mark_idx = 0;
 
-        const lwd* next = kmp_next(lookahead_window,lookahead_window_size);
+        if (lookahead_window_size == 0) return lz77Triple(0, 0, '\0');
+
+        std::vector<lwd> next = kmp_next(lookahead_window,lookahead_window_size);
         lwd j=0;
         // 处理存在满足理想条件的匹配
         for(swd i = 0; i < search_window_size; i++){
@@ -71,18 +78,27 @@ class BruteForce:public lz77MatchFunc{
             }
             if (search_window[i]==lookahead_window[j]){j++;}
             if (j==lookahead_window_size-1){//第一次超过就会输出三元组
-                return lz77Triple(search_window_size-i,j,lookahead_window[j]);
+                return lz77Triple(search_window_size - i + j - 1, j, lookahead_window[j]);
             }
             // 此时j的大小就是长度
-            if (j>=maxlen){
-                maxlen=j,mark_idx=i;
+            if (j >= 4 && j >= maxlen){
+                maxlen=j;
+                mark_idx=i;
             }
         }
+        
         //处理没有合适的匹配，暂时输出单字符token，后面字面游程交给另一个函数后处理
-        if (mark_idx==0){//没有产生任何匹配
-            return lz77Triple(0,0,search_window[0]);
+        if (maxlen < 4){//没有产生任何满足最低长度要求的匹配
+            return lz77Triple(0, 0, lookahead_window[0]);
         }
-        return lz77Triple(search_window_size-mark_idx,maxlen,lookahead_window[maxlen]);
+        
+        // Ensure we don't read out of bounds for the next byte
+        u8 next_byte = '\0';
+        if (maxlen < lookahead_window_size) {
+            next_byte = lookahead_window[maxlen];
+        }
+        
+        return lz77Triple(search_window_size - mark_idx + maxlen - 1, maxlen, next_byte);
     }
 };
 
@@ -93,60 +109,183 @@ class BruteForce:public lz77MatchFunc{
 // };
 LZ77_API void lz77Compress(// 输入8位字节流，输出8位字节流
     const u8* in_buf,
-    swd in_len,
-    u16 searching_size,
+    u16 search_size,    
+    size_t in_len,
     u16 lookahead_size,
-    u8** out_buf,//
-    lwd out_len
-){// 未测试
-
+    size_t* out_len,
+    u8** out_buf// 二级指针承担指针引用的角色对指针进行修改
+){
     if (in_buf == nullptr || in_len == 0 || lookahead_size == 0) {
+        if (out_buf) *out_buf = nullptr;
+        if (out_len) *out_len = 0;
         return;
     }
 
     BruteForce bf;
-    const size_t max_triples = static_cast<size_t>(in_len);// 最大三元组数
-    const size_t triple_size = sizeof(lz77Triple);// 实际大小
-    lz77Triple* triples = new lz77Triple[max_triples];
+    std::vector<u8> encoded;
+    encoded.reserve(in_len); // Pre-allocate to avoid frequent reallocations
 
-    size_t write_count = 0;
     size_t pos = 0;
-    while (pos < static_cast<size_t>(in_len)) {
-        const size_t search_len = (pos > searching_size) ? static_cast<size_t>(searching_size) : pos;
+    std::vector<u8> char_buffer;
+
+    auto flush_literals = [&]() {//lambda expression
+        size_t run_len = char_buffer.size();
+        size_t start = 0;
+        lwd size = static_cast<lwd>(0xFF);// 255
+        for (size_t i = 1; i < LZ77_LOOKAHEAD_WINDOW/8; i++){
+            size = size << 8;
+            size = size | 0xFF;
+        }
+        while (run_len > 0) {
+            size_t chunk = (run_len > size) ? size : run_len;
+            
+            // Write Literal Header (offset = 0)
+            if (LZ77_SEARCH_WINDOW == 16) {
+                encoded.push_back(0);
+                encoded.push_back(0);
+            } else {
+                encoded.push_back(0);
+            }
+            
+            // Write length (chunk)
+            if (LZ77_LOOKAHEAD_WINDOW == 16) {
+                encoded.push_back(static_cast<u8>(chunk & 0xFF));
+                encoded.push_back(static_cast<u8>((chunk >> 8) & 0xFF));
+            } else {
+                encoded.push_back(static_cast<u8>(chunk));
+            }
+            
+            // Write actual literals
+            for (size_t i = 0; i < chunk; ++i) {
+                encoded.push_back(char_buffer[start + i]);
+            }
+            
+            start += chunk;
+            run_len -= chunk;
+        }
+        char_buffer.clear();
+    };
+
+    while (pos < in_len) {
+        const size_t search_len = (pos > search_size) ? static_cast<size_t>(search_size) : pos;
         const size_t search_start = pos - search_len;
-        const size_t remain = static_cast<size_t>(in_len) - pos;
+        const size_t remain = in_len - pos;
         size_t look_len = (remain > lookahead_size) ? static_cast<size_t>(lookahead_size) : remain;
 
-        if (look_len == 0) {
-            break;
-        }
+        if (look_len == 0) break;
 
         lz77Triple t = bf.match(
-            in_buf + search_start, static_cast<lwd>(search_len),
+            in_buf + search_start, static_cast<swd>(search_len),
             in_buf + pos, static_cast<lwd>(look_len)
         );
 
-        if (t.offset > search_len) {
-            t.offset = static_cast<swd>(search_len);
-        }
-        if (t.length >= look_len) {
-            t.length = static_cast<swd>(look_len - 1);
-        }
+        if (t.offset == 0) {
+            char_buffer.push_back(t.next_byte);
+        } else if(!char_buffer.empty()){
+            flush_literals();
 
-        const size_t next_index = pos + static_cast<size_t>(t.length);
-        t.next_byte = in_buf[next_index];
-
-        triples[write_count++] = t;
+            // Write Match Offset
+            if (LZ77_SEARCH_WINDOW == 16) {
+                encoded.push_back(static_cast<u8>(t.offset & 0xFF));
+                encoded.push_back(static_cast<u8>((t.offset >> 8) & 0xFF));
+            } else {
+                encoded.push_back(static_cast<u8>(t.offset));
+            }
+            
+            // Write Match Length
+            if (LZ77_LOOKAHEAD_WINDOW == 16) {
+                encoded.push_back(static_cast<u8>(t.length & 0xFF));
+                encoded.push_back(static_cast<u8>((t.length >> 8) & 0xFF));
+            } else {
+                encoded.push_back(static_cast<u8>(t.length));
+            }
+            
+            // Write next_byte
+            encoded.push_back(t.next_byte);
+        }
+        
         pos += static_cast<size_t>(t.length) + 1;
     }
 
-    const size_t total_bytes = write_count * triple_size;
-    u8* encoded = new u8[total_bytes];
-    for (size_t i = 0; i < total_bytes; ++i) {
-        encoded[i] = scratch[i];
-    }
-    delete[] scratch;
+    flush_literals();
 
-    *out_buf = encoded;
-    out_len = static_cast<lwd>(total_bytes);
+    if (encoded.empty()) {
+        if (out_buf) *out_buf = nullptr;
+        if (out_len) *out_len = 0;
+        return;
+    }
+
+    u8* result = new u8[encoded.size()];
+    std::memcpy(result, encoded.data(), encoded.size());//vector 转到c风格数组
+    
+    if (out_buf) *out_buf = result;
+    else delete[] result;
+    if (out_len) *out_len = encoded.size();
+}
+LZ77_API void lz77Decompress(
+    const u8* in_buf,
+    size_t in_len,
+    u8* out_buf,
+    size_t* out_len
+){
+    if (in_buf == nullptr || in_len == 0 || out_buf == nullptr || out_len == nullptr) {
+        return;
+    }
+    
+    size_t in_pos = 0;
+    size_t out_pos = 0;
+    
+    while (in_pos < in_len) {
+        // 读取 offset
+        u32 offset = 0;
+        if (LZ77_SEARCH_WINDOW == 16) {
+            if (in_pos + 1 >= in_len) break;
+            offset = in_buf[in_pos] | (in_buf[in_pos + 1] << 8); // 小端还原
+            in_pos += 2;
+        } else {
+            if (in_pos >= in_len) break;
+            offset = in_buf[in_pos];
+            in_pos += 1;
+        }
+        
+        // 读取 length
+        u32 length = 0;
+        if (LZ77_LOOKAHEAD_WINDOW == 16) {
+            if (in_pos + 1 >= in_len) break;
+            length = in_buf[in_pos] | (in_buf[in_pos + 1] << 8); // 小端还原
+            in_pos += 2;
+        } else {
+            if (in_pos >= in_len) break;
+            length = in_buf[in_pos];
+            in_pos += 1;
+        }
+        
+        if (offset == 0) {
+            // 这是一个字面量游程 (Literal run)
+            // length 存储了后面有多少个单字符
+            for (u32 i = 0; i < length; i++) {
+                if (in_pos >= in_len) break;
+                out_buf[out_pos++] = in_buf[in_pos++];
+            }
+        } else {
+            // 这是一个匹配 (Match)
+            // 此时还要读一个 next_byte
+            u8 next_byte = 0;
+            if (in_pos < in_len) {
+                next_byte = in_buf[in_pos++];
+            }
+            
+            // 拷贝历史数据
+            // 注意：支持 overlap，即 offset 可以小于 length，因此必须逐字节拷贝
+            size_t copy_start = out_pos - offset;
+            for (u32 i = 0; i < length; i++) {
+                out_buf[out_pos++] = out_buf[copy_start + i];
+            }
+            
+            // 写入 next_byte
+            out_buf[out_pos++] = next_byte;
+        }
+    }
+    
+    *out_len = out_pos;
 }
