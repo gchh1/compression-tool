@@ -17,29 +17,38 @@ extern "C" { //
 #endif
 
 
-#ifndef LZ77_LENGTH_BITS
-#define LZ77_LENGTH_BITS 16
+#ifndef LZ77_SEARCH_WINDOW
+#define LZ77_SEARCH_WINDOW 16
 #endif
-
-#if LZ77_LENGTH_BITS == 8
-typedef uint8_t lz77_length_t;
-// #define LZ77_LENGTH_MAX UINT8_MAX
-#elif LZ77_LENGTH_BITS == 16
-typedef uint16_t lz77_length_t;
-// #define LZ77_LENGTH_MAX UINT16_MAX
-#elif LZ77_LENGTH_BITS == 32
-typedef uint32_t lz77_length_t;
-// #define LZ77_LENGTH_MAX UINT32_MAX
+#if LZ77_SEARCH_WINDOW == 8
+typedef uint8_t swd;
+#elif LZ77_SEARCH_WINDOW == 16
+typedef uint16_t swd;
+#elif LZ77_SEARCH_WINDOW == 32
+typedef uint32_t swd;
 #else
-#error "LZ77_LENGTH_BITS must be one of: 8, 16, 32"
+#error "LZ77_SEARCH_WINDOW must be one of: 8, 16, 32"
 #endif
 
+
+#ifndef LZ77_LOOKAHEAD_WINDOW
+#define LZ77_LOOKAHEAD_WINDOW 8
+#endif
+#if LZ77_LOOKAHEAD_WINDOW == 8
+typedef uint8_t lwd;
+#elif LZ77_LOOKAHEAD_WINDOW == 16
+typedef uint16_t lwd;
+#elif LZ77_LOOKAHEAD_WINDOW == 32
+typedef uint32_t lwd;
+#else
+#error "LZ77_LOOKAHEAD_WINDOW must be one of: 8, 16, 32"
+#endif
 
 
 
 LZ77_API int lz77Compress(
     const uint8_t *input,
-    size_t input_len,
+    size_t input_len,// 这个长度不会存到压缩文件，直接size_t
     uint16_t search_size,
     uint16_t lookahead_size,
     uint8_t **out_buf,
@@ -47,11 +56,13 @@ LZ77_API int lz77Compress(
     
 );
 
-struct lz77Triple {// (lgth, lgth, u8)
-    lz77_length_t offset;
-    lz77_length_t length;
+
+struct lz77Triple {
+    swd offset;
+    lwd length;
     uint8_t next_byte;
-    lz77Triple(uint16_t a,lz77_length_t b,uint8_t c):offset(a),length(b),next_byte(c){}
+    lz77Triple(uint16_t a,swd b,uint8_t c):offset(a),length(b),next_byte(c){}
+    lz77Triple():offset(0),length(0),next_byte('\0'){}
 };
 
 // LZ77_API int lz77_decompress(

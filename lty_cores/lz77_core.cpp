@@ -7,7 +7,6 @@ namespace{// 作用域，名称和函数只在这个文件中可见
     
     typedef uint16_t u16;
     typedef uint8_t u8;
-    typedef lz77_length_t lgth;// 长度单位定义，限制数组长度大小
 
     inline u8* u16_to_u8_le(u16* src){// le:little endian 小端存储
         u8* dst = new u8[2];
@@ -31,12 +30,27 @@ namespace{// 作用域，名称和函数只在这个文件中可见
 
 class lz77MatchFunc{// 多态match函数类便于扩展
     public:
-    virtual lz77Triple match(const u8*, lgth, const u8*, lgth) = 0;
+    virtual lz77Triple match(const u8*, swd, const u8*, lwd) = 0;
 };
 class BruteForce:public lz77MatchFunc{
+    private:
+    const lwd* kmp_next(const u8* pattern, lwd len){
+        lwd* next = new lwd[len];//数字范围是lwd类型，长度也是lwd类型
+        lwd j=0;next[0]=0;
+        for (lwd i=1;i < len;i++){
+            while(pattern[i]!=pattern[j]&&j!=0){
+                j = next[j-1];
+            }
+            if (pattern[i]==pattern[j]){
+                j++;
+            }
+            next[i]=j;
+        }
+        return next;
+    }
     public:
-    lz77Triple match(const u8* search_window, lgth search_window_len, 
-        const u8* lookahead_window, lgth lookahead_window_len) override{
+    lz77Triple match(const u8* search_window, swd search_window_size, 
+        const u8* lookahead_window, lwd lookahead_window_size) override{
         /*
         当前索引 - offset 即匹配串第一个字符的位置
         匹配串长度 - length 即匹配串长度
@@ -44,51 +58,56 @@ class BruteForce:public lz77MatchFunc{
         overlapping match: offset 允许小于 length
         本身两个window指针指向一个数组，所以overlap逻辑自洽
         */  
-        u8* buffer = new u8[lookahead_window_len];// 缓冲区，用于存储匹配串
-        lgth maxlen = 0;// 最大匹配长度
-        lz77Triple best_match(0, 0, '\0');
-        for(lgth i = 0; i < search_window_len; i++){
-            lgth j = 0;
-            while(search_window[i + j] == lookahead_window[j] && j!=lookahead_window_len-1){
-                j++;
-            }
-            if (j > maxlen){
-                maxlen = j;
-                best_match=lz77Triple(search_window_len - i, j, lookahead_window[j]);
-            }
+        u8* buffer = new u8[lookahead_window_size];// 缓冲区，用于存储匹配串
+        lwd maxlen = 4;// 记录最大匹配长度，最低要求是4：三元组的大小是2+1+1
+        swd mark_idx = 0;
 
+        const lwd* next = kmp_next(lookahead_window,lookahead_window_size);
+        lwd j=0;
+        // 处理存在满足理想条件的匹配
+        for(swd i = 0; i < search_window_size; i++){
+            while (search_window[i]!=lookahead_window[j]&&j!=0){
+                j = next[j-1];
+            }
+            if (search_window[i]==lookahead_window[j]){j++;}
+            if (j==lookahead_window_size-1){//第一次超过就会输出三元组
+                return lz77Triple(search_window_size-i,j,lookahead_window[j]);
+            }
+            // 此时j的大小就是长度
+            if (j>=maxlen){
+                maxlen=j,mark_idx=i;
+            }
         }
-        return best_match;
+        //处理没有合适的匹配，暂时输出单字符token，后面字面游程交给另一个函数后处理
+        if (mark_idx==0){//没有产生任何匹配
+            return lz77Triple(0,0,search_window[0]);
+        }
+        return lz77Triple(search_window_size-mark_idx,maxlen,lookahead_window[maxlen]);
     }
 };
 
-LZ77_API class lz77{
-    public:
-    virtual void Compress(const u8*)=0;
-    // virtual void Decompress()=0;
-};
+// LZ77_API class lz77{
+//     public:
+//     virtual void Compress(const u8*)=0;
+//     // virtual void Decompress()=0;
+// };
 LZ77_API void lz77Compress(// 输入8位字节流，输出8位字节流
     const u8* in_buf,
-    lgth in_len,
+    swd in_len,
     u16 searching_size,
     u16 lookahead_size,
     u8** out_buf,//
-    lgth* out_len
+    lwd out_len
 ){// 未测试
-    if (out_buf == nullptr || out_len == nullptr) {
-        return;
-    }
-    *out_buf = nullptr;
-    *out_len = 0;
+
     if (in_buf == nullptr || in_len == 0 || lookahead_size == 0) {
         return;
     }
 
-    BruteForce matcher;
-    const size_t max_triples = static_cast<size_t>(in_len);
-    const size_t triple_size = sizeof(lz77Triple);
-    u8* scratch = new u8[max_triples * triple_size];
-    lz77Triple* triples = reinterpret_cast<lz77Triple*>(scratch);
+    BruteForce bf;
+    const size_t max_triples = static_cast<size_t>(in_len);// 最大三元组数
+    const size_t triple_size = sizeof(lz77Triple);// 实际大小
+    lz77Triple* triples = new lz77Triple[max_triples];
 
     size_t write_count = 0;
     size_t pos = 0;
@@ -102,16 +121,16 @@ LZ77_API void lz77Compress(// 输入8位字节流，输出8位字节流
             break;
         }
 
-        lz77Triple t = matcher.match(
-            in_buf + search_start, static_cast<lgth>(search_len),
-            in_buf + pos, static_cast<lgth>(look_len)
+        lz77Triple t = bf.match(
+            in_buf + search_start, static_cast<lwd>(search_len),
+            in_buf + pos, static_cast<lwd>(look_len)
         );
 
         if (t.offset > search_len) {
-            t.offset = static_cast<lz77_length_t>(search_len);
+            t.offset = static_cast<swd>(search_len);
         }
         if (t.length >= look_len) {
-            t.length = static_cast<lz77_length_t>(look_len - 1);
+            t.length = static_cast<swd>(look_len - 1);
         }
 
         const size_t next_index = pos + static_cast<size_t>(t.length);
@@ -129,5 +148,5 @@ LZ77_API void lz77Compress(// 输入8位字节流，输出8位字节流
     delete[] scratch;
 
     *out_buf = encoded;
-    *out_len = static_cast<lgth>(total_bytes);
+    out_len = static_cast<lwd>(total_bytes);
 }
