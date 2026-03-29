@@ -41,7 +41,7 @@
 │   │   └── lz77_core.h       <-- 暴露出 lz77Compress 和结构体  
 │   ├── test_lz77.py
 │   └── test_site_compression.py
-├── Makefile              <-- 只需要调整一下路径即可
+├── CMakeLists.txt        <-- 只需要调整一下路径即可
 ├── setup.py              <-- 指向 bindings/python/ 和 src/cores/
 └── README.md
 ```

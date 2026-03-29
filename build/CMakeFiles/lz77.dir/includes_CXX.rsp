@@ -1,0 +1,1 @@
+-I"D:/AAA_C/compression-tool/src/include" -isystem D:/Python/include -isystem "D:/Python/Lib/site-packages/pybind11/include"

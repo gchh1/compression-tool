@@ -1,0 +1,3 @@
+D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E rm -f CMakeFiles\lz77.dir/objects.a
+D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc CMakeFiles\lz77.dir/objects.a @CMakeFiles\lz77.dir\objects1.rsp
+D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe -shared -o D:\AAA_C\compression-tool\bin\lz77.cp312-win_amd64.pyd -Wl,--major-image-version,0,--minor-image-version,0 -Wl,--whole-archive CMakeFiles\lz77.dir/objects.a -Wl,--no-whole-archive @CMakeFiles\lz77.dir\linkLibs.rsp

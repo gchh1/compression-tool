@@ -27,10 +27,21 @@ import lz77
 def save_log_binary(filename, data):
     log_dir = os.path.join(app_dir, "logs")
     os.makedirs(log_dir, exist_ok=True)
-    log_path = os.path.join(log_dir, filename)
-    with open(log_path, "wb") as f:
-        f.write(data)
-    print(f"Log saved: {log_path}")
+    
+    # Save as formatted txt file (8 bits per byte)
+    txt_filename = filename + ".txt"
+    txt_path = os.path.join(log_dir, txt_filename)
+    with open(txt_path, "w", encoding="utf-8") as f:
+        lines = []
+        for i, byte in enumerate(data):
+            # Format byte as 8-bit string
+            lines.append(format(byte, '08b'))
+            if (i + 1) % 8 == 0:  # 8 bytes per line for easy reading
+                lines.append('\n')
+            else:
+                lines.append(' ')
+        f.write(''.join(lines))
+    print(f"Log TXT saved: {txt_path}")
 
 def pack_directory(directory_path):
     """
@@ -189,8 +200,8 @@ def test_site_compression(directory_path):
     print(f"Compression time: {compress_time:.4f} seconds")
     
     # Save the input and output binary to logs
-    save_log_binary(f"{os.path.basename(directory_path)}.original.bin", original_archive)
-    save_log_binary(f"{os.path.basename(directory_path)}.compressed.bin", compressed_data)
+    save_log_binary(f"{os.path.basename(directory_path)}.original", original_archive)
+    save_log_binary(f"{os.path.basename(directory_path)}.compressed", compressed_data)
     
     print("Calling decompress...")
     start_time = time.time()

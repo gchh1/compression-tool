@@ -22,13 +22,24 @@ else:
 import lz77
 import time
 
-def save_log_binary(filename, data):
+def save_log_binary(filename, data):# 用于查看二进制流效果
     log_dir = os.path.join(app_dir, "logs")
     os.makedirs(log_dir, exist_ok=True)
-    log_path = os.path.join(log_dir, filename)
-    with open(log_path, "wb") as f:
-        f.write(data)
-    print(f"Log saved: {log_path}")
+    
+    # Save as formatted txt file (8 bits per byte)
+    txt_filename = filename + ".txt"
+    txt_path = os.path.join(log_dir, txt_filename)
+    with open(txt_path, "w", encoding="utf-8") as f:
+        lines = []
+        for i, byte in enumerate(data):
+            # Format byte as 8-bit string
+            lines.append(format(byte, '08b'))
+            if (i + 1) % 8 == 0:  # 8 bytes per line for easy reading
+                lines.append('\n')
+            else:
+                lines.append(' ')
+        f.write(''.join(lines))
+    print(f"Log TXT saved: {txt_path}")
 
 def test_compression(file_path):
     print(f"--- Testing with file: {file_path} ---")
@@ -46,8 +57,8 @@ def test_compression(file_path):
     print(f"Compressed size: {len(compressed_data)} bytes")
     
     # Save the input and output binary to logs
-    save_log_binary(f"{os.path.basename(file_path)}.original.bin", original_data)
-    save_log_binary(f"{os.path.basename(file_path)}.compressed.bin", compressed_data)
+    save_log_binary(f"{os.path.basename(file_path)}.original", original_data)
+    save_log_binary(f"{os.path.basename(file_path)}.compressed", compressed_data)
     
     print("Calling decompress...")
     
