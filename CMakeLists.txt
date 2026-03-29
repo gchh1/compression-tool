@@ -83,4 +83,4 @@ add_custom_target(deep_clean
     COMMAND ${CMAKE_COMMAND} -E remove ${CMAKE_SOURCE_DIR}/test_site_compression.spec
     COMMENT "Deep cleaning generated directories and spec files..."
 )
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
