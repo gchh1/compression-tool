@@ -181,7 +181,7 @@ LZ77_API void lz77Compress(// 输入8位字节流，输出8位字节流
 
         if (t.offset == 0) {
             char_buffer.push_back(t.next_byte);
-        } else if(!char_buffer.empty()){
+        } else {
             flush_literals();
 
             // Write Match Offset

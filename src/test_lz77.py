@@ -6,6 +6,10 @@ mingw_bin = "D:\\AAA_C\\AAA_MinGW\\mingw64\\bin"
 if os.path.exists(mingw_bin) and hasattr(os, 'add_dll_directory'):
     os.add_dll_directory(mingw_bin)
 
+# Add our custom bin directory to sys.path so Python can find lz77.pyd
+bin_dir = os.path.join(os.path.dirname(__file__), "..", "bin")
+sys.path.insert(0, os.path.abspath(bin_dir))
+
 import lz77
 import time
 
@@ -40,9 +44,10 @@ def test_compression(file_path):
         sys.exit(1)
 
 if __name__ == "__main__":
-    if not os.path.exists("test1.txt"):
-        print("Creating test1.txt...")
-        with open("test1.txt", "w", encoding="utf-8") as f:
+    test1_path = os.path.join(os.path.dirname(__file__), "..", "test1.txt")
+    if not os.path.exists(test1_path):
+        print(f"Creating {test1_path}...")
+        with open(test1_path, "w", encoding="utf-8") as f:
             f.write("A" * 100 + "B" * 50 + "ABC" * 20)
             
-    test_compression("test1.txt")
+    test_compression(test1_path)
