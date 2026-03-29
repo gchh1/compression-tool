@@ -7,7 +7,7 @@ PYTHON_LIBS_DIR = $(shell python -c "import sys; print(sys.base_prefix + '/libs'
 PYTHON_LIB_NAME = $(shell python -c "import sys; print(f'python{sys.version_info.major}{sys.version_info.minor}')")
 EXT_SUFFIX = $(shell python -c "import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX'))")
 
-INCLUDES = $(PYTHON_INCLUDES) -I./include
+INCLUDES = $(PYTHON_INCLUDES) -I./src/include
 LDFLAGS = -L"$(PYTHON_LIBS_DIR)" -l$(PYTHON_LIB_NAME)
 
 TARGET = bin/lz77$(EXT_SUFFIX)

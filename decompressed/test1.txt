@@ -1,8 +1,0 @@
-This is a test file for the LZ77 compression algorithm.
-We will repeat some text to see how well it compresses.
-Repeat: ABCDEFGHIJKLMNOPQRSTUVWXYZ
-Repeat: ABCDEFGHIJKLMNOPQRSTUVWXYZ
-Repeat: ABCDEFGHIJKLMNOPQRSTUVWXYZ
-Some more text to compress. 
-And some more repetitive repetitive repetitive repetitive repetitive text.
-End of test file.

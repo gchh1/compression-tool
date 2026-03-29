@@ -196,7 +196,10 @@ def test_site_compression(directory_path):
         sys.exit(1)
         
     # Write to a compressed file
-    comp_dir = os.path.join(app_dir, "compressed")
+    if getattr(sys, 'frozen', False):
+        comp_dir = os.path.join(app_dir, "compressed")
+    else:
+        comp_dir = os.path.join(app_dir, "Package", "compressed")
     os.makedirs(comp_dir, exist_ok=True)
     out_file = os.path.join(comp_dir, os.path.basename(directory_path) + ".lz77")
     with open(out_file, "wb") as f:
@@ -204,12 +207,20 @@ def test_site_compression(directory_path):
     print(f"Compressed archive saved to: {out_file}")
     
     # Write the decompressed output to a file
-    decomp_dir = os.path.join(app_dir, "decompressed")
+    if getattr(sys, 'frozen', False):
+        decomp_dir = os.path.join(app_dir, "decompressed")
+    else:
+        decomp_dir = os.path.join(app_dir, "Package", "decompressed")
     os.makedirs(decomp_dir, exist_ok=True)
     decomp_file = os.path.join(decomp_dir, os.path.basename(directory_path) + "_restored.bin")
     with open(decomp_file, "wb") as f:
         f.write(decompressed_data)
+        
+    # Actually unpack the directory so the user can view the restored site
+    restored_site_dir = os.path.join(decomp_dir, "demo_site_restored")
+    unpack_directory(decompressed_data, restored_site_dir)
     print(f"Decompressed archive saved to: {decomp_file}")
+    print(f"Site perfectly restored to: {restored_site_dir} - You can now open index.html inside!")
 
 if __name__ == "__main__":
     demo_site_path = os.path.join(app_dir, "resources", "demo_site")
