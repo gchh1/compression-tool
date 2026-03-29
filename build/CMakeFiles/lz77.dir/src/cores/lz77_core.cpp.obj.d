@@ -17,6 +17,7 @@ CMakeFiles/lz77.dir/src/cores/lz77_core.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++config.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/os_defines.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/cpu_defines.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/pstl_config.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algobase.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functexcept.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_defines.h \
@@ -59,6 +60,11 @@ CMakeFiles/lz77.dir/src/cores/lz77_core.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/backward/binders.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/range_access.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/vector.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/memory_resource.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstddef \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uses_allocator.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uses_allocator_args.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tuple \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stdexcept \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/exception \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_ptr.h \
@@ -89,6 +95,8 @@ CMakeFiles/lz77.dir/src/cores/lz77_core.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ostream_insert.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/cxxabi_forced.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_string.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/string_view \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/string_view.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/string_conversions.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdlib \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdlib.h \

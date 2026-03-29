@@ -28,6 +28,7 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++config.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/os_defines.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/cpu_defines.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/pstl_config.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdlib.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_wstdlib.h \
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/limits.h \
@@ -55,6 +56,38 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/type_traits.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/math.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/version.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/specfun.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algobase.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functexcept.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_defines.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/numeric_traits.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_pair.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/type_traits \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/move.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/utility.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_types.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_funcs.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/concept_check.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/debug/assertions.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ptr_traits.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/debug/debug.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/predefined_ops.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bit \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/concepts \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/limits \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/gamma.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/special_function_util.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/bessel_function.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/beta_function.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/ell_integral.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/exp_integral.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/hypergeometric.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/legendre_function.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/modified_bessel_func.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/poly_hermite.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/poly_laguerre.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/riemann_zeta.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/time.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sys/timeb.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h \
@@ -132,32 +165,14 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/exception \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_ptr.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_defines.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/cxxabi_init_exception.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/typeinfo \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hash_bytes.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/new \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/move.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/type_traits \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/nested_exception.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/forward_list \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/forward_list.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/initializer_list \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_types.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ptr_traits.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algobase.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functexcept.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/numeric_traits.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_pair.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/utility.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_funcs.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/concept_check.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/debug/assertions.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/debug/debug.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/predefined_ops.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bit \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/concepts \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_function.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/backward/binders.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocator.h \
@@ -170,15 +185,17 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/aligned_buffer.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/range_access.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/forward_list.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/memory_resource.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uses_allocator.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uses_allocator_args.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tuple \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/invoke.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/memory \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_tempbuf.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_uninitialized.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_raw_storage_iter.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/align.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uses_allocator.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unique_ptr.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tuple \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/invoke.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functional_hash.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/shared_ptr.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/iosfwd \
@@ -204,6 +221,8 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_base.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/backward/auto_ptr.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_memory_defs.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/execution_defs.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stdexcept \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/string \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/char_traits.h \
@@ -215,6 +234,8 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ostream_insert.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/cxxabi_forced.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_string.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/string_view \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/string_view.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/string_conversions.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdio \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cerrno \
@@ -226,6 +247,7 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hashtable.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hashtable_policy.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/enable_special_members.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/node_handle.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/erase_if.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/unordered_set \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unordered_set.h \
@@ -251,6 +273,7 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/streambuf.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/utility \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_relops.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/optional \
  D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/internals.h \
  D:/Python/Lib/site-packages/pybind11/include/pybind11/conduit/pybind11_platform_abi_id.h \
  D:/Python/Lib/site-packages/pybind11/include/pybind11/gil_simple.h \
@@ -260,10 +283,11 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/struct_smart_holder.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/functional \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_function.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/compare \
  D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/value_and_holder.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdint \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/limits \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/mutex \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/chrono.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ratio \
@@ -296,8 +320,6 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/typeid.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cxxabi.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/cxxabi_tweaks.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/compare \
  D:/Python/Lib/site-packages/pybind11/include/pybind11/options.h \
  D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/exception_translation.h \
  D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/function_record_pyobject.h \
@@ -309,6 +331,7 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_heap.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uniform_int_dist.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_algorithm_defs.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stack \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/deque \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_deque.h \

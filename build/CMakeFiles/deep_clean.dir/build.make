@@ -66,11 +66,13 @@ include CMakeFiles/deep_clean.dir/compiler_depend.make
 include CMakeFiles/deep_clean.dir/progress.make
 
 CMakeFiles/deep_clean:
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=D:\AAA_C\compression-tool\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Deep cleaning generated directories..."
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=D:\AAA_C\compression-tool\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Deep cleaning generated directories and spec files..."
 	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E remove_directory D:/AAA_C/compression-tool/bin
 	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E remove_directory D:/AAA_C/compression-tool/Package
 	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E remove_directory D:/AAA_C/compression-tool/build_tmp
 	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E remove_directory D:/AAA_C/compression-tool/build
+	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E remove D:/AAA_C/compression-tool/test_lz77.spec
+	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E remove D:/AAA_C/compression-tool/test_site_compression.spec
 
 deep_clean: CMakeFiles/deep_clean
 deep_clean: CMakeFiles/deep_clean.dir/build.make

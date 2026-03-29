@@ -70,6 +70,8 @@ CMakeFiles/build_exe: D:/AAA_C/compression-tool/bin/lz77.cp312-win_amd64.pyd
 	cd /d D:\AAA_C\compression-tool && D:\Python\python.exe -m pip install pyinstaller
 	cd /d D:\AAA_C\compression-tool && D:\Python\python.exe -m PyInstaller --distpath D:/AAA_C/compression-tool/bin --workpath D:/AAA_C/compression-tool/build_tmp --specpath D:/AAA_C/compression-tool/build_tmp --onefile --add-data ../bin/lz77.cp312-win_amd64.pyd;. D:/AAA_C/compression-tool/src/test_lz77.py
 	cd /d D:\AAA_C\compression-tool && D:\Python\python.exe -m PyInstaller --distpath D:/AAA_C/compression-tool/bin --workpath D:/AAA_C/compression-tool/build_tmp --specpath D:/AAA_C/compression-tool/build_tmp --onefile --add-data ../bin/lz77.cp312-win_amd64.pyd;. D:/AAA_C/compression-tool/src/test_site_compression.py
+	cd /d D:\AAA_C\compression-tool && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E remove D:/AAA_C/compression-tool/build_tmp/test_lz77.spec
+	cd /d D:\AAA_C\compression-tool && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E remove D:/AAA_C/compression-tool/build_tmp/test_site_compression.spec
 	cd /d D:\AAA_C\compression-tool && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E make_directory D:/AAA_C/compression-tool/Package/bin
 	cd /d D:\AAA_C\compression-tool && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E copy D:/AAA_C/compression-tool/bin/test_lz77.exe D:/AAA_C/compression-tool/Package/bin/test_lz77.exe
 	cd /d D:\AAA_C\compression-tool && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E copy D:/AAA_C/compression-tool/bin/test_site_compression.exe D:/AAA_C/compression-tool/Package/bin/test_site_compression.exe
