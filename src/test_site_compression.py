@@ -24,6 +24,14 @@ else:
 
 import lz77
 
+def save_log_binary(filename, data):
+    log_dir = os.path.join(app_dir, "logs")
+    os.makedirs(log_dir, exist_ok=True)
+    log_path = os.path.join(log_dir, filename)
+    with open(log_path, "wb") as f:
+        f.write(data)
+    print(f"Log saved: {log_path}")
+
 def pack_directory(directory_path):
     """
     Packs a directory into a single binary stream.
@@ -179,6 +187,10 @@ def test_site_compression(directory_path):
     print(f"Compressed size: {len(compressed_data)} bytes")
     print(f"Compression ratio: {len(compressed_data) / len(original_archive):.2f}")
     print(f"Compression time: {compress_time:.4f} seconds")
+    
+    # Save the input and output binary to logs
+    save_log_binary(f"{os.path.basename(directory_path)}.original.bin", original_archive)
+    save_log_binary(f"{os.path.basename(directory_path)}.compressed.bin", compressed_data)
     
     print("Calling decompress...")
     start_time = time.time()

@@ -22,6 +22,14 @@ else:
 import lz77
 import time
 
+def save_log_binary(filename, data):
+    log_dir = os.path.join(app_dir, "logs")
+    os.makedirs(log_dir, exist_ok=True)
+    log_path = os.path.join(log_dir, filename)
+    with open(log_path, "wb") as f:
+        f.write(data)
+    print(f"Log saved: {log_path}")
+
 def test_compression(file_path):
     print(f"--- Testing with file: {file_path} ---")
     
@@ -36,6 +44,11 @@ def test_compression(file_path):
     compress_time = time.time() - start_time
     
     print(f"Compressed size: {len(compressed_data)} bytes")
+    
+    # Save the input and output binary to logs
+    save_log_binary(f"{os.path.basename(file_path)}.original.bin", original_data)
+    save_log_binary(f"{os.path.basename(file_path)}.compressed.bin", compressed_data)
+    
     print("Calling decompress...")
     
     start_time = time.time()
