@@ -6,7 +6,8 @@ namespace py = pybind11;
 这里负责处理python的接口，将python的接口转换为C++的接口，并调用C++的算法实现
 */
 
-py::bytes py_compress(py::bytes input_bytes, uint16_t search_size = 16, uint16_t lookahead_size = 8) {
+py::bytes py_compress(py::bytes input_bytes, swd search_size = 600, 
+    lwd lookahead_size = 200) {
     std::string in_str = input_bytes;
     const uint8_t* in_buf = reinterpret_cast<const uint8_t*>(in_str.data());
     size_t in_len = in_str.size();

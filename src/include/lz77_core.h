@@ -48,9 +48,9 @@ typedef uint16_t lwd;
 
 LZ77_API void lz77Compress(
     const uint8_t *input,
-    uint16_t search_size,    
+    swd search_size,    
     size_t input_len,// 这个长度不会存到压缩文件，直接size_t
-    uint16_t lookahead_size,
+    lwd lookahead_size,
     size_t *out_len, 
     uint8_t **out_buf
 );

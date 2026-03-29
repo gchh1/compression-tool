@@ -109,9 +109,9 @@ class BruteForce:public lz77MatchFunc{
 // };
 LZ77_API void lz77Compress(// 输入8位字节流，输出8位字节流
     const u8* in_buf,
-    u16 search_size,    
+    swd search_size,    
     size_t in_len,
-    u16 lookahead_size,
+    lwd lookahead_size,
     size_t* out_len,
     u8** out_buf// 二级指针承担指针引用的角色对指针进行修改
 ){
