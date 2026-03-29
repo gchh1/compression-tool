@@ -1,6 +1,7 @@
 #pragma once
 
 // Include lib here
+#include <cstdint>
 #include <vector>
 
 namespace compressor {
@@ -18,8 +19,9 @@ class LZSS {
     static std::vector<uint8_t> decompress(const std::vector<uint8_t>& input);
 
    private:
-    static constexpr uint16_t DICTIONARY_BUFFER_SIZE_ = 65535;  // 2 bytes
-    static constexpr uint8_t LOOKAHEAD_BUFFER_SIZE_ = 255;      // 1 byte
+    static constexpr uint16_t DICTIONARY_BUFFER_SIZE_ = 4095;  // 12 bits
+    static constexpr uint8_t MIN_MATCH_LENGTH_ = 3;            // 4 bits,
+    static constexpr uint8_t MAX_MATCH_LENGTH_ = 18;  // MIN_MATCH_LENGTH + 15
 };
 
 }  // namespace algorithm

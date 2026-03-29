@@ -112,7 +112,7 @@ std::vector<uint8_t> LZ77::decompress(const std::vector<uint8_t> &input) {
         i += 4;
         if (length > 0) {
             size_t start = result.size() - position;
-            for (int j = 0; j < length; ++j) {
+            for (uint8_t j = 0; j < length; ++j) {
                 result.push_back(result[start + j]);
             }
         }
