@@ -25,10 +25,12 @@ test: $(TARGET)
 
 build_exe: $(TARGET)
 	pip install pyinstaller
+	pyinstaller --distpath bin --workpath build --specpath build --onefile --add-data "../bin/lz77$(EXT_SUFFIX);." src/test_site_compression.py
+	pyinstaller --distpath bin --workpath build --specpath build --onefile --add-data "../bin/lz77$(EXT_SUFFIX);." src/test_lz77.py
 	@if not exist Package mkdir Package
 	@if not exist Package\bin mkdir Package\bin
-	pyinstaller --distpath Package\bin --workpath build --specpath build --onefile --add-data "../bin/lz77$(EXT_SUFFIX);." src/test_site_compression.py
-	pyinstaller --distpath Package\bin --workpath build --specpath build --onefile --add-data "../bin/lz77$(EXT_SUFFIX);." src/test_lz77.py
+	copy bin\test_site_compression.exe Package\bin\test_site_compression.exe
+	copy bin\test_lz77.exe Package\bin\test_lz77.exe
 	@if not exist Package\resources mkdir Package\resources
 	xcopy /E /I /Y resources Package\resources
 	@if not exist Package\compressed mkdir Package\compressed
