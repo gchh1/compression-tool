@@ -63,6 +63,7 @@ CMAKE_BINARY_DIR = D:\AAA_C\compression-tool\build
 
 # The main recursive "all" target.
 all: CMakeFiles/lz77.dir/all
+all: CMakeFiles/ensure_exe.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -73,6 +74,7 @@ preinstall:
 clean: CMakeFiles/lz77.dir/clean
 clean: CMakeFiles/test_python.dir/clean
 clean: CMakeFiles/build_exe.dir/clean
+clean: CMakeFiles/ensure_exe.dir/clean
 clean: CMakeFiles/deep_clean.dir/clean
 .PHONY : clean
 
@@ -153,6 +155,32 @@ build_exe: CMakeFiles/build_exe.dir/rule
 CMakeFiles/build_exe.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\build_exe.dir\build.make CMakeFiles/build_exe.dir/clean
 .PHONY : CMakeFiles/build_exe.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/ensure_exe.dir
+
+# All Build rule for target.
+CMakeFiles/ensure_exe.dir/all: CMakeFiles/build_exe.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ensure_exe.dir\build.make CMakeFiles/ensure_exe.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ensure_exe.dir\build.make CMakeFiles/ensure_exe.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build\CMakeFiles --progress-num= "Built target ensure_exe"
+.PHONY : CMakeFiles/ensure_exe.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/ensure_exe.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build\CMakeFiles 4
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/ensure_exe.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build\CMakeFiles 0
+.PHONY : CMakeFiles/ensure_exe.dir/rule
+
+# Convenience name for target.
+ensure_exe: CMakeFiles/ensure_exe.dir/rule
+.PHONY : ensure_exe
+
+# clean rule for target.
+CMakeFiles/ensure_exe.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ensure_exe.dir\build.make CMakeFiles/ensure_exe.dir/clean
+.PHONY : CMakeFiles/ensure_exe.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/deep_clean.dir

@@ -6,5 +6,5 @@ CXX_DEFINES = -Dlz77_EXPORTS
 
 CXX_INCLUDES = @CMakeFiles/lz77.dir/includes_CXX.rsp
 
-CXX_FLAGS = -fvisibility=hidden
+CXX_FLAGS = -std=gnu++17 -fvisibility=hidden
 

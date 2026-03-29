@@ -155,6 +155,19 @@ build_exe/fast:
 .PHONY : build_exe/fast
 
 #=============================================================================
+# Target rules for targets named ensure_exe
+
+# Build rule for target.
+ensure_exe: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ensure_exe
+.PHONY : ensure_exe
+
+# fast build rule for target.
+ensure_exe/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ensure_exe.dir\build.make CMakeFiles/ensure_exe.dir/build
+.PHONY : ensure_exe/fast
+
+#=============================================================================
 # Target rules for targets named deep_clean
 
 # Build rule for target.
@@ -225,6 +238,7 @@ help:
 	@echo ... rebuild_cache
 	@echo ... build_exe
 	@echo ... deep_clean
+	@echo ... ensure_exe
 	@echo ... test_python
 	@echo ... lz77
 	@echo ... src/bindings/lz77_pybind.obj

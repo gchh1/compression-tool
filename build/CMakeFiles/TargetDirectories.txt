@@ -1,6 +1,7 @@
 D:/AAA_C/compression-tool/build/CMakeFiles/lz77.dir
 D:/AAA_C/compression-tool/build/CMakeFiles/test_python.dir
 D:/AAA_C/compression-tool/build/CMakeFiles/build_exe.dir
+D:/AAA_C/compression-tool/build/CMakeFiles/ensure_exe.dir
 D:/AAA_C/compression-tool/build/CMakeFiles/deep_clean.dir
 D:/AAA_C/compression-tool/build/CMakeFiles/edit_cache.dir
 D:/AAA_C/compression-tool/build/CMakeFiles/rebuild_cache.dir

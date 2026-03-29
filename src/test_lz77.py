@@ -51,7 +51,7 @@ def test_compression(file_path):
     
     start_time = time.time()
     print("Calling compress...")
-    compressed_data = lz77.compress(original_data, 16, 8)
+    compressed_data = lz77.compress(original_data, 255, 255)
     compress_time = time.time() - start_time
     
     print(f"Compressed size: {len(compressed_data)} bytes")
