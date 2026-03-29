@@ -2,6 +2,9 @@
 #include "lz77_core.h"
 
 namespace py = pybind11;
+/*
+这里负责处理python的接口，将python的接口转换为C++的接口，并调用C++的算法实现
+*/
 
 py::bytes py_compress(py::bytes input_bytes, uint16_t search_size = 16, uint16_t lookahead_size = 8) {
     std::string in_str = input_bytes;

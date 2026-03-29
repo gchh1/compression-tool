@@ -3,14 +3,24 @@ import sys
 import time
 import struct
 
+# Helper to get the base directory robustly
+if getattr(sys, 'frozen', False):
+    # Go up from Package/bin to Package
+    app_dir = os.path.dirname(os.path.dirname(sys.executable))
+else:
+    app_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+
 # Add MinGW bin to DLL path on Windows
 mingw_bin = "D:\\AAA_C\\AAA_MinGW\\mingw64\\bin"
 if os.path.exists(mingw_bin) and hasattr(os, 'add_dll_directory'):
     os.add_dll_directory(mingw_bin)
 
 # Add our custom bin directory to sys.path so Python can find lz77.pyd
-bin_dir = os.path.join(os.path.dirname(__file__), "..", "bin")
-sys.path.insert(0, os.path.abspath(bin_dir))
+if getattr(sys, 'frozen', False):
+    bin_dir = os.path.join(app_dir, "bin")
+else:
+    bin_dir = os.path.join(app_dir, "bin")
+    sys.path.insert(0, os.path.abspath(bin_dir))
 
 import lz77
 
@@ -49,6 +59,104 @@ def pack_directory(directory_path):
     print(f"Packed {file_count} files from '{directory_path}'.")
     return bytes(packed_data)
 
+def unpack_directory(packed_data, output_dir):
+    """
+    Unpacks a binary stream back into a directory structure.
+    Format for each file:
+    - 4 bytes: path length (L)
+    - L bytes: path string (utf-8)
+    - 4 bytes: file data length (S)
+    - S bytes: file data
+    """
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+        
+    offset = 0
+    file_count = 0
+    total_length = len(packed_data)
+    
+    while offset < total_length:
+        # Read path length (4 bytes)
+        if offset + 4 > total_length:
+            break
+        path_len = struct.unpack('<I', packed_data[offset:offset+4])[0]
+        offset += 4
+        
+        # Read path
+        rel_path = packed_data[offset:offset+path_len].decode('utf-8')
+        offset += path_len
+        
+        # Read data length (4 bytes)
+        data_len = struct.unpack('<I', packed_data[offset:offset+4])[0]
+        offset += 4
+        
+        # Read data
+        file_data = packed_data[offset:offset+data_len]
+        offset += data_len
+        
+        # Write to file
+        out_path = os.path.join(output_dir, rel_path)
+        out_file_dir = os.path.dirname(out_path)
+        if not os.path.exists(out_file_dir):
+            os.makedirs(out_file_dir)
+            
+        with open(out_path, 'wb') as f:
+            f.write(file_data)
+            
+        file_count += 1
+        
+    print(f"Unpacked {file_count} files to '{output_dir}'.")
+    return file_count
+
+def unpack_directory(packed_data, output_dir):
+    """
+    Unpacks a binary stream back into a directory structure.
+    Format for each file:
+    - 4 bytes: path length (L)
+    - L bytes: path string (utf-8)
+    - 4 bytes: file data length (S)
+    - S bytes: file data
+    """
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+        
+    offset = 0
+    file_count = 0
+    total_length = len(packed_data)
+    
+    while offset < total_length:
+        # Read path length (4 bytes)
+        if offset + 4 > total_length:
+            break
+        path_len = struct.unpack('<I', packed_data[offset:offset+4])[0]
+        offset += 4
+        
+        # Read path
+        rel_path = packed_data[offset:offset+path_len].decode('utf-8')
+        offset += path_len
+        
+        # Read data length (4 bytes)
+        data_len = struct.unpack('<I', packed_data[offset:offset+4])[0]
+        offset += 4
+        
+        # Read data
+        file_data = packed_data[offset:offset+data_len]
+        offset += data_len
+        
+        # Write to file
+        out_path = os.path.join(output_dir, rel_path)
+        out_file_dir = os.path.dirname(out_path)
+        if not os.path.exists(out_file_dir):
+            os.makedirs(out_file_dir)
+            
+        with open(out_path, 'wb') as f:
+            f.write(file_data)
+            
+        file_count += 1
+        
+    print(f"Unpacked {file_count} files to '{output_dir}'.")
+    return file_count
+
 def test_site_compression(directory_path):
     print(f"--- Testing compression on directory: {directory_path} ---")
     
@@ -86,7 +194,23 @@ def test_site_compression(directory_path):
     else:
         print("[FAILED]: Decompressed archive DOES NOT match!")
         sys.exit(1)
+        
+    # Write to a compressed file
+    comp_dir = os.path.join(app_dir, "compressed")
+    os.makedirs(comp_dir, exist_ok=True)
+    out_file = os.path.join(comp_dir, os.path.basename(directory_path) + ".lz77")
+    with open(out_file, "wb") as f:
+        f.write(compressed_data)
+    print(f"Compressed archive saved to: {out_file}")
+    
+    # Write the decompressed output to a file
+    decomp_dir = os.path.join(app_dir, "decompressed")
+    os.makedirs(decomp_dir, exist_ok=True)
+    decomp_file = os.path.join(decomp_dir, os.path.basename(directory_path) + "_restored.bin")
+    with open(decomp_file, "wb") as f:
+        f.write(decompressed_data)
+    print(f"Decompressed archive saved to: {decomp_file}")
 
 if __name__ == "__main__":
-    demo_site_path = os.path.join(os.path.dirname(__file__), "..", "lty_demo-site")
+    demo_site_path = os.path.join(app_dir, "resources", "demo_site")
     test_site_compression(demo_site_path)

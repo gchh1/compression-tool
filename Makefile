@@ -23,5 +23,17 @@ test: $(TARGET)
 	python src/test_lz77.py
 	python src/test_site_compression.py
 
+build_exe: $(TARGET)
+	pip install pyinstaller
+	@if not exist Package mkdir Package
+	@if not exist Package\bin mkdir Package\bin
+	pyinstaller --distpath Package\bin --workpath build --specpath build --onefile --add-data "../bin/lz77$(EXT_SUFFIX);." src/test_site_compression.py
+	pyinstaller --distpath Package\bin --workpath build --specpath build --onefile --add-data "../bin/lz77$(EXT_SUFFIX);." src/test_lz77.py
+	@if not exist Package\resources mkdir Package\resources
+	xcopy /E /I /Y resources Package\resources
+	@if not exist Package\compressed mkdir Package\compressed
+	@if not exist Package\decompressed mkdir Package\decompressed
+
 clean:
 	del /Q $(subst /,\,$(TARGET)) 2>nul || rm -f $(TARGET)
+	rmdir /S /Q build Package 2>nul || echo.
