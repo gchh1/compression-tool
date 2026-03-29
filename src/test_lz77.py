@@ -54,10 +54,7 @@ def test_compression(file_path):
         
     # Write the compressed output to a file so we can see it
     # Save compressed data to file
-    if getattr(sys, 'frozen', False):
-        comp_dir = os.path.join(app_dir, "compressed")
-    else:
-        comp_dir = os.path.join(app_dir, "Package", "compressed")
+    comp_dir = os.path.join(app_dir, "compressed")
     os.makedirs(comp_dir, exist_ok=True)
     out_file = os.path.join(comp_dir, os.path.basename(file_path) + ".lz77")
     with open(out_file, "wb") as f:
@@ -65,10 +62,7 @@ def test_compression(file_path):
     print(f"Compressed data saved to: {out_file}")
     
     # Write the decompressed output to a file to verify output
-    if getattr(sys, 'frozen', False):
-        decomp_dir = os.path.join(app_dir, "decompressed")
-    else:
-        decomp_dir = os.path.join(app_dir, "Package", "decompressed")
+    decomp_dir = os.path.join(app_dir, "decompressed")
     os.makedirs(decomp_dir, exist_ok=True)
     decomp_file = os.path.join(decomp_dir, os.path.basename(file_path))
     with open(decomp_file, "wb") as f:

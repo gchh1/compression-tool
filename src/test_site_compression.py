@@ -196,10 +196,7 @@ def test_site_compression(directory_path):
         sys.exit(1)
         
     # Write to a compressed file
-    if getattr(sys, 'frozen', False):
-        comp_dir = os.path.join(app_dir, "compressed")
-    else:
-        comp_dir = os.path.join(app_dir, "Package", "compressed")
+    comp_dir = os.path.join(app_dir, "compressed")
     os.makedirs(comp_dir, exist_ok=True)
     out_file = os.path.join(comp_dir, os.path.basename(directory_path) + ".lz77")
     with open(out_file, "wb") as f:
@@ -207,10 +204,7 @@ def test_site_compression(directory_path):
     print(f"Compressed archive saved to: {out_file}")
     
     # Write the decompressed output to a file
-    if getattr(sys, 'frozen', False):
-        decomp_dir = os.path.join(app_dir, "decompressed")
-    else:
-        decomp_dir = os.path.join(app_dir, "Package", "decompressed")
+    decomp_dir = os.path.join(app_dir, "decompressed")
     os.makedirs(decomp_dir, exist_ok=True)
     decomp_file = os.path.join(decomp_dir, os.path.basename(directory_path) + "_restored.bin")
     with open(decomp_file, "wb") as f:
