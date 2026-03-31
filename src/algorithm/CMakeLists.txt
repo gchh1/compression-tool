@@ -4,6 +4,7 @@ add_library(
     ${CMAKE_CURRENT_SOURCE_DIR}/src/LZSS.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/HuffmanTree.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Huffman.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Deflate.cpp
 
 )
 
