@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-#include "LZSS.hpp"
+#include "Huffman.hpp"
 
 using namespace compressor::algorithm;
 
@@ -42,7 +42,7 @@ bool writeToFile(const std::string& filename,
 }
 
 int main() {
-    std::cout << "--- LZSS File Compression Test ---" << std::endl;
+    std::cout << "--- Huffman File Compression Test ---" << std::endl;
 
     // 1. 读取网页文件（请确保路径正确，如果使用 CMake
     // 运行，可能需要传入绝对路径或放到 build 目录下）
@@ -58,7 +58,7 @@ int main() {
               << std::endl;
 
     // 2. 调用纯净版算法进行压缩
-    std::vector<uint8_t> compressed_data = LZSS::compress(input_data);
+    std::vector<uint8_t> compressed_data = Huffman::compress(input_data);
 
     std::cout << "Compressed Size: " << compressed_data.size() << " bytes"
               << std::endl;
@@ -71,7 +71,7 @@ int main() {
 
     // 3. 将压缩后的结果保存到本地磁盘
     std::string output_filename =
-        "../../tests/data/test_page.lzSS";  // 自定义一个酷炫的后缀名
+        "../../tests/data/test_page.Huffman";  // 自定义一个酷炫的后缀名
     if (writeToFile(output_filename, compressed_data)) {
         std::cout << "\n🎉 Success! Compressed file generated at: "
                   << output_filename << std::endl;
@@ -79,7 +79,7 @@ int main() {
 
     // 4. 解压缩
     filename = "../../tests/data/test_decompressed.html";
-    std::vector<uint8_t> decompressed_data = LZSS::decompress(compressed_data);
+    std::vector<uint8_t> decompressed_data = Huffman::decompress(compressed_data);
     if (writeToFile(filename, decompressed_data)) {
         std::cout << "\n🎉 Success! Decompressed file generated at: "
                   << filename << std::endl;

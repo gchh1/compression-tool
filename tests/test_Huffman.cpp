@@ -7,7 +7,11 @@
 
 int main() {
     std::vector<uint8_t> v = {'a', 'b', 'c', 'd', 'e', 'f'};
-    compressor::algorithm::HuffmanTree huffman_tree(v);
+    std::vector<uint32_t> f(256, 0);
+    for (const auto& item : v) {
+        f[item] = 1;
+    }
+    compressor::algorithm::HuffmanTree huffman_tree(f);
     std::vector<std::string> res;
     res = huffman_tree.encode();
 
