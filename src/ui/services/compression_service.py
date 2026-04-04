@@ -15,9 +15,13 @@ STAGING_DIR = RESOURCES_DIR / "staging"
 COMPRESSED_DIR = APP_DIR / "compressed"
 DECOMPRESSED_DIR = APP_DIR / "decompressed"
 MAGIC = b"LZ77"
+"""
+b"..."：表示这是一个字节字符串（bytes literal），在 Python 中每个字符占一个字节
+"LZ77"：4个ASCII字符，对应十六进制 0x4C 0x5A 0x37 0x37
+"""
 # Container type
-TYPE_FILE = 0
-TYPE_FOLDER = 1
+FILE_TYPE = 0
+FOLDER_TYPE = 1
 # Header flags
 FLAG_PAYLOAD_COMPRESSED = 1 << 0
 FLAG_ARCHIVE_COMPRESSED = 1 << 1
@@ -27,17 +31,19 @@ FLAG_ARCHIVE_COMPRESSED = 1 << 1
 OFFSET_FIELD_WIDTH = 2
 LENGTH_FIELD_WIDTH = 1
 
+# 可修改宏定义
+MINGW_BIN = Path("D:/AAA_C/AAA_MinGW/mingw64/bin")
 
-def _load_lz77():
+
+def load_lz77():
     bin_dir = APP_DIR / "bin"
     if str(bin_dir) not in sys.path:
         sys.path.insert(0, str(bin_dir))
-    mingw_bin = Path("D:/AAA_C/AAA_MinGW/mingw64/bin")
     if hasattr(os, "add_dll_directory"):
-        if mingw_bin.exists():
-            os.add_dll_directory(str(mingw_bin))
+        if MINGW_BIN.exists():
+            os.add_dll_directory(str(MINGW_BIN))  # 添加MinGW的bin目录到DLL搜索路径
         if bin_dir.exists():
-            os.add_dll_directory(str(bin_dir))
+            os.add_dll_directory(str(bin_dir))  # 添加项目bin目录到DLL搜索路径
     try:
         import lz77  # type: ignore
     except Exception as exc:  # pragma: no cover - runtime environment dependent
@@ -47,13 +53,13 @@ def _load_lz77():
     return lz77
 
 
-def _ensure_dirs() -> None:
+def check_dirs() -> None:
     STAGING_DIR.mkdir(parents=True, exist_ok=True)
     COMPRESSED_DIR.mkdir(parents=True, exist_ok=True)
     DECOMPRESSED_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def _timestamp_tag() -> str:
+def timestamp() -> str: # 生成时间戳标签
     return time.strftime("%Y%m%d_%H%M%S")
 
 
@@ -69,7 +75,7 @@ def _count_files_and_size(path: Path) -> Tuple[int, int]:
     return count, total
 
 
-def _is_already_compressed(path: Path) -> bool:
+def iscompressed(path: Path) -> bool:
     return path.suffix.lower() in {
         ".png",
         ".jpg",
@@ -92,7 +98,7 @@ def _make_file_container(
     source_name: str,
     raw_data: bytes,
     payload: bytes,
-    payload_compressed: bool,
+    payload_compressed: bool, # 有效载荷
     search_size: int,
     lookahead_size: int,
 ) -> bytes:
@@ -100,13 +106,13 @@ def _make_file_container(
     flags = FLAG_PAYLOAD_COMPRESSED if payload_compressed else 0
     header = bytearray()
     header.extend(MAGIC)
-    header.extend(struct.pack("<B", TYPE_FILE))
+    header.extend(struct.pack("<B", FILE_TYPE)) # "<B" 表示小端字节序, 1字节
     header.extend(struct.pack("<B", flags))
     header.extend(struct.pack("<B", search_size & 0xFF))
     header.extend(struct.pack("<B", lookahead_size & 0xFF))
-    header.extend(struct.pack("<H", len(name_b)))
-    header.extend(name_b)
-    header.extend(struct.pack("<Q", len(raw_data)))
+    header.extend(struct.pack("<H", len(name_b))) # "<H" 表示小端字节序, 2字节
+    header.extend(name_b) # 变长文件名
+    header.extend(struct.pack("<Q", len(raw_data))) # "<Q" 表示小端字节序, 8字节, 记录原数据大小
     header.extend(struct.pack("<Q", len(payload)))
     return bytes(header) + payload
 
@@ -148,19 +154,19 @@ def _parse_file_container(blob: bytes) -> Tuple[Dict[str, object], bytes]:
     )
 
 
-def _pack_folder_entries(directory_path: Path, search_size: int, lookahead_size: int) -> bytes:
-    lz77 = _load_lz77()
+def _pack_folder_entries(directory_path: Path) -> bytes:
+    lz77 = load_lz77()
     entries = []
     for file_path in sorted(directory_path.rglob("*")):
         if not file_path.is_file():
             continue
         rel_path = file_path.relative_to(directory_path).as_posix()
         raw = file_path.read_bytes()
-        if _is_already_compressed(file_path):
+        if iscompressed(file_path):
             comp = raw
             is_comp = False
         else:
-            c = lz77.compress(raw, search_size, lookahead_size)
+            c = lz77.compress(raw)
             if len(c) < len(raw):
                 comp = c
                 is_comp = True
@@ -176,8 +182,6 @@ def _pack_folder_entries(directory_path: Path, search_size: int, lookahead_size:
         buf.extend(struct.pack("<H", len(rel_b)))
         buf.extend(rel_b)
         buf.extend(struct.pack("<B", flags))
-        buf.extend(struct.pack("<B", search_size & 0xFF))
-        buf.extend(struct.pack("<B", lookahead_size & 0xFF))
         buf.extend(struct.pack("<Q", len(raw)))
         buf.extend(struct.pack("<Q", len(comp)))
         buf.extend(comp)
@@ -185,7 +189,7 @@ def _pack_folder_entries(directory_path: Path, search_size: int, lookahead_size:
 
 
 def _unpack_folder_entries(packed_data: bytes, output_dir: Path) -> int:
-    lz77 = _load_lz77()
+    lz77 = load_lz77()
     output_dir.mkdir(parents=True, exist_ok=True)
     pos = 0
     count = struct.unpack("<I", packed_data[pos : pos + 4])[0]
@@ -198,8 +202,6 @@ def _unpack_folder_entries(packed_data: bytes, output_dir: Path) -> int:
         pos += path_len
         flags = packed_data[pos]
         pos += 1
-        pos += 1  # search_size
-        pos += 1  # lookahead_size
         _ = struct.unpack("<Q", packed_data[pos : pos + 8])[0]
         pos += 8
         payload_len = struct.unpack("<Q", packed_data[pos : pos + 8])[0]
@@ -227,7 +229,7 @@ def _make_folder_container(
     flags = FLAG_ARCHIVE_COMPRESSED if archive_compressed else 0
     header = bytearray()
     header.extend(MAGIC)
-    header.extend(struct.pack("<B", TYPE_FOLDER))
+    header.extend(struct.pack("<B", FOLDER_TYPE))
     header.extend(struct.pack("<B", flags))
     header.extend(struct.pack("<B", search_size & 0xFF))
     header.extend(struct.pack("<B", lookahead_size & 0xFF))
@@ -245,12 +247,12 @@ def _safe_symbol(value: int) -> str:
 
 
 def import_resource(src_path: str) -> ResourceInfo:
-    _ensure_dirs()
+    check_dirs()
     source = Path(src_path).expanduser().resolve()
     if not source.exists():
         raise FileNotFoundError(f"Resource not found: {source}")
 
-    stage_name = f"{_timestamp_tag()}_{source.name}"
+    stage_name = f"{timestamp()}_{source.name}"
     staged = STAGING_DIR / stage_name
     if source.is_file():
         shutil.copy2(source, staged)
@@ -274,8 +276,8 @@ def import_resource(src_path: str) -> ResourceInfo:
 def compress_resource(
     target_path: str, search_size: int = 255, lookahead_size: int = 255
 ) -> OperationResult:
-    _ensure_dirs()
-    lz77 = _load_lz77()
+    check_dirs()
+    lz77 = load_lz77()
     target = Path(target_path).expanduser().resolve()
     if not target.exists():
         raise FileNotFoundError(f"Target not found: {target}")
@@ -294,8 +296,8 @@ def compress_resource(
         detail_flag = payload_compressed
     else:
         kind = "folder"
-        archive_stream = _pack_folder_entries(target, search_size, lookahead_size)
-        compressed_stream = lz77.compress(archive_stream, search_size, lookahead_size)
+        archive_stream = _pack_folder_entries(target)
+        compressed_stream = lz77.compress(archive_stream)
         archive_compressed = len(compressed_stream) < len(archive_stream)
         payload = compressed_stream if archive_compressed else archive_stream
         archive = _make_folder_container(
@@ -331,8 +333,8 @@ def compress_resource(
 
 
 def decompress_resource(archive_path: str) -> OperationResult:
-    _ensure_dirs()
-    lz77 = _load_lz77()
+    check_dirs()
+    lz77 = load_lz77()
     archive = Path(archive_path).expanduser().resolve()
     if not archive.exists():
         raise FileNotFoundError(f"Archive not found: {archive}")
@@ -344,12 +346,12 @@ def decompress_resource(archive_path: str) -> OperationResult:
     source_name = str(header["source_name"])
 
     start = time.time()
-    if kind == TYPE_FILE:
+    if kind == FILE_TYPE:
         raw_data = lz77.decompress(payload) if (flags & FLAG_PAYLOAD_COMPRESSED) else payload
         output_path = DECOMPRESSED_DIR / source_name
         output_path.write_bytes(raw_data)
         message = "File restored."
-    elif kind == TYPE_FOLDER:
+    elif kind == FOLDER_TYPE:
         stream = lz77.decompress(payload) if (flags & FLAG_ARCHIVE_COMPRESSED) else payload
         output_path = DECOMPRESSED_DIR / f"{source_name}_restored"
         file_count = _unpack_folder_entries(stream, output_path)
@@ -369,7 +371,7 @@ def decompress_resource(archive_path: str) -> OperationResult:
         duration_sec=duration,
         ratio=(len(raw_data) / len(blob)) if blob else 0.0,
         metadata={
-            "kind": "folder" if kind == TYPE_FOLDER else "file",
+            "kind": "folder" if kind == FOLDER_TYPE else "file",
             "is_compressed": str(bool(flags & (FLAG_PAYLOAD_COMPRESSED | FLAG_ARCHIVE_COMPRESSED))),
         },
     )
@@ -384,7 +386,7 @@ def build_lz77_demo_steps(
 
     data = path.read_bytes()
     source_text = data.decode("utf-8", errors="replace")
-    lz77 = _load_lz77()
+    lz77 = load_lz77()
     compressed = lz77.compress(data, search_size, lookahead_size)
 
     def _read_u(encoded: bytes, pos: int, width: int) -> Tuple[int, int]:

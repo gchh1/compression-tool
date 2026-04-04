@@ -5,12 +5,12 @@ from typing import Dict, List, Optional
 @dataclass
 class ResourceInfo:
     source_path: str
-    staged_path: str
+    staged_path: str # 压缩后的文件路径
     name: str
     resource_type: str
     size_bytes: int
     file_count: int = 1
-    metadata: Dict[str, str] = field(default_factory=dict)
+    metadata: Dict[str, str] = field(default_factory=dict) # 其他元数据，如文件创建时间、修改时间等。
 
 
 @dataclass
@@ -23,7 +23,7 @@ class OperationResult:
     output_size: int = 0
     duration_sec: float = 0.0
     ratio: float = 0.0
-    metadata: Dict[str, str] = field(default_factory=dict)
+    metadata: Dict[str, str] = field(default_factory=dict) # 其他元数据，如压缩率、压缩时间等。
 
 
 @dataclass

@@ -57,10 +57,12 @@ set(PYI_DIR "${CMAKE_BINARY_DIR}/pyinstaller")
 add_custom_target(build_exe
     COMMAND ${Python3_EXECUTABLE} -m pip install pyinstaller
     COMMAND ${CMAKE_COMMAND} -E make_directory ${PYI_DIR}
+    # Copy DLL dependencies to bin
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/copy_dlls.py
     # Build test_lz77.exe
-    COMMAND ${Python3_EXECUTABLE} -m PyInstaller --distpath ${CMAKE_SOURCE_DIR}/bin --workpath ${PYI_DIR} --specpath ${PYI_DIR} --onefile --add-data "../bin/$<TARGET_FILE_NAME:lz77>;." ${CMAKE_SOURCE_DIR}/src/test_lz77.py
+    COMMAND ${Python3_EXECUTABLE} -m PyInstaller --distpath ${CMAKE_SOURCE_DIR}/bin --workpath ${PYI_DIR} --specpath ${PYI_DIR} --onefile --add-data "../bin/$<TARGET_FILE_NAME:lz77>;." --add-binary "${CMAKE_SOURCE_DIR}/bin/libgcc_s_seh-1.dll;." --add-binary "${CMAKE_SOURCE_DIR}/bin/libstdc++-6.dll;." --add-binary "${CMAKE_SOURCE_DIR}/bin/libwinpthread-1.dll;." ${CMAKE_SOURCE_DIR}/src/test_lz77.py
     # Build test_site_compression.exe
-    COMMAND ${Python3_EXECUTABLE} -m PyInstaller --distpath ${CMAKE_SOURCE_DIR}/bin --workpath ${PYI_DIR} --specpath ${PYI_DIR} --onefile --add-data "../bin/$<TARGET_FILE_NAME:lz77>;." ${CMAKE_SOURCE_DIR}/src/test_site_compression.py
+    COMMAND ${Python3_EXECUTABLE} -m PyInstaller --distpath ${CMAKE_SOURCE_DIR}/bin --workpath ${PYI_DIR} --specpath ${PYI_DIR} --onefile --add-data "../bin/$<TARGET_FILE_NAME:lz77>;." --add-binary "${CMAKE_SOURCE_DIR}/bin/libgcc_s_seh-1.dll;." --add-binary "${CMAKE_SOURCE_DIR}/bin/libstdc++-6.dll;." --add-binary "${CMAKE_SOURCE_DIR}/bin/libwinpthread-1.dll;." ${CMAKE_SOURCE_DIR}/src/test_site_compression.py
     DEPENDS lz77
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMENT "PyInstaller: output exe only under project bin/"
