@@ -1,0 +1,2 @@
+D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc libhuffman.a CMakeFiles/huffman.dir/src/cores/Huffman.cpp.obj CMakeFiles/huffman.dir/src/cores/huffman_tree.cpp.obj
+D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe libhuffman.a

@@ -33,6 +33,8 @@ LENGTH_FIELD_WIDTH = 1
 
 # 可修改宏定义
 MINGW_BIN = Path("D:/AAA_C/AAA_MinGW/mingw64/bin")
+# 保留clangd编译器的路径
+CLANGANGD_BIN = None
 
 
 def load_lz77():
@@ -94,15 +96,15 @@ def iscompressed(path: Path) -> bool:
     }
 
 
-def _make_file_container(
-    source_name: str,
+def get_file_container(
+    # source_name: str,
     raw_data: bytes,
     payload: bytes,
     payload_compressed: bool, # 有效载荷
     search_size: int,
     lookahead_size: int,
 ) -> bytes:
-    name_b = source_name.encode("utf-8")
+    # name_b = source_name.encode("utf-8")
     flags = FLAG_PAYLOAD_COMPRESSED if payload_compressed else 0
     header = bytearray()
     header.extend(MAGIC)
@@ -110,14 +112,14 @@ def _make_file_container(
     header.extend(struct.pack("<B", flags))
     header.extend(struct.pack("<B", search_size & 0xFF))
     header.extend(struct.pack("<B", lookahead_size & 0xFF))
-    header.extend(struct.pack("<H", len(name_b))) # "<H" 表示小端字节序, 2字节
-    header.extend(name_b) # 变长文件名
+    # header.extend(struct.pack("<H", len(name_b))) # "<H" 表示小端字节序, 2字节
+    # header.extend(name_b) # 变长文件名
     header.extend(struct.pack("<Q", len(raw_data))) # "<Q" 表示小端字节序, 8字节, 记录原数据大小
     header.extend(struct.pack("<Q", len(payload)))
     return bytes(header) + payload
 
 
-def _parse_file_container(blob: bytes) -> Tuple[Dict[str, object], bytes]:
+def parse_file_container(blob: bytes) -> Tuple[Dict[str, object], bytes]:
     if len(blob) < 4 + 1 + 1 + 1 + 1 + 2 + 8 + 8:
         raise ValueError("Container too short.")
     if blob[:4] != MAGIC:
@@ -131,10 +133,10 @@ def _parse_file_container(blob: bytes) -> Tuple[Dict[str, object], bytes]:
     pos += 1
     lookahead_size = blob[pos]
     pos += 1
-    name_len = struct.unpack("<H", blob[pos : pos + 2])[0]
-    pos += 2
-    name = blob[pos : pos + name_len].decode("utf-8")
-    pos += name_len
+    # name_len = struct.unpack("<H", blob[pos : pos + 2])[0]
+    # pos += 2
+    # name = blob[pos : pos + name_len].decode("utf-8")
+    # pos += name_len
     original_size = struct.unpack("<Q", blob[pos : pos + 8])[0]
     pos += 8
     payload_size = struct.unpack("<Q", blob[pos : pos + 8])[0]
@@ -154,41 +156,43 @@ def _parse_file_container(blob: bytes) -> Tuple[Dict[str, object], bytes]:
     )
 
 
-def _pack_folder_entries(directory_path: Path) -> bytes:
+def pack_folder_entries(directory_path: Path) -> bytes:
     lz77 = load_lz77()
     entries = []
-    for file_path in sorted(directory_path.rglob("*")):
+    for file_path in sorted(directory_path.rglob("*")): # 递归遍历目录下的所有文件
         if not file_path.is_file():
             continue
-        rel_path = file_path.relative_to(directory_path).as_posix()
+        rel_path = file_path.relative_to(directory_path).as_posix() # POSIX风格，使用正斜杠'/'作为路径分隔符
         raw = file_path.read_bytes()
         if iscompressed(file_path):
             comp = raw
             is_comp = False
         else:
-            c = lz77.compress(raw)
-            if len(c) < len(raw):
-                comp = c
-                is_comp = True
+            if file_path.suffix.lower() == ".lz77":
+                c = lz77.compress(raw)
+                if len(c) < len(raw):
+                    comp = c
+                    is_comp = True
             else:
                 comp = raw
                 is_comp = False
         entries.append((rel_path.encode("utf-8"), raw, comp, is_comp))
 
     buf = bytearray()
-    buf.extend(struct.pack("<I", len(entries)))
-    for rel_b, raw, comp, is_comp in entries:
-        flags = FLAG_PAYLOAD_COMPRESSED if is_comp else 0
-        buf.extend(struct.pack("<H", len(rel_b)))
-        buf.extend(rel_b)
-        buf.extend(struct.pack("<B", flags))
-        buf.extend(struct.pack("<Q", len(raw)))
-        buf.extend(struct.pack("<Q", len(comp)))
+    buf.extend(struct.pack("<I", len(entries))) # "<I" 表示小端字节序, 4字节, 记录文件数量
+    for path, raw, comp, is_comp in entries:
+        # flags = FLAG_PAYLOAD_COMPRESSED if is_comp else 0
+        flags = is_comp
+        buf.extend(struct.pack("<H", len(path))) # "<H" 表示小端字节序, 2字节(utf-8编码字符串会占用更多字节), 记录路径长度
+        buf.extend(path) # 变长路径
+        buf.extend(struct.pack("<B", flags)) # "<B" 表示小端字节序, 1字节, 记录有效载荷是否压缩
+        buf.extend(struct.pack("<Q", len(raw))) # "<Q" 表示小端字节序, 8字节, 记录原数据大小
+        buf.extend(struct.pack("<Q", len(comp))) # "<Q" 表示小端字节序, 8字节, 记录压缩后大小
         buf.extend(comp)
     return bytes(buf)
 
 
-def _unpack_folder_entries(packed_data: bytes, output_dir: Path) -> int:
+def unpack_folder_entries(packed_data: bytes, output_dir: Path) -> int:
     lz77 = load_lz77()
     output_dir.mkdir(parents=True, exist_ok=True)
     pos = 0
@@ -217,7 +221,7 @@ def _unpack_folder_entries(packed_data: bytes, output_dir: Path) -> int:
     return restored
 
 
-def _make_folder_container(
+def get_folder_container(
     source_name: str,
     archive_stream: bytes,
     payload: bytes,
@@ -248,24 +252,27 @@ def _safe_symbol(value: int) -> str:
 
 def import_resource(src_path: str) -> ResourceInfo:
     check_dirs()
-    source = Path(src_path).expanduser().resolve()
-    if not source.exists():
-        raise FileNotFoundError(f"Resource not found: {source}")
+    source_path = Path(src_path).expanduser().resolve()
+    if not source_path.exists():
+        raise FileNotFoundError(f"Resource not found: {source_path}")
 
-    stage_name = f"{timestamp()}_{source.name}"
-    staged = STAGING_DIR / stage_name
-    if source.is_file():
-        shutil.copy2(source, staged)
+    stage_name = f"{timestamp()}_{source_path.name}"
+    staged_path = STAGING_DIR / stage_name
+    if source_path.is_file():
+        """
+        保留设计,shutil可以做成自己设计的数据结构
+        """
+        shutil.copy2(source_path, staged_path)
         resource_type = "file"
     else:
-        shutil.copytree(source, staged)
+        shutil.copytree(source_path, staged_path)
         resource_type = "folder"
 
-    file_count, size_bytes = _count_files_and_size(staged)
+    file_count, size_bytes = _count_files_and_size(staged_path)
     return ResourceInfo(
-        source_path=str(source),
-        staged_path=str(staged),
-        name=source.name,
+        source_path=str(source_path),
+        staged_path=str(staged_path),
+        name=source_path.name,
         resource_type=resource_type,
         size_bytes=size_bytes,
         file_count=file_count,
@@ -290,17 +297,17 @@ def compress_resource(
         compressed_data = lz77.compress(raw_data, search_size, lookahead_size)
         payload_compressed = len(compressed_data) < len(raw_data)
         payload = compressed_data if payload_compressed else raw_data
-        archive = _make_file_container(
+        archive = get_file_container(
             source_name, raw_data, payload, payload_compressed, search_size, lookahead_size
         )
         detail_flag = payload_compressed
     else:
         kind = "folder"
-        archive_stream = _pack_folder_entries(target)
+        archive_stream = pack_folder_entries(target)
         compressed_stream = lz77.compress(archive_stream)
         archive_compressed = len(compressed_stream) < len(archive_stream)
         payload = compressed_stream if archive_compressed else archive_stream
-        archive = _make_folder_container(
+        archive = get_folder_container(
             source_name, archive_stream, payload, archive_compressed, search_size, lookahead_size
         )
         raw_data = archive_stream
@@ -340,7 +347,7 @@ def decompress_resource(archive_path: str) -> OperationResult:
         raise FileNotFoundError(f"Archive not found: {archive}")
 
     blob = archive.read_bytes()
-    header, payload = _parse_file_container(blob)
+    header, payload = parse_file_container(blob)
     kind = int(header["kind"])
     flags = int(header["flags"])
     source_name = str(header["source_name"])
@@ -354,7 +361,7 @@ def decompress_resource(archive_path: str) -> OperationResult:
     elif kind == FOLDER_TYPE:
         stream = lz77.decompress(payload) if (flags & FLAG_ARCHIVE_COMPRESSED) else payload
         output_path = DECOMPRESSED_DIR / f"{source_name}_restored"
-        file_count = _unpack_folder_entries(stream, output_path)
+        file_count = unpack_folder_entries(stream, output_path)
         raw_data = stream
         message = f"Folder restored with {file_count} files."
     else:

@@ -3,3 +3,4 @@ task2.md
 ./Package
 ./build/
 *.spec
+./.vscode/

@@ -4,7 +4,7 @@
 a = Analysis(
     ['D:/AAA_C/compression-tool/src/test_lz77.py'],
     pathex=[],
-    binaries=[],
+    binaries=[('D:/AAA_C/compression-tool/bin/libgcc_s_seh-1.dll', '.'), ('D:/AAA_C/compression-tool/bin/libstdc++-6.dll', '.'), ('D:/AAA_C/compression-tool/bin/libwinpthread-1.dll', '.')],
     datas=[('../bin/lz77.cp312-win_amd64.pyd', '.')],
     hiddenimports=[],
     hookspath=[],

@@ -1,13 +1,16 @@
 CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:\AAA_C\compression-tool\src\bindings\lz77_pybind.cpp \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/pybind11.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/class.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/attr.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/common.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/conduit/wrap_include_python_h.h \
- D:/Python/include/Python.h D:/Python/include/patchlevel.h \
- D:/Python/include/pyconfig.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/io.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/pybind11.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/detail/class.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/attr.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/detail/common.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/conduit/wrap_include_python_h.h \
+ D:/AAA_Python/Python/include/Python.h \
+ D:/AAA_Python/Python/include/patchlevel.h \
+ D:/AAA_Python/Python/include/pyconfig.h D:\AAA_C\AAA_Lib\win32/io.h \
+ D:\AAA_C\AAA_Lib\win32/windows_base.h \
+ D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdint.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdint.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/crtdefs.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw.h \
@@ -15,14 +18,14 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_secapi.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/vadefs.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/string.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_off_t.h \
+ D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stddef.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stddef.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdio.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_stdio_config.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_off_t.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/swprintf.inl \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/stdio_s.h \
- D:/Python/include/pymacconfig.h \
+ D:/AAA_Python/Python/include/pymacconfig.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stdlib.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdlib \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++config.h \
@@ -39,16 +42,14 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/mm_malloc.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/errno.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_abs.h \
- D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stddef.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stddef.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/string.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/assert.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wchar.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stat64.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/wchar_s.h \
- D:/Python/include/pyport.h \
+ D:/AAA_Python/Python/include/pyport.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/inttypes.h \
- D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdint.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdint.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/math.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cmath \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/requires_hosted.h \
@@ -95,71 +96,118 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_time.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sys/stat.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sys/types.h \
- D:/Python/include/exports.h D:/Python/include/pymacro.h \
- D:/Python/include/pymath.h D:/Python/include/pymem.h \
- D:/Python/include/cpython/pymem.h D:/Python/include/pytypedefs.h \
- D:/Python/include/pybuffer.h D:/Python/include/object.h \
- D:/Python/include/pystats.h D:/Python/include/cpython/object.h \
- D:/Python/include/objimpl.h D:/Python/include/cpython/objimpl.h \
- D:/Python/include/typeslots.h D:/Python/include/pyhash.h \
- D:/Python/include/cpython/pydebug.h D:/Python/include/bytearrayobject.h \
- D:/Python/include/cpython/bytearrayobject.h \
- D:/Python/include/bytesobject.h \
+ D:/AAA_Python/Python/include/exports.h \
+ D:/AAA_Python/Python/include/pymacro.h \
+ D:/AAA_Python/Python/include/pymath.h \
+ D:/AAA_Python/Python/include/pymem.h \
+ D:/AAA_Python/Python/include/cpython/pymem.h \
+ D:/AAA_Python/Python/include/pytypedefs.h \
+ D:/AAA_Python/Python/include/pybuffer.h \
+ D:/AAA_Python/Python/include/object.h \
+ D:/AAA_Python/Python/include/pystats.h \
+ D:/AAA_Python/Python/include/cpython/object.h \
+ D:/AAA_Python/Python/include/objimpl.h \
+ D:/AAA_Python/Python/include/cpython/objimpl.h \
+ D:/AAA_Python/Python/include/typeslots.h \
+ D:/AAA_Python/Python/include/pyhash.h \
+ D:/AAA_Python/Python/include/cpython/pydebug.h \
+ D:/AAA_Python/Python/include/bytearrayobject.h \
+ D:/AAA_Python/Python/include/cpython/bytearrayobject.h \
+ D:/AAA_Python/Python/include/bytesobject.h \
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdarg.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdarg.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stdarg.h \
- D:/Python/include/cpython/bytesobject.h \
- D:/Python/include/unicodeobject.h \
+ D:/AAA_Python/Python/include/cpython/bytesobject.h \
+ D:/AAA_Python/Python/include/unicodeobject.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/ctype.h \
- D:/Python/include/cpython/unicodeobject.h \
- D:/Python/include/cpython/initconfig.h D:/Python/include/pystate.h \
- D:/Python/include/cpython/pystate.h D:/Python/include/pyerrors.h \
- D:/Python/include/cpython/pyerrors.h D:/Python/include/longobject.h \
- D:/Python/include/cpython/longobject.h \
- D:/Python/include/cpython/longintrepr.h D:/Python/include/boolobject.h \
- D:/Python/include/floatobject.h D:/Python/include/cpython/floatobject.h \
- D:/Python/include/complexobject.h \
- D:/Python/include/cpython/complexobject.h \
- D:/Python/include/rangeobject.h D:/Python/include/memoryobject.h \
- D:/Python/include/cpython/memoryobject.h D:/Python/include/tupleobject.h \
- D:/Python/include/cpython/tupleobject.h D:/Python/include/listobject.h \
- D:/Python/include/cpython/listobject.h D:/Python/include/dictobject.h \
- D:/Python/include/cpython/dictobject.h \
- D:/Python/include/cpython/odictobject.h D:/Python/include/enumobject.h \
- D:/Python/include/setobject.h D:/Python/include/cpython/setobject.h \
- D:/Python/include/methodobject.h \
- D:/Python/include/cpython/methodobject.h \
- D:/Python/include/moduleobject.h D:/Python/include/cpython/funcobject.h \
- D:/Python/include/cpython/classobject.h D:/Python/include/fileobject.h \
- D:/Python/include/cpython/fileobject.h D:/Python/include/pycapsule.h \
- D:/Python/include/cpython/code.h D:/Python/include/pyframe.h \
- D:/Python/include/cpython/pyframe.h D:/Python/include/traceback.h \
- D:/Python/include/cpython/traceback.h D:/Python/include/sliceobject.h \
- D:/Python/include/cpython/cellobject.h D:/Python/include/iterobject.h \
- D:/Python/include/cpython/genobject.h D:/Python/include/descrobject.h \
- D:/Python/include/cpython/descrobject.h \
- D:/Python/include/genericaliasobject.h D:/Python/include/warnings.h \
- D:/Python/include/cpython/warnings.h D:/Python/include/weakrefobject.h \
- D:/Python/include/cpython/weakrefobject.h D:/Python/include/structseq.h \
- D:/Python/include/cpython/picklebufobject.h \
- D:/Python/include/cpython/pytime.h D:/Python/include/codecs.h \
- D:/Python/include/pythread.h D:/Python/include/cpython/pythread.h \
- D:/Python/include/cpython/context.h D:/Python/include/modsupport.h \
- D:/Python/include/cpython/modsupport.h D:/Python/include/compile.h \
- D:/Python/include/cpython/compile.h D:/Python/include/pythonrun.h \
- D:/Python/include/cpython/pythonrun.h D:/Python/include/pylifecycle.h \
- D:/Python/include/cpython/pylifecycle.h D:/Python/include/ceval.h \
- D:/Python/include/cpython/ceval.h D:/Python/include/sysmodule.h \
- D:/Python/include/cpython/sysmodule.h D:/Python/include/osmodule.h \
- D:/Python/include/intrcheck.h D:/Python/include/import.h \
- D:/Python/include/cpython/import.h D:/Python/include/abstract.h \
- D:/Python/include/cpython/abstract.h D:/Python/include/bltinmodule.h \
- D:/Python/include/cpython/pyctype.h D:/Python/include/pystrtod.h \
- D:/Python/include/pystrcmp.h D:/Python/include/fileutils.h \
- D:/Python/include/cpython/fileutils.h D:/Python/include/cpython/pyfpe.h \
- D:/Python/include/tracemalloc.h D:/Python/include/frameobject.h \
- D:/Python/include/cpython/frameobject.h D:/Python/include/pythread.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/pybind11_namespace_macros.h \
+ D:/AAA_Python/Python/include/cpython/unicodeobject.h \
+ D:/AAA_Python/Python/include/cpython/initconfig.h \
+ D:/AAA_Python/Python/include/pystate.h \
+ D:/AAA_Python/Python/include/cpython/pystate.h \
+ D:/AAA_Python/Python/include/pyerrors.h \
+ D:/AAA_Python/Python/include/cpython/pyerrors.h \
+ D:/AAA_Python/Python/include/longobject.h \
+ D:/AAA_Python/Python/include/cpython/longobject.h \
+ D:/AAA_Python/Python/include/cpython/longintrepr.h \
+ D:/AAA_Python/Python/include/boolobject.h \
+ D:/AAA_Python/Python/include/floatobject.h \
+ D:/AAA_Python/Python/include/cpython/floatobject.h \
+ D:/AAA_Python/Python/include/complexobject.h \
+ D:/AAA_Python/Python/include/cpython/complexobject.h \
+ D:/AAA_Python/Python/include/rangeobject.h \
+ D:/AAA_Python/Python/include/memoryobject.h \
+ D:/AAA_Python/Python/include/cpython/memoryobject.h \
+ D:/AAA_Python/Python/include/tupleobject.h \
+ D:/AAA_Python/Python/include/cpython/tupleobject.h \
+ D:/AAA_Python/Python/include/listobject.h \
+ D:/AAA_Python/Python/include/cpython/listobject.h \
+ D:/AAA_Python/Python/include/dictobject.h \
+ D:/AAA_Python/Python/include/cpython/dictobject.h \
+ D:/AAA_Python/Python/include/cpython/odictobject.h \
+ D:/AAA_Python/Python/include/enumobject.h \
+ D:/AAA_Python/Python/include/setobject.h \
+ D:/AAA_Python/Python/include/cpython/setobject.h \
+ D:/AAA_Python/Python/include/methodobject.h \
+ D:/AAA_Python/Python/include/cpython/methodobject.h \
+ D:/AAA_Python/Python/include/moduleobject.h \
+ D:/AAA_Python/Python/include/cpython/funcobject.h \
+ D:/AAA_Python/Python/include/cpython/classobject.h \
+ D:/AAA_Python/Python/include/fileobject.h \
+ D:/AAA_Python/Python/include/cpython/fileobject.h \
+ D:/AAA_Python/Python/include/pycapsule.h \
+ D:/AAA_Python/Python/include/cpython/code.h \
+ D:/AAA_Python/Python/include/pyframe.h \
+ D:/AAA_Python/Python/include/cpython/pyframe.h \
+ D:/AAA_Python/Python/include/traceback.h \
+ D:/AAA_Python/Python/include/cpython/traceback.h \
+ D:/AAA_Python/Python/include/sliceobject.h \
+ D:/AAA_Python/Python/include/cpython/cellobject.h \
+ D:/AAA_Python/Python/include/iterobject.h \
+ D:/AAA_Python/Python/include/cpython/genobject.h \
+ D:/AAA_Python/Python/include/descrobject.h \
+ D:/AAA_Python/Python/include/cpython/descrobject.h \
+ D:/AAA_Python/Python/include/genericaliasobject.h \
+ D:/AAA_Python/Python/include/warnings.h \
+ D:/AAA_Python/Python/include/cpython/warnings.h \
+ D:/AAA_Python/Python/include/weakrefobject.h \
+ D:/AAA_Python/Python/include/cpython/weakrefobject.h \
+ D:/AAA_Python/Python/include/structseq.h \
+ D:/AAA_Python/Python/include/cpython/picklebufobject.h \
+ D:/AAA_Python/Python/include/cpython/pytime.h \
+ D:/AAA_Python/Python/include/codecs.h \
+ D:/AAA_Python/Python/include/pythread.h \
+ D:/AAA_Python/Python/include/cpython/pythread.h \
+ D:/AAA_Python/Python/include/cpython/context.h \
+ D:/AAA_Python/Python/include/modsupport.h \
+ D:/AAA_Python/Python/include/cpython/modsupport.h \
+ D:/AAA_Python/Python/include/compile.h \
+ D:/AAA_Python/Python/include/cpython/compile.h \
+ D:/AAA_Python/Python/include/pythonrun.h \
+ D:/AAA_Python/Python/include/cpython/pythonrun.h \
+ D:/AAA_Python/Python/include/pylifecycle.h \
+ D:/AAA_Python/Python/include/cpython/pylifecycle.h \
+ D:/AAA_Python/Python/include/ceval.h \
+ D:/AAA_Python/Python/include/cpython/ceval.h \
+ D:/AAA_Python/Python/include/sysmodule.h \
+ D:/AAA_Python/Python/include/cpython/sysmodule.h \
+ D:/AAA_Python/Python/include/osmodule.h \
+ D:/AAA_Python/Python/include/intrcheck.h \
+ D:/AAA_Python/Python/include/import.h \
+ D:/AAA_Python/Python/include/cpython/import.h \
+ D:/AAA_Python/Python/include/abstract.h \
+ D:/AAA_Python/Python/include/cpython/abstract.h \
+ D:/AAA_Python/Python/include/bltinmodule.h \
+ D:/AAA_Python/Python/include/cpython/pyctype.h \
+ D:/AAA_Python/Python/include/pystrtod.h \
+ D:/AAA_Python/Python/include/pystrcmp.h \
+ D:/AAA_Python/Python/include/fileutils.h \
+ D:/AAA_Python/Python/include/cpython/fileutils.h \
+ D:/AAA_Python/Python/include/cpython/pyfpe.h \
+ D:/AAA_Python/Python/include/tracemalloc.h \
+ D:/AAA_Python/Python/include/frameobject.h \
+ D:/AAA_Python/Python/include/cpython/frameobject.h \
+ D:/AAA_Python/Python/include/pythread.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/detail/pybind11_namespace_macros.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstddef \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstring \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/exception \
@@ -209,8 +257,7 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/gthr.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/gthr-default.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/process.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_startup.h \
+ D:\AAA_C\AAA_Lib\win32/process.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/signal.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_signal.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_compat.h \
@@ -256,11 +303,10 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/vector.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/version \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/cast.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/descr.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/native_enum_data.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/pytypes.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/buffer_info.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/cast.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/detail/argument_vector.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/pytypes.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/buffer_info.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/iterator \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stream_iterator.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/streambuf_iterator.h \
@@ -274,19 +320,28 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/utility \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_relops.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/optional \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/internals.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/conduit/pybind11_platform_abi_id.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/gil_simple.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cassert \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/trampoline_self_life_support.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/using_smart_holder.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/struct_smart_holder.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/functional \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_function.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_heap.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uniform_int_dist.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_algorithm_defs.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/compare \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/value_and_holder.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdint \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/detail/descr.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/detail/holder_caster_foreign_helpers.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/gil.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/detail/internals.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/conduit/pybind11_platform_abi_id.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/gil_simple.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cassert \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/trampoline_self_life_support.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/detail/using_smart_holder.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/detail/struct_smart_holder.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/functional \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_function.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/detail/value_and_holder.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/mutex \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/chrono.h \
@@ -298,6 +353,7 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/thread \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_thread.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/this_thread_sleep.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/detail/native_enum_data.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/sstream \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/istream \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ios \
@@ -313,28 +369,44 @@ CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ostream.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/istream.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/sstream.tcc \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/type_caster_base.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/gil.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/cpp_conduit.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/dynamic_raw_ptr_cast_if_possible.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/typeid.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/detail/type_caster_base.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/detail/cpp_conduit.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/detail/dynamic_raw_ptr_cast_if_possible.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/detail/typeid.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cxxabi.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/cxxabi_tweaks.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/options.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/exception_translation.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/function_record_pyobject.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/detail/init.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/gil_safe_call_once.h \
- D:/Python/Lib/site-packages/pybind11/include/pybind11/typing.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_heap.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uniform_int_dist.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_algorithm_defs.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/options.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/detail/exception_translation.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/detail/function_record_pyobject.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/detail/init.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/gil_safe_call_once.h \
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/typing.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stack \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/deque \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_deque.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/deque.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_stack.h \
- D:/AAA_C/compression-tool/src/include/lz77_core.h
+ D:/AAA_Python/Python/Lib/site-packages/pybind11/include/pybind11/stl.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/list \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_list.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/list.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/map \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_tree.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_map.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_multimap.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/set \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_set.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_multiset.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/valarray \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/valarray_array.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/valarray_array.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/valarray_before.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/slice_array.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/valarray_after.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/gslice.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/gslice_array.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/mask_array.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/indirect_array.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/variant \
+ D:/AAA_C/compression-tool/src/include/lz77.hpp \
+ D:/AAA_C/compression-tool/src/include/core.hpp

@@ -1,0 +1,39 @@
+compression-tool-algorithm/
+├── CMakeLists.txt
+├── README.md
+├── docs/
+├── src/
+│   ├── CMakeLists.txt
+│   ├── algorithm/
+│   │   ├── CMakeLists.txt
+│   │   ├── include/
+│   │   │   ├── Deflate.hpp
+│   │   │   ├── Huffman.hpp
+│   │   │   ├── HuffmanTree.hpp
+│   │   │   ├── LZ77.hpp
+│   │   │   └── LZSS.hpp
+│   │   └── src/
+│   │       ├── Deflate.cpp
+│   │       ├── Huffman.cpp
+│   │       ├── HuffmanTree.cpp
+│   │       ├── LZ77.cpp
+│   │       └── LZSS.cpp
+│   ├── bindings/
+│   │   └── CMakeLists.txt
+│   └── core/
+│       ├── CMakeLists.txt
+│       └── include/
+│           ├── compressor.hpp
+│           └── dummy_compressor.hpp
+├── tests/
+│   ├── CMakeLists.txt
+│   ├── test_Huffman.cpp
+│   ├── test_LZSS.cpp
+│   └── data/
+│       ├── test_decompressed.html
+│       ├── test_page.html
+│       ├── test_page.Huffman
+│       ├── test_page.lz77
+│       ├── test_page.lzSS
+│       └── test.html                                                                                   
+  

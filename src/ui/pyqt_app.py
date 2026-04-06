@@ -53,8 +53,8 @@ class DropListWidget(QListWidget):
         self.setSelectionMode(QListWidget.SingleSelection)
 
     def dragEnterEvent(self, event):  # type: ignore[override]
-        if event.mimeData().hasUrls():
-            event.acceptProposedAction()
+        if event.mimeData().hasUrls(): # 获取拖拽的文件路径
+            event.acceptProposedAction() # 接受拖拽操作
         else:
             event.ignore()
 
@@ -62,8 +62,8 @@ class DropListWidget(QListWidget):
         urls = event.mimeData().urls()
         paths: List[str] = []
         for url in urls:
-            if url.isLocalFile():
-                paths.append(url.toLocalFile())
+            if url.isLocalFile(): # 筛选出本地文件
+                paths.append(url.toLocalFile()) # 从QUrl转换为本地文件路径格式
         if paths:
             self.paths_dropped.emit(paths)
             event.acceptProposedAction()
@@ -76,13 +76,14 @@ class TokenWindow(QWidget):
         super().__init__()
         self.setWindowTitle("Saved Tokens")
         self.resize(680, 520)
-        self.viewer = QTextEdit()
-        self.viewer.setReadOnly(True)
-        layout = QVBoxLayout()
+        self.viewer = QTextEdit() # 文本编辑器, 用于显示压缩后的token
+        self.viewer.setReadOnly(True) # 只读模式, 不允许用户编辑
+
+        layout = QVBoxLayout() # 垂直布局, 控件垂直排列
         layout.addWidget(self.viewer)
         self.setLayout(layout)
 
-    def render(self, steps: list, active_index: int) -> None:
+    def render(self, steps: list, active_index: int) -> None: # 渲染token
         lines: List[str] = []
         for i, step in enumerate(steps):
             prefix = ">> " if i == active_index else "   "
@@ -111,7 +112,7 @@ class LZ77DemoWindow(QWidget):
         self.source_bytes = Path(demo.source_path).read_bytes()
         self.token_window = TokenWindow()
         self.timer = QTimer(self)
-        self.timer.timeout.connect(self.next_step)
+        self.timer.timeout.connect(self.next_step) # 连接定时器超时信号到next_step方法
 
         self.title = QLabel(f"Demo source: {demo.source_path}")
         self.position = QLabel("Step: 0")
@@ -204,7 +205,7 @@ class LZ77DemoWindow(QWidget):
         except UnicodeDecodeError:
             return False
         printable = sum(1 for b in data if 32 <= b <= 126 or b in (9, 10, 13))
-        return printable / max(1, len(data)) > 0.9
+        return printable / max(1, len(data)) > 0.9# max函数避免除以0, 这里表示可打印字符超过90%
 
     def _mode_units(self) -> Tuple[str, List[str]]:
         mode = self.stream_mode.currentText()

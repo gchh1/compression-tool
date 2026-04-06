@@ -1,71 +1,73 @@
 #include <pybind11/pybind11.h>
-#include "lz77_core.h"
+#include <pybind11/stl.h>
+#include "lz77.hpp"
 
 namespace py = pybind11;
-/*
-这里负责处理python的接口，将python的接口转换为C++的接口，并调用C++的算法实现
-*/
 
-py::bytes py_compress(py::bytes input_bytes, swd search_size = 255, 
-    lwd lookahead_size = 255) {
-    std::string in_str = input_bytes;
-    const uint8_t* in_buf = reinterpret_cast<const uint8_t*>(in_str.data());
-    size_t in_len = in_str.size();
-    
-    if (in_len == 0) {
-        return py::bytes("");
-    }
-
-    uint8_t* out_buf = nullptr;
-    size_t out_len = 0;
-    
-    lz77Compress(in_buf, search_size, in_len, lookahead_size, &out_len, &out_buf);
-    
-    if (out_buf && out_len > 0) {
-        std::string out_str(reinterpret_cast<const char*>(out_buf), out_len);
-        delete[] out_buf;
-        return py::bytes(out_str);
+namespace {
+    // 包装函数，将 std::vector<uint8_t> 转换为 py::bytes
+    py::bytes compress_wrapper(core::algorithm::LZ77& lz, 
+                               py::bytes input,
+                               size_t search_size = 255,
+                               size_t lookahead_size = 255,
+                               core::algorithm::lz77MatchType match_type = core::algorithm::lz77MatchType::KMPNEXT) {
+        std::string input_str = input.cast<std::string>();
+        std::vector<uint8_t> input_vec(input_str.begin(), input_str.end());
+        std::vector<uint8_t> result = lz.Compress(input_vec, search_size, lookahead_size, match_type);
+        return py::bytes(reinterpret_cast<const char*>(result.data()), result.size());
     }
     
-    return py::bytes("");
-}
-
-py::bytes py_decompress(py::bytes compressed_bytes) {
-    std::string comp_str = compressed_bytes;
-    const uint8_t* comp_buf = reinterpret_cast<const uint8_t*>(comp_str.data());
-    size_t comp_len = comp_str.size();
-    
-    if (comp_len == 0) {
-        return py::bytes("");
-    }
-
-    // Heuristic for uncompressed size (e.g., 10x compressed size). In a real implementation, 
-    // the original size should be stored in the header, or the decompressor should realloc.
-    // For this test, we allocate a generously large buffer (up to 10MB).
-    size_t max_out_size = comp_len * 100; 
-    if (max_out_size < 1024 * 1024) max_out_size = 1024 * 1024 * 10;
-    
-    uint8_t* out_buf = new uint8_t[max_out_size];
-    size_t out_len = 0;
-    
-    lz77Decompress(comp_buf, comp_len, out_buf, &out_len);
-    
-    if (out_len > 0 && out_len <= max_out_size) {
-        std::string out_str(reinterpret_cast<const char*>(out_buf), out_len);
-        delete[] out_buf;
-        return py::bytes(out_str);
+    py::bytes compress_ultra_wrapper(core::algorithm::LZ77& lz,
+                                     py::bytes input,
+                                     size_t search_size = 255,
+                                     size_t lookahead_size = 255,
+                                     size_t range = 3,
+                                     core::algorithm::lz77MatchType match_type = core::algorithm::lz77MatchType::KMPNEXT) {
+        std::string input_str = input.cast<std::string>();
+        std::vector<uint8_t> input_vec(input_str.begin(), input_str.end());
+        std::vector<uint8_t> result = lz.Compress_ultra(input_vec, search_size, lookahead_size, range, match_type);
+        return py::bytes(reinterpret_cast<const char*>(result.data()), result.size());
     }
     
-    delete[] out_buf;
-    return py::bytes("");
+    py::bytes decompress_wrapper(core::algorithm::LZ77& lz,
+                                 py::bytes input) {
+        std::string input_str = input.cast<std::string>();
+        std::vector<uint8_t> input_vec(input_str.begin(), input_str.end());
+        std::vector<uint8_t> result = lz.Decompress(input_vec);
+        return py::bytes(reinterpret_cast<const char*>(result.data()), result.size());
+    }
 }
 
 PYBIND11_MODULE(lz77, m) {
-    m.doc() = "LZ77 Compression Python Bindings";
+    m.doc() = "LZ77 Compression Python Bindings - 直接绑定 C++ 类";
     
-    m.def("compress", &py_compress, "Compress bytes using LZ77",
-          py::arg("input_bytes"), py::arg("search_size") = 16, py::arg("lookahead_size") = 8);
-          
-    m.def("decompress", &py_decompress, "Decompress LZ77 compressed bytes",
-          py::arg("compressed_bytes"));
+    // 先注册枚举类型
+    py::enum_<core::algorithm::lz77MatchType>(m, "lz77MatchType")
+        .value("KMPNEXT", core::algorithm::lz77MatchType::KMPNEXT, "KMP 匹配算法");
+    
+    // 绑定 LZ77 类
+    py::class_<core::algorithm::LZ77>(m, "LZ77")
+        .def(py::init<size_t, size_t>(), 
+             py::arg("search_bytelength") = 2,
+             py::arg("look_bytelength") = 2,
+             "构造函数")
+        .def("compress", 
+             &compress_wrapper,
+             py::arg("input"),
+             py::arg("search_size") = 255,
+             py::arg("lookahead_size") = 255,
+             py::arg("match_type") = core::algorithm::lz77MatchType::KMPNEXT,
+             "压缩数据（greedy 策略）")
+        .def("compress_ultra", 
+             &compress_ultra_wrapper,
+             py::arg("input"),
+             py::arg("search_size") = 255,
+             py::arg("lookahead_size") = 255,
+             py::arg("range") = 3,
+             py::arg("match_type") = core::algorithm::lz77MatchType::KMPNEXT,
+             "压缩数据（DP 多候选策略）")
+        .def("decompress", 
+             &decompress_wrapper,
+             py::arg("input"),
+             "解压数据");
 }

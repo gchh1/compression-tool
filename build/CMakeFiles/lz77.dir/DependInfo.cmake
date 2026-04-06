@@ -9,7 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "D:/AAA_C/compression-tool/src/bindings/lz77_pybind.cpp" "CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj" "gcc" "CMakeFiles/lz77.dir/src/bindings/lz77_pybind.cpp.obj.d"
-  "D:/AAA_C/compression-tool/src/cores/lz77_core.cpp" "CMakeFiles/lz77.dir/src/cores/lz77_core.cpp.obj" "gcc" "CMakeFiles/lz77.dir/src/cores/lz77_core.cpp.obj.d"
+  "D:/AAA_C/compression-tool/src/cores/lz77.cpp" "CMakeFiles/lz77.dir/src/cores/lz77.cpp.obj" "gcc" "CMakeFiles/lz77.dir/src/cores/lz77.cpp.obj.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

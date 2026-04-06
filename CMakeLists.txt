@@ -26,14 +26,14 @@ find_package(pybind11 CONFIG REQUIRED)
 # Include directories
 include_directories(src/include)
 
-# Define sources
-set(SRCS 
-    src/cores/lz77_core.cpp 
-    src/bindings/lz77_pybind.cpp
+# Define sources for LZ77 (removed lz77_core.cpp - using direct pybind11 binding)
+set(LZ77_SRCS 
+    src/cores/lz77.cpp
 )
 
-# Define target module
-pybind11_add_module(lz77 ${SRCS})
+# LZ77 Python module (direct binding to C++ class)
+pybind11_add_module(lz77 ${LZ77_SRCS} src/bindings/lz77_pybind.cpp)
+target_link_libraries(lz77 PRIVATE pybind11::module)
 
 # Set output directory to bin/
 set_target_properties(lz77 PROPERTIES 
@@ -70,6 +70,8 @@ add_custom_target(build_exe
 
 # Plain `mingw32-make` / `cmake --build .` also runs build_exe so bin/*.exe exists
 add_custom_target(ensure_exe ALL DEPENDS build_exe)
+
+
 
 # Custom target for deep clean
 add_custom_target(deep_clean
