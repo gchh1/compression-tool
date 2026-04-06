@@ -4,8 +4,8 @@
 #include <random>
 #include <chrono>
 
-#include "huffman.hpp"
-#include "lz77.hpp"
+#include "include/Huffman.hpp"
+#include "include/lz77.hpp"
 
 using namespace core;
 using namespace core::algorithm;
@@ -141,7 +141,7 @@ void test_lz77_huffman_chain() {
 
 int main() {
     std::cout << "╔════════════════════════════════════╗" << std::endl;
-    std::cout << "║     Huffman 压缩算法测试套件       ║" << std::endl;
+    std::cout << "║     Huffman 压缩算法测试套件          ║" << std::endl;
     std::cout << "╚════════════════════════════════════╝" << std::endl << std::endl;
 
     test_huffman_basic();

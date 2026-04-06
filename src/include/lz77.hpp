@@ -14,32 +14,6 @@
 #define LZ77_API
 #endif
 
-// // 类型定义放在 extern "C" 之外，便于 C++ 代码使用
-// #ifndef LZ77_SEARCH_WINDOW
-// #define LZ77_SEARCH_WINDOW 2
-// #endif
-// #if LZ77_SEARCH_WINDOW == 1
-// using swd = uint8_t;
-// #elif LZ77_SEARCH_WINDOW == 2
-// using swd = uint16_t;
-// #elif LZ77_SEARCH_WINDOW == 4
-// using swd = uint32_t;
-// #else
-// #error "LZ77_SEARCH_WINDOW must be one of: 1, 2, 4"
-// #endif
-
-// #ifndef LZ77_LOOKAHEAD_WINDOW
-// #define LZ77_LOOKAHEAD_WINDOW 1
-// #endif
-// #if LZ77_LOOKAHEAD_WINDOW == 1
-// using lwd = uint8_t;
-// #elif LZ77_LOOKAHEAD_WINDOW == 2
-// using lwd = uint16_t;
-// #elif LZ77_LOOKAHEAD_WINDOW == 4
-// using lwd = uint64_t;
-// #else
-// #error "LZ77_LOOKAHEAD_WINDOW must be one of: 1, 2, 4"
-// #endif
 
 namespace core{
     namespace algorithm{
@@ -51,11 +25,9 @@ namespace core{
         enum class lz77MatchType{//要确保这个类型接口外部可以使用
             KMPNEXT,  // KMP 匹配算法
         };
-#ifdef _WIN32
-        class __declspec(dllexport) LZ77 {
-#else
-        class LZ77 {
-#endif
+
+        LZ77_API class LZ77 {
+
         public:
             struct lz77Triple {
                 size_t offset;
@@ -132,7 +104,6 @@ namespace core{
         };
 
     }
-}
 }
 
 #endif
