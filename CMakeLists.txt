@@ -17,6 +17,6 @@ set(CORE_DIR ${SRC_DIR}/core)
 set(ALGORITHM_DIR ${SRC_DIR}/algorithm)
 
 # ========= add subdirectories =========
+add_subdirectory("${ALGORITHM_DIR}")
 add_subdirectory("${CORE_DIR}")
 add_subdirectory("${TESTS_DIR}")
-add_subdirectory("${ALGORITHM_DIR}")

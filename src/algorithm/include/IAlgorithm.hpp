@@ -16,9 +16,9 @@
 namespace compressor {
 namespace algorithm {
 struct Token {
-    bool is_literal;
-    uint16_t value;
-    uint16_t position;
+    bool is_literal;    // true: character; false: (length, position)
+    uint16_t value;     // char or length
+    uint16_t position;  // position
 };
 }  // namespace algorithm
 

@@ -3,9 +3,9 @@
 #include <iostream>
 #include <vector>
 
-#include "Huffman.hpp"
+#include "DeflateCompressor.hpp"
 
-using namespace compressor::algorithm;
+using namespace compressor::core;
 
 // 辅助函数：将文件读取为字节流
 std::vector<uint8_t> readFile(const std::string& filename) {
@@ -58,6 +58,7 @@ int main() {
               << std::endl;
 
     // 2. 调用纯净版算法进行压缩
+    compressor::core::DeflateCompressor engine;
     std::vector<uint8_t> compressed_data = Huffman::compress(input_data);
 
     std::cout << "Compressed Size: " << compressed_data.size() << " bytes"
@@ -79,7 +80,8 @@ int main() {
 
     // 4. 解压缩
     filename = "../../tests/data/test_decompressed.html";
-    std::vector<uint8_t> decompressed_data = Huffman::decompress(compressed_data);
+    std::vector<uint8_t> decompressed_data =
+        Huffman::decompress(compressed_data);
     if (writeToFile(filename, decompressed_data)) {
         std::cout << "\n🎉 Success! Decompressed file generated at: "
                   << filename << std::endl;
