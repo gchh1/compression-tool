@@ -1,10 +1,12 @@
 #include "DeflateCompressor.hpp"
 
+#include "compressor.hpp"
+
 namespace compressor {
 namespace core {
 
-auto DeflateCompressor::compress(const std::vector<uint8_t>& original_data)
-    -> CompressResult {
+CompressResult DeflateCompressor::compress(
+    const std::vector<uint8_t>& original_data) {
     CompressResult result;
     result.original_size = original_data.size();
 
@@ -37,8 +39,8 @@ auto DeflateCompressor::compress(const std::vector<uint8_t>& original_data)
     return result;
 }
 
-auto DeflateCompressor::decompress(const std::vector<uint8_t>& compressed_data)
-    -> CompressResult {
+CompressResult DeflateCompressor::decompress(
+    const std::vector<uint8_t>& compressed_data) {
     CompressResult result;
     result.compressed_size = compressed_data.size();
 

@@ -139,7 +139,7 @@ std::vector<uint8_t> Huffman::decompress(const std::vector<uint8_t> &input) {
     node *root = huffman_tree.getRoot();
     node *cursor = root;
 
-    while (byte_idx < original_size) {
+    while (result.size() < original_size) {
         int bit = readBit();
         if (bit == -1) {
             break;

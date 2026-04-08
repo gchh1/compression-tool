@@ -32,8 +32,8 @@ std::vector<Token> Deflate::compress(const std::vector<uint8_t>& input) {
 
     size_t cursor = 0;
     while (cursor < n) {
-        size_t position;
-        size_t length;
+        size_t position = 0;
+        size_t length = 0;
 
         // Start hash map if n - cursor >= MIN_MATCH_LENGTH
         if (n - cursor >= MIN_MATCH) {
@@ -81,29 +81,28 @@ std::vector<Token> Deflate::compress(const std::vector<uint8_t>& input) {
                 // Update the match_pos
                 match_pos = prev[match_pos];
             }
+        }
 
-            /* 4. Handle the token */
-            // Token would be (0, length, position)
-            if (length >= MIN_MATCH) {
-                result.push_back({false, static_cast<uint16_t>(length),
-                                  static_cast<uint16_t>(position)});
+        /* 4. Handle the token */
+        // Token would be (0, length, position)
+        if (length >= MIN_MATCH) {
+            result.push_back({false, static_cast<uint16_t>(length),
+                              static_cast<uint16_t>(position)});
 
-                /* 5. Store the char between cursor and cursor + length */
-                for (size_t i = 0; i < length; ++i) {
-                    cursor++;
-                    if (cursor + MIN_MATCH <= n) {
-                        hash_val = getHash(input, cursor);
-                        prev[cursor] = head[hash_val];
-                        head[hash_val] = cursor;
-                    }
+            /* 5. Store the char between cursor and cursor + length */
+            for (size_t i = 0; i < length; ++i) {
+                cursor++;
+                if (cursor + MIN_MATCH <= n) {
+                    uint16_t hash_val = getHash(input, cursor);
+                    prev[cursor] = head[hash_val];
+                    head[hash_val] = cursor;
                 }
-                cursor++;
             }
-            // Token would be (1, char)
-            else {
-                result.push_back({true, input[cursor], 0});
-                cursor++;
-            }
+        }
+        // Token would be (1, char)
+        else {
+            result.push_back({true, input[cursor], 0});
+            cursor++;
         }
     }
 
@@ -128,7 +127,8 @@ std::vector<uint8_t> Deflate::decompress(const std::vector<Token>& tokens) {
         else {
             size_t start_idx = result.size() - token.position;
             for (size_t i = 0; i < token.value; ++i) {
-                result.push_back(result[start_idx + i]);
+                uint8_t ch = result[start_idx + i];
+                result.push_back(ch);
             }
         }
     }

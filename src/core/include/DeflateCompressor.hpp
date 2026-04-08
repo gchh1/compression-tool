@@ -11,10 +11,9 @@ namespace core {
 
 class DeflateCompressor : public ICompressor {
    public:
-    auto compress(const std::vector<uint8_t>& original_data)
-        -> CompressResult override;
-    auto decompress(const std::vector<uint8_t>& compressed_data)
-        -> CompressResult override;
+    CompressResult compress(const std::vector<uint8_t>& original_data) override;
+    CompressResult decompress(
+        const std::vector<uint8_t>& compressed_data) override;
 
     auto get_algorithm_name(void) -> std::string override {
         return "Deflate (LZ77Fast + Huffman)";
