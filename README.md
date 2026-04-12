@@ -19,6 +19,16 @@
 └── README.md
 ```
 
+## started
+```
+mkdir build_wasm && cd build_wasm
+```
+
+```
+emcmake cmake ..
+make
+```
+
 ## log
 ### 4.12
 目前完成了基本的Deflate压缩算法，在core中提供了```CompressorResult Compress(const std::vector<uint8_t>&)```的压缩 API 以及 ```CompressorResult Decompress(const std::vector<uint8_t>&)``` 的解压缩 API 
