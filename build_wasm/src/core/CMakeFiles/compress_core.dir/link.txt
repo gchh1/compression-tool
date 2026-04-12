@@ -1,2 +1,0 @@
-/Users/yhc/toolchain/emsdk/upstream/emscripten/emar qc libcompress_core.a CMakeFiles/compress_core.dir/src/DeflateCompressor.cpp.o CMakeFiles/compress_core.dir/src/LZSSCompressor.cpp.o
-/Users/yhc/toolchain/emsdk/upstream/emscripten/emranlib libcompress_core.a

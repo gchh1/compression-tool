@@ -1,2 +1,0 @@
-/Users/yhc/toolchain/emsdk/upstream/emscripten/emar qc libalgorithm_lib.a CMakeFiles/algorithm_lib.dir/src/LZ77.cpp.o CMakeFiles/algorithm_lib.dir/src/LZSS.cpp.o CMakeFiles/algorithm_lib.dir/src/HuffmanTree.cpp.o CMakeFiles/algorithm_lib.dir/src/Huffman.cpp.o CMakeFiles/algorithm_lib.dir/src/Deflate.cpp.o
-/Users/yhc/toolchain/emsdk/upstream/emscripten/emranlib libalgorithm_lib.a
