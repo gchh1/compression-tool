@@ -1,9 +1,7 @@
 #pragma once
 
-#include <chrono>  // 用于统计 time_ms
-
+// Inlcude lib here
 #include "Deflate.hpp"
-#include "Huffman.hpp"
 #include "compressor.hpp"
 
 namespace compressor {
@@ -11,20 +9,21 @@ namespace core {
 
 class DeflateCompressor : public ICompressor {
    public:
-    CompressResult compress(const std::vector<uint8_t>& original_data) override;
-    CompressResult decompress(
+    CompressorResult compress(
+        const std::vector<uint8_t>& original_data) override;
+    CompressorResult decompress(
         const std::vector<uint8_t>& compressed_data) override;
 
-    auto get_algorithm_name(void) -> std::string override {
+    inline std::string get_algorithm_name(void) override {
         return "Deflate (LZ77Fast + Huffman)";
     }
 
    private:
-    /** @brief 桥接工具：将 Token 数组序列化为纯字节流，喂给 Huffman */
+    /** @brief Serialize Deflate Token to byte stream that Huffman needed */
     std::vector<uint8_t> serializeTokens(
         const std::vector<algorithm::Token>& tokens);
 
-    /** @brief 桥接工具：将解压后的纯字节流还原为 Token 数组，喂给 Deflate */
+    /** @brief Deserialize byte stream to Deflate Token, for decompress */
     std::vector<algorithm::Token> deserializeTokens(
         const std::vector<uint8_t>& data);
 };

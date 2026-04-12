@@ -1,13 +1,14 @@
 #pragma once
 
 // Head lib here
+#include <cstdint>
 #include <string>
 #include <vector>
 
 namespace compressor {
 namespace core {
 
-struct CompressResult {
+struct CompressorResult {
     // Represent data stream by byte
     std::vector<uint8_t> data;
 
@@ -24,9 +25,9 @@ class ICompressor {
    public:
     virtual ~ICompressor() = default;
 
-    virtual CompressResult compress(
+    virtual CompressorResult compress(
         const std::vector<uint8_t>& original_data) = 0;
-    virtual CompressResult decompress(
+    virtual CompressorResult decompress(
         const std::vector<uint8_t>& compressed_data) = 0;
 
     virtual auto get_algorithm_name(void) -> std::string = 0;

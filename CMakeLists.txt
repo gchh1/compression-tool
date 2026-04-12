@@ -13,10 +13,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 set(TESTS_DIR ${CMAKE_SOURCE_DIR}/tests)
 
+set(BINDINGS_DIR ${SRC_DIR}/bindings)
+
 set(CORE_DIR ${SRC_DIR}/core)
 set(ALGORITHM_DIR ${SRC_DIR}/algorithm)
 
 # ========= add subdirectories =========
 add_subdirectory("${ALGORITHM_DIR}")
 add_subdirectory("${CORE_DIR}")
+add_subdirectory("${BINDINGS_DIR}")
 add_subdirectory("${TESTS_DIR}")

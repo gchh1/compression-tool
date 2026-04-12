@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Compressor - 极速文件压缩</title>
+    <style>
+        /* 现代极简 UI 样式 */
+        :root {
+            --primary: #007AFF;
+            --bg-color: #F5F5F7;
+            --card-bg: #FFFFFF;
+            --text-main: #1D1D1F;
+            --text-muted: #86868B;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* 拖拽上传区域 */
+        .upload-area {
+            border: 2px dashed #D2D2D7;
+            border-radius: 12px;
+            padding: 40px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .upload-area:hover,
+        .upload-area.dragover {
+            border-color: var(--primary);
+            background-color: #F0F8FF;
+        }
+
+        .upload-area input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* 状态与进度条 */
+        .status-area {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .progress-bar-bg {
+            background-color: #E5E5EA;
+            border-radius: 8px;
+            height: 8px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-bar-fill {
+            background-color: var(--primary);
+            height: 100%;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* 结果展示卡片 */
+        .result-card {
+            display: none;
+            margin-top: 30px;
+            background: #F5F5F7;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .result-row strong {
+            color: var(--text-main);
+        }
+
+        .success-text {
+            color: #34C759;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 122, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Web Compressor</h1>
+        <p class="subtitle" id="engine-status">🚀 正在加载 C++ 核心引擎...</p>
+
+        <div class="upload-area" id="upload-area">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" style="color: #007AFF; margin-bottom: 10px;">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <div style="font-size: 16px; font-weight: 500;">点击选择或拖拽文件到此处</div>
+            <div style="font-size: 13px; color: #86868B; margin-top: 6px;">支持任意格式，在浏览器本地极致压缩</div>
+            <input type="file" id="fileInput" onchange="handleFileSelect(event)">
+        </div>
+
+        <div class="status-area" id="status-area">
+            <div style="font-weight: 500;"><span class="loading-spinner"></span>正在执行 Deflate 压缩...</div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="result-card" id="result-card">
+            <div class="success-text">🎉 压缩完成并已自动下载！</div>
+            <div class="result-row"><span>原始文件：</span><strong id="res-orig">0 KB</strong></div>
+            <div class="result-row"><span>压缩文件：</span><strong id="res-comp">0 KB</strong></div>
+            <div class="result-row"><span>压缩率：</span><strong id="res-ratio">0%</strong></div>
+            <div class="result-row"><span>算法耗时：</span><strong id="res-time">0 ms</strong></div>
+        </div>
+    </div>
+
+    <script src="compressor_wasm.js"></script>
+    <script>
+        let engine;
+        let wasmModule;
+
+        // 1. 初始化引擎
+        CompressorModule().then(function (Module) {
+            wasmModule = Module;
+            engine = new Module.DeflateCompressor();
+            document.getElementById('engine-status').innerText = `✅ 引擎就绪: ${engine.get_algorithm_name()}`;
+        });
+
+        // 2. 触发压缩/解压流程
+        async function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file || !engine) return;
+
+            // 🌟 智能路由：判断是压缩还是解压
+            const isDecompress = file.name.endsWith('.def');
+            const actionName = isDecompress ? "解压" : "压缩";
+
+            // UI 切换：隐藏上传，显示进度
+            document.getElementById('upload-area').style.display = 'none';
+            document.getElementById('result-card').style.display = 'none';
+            document.getElementById('status-area').style.display = 'block';
+
+            // 动态修改进度条上方的文字
+            document.getElementById('status-area').querySelector('div').innerHTML =
+                `<span class="loading-spinner"></span>正在执行 Deflate ${actionName}...`;
+
+            let progress = 0;
+            let progressInterval = setInterval(() => {
+                progress += 10;
+                if (progress > 85) progress = 85;
+                document.getElementById('progress-fill').style.width = progress + '%';
+            }, 10);
+
+            setTimeout(async () => {
+                try {
+                    const buffer = await file.arrayBuffer();
+                    const uint8Array = new Uint8Array(buffer);
+
+                    let cppVector = new wasmModule.VectorUInt8();
+                    for (let i = 0; i < uint8Array.length; i++) {
+                        cppVector.push_back(uint8Array[i]);
+                    }
+
+                    let result;
+                    let outFilename;
+
+                    // 🔥 核心分流执行
+                    if (isDecompress) {
+                        result = engine.decompress(cppVector);
+                        // 剥离 .def 后缀还原真实文件名
+                        outFilename = file.name.replace(/\.def$/, '');
+                        if (outFilename === file.name) outFilename = "decompressed_" + file.name;
+                    } else {
+                        result = engine.compress(cppVector);
+                        // 加上 .def 后缀
+                        outFilename = file.name + ".def";
+                    }
+
+                    clearInterval(progressInterval);
+                    document.getElementById('progress-fill').style.width = '100%';
+
+                    // 3. 提取内存并触发下载
+                    triggerDownload(result.data, outFilename);
+
+                    // 4. 更新 UI 结果面板
+                    setTimeout(() => {
+                        document.getElementById('status-area').style.display = 'none';
+                        document.getElementById('result-card').style.display = 'block';
+                        document.getElementById('upload-area').style.display = 'block';
+
+                        // 动态更新成功提示文案
+                        document.querySelector('.success-text').innerText = `🎉 ${actionName}完成并已自动下载！`;
+
+                        document.getElementById('res-orig').innerText = (result.original_size / 1024).toFixed(2) + ' KB';
+                        document.getElementById('res-comp').innerText = (result.compressed_size / 1024).toFixed(2) + ' KB';
+
+                        // 解压时，压缩率的显示逻辑可以特殊处理一下，或者直接显示原始的 ratio
+                        document.getElementById('res-ratio').innerText = (result.compression_ratio * 100).toFixed(2) + '%';
+                        document.getElementById('res-time').innerText = result.time_ms.toFixed(2) + ' ms';
+
+                        cppVector.delete();
+                        document.getElementById('fileInput').value = '';
+                    }, 400);
+
+                } catch (err) {
+                    alert(`${actionName}过程发生错误: ` + err);
+                    clearInterval(progressInterval);
+                    document.getElementById('status-area').style.display = 'none';
+                    document.getElementById('upload-area').style.display = 'block';
+                }
+            }, 50);
+        }
+
+        function triggerDownload(cppDataVector, filename) {
+            const size = cppDataVector.size();
+            const outArray = new Uint8Array(size);
+            for (let i = 0; i < size; i++) {
+                outArray[i] = cppDataVector.get(i);
+            }
+            const blob = new Blob([outArray], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+
+</body>
+
+</html>

@@ -66,7 +66,7 @@ int main() {
               << std::endl;
 
     // 2. 调用纯净版算法进行压缩
-    CompressResult compressed_data = engine.compress(input_data);
+    CompressorResult compressed_data = engine.compress(input_data);
 
     std::cout << "Compressed Size: " << compressed_data.compressed_size
               << " bytes" << std::endl;
@@ -89,7 +89,8 @@ int main() {
 
     // 4. 解压缩
     filename = "../../tests/data/cmu445_decompressed.html";
-    CompressResult decompressed_data = engine.decompress(compressed_data.data);
+    CompressorResult decompressed_data =
+        engine.decompress(compressed_data.data);
     if (writeToFile(filename, decompressed_data.data)) {
         std::cout << "\n🎉 Success! Decompressed file generated at: "
                   << filename << std::endl;

@@ -10,8 +10,8 @@
 
 namespace compressor {
 namespace core {
-CompressResult LZSSCompressor::compress(const std::vector<uint8_t>& data) {
-    CompressResult result;
+CompressorResult LZSSCompressor::compress(const std::vector<uint8_t>& data) {
+    CompressorResult result;
 
     auto start_time = std::chrono::high_resolution_clock::now();
     result.data = algorithm::LZSS::compress(data);
@@ -26,8 +26,8 @@ CompressResult LZSSCompressor::compress(const std::vector<uint8_t>& data) {
     return result;
 }
 
-CompressResult LZSSCompressor::decompress(const std::vector<uint8_t>& data) {
-    CompressResult result;
+CompressorResult LZSSCompressor::decompress(const std::vector<uint8_t>& data) {
+    CompressorResult result;
 
     auto start_time = std::chrono::high_resolution_clock::now();
     result.data = algorithm::LZSS::decompress(data);

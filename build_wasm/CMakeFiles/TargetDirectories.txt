@@ -1,0 +1,13 @@
+/Users/yhc/yhc/proj/compression-tool/build_wasm/CMakeFiles/edit_cache.dir
+/Users/yhc/yhc/proj/compression-tool/build_wasm/CMakeFiles/rebuild_cache.dir
+/Users/yhc/yhc/proj/compression-tool/build_wasm/src/algorithm/CMakeFiles/algorithm_lib.dir
+/Users/yhc/yhc/proj/compression-tool/build_wasm/src/algorithm/CMakeFiles/edit_cache.dir
+/Users/yhc/yhc/proj/compression-tool/build_wasm/src/algorithm/CMakeFiles/rebuild_cache.dir
+/Users/yhc/yhc/proj/compression-tool/build_wasm/src/core/CMakeFiles/compress_core.dir
+/Users/yhc/yhc/proj/compression-tool/build_wasm/src/core/CMakeFiles/edit_cache.dir
+/Users/yhc/yhc/proj/compression-tool/build_wasm/src/core/CMakeFiles/rebuild_cache.dir
+/Users/yhc/yhc/proj/compression-tool/build_wasm/src/bindings/CMakeFiles/compressor_wasm.dir
+/Users/yhc/yhc/proj/compression-tool/build_wasm/src/bindings/CMakeFiles/edit_cache.dir
+/Users/yhc/yhc/proj/compression-tool/build_wasm/src/bindings/CMakeFiles/rebuild_cache.dir
+/Users/yhc/yhc/proj/compression-tool/build_wasm/tests/CMakeFiles/edit_cache.dir
+/Users/yhc/yhc/proj/compression-tool/build_wasm/tests/CMakeFiles/rebuild_cache.dir
