@@ -1,3 +1,4 @@
+# ==================== WASM Bindings ======================
 # 编译为 Wasm 模块（注意这里不再是 STATIC 库，而是可执行目标）
 add_executable(compressor_wasm wasm_bindings.cpp)
 
