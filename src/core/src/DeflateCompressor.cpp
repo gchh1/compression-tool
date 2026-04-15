@@ -1,7 +1,9 @@
 #include "DeflateCompressor.hpp"
 
 #include "Huffman.hpp"
+#include "chrono"
 #include "compressor.hpp"
+
 
 namespace compressor {
 namespace core {

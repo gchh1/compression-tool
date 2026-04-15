@@ -7,83 +7,34 @@
 #include "Archiver.hpp"
 #include "DeflateCompressor.hpp"
 #include "Delta.hpp"
-#include "ImageParser.hpp"
+#include "compressor.hpp"
 
 namespace compressor {
+namespace core {
 namespace api {
 
-// 前端传给 C++ 的输入结构
+// Input structure pass by front end
 struct InputFile {
     std::string filename;
-    std::vector<uint8_t> content;  // 原始字节流
-    bool is_image;                 // 是否为图片
+    std::vector<uint8_t> content;
+    bool is_image;
 };
 
-// C++ 传给前端的解压输出结构
+// Output structure handle by compressor
 struct OutputFile {
     std::string filename;
-    std::vector<uint8_t> content;  // 还原后的字节流
-    bool is_image;                 // 是否为图片
-    int width = 0;                 // 如果是图片，附带宽度
-    int height = 0;                // 如果是图片，附带高度
+    std::vector<uint8_t> content;
+    bool is_image;
+    int width = 0;
+    int height = 0;
 };
 
-class WebCompressorAPI {
+class CompressorAPI {
    public:
-    // ==========================================
-    // 🚀 1. 终极打包与压缩接口
-    // ==========================================
-    static core::CompressorResult compressProject(
-        const std::vector<InputFile>& files, int image_quality) {
-        std::vector<core::WebFile> cpp_files;
+    static CompressorResult compress(const std::vector<InputFile>& files,
+                                     int image_quality);
 
-        for (const auto& file : files) {
-            core::WebFile web_file;
-            web_file.name = file.filename;
-
-            if (file.is_image) {
-                // 🖼️ 图片通道：解析 -> 量化差分 -> 加上宽高头
-                core::ImageData img_data =
-                    core::ImageParser::parse(file.content);
-                if (img_data.success) {
-                    std::vector<uint8_t> processed_content;
-
-                    // 写入 4 字节 Width 和 4 字节 Height (极其重要，解压要用)
-                    processed_content.push_back((img_data.width >> 24) & 0xFF);
-                    processed_content.push_back((img_data.width >> 16) & 0xFF);
-                    processed_content.push_back((img_data.width >> 8) & 0xFF);
-                    processed_content.push_back(img_data.width & 0xFF);
-
-                    processed_content.push_back((img_data.height >> 24) & 0xFF);
-                    processed_content.push_back((img_data.height >> 16) & 0xFF);
-                    processed_content.push_back((img_data.height >> 8) & 0xFF);
-                    processed_content.push_back(img_data.height & 0xFF);
-
-                    // 进行 Delta 压缩
-                    auto encoded = algorithm::Delta::encode(img_data.pixels,
-                                                            image_quality);
-                    processed_content.insert(processed_content.end(),
-                                             encoded.begin(), encoded.end());
-
-                    web_file.content = processed_content;
-                }
-            } else {
-                // 📄 文本通道：原封不动
-                web_file.content = file.content;
-            }
-            cpp_files.push_back(web_file);
-        }
-
-        // 调用打包器 -> 终极压缩器
-        auto packed_data = core::Archiver::pack(cpp_files);
-        core::DeflateCompressor engine;
-        return engine.compress(packed_data);
-    }
-
-    // ==========================================
-    // 📦 2. 终极解压与拆包接口
-    // ==========================================
-    static std::vector<OutputFile> decompressProject(
+    static CompressorResult decompress(
         const std::vector<uint8_t>& compressed_data) {
         std::vector<OutputFile> result_files;
 
@@ -129,10 +80,9 @@ class WebCompressorAPI {
             }
             result_files.push_back(out_file);
         }
-
-        return result_files;
     }
 };
 
 }  // namespace api
+}  // namespace core
 }  // namespace compressor
