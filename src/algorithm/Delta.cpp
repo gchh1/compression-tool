@@ -5,11 +5,15 @@
 #include <cstddef>
 #include <cstdint>
 #include <span>
-#include <vector>
 
 namespace compressor {
 namespace algorithm {
 
+/**
+ * @brief Construct a new Delta:: Delta object
+ *
+ * @param quality
+ */
 Delta::Delta(int quality) { shift_ = quality < 100 ? (100 - quality) / 14 : 0; }
 
 /**

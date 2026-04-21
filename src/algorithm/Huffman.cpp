@@ -2,6 +2,7 @@
 #include "Huffman.hpp"
 
 #include <cstdint>
+#include <span>
 #include <vector>
 
 #include "HuffmanTree.hpp"
@@ -14,13 +15,8 @@ namespace algorithm {
  * @param input
  * @return std::vector<uint8_t>
  */
-std::vector<uint8_t> Huffman::compress(const std::vector<uint8_t> &input) {
-    std::vector<uint8_t> result;
-    // Return if input is empty
-    if (input.empty()) {
-        return result;
-    }
-
+auto Huffman::compress(std::span<const uint8_t> read, std::span<uint8_t> write)
+    -> void {
     /* 1. Push the size of input data into the result */
     // The ahead 4 bytes of result is the size of original data
     uint32_t original_size = static_cast<uint32_t>(input.size());
@@ -98,7 +94,8 @@ std::vector<uint8_t> Huffman::compress(const std::vector<uint8_t> &input) {
  * @param input
  * @return std::vector<uint8_t>
  */
-std::vector<uint8_t> Huffman::decompress(const std::vector<uint8_t> &input) {
+auto Huffman::decompress(std::span<const uint8_t> read,
+                         std::span<uint8_t> write) -> void {
     std::vector<uint8_t> result;
     // Return if the size of input < 4
     if (input.size() < 4) {

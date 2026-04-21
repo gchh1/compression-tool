@@ -16,25 +16,25 @@
 
 # ========================== Pybind Bindings ==========================
 
-# 🌟 0. 极其暴力的物理锁定：直接把 venv 里的 Python 路径拍在它脸上！
-set(Python3_EXECUTABLE "${CMAKE_SOURCE_DIR}/venv/bin/python")
-set(Python3_FIND_VIRTUALENV FIRST) # 告诉 CMake 优先认虚拟环境
+# # 🌟 0. 极其暴力的物理锁定：直接把 venv 里的 Python 路径拍在它脸上！
+# set(Python3_EXECUTABLE "${CMAKE_SOURCE_DIR}/venv/bin/python")
+# set(Python3_FIND_VIRTUALENV FIRST) # 告诉 CMake 优先认虚拟环境
 
-# 1. 强制 CMake 按照我们上面的设定去找 Python
-find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+# # 1. 强制 CMake 按照我们上面的设定去找 Python
+# find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 
-# 2. 去问这个被锁定的 Python："你的 pybind11 在哪？"
-execute_process(
-    COMMAND ${Python3_EXECUTABLE} -c "import pybind11; print(pybind11.get_cmake_dir())"
-    OUTPUT_VARIABLE pybind11_DIR
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
+# # 2. 去问这个被锁定的 Python："你的 pybind11 在哪？"
+# execute_process(
+#     COMMAND ${Python3_EXECUTABLE} -c "import pybind11; print(pybind11.get_cmake_dir())"
+#     OUTPUT_VARIABLE pybind11_DIR
+#     OUTPUT_STRIP_TRAILING_WHITESPACE
+# )
 
-# 3. 完美找到 pybind11
-find_package(pybind11 REQUIRED)
+# # 3. 完美找到 pybind11
+# find_package(pybind11 REQUIRED)
 
-# 4. 编译为 Python 扩展模块 (.so / .pyd)
-pybind11_add_module(core_engine pybind_module.cpp)
+# # 4. 编译为 Python 扩展模块 (.so / .pyd)
+# pybind11_add_module(core_engine pybind_module.cpp)
 
-# 5. 链接核心库
-target_link_libraries(core_engine PRIVATE compress_core algorithm_lib)
+# # 5. 链接核心库
+# target_link_libraries(core_engine PRIVATE compress_core algorithm_lib)
