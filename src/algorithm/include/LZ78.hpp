@@ -9,7 +9,7 @@
 namespace compressor {
 namespace algorithm {
 
-class Deflate {
+class LZ78 {
    public:
     static std::vector<Token> compress(const std::vector<uint8_t>& input);
     static std::vector<uint8_t> decompress(const std::vector<Token>& tokens);

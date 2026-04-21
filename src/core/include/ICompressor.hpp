@@ -14,7 +14,6 @@ struct CompressorResult {
 
     size_t original_size;
     size_t compressed_size;
-    double compression_ratio;
 
     // Time in ms stores the algorithm time cost
     double time_ms;
@@ -25,12 +24,13 @@ class ICompressor {
    public:
     virtual ~ICompressor() = default;
 
-    virtual CompressorResult compress(
-        const std::vector<uint8_t>& original_data) = 0;
-    virtual CompressorResult decompress(
-        const std::vector<uint8_t>& compressed_data) = 0;
+    virtual auto compress(std::vector<uint8_t> original_data)
+        -> CompressorResult = 0;
 
-    virtual auto get_algorithm_name(void) -> std::string = 0;
+    virtual auto decompress(std::vector<uint8_t> compressed_data)
+        -> CompressorResult = 0;
+
+    inline virtual auto get_algorithm_name(void) -> std::string = 0;
 };
 
 }  // namespace core

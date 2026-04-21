@@ -128,9 +128,9 @@
 }
 
 
-#let th(content) = text(fill: white)[#content] 
+#let th(context) = text(fill: white)[#context] 
 
-#let rd(content) = text(fill: red)[#content]
+#let rd(context) = text(fill: red)[#context]
 
 #let space(num) = {
     for i in range(num) {

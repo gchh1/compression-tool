@@ -1,18 +1,18 @@
 add_library(
-    core
+    api
     STATIC
-    LZ78Compressor.cpp
-    LZSSCompressor.cpp
+    CompressorAPI.cpp
 )
 
 target_include_directories(
-    core
+    api
     PUBLIC
     include
 )
 
 target_link_libraries(
-    core
+    api
     PUBLIC
-    algorithm
+    preprocessor
+    core
 )

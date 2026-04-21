@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-#include "DeflateCompressor.hpp"
+#include "LZ78Compressor.hpp"
 
 using namespace compressor::core;
 
@@ -58,7 +58,7 @@ int main() {
               << std::endl;
 
     // 2. 调用纯净版算法进行压缩
-    DeflateCompressor engine;
+    LZ78Compressor engine;
     std::vector<uint8_t> compressed_data = Huffman::compress(input_data);
 
     std::cout << "Compressed Size: " << compressed_data.size() << " bytes"

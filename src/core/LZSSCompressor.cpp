@@ -2,15 +2,14 @@
 
 #include <chrono>
 #include <cstdint>
-#include <locale>
 #include <vector>
 
 #include "LZSS.hpp"
-#include "compressor.hpp"
+#include "ICompressor.hpp"
 
 namespace compressor {
 namespace core {
-CompressorResult LZSSCompressor::compress(const std::vector<uint8_t>& data) {
+auto LZSSCompressor::compress(std::vector<uint8_t> data) -> CompressorResult {
     CompressorResult result;
 
     auto start_time = std::chrono::high_resolution_clock::now();
@@ -20,13 +19,11 @@ CompressorResult LZSSCompressor::compress(const std::vector<uint8_t>& data) {
     result.compressed_size = result.data.size();
     std::chrono::duration<double, std::milli> elapsed = end_time - start_time;
     result.time_ms = elapsed.count();
-    result.compression_ratio =
-        static_cast<double>(result.compressed_size) / result.original_size;
 
     return result;
 }
 
-CompressorResult LZSSCompressor::decompress(const std::vector<uint8_t>& data) {
+auto LZSSCompressor::decompress(std::vector<uint8_t> data) -> CompressorResult {
     CompressorResult result;
 
     auto start_time = std::chrono::high_resolution_clock::now();
@@ -36,8 +33,6 @@ CompressorResult LZSSCompressor::decompress(const std::vector<uint8_t>& data) {
     result.compressed_size = result.data.size();
     std::chrono::duration<double, std::milli> elapsed = end_time - start_time;
     result.time_ms = elapsed.count();
-    result.compression_ratio =
-        static_cast<double>(result.compressed_size) / result.original_size;
 
     return result;
 }

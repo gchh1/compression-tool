@@ -1,35 +1,34 @@
 #include "Delta.hpp"
 
+#include <sys/types.h>
+
 #include <cstdint>
+#include <span>
 #include <vector>
 
 namespace compressor {
 namespace algorithm {
-std::vector<uint8_t> Delta::encode(const std::vector<uint8_t> &raw_pixels,
-                                   int quality) {
-    std::vector<uint8_t> result;
-
+auto Delta::encode(std::span<const uint8_t> read, std::span<uint8_t> write,
+                   int quality) -> void {
     int shift = quality < 100 ? (100 - quality) / 14 : 0;
 
     uint8_t prev = 0;
-    for (auto pixel : raw_pixels) {
+    for (auto pixel : read) {
         pixel = (pixel >> shift) << shift;
-        result.push_back(pixel - prev);
+        write.push_back(pixel - prev);
         prev = pixel;
     }
 
     return result;
 }
 
-std::vector<uint8_t> Delta::decode(const std::vector<uint8_t> &pixels) {
-    std::vector<uint8_t> result;
-
+auto Delta::decode(std::span<const uint8_t> read, std::span<uint8_t> write)
+    -> void {
     uint8_t prev = 0;
     for (auto pixel : pixels) {
-        result.push_back(pixel + prev);
+        pixels.push_back(pixel + prev);
         prev = pixel;
     }
-    return result;
 }
 
 }  // namespace algorithm

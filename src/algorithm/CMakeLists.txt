@@ -1,15 +1,16 @@
 add_library(
-    algorithm_lib 
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/LZ77.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/LZSS.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/HuffmanTree.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Huffman.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Deflate.cpp
-
+    algorithm
+    STATIC
+    Delta.cpp
+    LZ78.cpp
+    Huffman.cpp
+    HuffmanTree.cpp
+    LZ77.cpp
+    LZSS.cpp
 )
 
 target_include_directories(
-    algorithm_lib
+    algorithm
     PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    include
 )

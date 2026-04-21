@@ -3,14 +3,16 @@
 #include <sys/types.h>
 
 #include <cstdint>
-#include <vector>
+#include <span>
 namespace compressor {
 namespace algorithm {
 class Delta {
    public:
-    static std::vector<uint8_t> encode(const std::vector<uint8_t>& raw_pixels,
-                                       int quality);
-    static std::vector<uint8_t> decode(const std::vector<uint8_t>& pixels);
+    static auto encode(std::span<const uint8_t> read, std::span<uint8_t> write,
+                       int quality) -> void;
+
+    static auto decode(std::span<const uint8_t> read, std::span<uint8_t> write)
+        -> void;
 };
 
 }  // namespace algorithm

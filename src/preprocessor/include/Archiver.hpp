@@ -18,10 +18,11 @@
 
 namespace compressor {
 namespace core {
+
 /** @brief File structure */
-struct WebFile {
-    std::string name;
-    std::vector<uint8_t> content;
+struct File {
+    std::string filepath;
+    std::vector<uint8_t> context;
 };
 
 const uint32_t MagicNumber = 0x503B0304;
@@ -39,8 +40,8 @@ const uint32_t MagicNumber = 0x503B0304;
  */
 class Archiver {
    public:
-    static std::vector<uint8_t> pack(const std::vector<WebFile>& files);
-    static std::vector<WebFile> unpack(const std::vector<uint8_t>& data);
+    static auto pack(std::vector<File> files) -> std::vector<uint8_t>;
+    static auto unpack(std::vector<uint8_t> data) -> std::vector<File>;
 };
 
 }  // namespace core

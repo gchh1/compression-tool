@@ -12,7 +12,7 @@ namespace core {
  * @param files
  * @return std::vector<uint8_t>
  */
-std::vector<uint8_t> Archiver::pack(const std::vector<WebFile> &files) {
+std::vector<uint8_t> Archiver::pack(std::vector<File> files) {
     std::vector<uint8_t> result;
 
     // [Magick Number]: 50 4B 03 04
@@ -29,26 +29,26 @@ std::vector<uint8_t> Archiver::pack(const std::vector<WebFile> &files) {
     result.push_back(file_size & 0xFF);
 
     // Iterate through files
-    for (const WebFile &item : files) {
+    for (const auto &item : files) {
         // [Name Length](2 bytes)
-        uint8_t name_size = item.name.size();
+        uint8_t name_size = item.filepath.size();
         result.push_back((name_size >> 8) & 0xFF);
         result.push_back(name_size & 0xFF);
 
         // [File Name](${name_size} bytes)
-        for (const auto &elem : item.name) {
+        for (const auto &elem : item.filepath) {
             result.push_back(elem);
         }
 
         // [File Size](4 bytes)
-        uint32_t file_size_ = item.content.size();
+        uint32_t file_size_ = item.context.size();
         result.push_back((file_size_ >> 24) & 0xFF);
         result.push_back((file_size_ >> 16) & 0xFF);
         result.push_back((file_size_ >> 8) & 0xFF);
         result.push_back(file_size_ & 0xFF);
 
         // [File Data]
-        result.insert(result.end(), item.content.begin(), item.content.end());
+        result.insert(result.end(), item.context.begin(), item.context.end());
     }
 
     return result;
@@ -60,8 +60,8 @@ std::vector<uint8_t> Archiver::pack(const std::vector<WebFile> &files) {
  * @param data
  * @return std::vector<WebFile>
  */
-std::vector<WebFile> Archiver::unpack(const std::vector<uint8_t> &data) {
-    std::vector<WebFile> files;
+std::vector<File> Archiver::unpack(std::vector<uint8_t> data) {
+    std::vector<File> files;
     size_t idx = 0;
 
     if (data.size() < 8) {
@@ -92,17 +92,17 @@ std::vector<WebFile> Archiver::unpack(const std::vector<uint8_t> &data) {
             name += data[idx++];
         }
 
-        // Read file content
+        // Read file context
         // Read file size
         uint32_t file_size = (data[idx] << 24) | (data[idx + 1] << 16) |
                              (data[idx + 2] << 8) | data[idx + 3];
         idx += 4;
 
-        std::vector<uint8_t> content(data.begin() + idx,
+        std::vector<uint8_t> context(data.begin() + idx,
                                      data.begin() + idx + file_size);
         idx += file_size;
 
-        files.push_back({name, content});
+        files.push_back({name, context});
     }
 
     return files;

@@ -14,10 +14,14 @@ struct ImageData {
 
 class ImageParser {
    public:
-    /** @brief Parse the original image byte flow to my ImageData */
-    static ImageData parse(const std::vector<uint8_t>& image_file);
+    static auto parse(std::vector<uint8_t> image_file) -> ImageData;
+
+    static auto restore(int width, int height, std::vector<uint8_t> file_data)
+        -> std::vector<uint8_t>;
 
    private:
+    static auto stbiWriteCallback(void* context, void* data, int size) -> void;
+
     static constexpr int DESIRED_CHANNELS = 3;
 };
 }  // namespace core

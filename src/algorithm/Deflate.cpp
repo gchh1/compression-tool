@@ -1,11 +1,11 @@
 // Include lib here
 
-#include "Deflate.hpp"
-
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <vector>
+
+#include "LZ78.hpp"
 
 namespace compressor {
 namespace algorithm {
@@ -16,7 +16,7 @@ namespace algorithm {
  * @param input
  * @return std::vector<Token>
  */
-std::vector<Token> Deflate::compress(const std::vector<uint8_t>& input) {
+std::vector<Token> LZ78::compress(const std::vector<uint8_t>& input) {
     std::vector<Token> result;
     // Return if input is null
     if (input.empty()) {
@@ -115,7 +115,7 @@ std::vector<Token> Deflate::compress(const std::vector<uint8_t>& input) {
  * @param tokens
  * @return std::vector<uint8_t>
  */
-std::vector<uint8_t> Deflate::decompress(const std::vector<Token>& tokens) {
+std::vector<uint8_t> LZ78::decompress(const std::vector<Token>& tokens) {
     std::vector<uint8_t> result;
 
     for (const auto& token : tokens) {

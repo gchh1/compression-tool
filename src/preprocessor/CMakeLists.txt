@@ -1,18 +1,19 @@
 add_library(
-    core
+    preprocessor
     STATIC
-    LZ78Compressor.cpp
-    LZSSCompressor.cpp
+    ImageParser.cpp
+    ImagePreprocessor.cpp
 )
 
 target_include_directories(
-    core
+    preprocessor
     PUBLIC
     include
+    ${THIRD_PARTY}
 )
 
 target_link_libraries(
-    core
+    preprocessor
     PUBLIC
     algorithm
 )
