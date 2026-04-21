@@ -8,11 +8,25 @@ namespace compressor {
 namespace algorithm {
 class Delta {
    public:
-    static auto encode(std::span<const uint8_t> read, std::span<uint8_t> write,
-                       int quality) -> void;
+    explicit Delta(int quality = 100);
 
-    static auto decode(std::span<const uint8_t> read, std::span<uint8_t> write)
+    ~Delta() = default;
+
+    auto encode(std::span<const uint8_t> read, std::span<uint8_t> write)
         -> void;
+
+    auto decode(std::span<const uint8_t> read, std::span<uint8_t> write)
+        -> void;
+
+    auto reset() -> void;
+
+   private:
+    /** @brief Storing shift_ so that we don't need to calculate it every time
+     * we call encode */
+    int shift_{0};
+
+    /** @brief Prev_ */
+    uint8_t prev_{0};
 };
 
 }  // namespace algorithm
