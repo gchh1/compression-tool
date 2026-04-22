@@ -11,7 +11,9 @@
 
 #pragma once
 
+#include <atomic>
 #include <cstdint>
+#include <optional>
 #include <span>
 #include <utility>
 namespace compressor::utils {
@@ -27,22 +29,24 @@ class BitReader {
     BitReader &operator=(const BitReader &) = delete;
 
     /** @brief Construct a BitReader by read */
-    explicit BitReader(std::span<const uint8_t> read) : read_(read) {};
+    explicit BitReader(std::span<const uint8_t> read) : read_(read) {
+        fillBuffer();
+    }
 
     /* Only allow move constructor */
     BitReader(BitReader &&that)
         : read_(std::exchange(that.read_, {})),
           byte_pos_(that.byte_pos_),
-          bit_buffer_(that.bit_buffer_),
-          bits_in_buffer_(that.bits_in_buffer_) {}
+          buffer_(that.buffer_),
+          buffer_idx_(that.buffer_idx_) {}
 
     /* Only allow move assignment */
     BitReader &operator=(BitReader &&that) {
         if (this != &that) {
             read_ = std::exchange(that.read_, {});
             byte_pos_ = that.byte_pos_;
-            bit_buffer_ = that.bit_buffer_;
-            bits_in_buffer_ = that.bits_in_buffer_;
+            buffer_ = that.buffer_;
+            buffer_idx_ = that.buffer_idx_;
         }
         return *this;
     }
@@ -52,27 +56,36 @@ class BitReader {
     // ===================================
 
     /**
-     * @brief Peek a bit from reader
+     * @brief Peek a bit by `MSB` first
      *
-     * @return true
-     * @return false
+     * @return std::optional<uint8_t>
      */
-    inline auto readBit() -> bool {
-        if (bits_in_buffer_ == 0) {
-            if (byte_pos_ >= read_.size()) {
-                return false;
+    inline auto readBit() -> std::optional<uint8_t> {
+        if (buffer_idx_ == 0) {
+            fillBuffer();
+            if (is_eof_) {
+                return std::nullopt;
             }
-            bit_buffer_ = read_[byte_pos_++];
-            bits_in_buffer_ = 8;
         }
-        int bit = (bit_buffer_ >> 7) & 1;
-        bit_buffer_ <<= 1;
-        bits_in_buffer_--;
-        return true;
+
+        return (buffer_ >> (buffer_idx_--)) & 1;
     }
 
-    inline auto readBits(uint8_t count) -> bool {
+    inline auto readBits(uint8_t count) -> std::optional<uint64_t> {
+        if (buffer_idx_ < count - 1) {
+            fillBuffer();
+            if (is_eof_) {
+                return std::nullopt;
+            }
+        }
+
+        uint64_t bits = 0;
         while (count--) {
+            auto temp = readBit();
+            if (!temp) {
+                return bits;
+            }
+            bits = (bits << 1) | temp;
         }
     }
 
@@ -80,9 +93,33 @@ class BitReader {
     /** @brief Span resources that the class wrappered */
     std::span<const uint8_t> read_;
 
+    /** @brief Store the pos of read_ */
     size_t byte_pos_{0};
-    uint8_t bit_buffer_{0};
-    uint8_t bits_in_buffer_{0};
+
+    /** @brief Data buffer that load in 64 bits CPU */
+    uint64_t buffer_{0};
+
+    /** @brief Point to the top of buffer */
+    uint8_t buffer_idx_{0};
+
+    /** @brief EOF flag*/
+    bool is_eof_{false};
+
+    /**
+     * @brief Fill the buffer by byte
+     *
+     */
+    inline auto fillBuffer(void) -> void {
+        // Seize bytes to buffer if available
+        while (byte_pos_ < read_.size() && buffer_idx_ <= 56) {
+            buffer_ = (buffer_ << 8) | read_[byte_pos_++];
+            buffer_idx_ += 8;
+        }
+
+        if (buffer_idx_ == 0) {
+            is_eof_ = true;
+        }
+    }
 };
 
 }  // namespace compressor::utils
