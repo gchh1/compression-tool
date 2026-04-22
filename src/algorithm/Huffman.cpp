@@ -1,91 +1,87 @@
 // Include lib here
 #include "Huffman.hpp"
 
+#include <cstddef>
 #include <cstdint>
 #include <span>
 #include <vector>
 
+#include "BitReader.hpp"
+#include "BitWriter.hpp"
 #include "HuffmanTree.hpp"
 
-namespace compressor {
-namespace algorithm {
+namespace compressor::algorithm {
+
+auto Huffman::reset(void) -> void {
+    encode_buffer_ = 0;
+    encode_buffer_idx_ = 0;
+    decode_buffer_ = 0;
+    decode_buffer_idx_ = 0;
+    decode_state_ = DecodeState::READ_SIZE;
+    current_decode_size_ = 0;
+}
+
 /**
  * @brief
  *
  * @param input
  * @return std::vector<uint8_t>
  */
-auto Huffman::compress(std::span<const uint8_t> read, std::span<uint8_t> write)
-    -> void {
-    /* 1. Push the size of input data into the result */
-    // The ahead 4 bytes of result is the size of original data
-    uint32_t original_size = static_cast<uint32_t>(input.size());
-    result.push_back((original_size >> 24) & 0xFF);
-    result.push_back((original_size >> 16) & 0xFF);
-    result.push_back((original_size >> 8) & 0xFF);
-    result.push_back((original_size) & 0xFF);
+auto Huffman::compress(std::span<const uint8_t> read, std::span<uint8_t> write,
+                       bool is_last) -> size_t {
+    if (read.empty() && !is_last) {
+        return 0;
+    }
 
-    /* 2. Serialize the huffman tree to the head */
-    HuffmanTree huffman_tree(input);
-    std::vector<std::string> dictionary = huffman_tree.encode();
-    // Convert tree represented by byte to bit
-    uint8_t bit_buffer = 0;
-    uint8_t bit_idx = 0;
+    /* 0. Instantial BitReader and BitWriter*/
+    utils::BitWriter writer(write, encode_buffer_, encode_buffer_idx_);
 
-    // Helper function
-    auto writeBit = [&](uint8_t bit) {
-        // Write the bit to the buffer
-        bit_buffer = (bit_buffer << 1) | (bit & 1);
-        bit_idx++;
+    if (!read.empty()) {
+        /* 1. Push the size of input data into the result */
+        // The ahead 4 bytes of result is the size of original data
+        writer.writeBits(static_cast<uint32_t>(read.size()), 32);
 
-        // Flush the buffer when full
-        if (bit_idx == 8) {
-            result.push_back(bit_buffer);
-            bit_buffer = 0;
-            bit_idx = 0;
+        /* 2. Build and get the huffman tree */
+        HuffmanTree huffman_tree(read);
+        std::vector<std::string> dictionary = huffman_tree.encode();
+
+        // Get the tree
+        std::vector<uint8_t> tree = huffman_tree.getTree();
+
+        /* 3. Serialize the Huffman tree */
+        for (size_t i = 0; i < tree.size(); ++i) {
+            if (tree[i] == '0') {
+                writer.writeBit(0);
+            } else if (tree[i] == '1') {
+                writer.writeBit(1);
+
+                // The following 8 bits is the leaf character
+                writer.writeBits(tree[++i], 8);
+            }
         }
-    };
 
-    // Get the tree
-    std::vector<uint8_t> tree = huffman_tree.getTree();
+        /* 3. Compress the input */
+        for (const uint8_t &item : read) {
+            // Get the Huffman code for each byte
+            const std::string temp = dictionary[item];
 
-    // Main convert
-    for (size_t i = 0; i < tree.size(); ++i) {
-        if (tree[i] == '0') {
-            writeBit(0);
-        } else if (tree[i] == '1') {
-            writeBit(1);
-
-            // The following 8 bits is the leaf character
-            uint8_t temp = tree[++i];
-            for (int j = 7; j >= 0; --j) {
-                writeBit((temp >> j) & 1);
+            // Iterate the code and push to result bit by bit
+            for (const auto &elem : temp) {
+                writer.writeBit(elem - '0');
             }
         }
     }
 
-    /* 3. Compress the input */
-    for (const uint8_t &item : input) {
-        // Get the Huffman code for each byte
-        std::string temp = dictionary[item];
-
-        // Iterate the code and push to result bit by bit
-        for (const auto &elem : temp) {
-            if (elem == '0') {
-                writeBit(0);
-            } else if (elem == '1') {
-                writeBit(1);
-            }
-        }
+    if (is_last) {
+        writer.flush();
+        encode_buffer_ = 0;
+        encode_buffer_idx_ = 0;
+    } else {
+        encode_buffer_ = writer.getBuffer();
+        encode_buffer_idx_ = writer.getBufferIdx();
     }
 
-    // Handle the rest
-    if (bit_idx > 0) {
-        bit_buffer = bit_buffer << (8 - bit_idx);
-        result.push_back(bit_buffer);
-    }
-
-    return result;
+    return writer.getBytesWritten();
 }
 
 /**
@@ -95,12 +91,10 @@ auto Huffman::compress(std::span<const uint8_t> read, std::span<uint8_t> write)
  * @return std::vector<uint8_t>
  */
 auto Huffman::decompress(std::span<const uint8_t> read,
-                         std::span<uint8_t> write) -> void {
-    std::vector<uint8_t> result;
-    // Return if the size of input < 4
-    if (input.size() < 4) {
-        return result;
-    }
+                         std::span<uint8_t> write, bool is_last) -> size_t {
+    /* 0. Instantialize `BitReader`*/
+    utils::BitReader reader(read, decode_buffer_, decode_buffer_idx_);
+    size_t bytes_written = 0;
 
     /* 1. Decode the size of original data */
     uint32_t original_size = (static_cast<uint32_t>(input[0]) << 24) |
@@ -155,6 +149,4 @@ auto Huffman::decompress(std::span<const uint8_t> read,
     return result;
 }
 
-}  // namespace algorithm
-
-}  // namespace compressor
+}  // namespace compressor::algorithm

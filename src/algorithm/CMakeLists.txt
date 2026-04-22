@@ -13,4 +13,5 @@ target_include_directories(
     algorithm
     PUBLIC
     include
+    ${UTILS_DIR}/include
 )

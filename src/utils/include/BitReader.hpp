@@ -11,12 +11,12 @@
 
 #pragma once
 
-#include <atomic>
 #include <cstdint>
-#include <optional>
 #include <span>
 #include <utility>
+
 namespace compressor::utils {
+
 class BitReader {
    public:
     // ===================================
@@ -32,6 +32,9 @@ class BitReader {
     explicit BitReader(std::span<const uint8_t> read) : read_(read) {
         fillBuffer();
     }
+
+    BitReader(std::span<const uint8_t> read, uint64_t res_buf, uint8_t res_idx)
+        : read_(read), buffer_(res_buf), buffer_idx_(res_idx) {}
 
     /* Only allow move constructor */
     BitReader(BitReader &&that)
@@ -56,37 +59,50 @@ class BitReader {
     // ===================================
 
     /**
-     * @brief Peek a bit by `MSB` first
+     * @brief
      *
-     * @return std::optional<uint8_t>
+     * @return true We have read over the read_
+     * @return false Not yet
      */
-    inline auto readBit() -> std::optional<uint8_t> {
+    auto isEOF(void) const -> bool { return is_eof_; }
+
+    /**
+     * @brief Peek a bit by `MSB` first. Need to check `is_eof_` outside
+     *
+     * @return uint8_t
+     */
+    inline auto readBit() -> uint8_t {
         if (buffer_idx_ == 0) {
             fillBuffer();
             if (is_eof_) {
-                return std::nullopt;
+                return 0;
             }
         }
 
-        return (buffer_ >> (buffer_idx_--)) & 1;
+        return (buffer_ >> (--buffer_idx_)) & 1;
     }
 
-    inline auto readBits(uint8_t count) -> std::optional<uint64_t> {
-        if (buffer_idx_ < count - 1) {
+    /**
+     * @brief
+     *
+     * @param count maximum value `64`
+     * @return uint64_t
+     */
+    inline auto readBits(uint8_t count) -> uint64_t {
+        if (count == 0) {
+            return 0;
+        }
+
+        if (buffer_idx_ < count) {
             fillBuffer();
-            if (is_eof_) {
-                return std::nullopt;
+            if (buffer_idx_ < count) {
+                is_eof_ = true;
+                return 0;
             }
         }
 
-        uint64_t bits = 0;
-        while (count--) {
-            auto temp = readBit();
-            if (!temp) {
-                return bits;
-            }
-            bits = (bits << 1) | temp;
-        }
+        buffer_idx_ -= count;
+        return (buffer_ >> buffer_idx_) & ((1ULL << count) - 1);
     }
 
    private:

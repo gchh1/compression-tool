@@ -4,6 +4,7 @@
 
 #include <sys/types.h>
 
+#include <cstddef>
 #include <cstdint>
 #include <span>
 
@@ -15,11 +16,28 @@ namespace algorithm {
  */
 class Huffman {
    public:
-    static auto compress(std::span<const uint8_t> read,
-                         std::span<uint8_t> write) -> void;
+    auto compress(std::span<const uint8_t> read, std::span<uint8_t> write,
+                  bool is_last) -> size_t;
 
-    static auto decompress(std::span<const uint8_t> read,
-                           std::span<uint8_t> write) -> void;
+    auto decompress(std::span<const uint8_t> read, std::span<uint8_t> write,
+                    bool is_last) -> size_t;
+
+    auto reset(void) -> void;
+
+   private:
+    // Encode state
+    uint64_t encode_buffer_{0};
+    uint8_t encode_buffer_idx_{0};
+
+    // Decode state
+    uint64_t decode_buffer_{0};
+    uint8_t decode_buffer_idx_{0};
+
+    enum class DecodeState { READ_SIZE, READ_TREE, DECODE_DATA };
+    DecodeState decode_state_{DecodeState::READ_SIZE};
+
+    uint32_t target_size_{0};
+    uint32_t current_decode_size_{0};
 };
 
 }  // namespace algorithm

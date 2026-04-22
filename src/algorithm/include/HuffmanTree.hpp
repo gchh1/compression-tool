@@ -1,14 +1,17 @@
 #pragma once
 
 // Include lib here
-#include <cstddef>
+#include <array>
 #include <cstdint>
-#include <new>
+#include <span>
 #include <string>
 #include <vector>
 
-namespace compressor {
-namespace algorithm {
+#include "BitReader.hpp"
+#include "BitWriter.hpp"
+
+namespace compressor::algorithm {
+
 /** @brief Node struct */
 struct node {
     uint8_t symbol;
@@ -32,6 +35,12 @@ class Compare {
     bool operator()(node* a, node* b) { return a->frequency > b->frequency; }
 };
 
+/** @brief  */
+struct HuffmanCode {
+    uint64_t code{0};
+    uint8_t length{0};
+};
+
 /**
  * @brief Basic Huffman Tree class, recieve a vector<uint8_t> byte stream and
  *        build to a vector<string> code dictionary.
@@ -48,11 +57,10 @@ class HuffmanTree {
 
     /** @brief Recieve byte stream, and init the Huffman Tree */
     explicit HuffmanTree(const std::vector<uint32_t>& freq_map);
-    explicit HuffmanTree(const std::vector<uint8_t>& symbols);
+    explicit HuffmanTree(std::span<const uint8_t> symbols);
 
     /** @brief Build the Huffman Tree with preorder tree code */
-    template <typename BitReader>
-    explicit HuffmanTree(BitReader readBit);
+    explicit HuffmanTree(utils::BitReader& reader);
 
     /** @brief Obey RAII (Resources Acqusition is Initialization) */
     ~HuffmanTree() {
@@ -68,69 +76,27 @@ class HuffmanTree {
     }
 
     /** @brief Return the dictionary */
-    std::vector<std::string> encode(void);
+    auto buildDictionary(void) -> std::array<HuffmanCode, 256>;
 
     /** @brief Return the Huffman Tree we build */
-    std::vector<uint8_t> getTree(void) const { return tree_; }
+    auto serializeTree(utils::BitWriter& writer) const -> void;
 
     /** @brief Return the root of the Huffman Tree */
-    node* getRoot(void) const { return root_; }
+    auto getRoot(void) -> node* const { return root_; }
 
    private:
     /** @brief Build the huffman tree */
-    void buildTree(const std::vector<uint32_t>& freqMap);
+    auto buildTree(const std::vector<uint32_t>& freqMap) -> void;
 
     /** @brief Travel the Huffman Tree by preorder to get the code */
-    void preorder(node* n, std::string& cur, std::vector<std::string>& res);
+    auto generateCodes(node* n, uint64_t current_code, uint8_t current_length,
+                       std::array<HuffmanCode, 256>& dict) -> void;
+
+    /** @brief  */
+    auto serializeNode(utils::BitWriter& writer, node* n) const -> void;
 
     /** @brief root of the Huffman Tree */
     node* root_ = nullptr;
-
-    /** @brief encode the tree by preorder */
-    std::vector<uint8_t> tree_;
 };
 
-/**
- * @brief The template function must be declared in the .hpp file. Here we
- *        receive a lambda function to work through the bit stream and restore
- * the Huffman Tree
- *
- * @tparam BitReader
- * @param readBit
- */
-template <typename BitReader>
-HuffmanTree::HuffmanTree(BitReader readBit) {
-    auto buildTree = [&readBit](auto& self) -> node* {
-        int bit = readBit();
-
-        if (bit == -1) {
-            return nullptr;
-        }
-
-        // Nonleaf node
-        if (bit == 0) {
-            node* left = self(self);
-            node* right = self(self);
-            return new node(left, right);
-        }
-        // Leaf node
-        else {
-            // Read the following 8 bits to construct the data
-            uint8_t temp = 0;
-            for (int i = 0; i < 8; ++i) {
-                int bit1 = readBit();
-                if (bit1 == -1) {
-                    break;
-                }
-                temp = (temp << 1) | bit1;
-            }
-            return new node(temp, 0);
-        }
-    };
-
-    root_ = buildTree(buildTree);
-}
-
-}  // namespace algorithm
-
-}  // namespace compressor
+}  // namespace compressor::algorithm

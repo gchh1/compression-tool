@@ -15,6 +15,7 @@ set(THIRD_PARTY ${CMAKE_SOURCE_DIR}/third_party)
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 set(TESTS_DIR ${CMAKE_SOURCE_DIR}/tests)
 set(BINDINGS_DIR ${SRC_DIR}/bindings)
+set(UTILS_DIR ${SRC_DIR}/utils)
 
 # ========= set build option ==========
 option(BUILD_WASM "Build WebAssembly bindings for browser frontend" OFF)
