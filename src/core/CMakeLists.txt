@@ -1,7 +1,7 @@
 add_library(
     core
     STATIC
-    LZ78Compressor.cpp
+    DeflateCompressor.cpp
     LZSSCompressor.cpp
 )
 

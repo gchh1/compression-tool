@@ -1,7 +1,7 @@
 #include <emscripten/bind.h>
 
 #include "Archiver.hpp"
-#include "LZ78Compressor.hpp"
+#include "DeflateCompressor.hpp"
 
 using namespace emscripten;
 using namespace compressor::core;
@@ -26,11 +26,11 @@ EMSCRIPTEN_BINDINGS(compression_module) {
     register_vector<WebFile>("vectorWebFile");
 
     // Expose class
-    class_<LZ78Compressor>("LZ78Compressor")
+    class_<DeflateCompressor>("DeflateCompressor")
         .constructor<>()
-        .function("compress", &LZ78Compressor::compress)
-        .function("decompress", &LZ78Compressor::decompress)
-        .function("get_algorithm_name", &LZ78Compressor::get_algorithm_name);
+        .function("compress", &DeflateCompressor::compress)
+        .function("decompress", &DeflateCompressor::decompress)
+        .function("get_algorithm_name", &DeflateCompressor::get_algorithm_name);
 
     class_<Archiver>("Archiver")
         .class_function("pack", &Archiver::pack)

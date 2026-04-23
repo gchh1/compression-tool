@@ -61,7 +61,8 @@ HuffmanTree::HuffmanTree(utils::BitReader& reader) {
             node* right = self(self);
             return new node(left, right);
         } else {
-            uint8_t symbol = static_cast<uint8_t>(reader.readBits(8));
+            uint16_t symbol =
+                static_cast<uint16_t>(reader.readBits(DEFLATE_SYMBOL_BITS));
             return new node(symbol, 0);
         }
     };
@@ -78,9 +79,9 @@ auto HuffmanTree::buildTree(const std::vector<uint32_t>& freq_map) -> void {
     /* 2. Initialize the Huffman tree */
     std::priority_queue<node*, std::vector<node*>, Compare> pq;
 
-    for (int i = 0; i < 256; ++i) {
+    for (int i = 0; i < DEFLATE_ALPHABET_SIZE; ++i) {
         if (freq_map[i] > 0) {
-            pq.push(new node(static_cast<uint8_t>(i), freq_map[i]));
+            pq.push(new node(static_cast<uint16_t>(i), freq_map[i]));
         }
     }
 
@@ -90,7 +91,7 @@ auto HuffmanTree::buildTree(const std::vector<uint32_t>& freq_map) -> void {
         node* temp = pq.top();
         pq.pop();
         root_ = new node(
-            temp, new node(static_cast<uint8_t>(0), static_cast<uint32_t>(0)));
+            temp, new node(static_cast<uint16_t>(0), static_cast<uint32_t>(0)));
     }
 
     while (pq.size() >= 2) {
@@ -113,15 +114,16 @@ auto HuffmanTree::buildTree(const std::vector<uint32_t>& freq_map) -> void {
  *
  * @return std::array<HuffmanCode, 256>
  */
-auto HuffmanTree::buildDictionary() -> std::array<HuffmanCode, 256> {
-    std::array<HuffmanCode, 256> dict{};
+auto HuffmanTree::buildDictionary() const
+    -> std::array<HuffmanCode, DEFLATE_ALPHABET_SIZE> {
+    std::array<HuffmanCode, DEFLATE_ALPHABET_SIZE> dict{};
     generateCodes(root_, 0, 0, dict);
     return dict;
 }
 
-auto HuffmanTree::generateCodes(node* n, uint64_t current_code,
-                                uint8_t current_length,
-                                std::array<HuffmanCode, 256>& dict) -> void {
+auto HuffmanTree::generateCodes(
+    node* n, uint64_t current_code, uint8_t current_length,
+    std::array<HuffmanCode, DEFLATE_ALPHABET_SIZE>& dict) const -> void {
     if (!n) {
         return;
     }
@@ -147,7 +149,7 @@ auto HuffmanTree::serializeNode(utils::BitWriter& writer, node* n) const
 
     if (n->isLeaf()) {
         writer.writeBit(1);
-        writer.writeBits(n->symbol, 8);
+        writer.writeBits(n->symbol, DEFLATE_SYMBOL_BITS);
     } else {
         writer.writeBit(0);
         serializeNode(writer, n->left);

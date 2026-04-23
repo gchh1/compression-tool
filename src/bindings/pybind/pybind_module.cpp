@@ -2,7 +2,7 @@
 #include <pybind11/stl.h>
 
 #include "Archiver.hpp"
-#include "LZ78Compressor.hpp"
+#include "DeflateCompressor.hpp"
 
 namespace py = pybind11;
 using namespace compressor::core;
@@ -29,8 +29,8 @@ PYBIND11_MODULE(core_engine, m) {
         .def_static("pack", &Archiver::pack)
         .def_static("unpack", &Archiver::unpack);
 
-    py::class_<LZ78Compressor>(m, "LZ78Compressor")
+    py::class_<DeflateCompressor>(m, "DeflateCompressor")
         .def(py::init<>())
-        .def("compress", &LZ78Compressor::compress)
-        .def("decompress", &LZ78Compressor::decompress);
+        .def("compress", &DeflateCompressor::compress)
+        .def("decompress", &DeflateCompressor::decompress);
 }

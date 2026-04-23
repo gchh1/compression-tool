@@ -25,7 +25,8 @@ auto Huffman::reset(void) -> void {
 }
 
 /**
- * @brief
+ * @brief For each `chunk`, we compress it to [original size][huffman tree for
+ * this chunk][compressed data] 4bytes
  *
  * @param input
  * @return std::vector<uint8_t>
@@ -73,14 +74,15 @@ auto Huffman::compress(std::span<const uint8_t> read, std::span<uint8_t> write,
 }
 
 /**
- * @brief
+ * @brief Since the compressed chunk is not chunk aligned, `decode_staete_` is
+ * used.
  *
  * @param input
  * @return std::vector<uint8_t>
  */
 auto Huffman::decompress(std::span<const uint8_t> read,
-                         std::span<uint8_t> write, bool is_last) -> size_t {
-    /* 0. Instantialize `BitReader`*/
+                         std::span<uint8_t> write) -> size_t {
+    /* 0. Instantialize `BitReader` */
     utils::BitReader reader(read, decode_buffer_, decode_buffer_idx_);
     size_t bytes_written = 0;
 
@@ -136,6 +138,7 @@ auto Huffman::decompress(std::span<const uint8_t> read,
             current_cursor_ = nullptr;
         }
     }
+
 SAVE_STATE:
     decode_buffer_ = reader.getBuffer();
     decode_buffer_idx_ = reader.getBufferIdx();

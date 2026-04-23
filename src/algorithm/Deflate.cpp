@@ -1,14 +1,80 @@
 // Include lib here
 
+#include "Deflate.hpp"
+
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
+#include <span>
 #include <vector>
 
-#include "LZ78.hpp"
+#include "Deflate.hpp"
+#include "include/LZ78.hpp"
 
 namespace compressor {
 namespace algorithm {
+
+/**
+ * @brief Construct a new Deflate:: Deflate object
+ *
+ */
+Deflate::Deflate() { reset(); }
+
+/**
+ * @brief
+ *
+ */
+auto Deflate::reset(void) -> void {
+    window_.resize(WINDOW_SIZE, 0);
+
+    head_.assign(HASH_SIZE, 0xFFFF);
+    prev_.assign(SLIDE_SIZE, 0xFFFF);
+
+    insert_pos_ = 0;
+    lookahead_ = 0;
+
+    token_buffer_.clear();
+    encode_buffer_ = 0;
+    encode_buffer_idx_ = 0;
+}
+
+auto Deflate::fillWindow(std::span<const uint8_t>& read, size_t& read_offset)
+    -> void {
+    while (lookahead_ < WINDOW_SIZE && read_offset < read.size()) {
+        if (insert_pos_ + lookahead_ >= WINDOW_SIZE) {
+            slideWindow();
+        }
+
+        size_t space_left = WINDOW_SIZE - (insert_pos_ + lookahead_);
+        size_t data_left = read.size() - read_offset;
+        size_t copy_size = std::min(space_left, data_left);
+
+        std::memcpy(window_.data() + insert_pos_ + lookahead_,
+                    read.data() + read_offset, copy_size);
+
+        lookahead_ += copy_size;
+        read_offset += copy_size;
+    }
+}
+
+auto Deflate::slideWindow(void) -> void {
+    std::memcpy(window_.data(), window_.data() + SLIDE_SIZE, SLIDE_SIZE);
+
+    insert_pos_ -= SLIDE_SIZE;
+
+    for (size_t i = 0; i < HASH_SIZE; ++i) {
+        head_[i] = (head_[i] >= SLIDE_SIZE)
+                       ? static_cast<uint16_t>(head_[i] - SLIDE_SIZE)
+                       : 0xFFFF;
+    }
+
+    for (size_t i = 0; i < SLIDE_SIZE; ++i) {
+        prev_[i] = (prev_[i] >= SLIDE_SIZE)
+                       ? static_cast<uint16_t>(prev_[i] - SLIDE_SIZE)
+                       : 0xFFFF;
+    }
+}
 
 /**
  * @brief LZSS with hash table optimization
@@ -16,7 +82,7 @@ namespace algorithm {
  * @param input
  * @return std::vector<Token>
  */
-std::vector<Token> LZ78::compress(const std::vector<uint8_t>& input) {
+std::vector<Token> Deflate::compress(const std::vector<uint8_t>& input) {
     std::vector<Token> result;
     // Return if input is null
     if (input.empty()) {
@@ -115,7 +181,7 @@ std::vector<Token> LZ78::compress(const std::vector<uint8_t>& input) {
  * @param tokens
  * @return std::vector<uint8_t>
  */
-std::vector<uint8_t> LZ78::decompress(const std::vector<Token>& tokens) {
+std::vector<uint8_t> Deflate::decompress(const std::vector<Token>& tokens) {
     std::vector<uint8_t> result;
 
     for (const auto& token : tokens) {

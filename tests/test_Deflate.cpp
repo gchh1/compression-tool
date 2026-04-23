@@ -1,10 +1,10 @@
 #include <iostream>
 #include <vector>
 
-#include "LZ78Compressor.hpp"
+#include "DeflateCompressor.hpp"
 
 int main() {
-    compressor::core::LZ78Compressor compressor;
+    compressor::core::DeflateCompressor compressor;
 
     // 测试数据
     std::vector<uint8_t> original_data = {'H', 'e', 'l', 'l', 'o', ',', ' ',

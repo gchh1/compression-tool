@@ -2,6 +2,7 @@
 
 // Include lib here
 #include <array>
+#include <cstddef>
 #include <cstdint>
 #include <span>
 #include <vector>
@@ -10,6 +11,12 @@
 #include "BitWriter.hpp"
 
 namespace compressor::algorithm {
+
+/** @brief 256(literal) + 1(EOF) + 29(Length) = 286 */
+constexpr size_t DEFLATE_ALPHABET_SIZE = 286;
+
+/** @brief How many bits to store the size */
+constexpr uint8_t DEFLATE_SYMBOL_BITS = 9;
 
 /** @brief Node struct */
 struct node {
@@ -75,7 +82,8 @@ class HuffmanTree {
     }
 
     /** @brief Build and return the dictionary */
-    auto buildDictionary(void) -> std::array<HuffmanCode, 256>;
+    auto buildDictionary(void) const
+        -> std::array<HuffmanCode, DEFLATE_ALPHABET_SIZE>;
 
     /** @brief Return the Huffman Tree we build */
     auto serializeTree(utils::BitWriter& writer) const -> void;
@@ -88,8 +96,9 @@ class HuffmanTree {
     auto buildTree(const std::vector<uint32_t>& freqMap) -> void;
 
     /** @brief Travel the Huffman Tree by preorder to get the code */
-    auto generateCodes(node* n, uint64_t current_code, uint8_t current_length,
-                       std::array<HuffmanCode, 256>& dict) -> void;
+    auto generateCodes(
+        node* n, uint64_t current_code, uint8_t current_length,
+        std::array<HuffmanCode, DEFLATE_ALPHABET_SIZE>& dict) const -> void;
 
     /** @brief  */
     auto serializeNode(utils::BitWriter& writer, node* n) const -> void;

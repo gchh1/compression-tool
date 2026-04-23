@@ -2,7 +2,7 @@ add_library(
     algorithm
     STATIC
     Delta.cpp
-    LZ78.cpp
+    Deflate.cpp
     Huffman.cpp
     HuffmanTree.cpp
     LZ77.cpp

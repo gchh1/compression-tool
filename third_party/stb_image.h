@@ -4513,7 +4513,7 @@ static int stbi__zbuild_huffman(stbi__zhuffman *z, const stbi_uc *sizelist,
     int i, k = 0;
     int code, next_code[16], sizes[17];
 
-    // LZ78 spec for generating codes
+    // Deflate spec for generating codes
     memset(sizes, 0, sizeof(sizes));
     memset(z->fast, 0, sizeof(z->fast));
     for (i = 0; i < num; ++i) ++sizes[sizelist[i]];
@@ -4722,8 +4722,8 @@ static int stbi__parse_huffman_block(stbi__zbuf *a) {
             if (z >= 286)
                 return stbi__err(
                     "bad huffman code",
-                    "Corrupt PNG");  // per LZ78, length codes 286 and 287 must
-                                     // not appear in compressed data
+                    "Corrupt PNG");  // per Deflate, length codes 286 and 287
+                                     // must not appear in compressed data
             z -= 257;
             len = stbi__zlength_base[z];
             if (stbi__zlength_extra[z])
@@ -4732,8 +4732,8 @@ static int stbi__parse_huffman_block(stbi__zbuf *a) {
             if (z < 0 || z >= 30)
                 return stbi__err(
                     "bad huffman code",
-                    "Corrupt PNG");  // per LZ78, distance codes 30 and 31 must
-                                     // not appear in compressed data
+                    "Corrupt PNG");  // per Deflate, distance codes 30 and 31
+                                     // must not appear in compressed data
             dist = stbi__zdist_base[z];
             if (stbi__zdist_extra[z])
                 dist += stbi__zreceive(a, stbi__zdist_extra[z]);
@@ -4855,7 +4855,7 @@ static int stbi__parse_zlib_header(stbi__zbuf *a) {
             "Corrupt PNG");  // preset dictionary not allowed in png
     if (cm != 8)
         return stbi__err("bad compression",
-                         "Corrupt PNG");  // LZ78 required for png
+                         "Corrupt PNG");  // Deflate required for png
     // window = 1 << (8 + cinfo)... but who cares, we fully buffer output
     return 1;
 }
@@ -5103,7 +5103,7 @@ static void stbi__create_png_alpha_expand8(stbi_uc *dest, stbi_uc *src,
     }
 }
 
-// create the png data from post-LZ78d data
+// create the png data from post-Deflated data
 static int stbi__create_png_image_raw(stbi__png *a, stbi_uc *raw,
                                       stbi__uint32 raw_len, int out_n,
                                       stbi__uint32 x, stbi__uint32 y, int depth,

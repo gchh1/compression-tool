@@ -21,8 +21,8 @@ class Huffman {
     auto compress(std::span<const uint8_t> read, std::span<uint8_t> write,
                   bool is_last) -> size_t;
 
-    auto decompress(std::span<const uint8_t> read, std::span<uint8_t> write,
-                    bool is_last) -> size_t;
+    auto decompress(std::span<const uint8_t> read, std::span<uint8_t> write)
+        -> size_t;
 
     auto reset(void) -> void;
 

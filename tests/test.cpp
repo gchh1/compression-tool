@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-#include "LZ78Compressor.hpp"
+#include "DeflateCompressor.hpp"
 #include "LZSSCompressor.hpp"
 #include "compressor.hpp"
 
@@ -46,7 +46,7 @@ bool writeToFile(const std::string& filename,
 
 int main() {
     // LZSSCompressor engine;
-    LZ78Compressor engine;
+    DeflateCompressor engine;
 
     std::string name = engine.get_algorithm_name();
 
@@ -81,7 +81,7 @@ int main() {
 
     // 3. 将压缩后的结果保存到本地磁盘
     std::string output_filename =
-        "../../tests/data/cmu445.LZ78";  // 自定义一个酷炫的后缀名
+        "../../tests/data/cmu445.Deflate";  // 自定义一个酷炫的后缀名
     if (writeToFile(output_filename, compressed_data.data)) {
         std::cout << "\n🎉 Success! Compressed file generated at: "
                   << output_filename << std::endl;

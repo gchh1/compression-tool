@@ -4,13 +4,14 @@
 #include <cstdint>
 #include <vector>
 
+#include "Deflate.hpp"
 #include "ICompressor.hpp"
-#include "LZ78.hpp"
+
 
 namespace compressor {
 namespace core {
 
-class LZ78Compressor : public ICompressor {
+class DeflateCompressor : public ICompressor {
    public:
     auto compress(std::vector<uint8_t> original_data)
         -> CompressorResult override;
@@ -19,15 +20,15 @@ class LZ78Compressor : public ICompressor {
         -> CompressorResult override;
 
     inline std::string get_algorithm_name(void) override {
-        return "LZ78 (LZ77Fast + Huffman)";
+        return "Deflate (LZ77Fast + Huffman)";
     }
 
    private:
-    /** @brief Serialize LZ78 Token to byte stream that Huffman needed */
+    /** @brief Serialize Deflate Token to byte stream that Huffman needed */
     auto serializeTokens(std::vector<algorithm::Token> tokens)
         -> std::vector<uint8_t>;
 
-    /** @brief Deserialize byte stream to LZ78 Token, for decompress */
+    /** @brief Deserialize byte stream to Deflate Token, for decompress */
     auto deserializeTokens(std::vector<uint8_t> data)
         -> std::vector<algorithm::Token>;
 };

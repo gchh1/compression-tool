@@ -104,7 +104,7 @@ to -1; set to 0..5 to force a filter mode
    writer, both because it is in BGR order and because it may have padding
    at the end of the line.)
 
-   PNG allows you to set the LZ78 compression level by setting the global
+   PNG allows you to set the Deflate compression level by setting the global
    variable 'stbi_write_png_compression_level' (it defaults to 8).
 
    HDR expects linear float data. Since the format is always 32-bit rgb(e)
@@ -979,7 +979,7 @@ STBIWDEF unsigned char *stbi_zlib_compress(unsigned char *data, int data_len,
     if (hash_table == NULL) return NULL;
     if (quality < 5) quality = 5;
 
-    stbiw__sbpush(out, 0x78);  // LZ78 32K window
+    stbiw__sbpush(out, 0x78);  // Deflate 32K window
     stbiw__sbpush(out, 0x5e);  // FLEVEL = 1
     stbiw__zlib_add(1, 1);     // BFINAL = 1
     stbiw__zlib_add(1, 2);     // BTYPE = 1 -- fixed huffman
@@ -1055,7 +1055,7 @@ STBIWDEF unsigned char *stbi_zlib_compress(unsigned char *data, int data_len,
 
     // store uncompressed instead if compression was worse
     if (stbiw__sbn(out) > data_len + 2 + ((data_len + 32766) / 32767) * 5) {
-        stbiw__sbn(out) = 2;  // truncate to LZ78 32K window and FLEVEL = 1
+        stbiw__sbn(out) = 2;  // truncate to Deflate 32K window and FLEVEL = 1
         for (j = 0; j < data_len;) {
             int blocklen = data_len - j;
             if (blocklen > 32767) blocklen = 32767;
@@ -1966,7 +1966,7 @@ STBIWDEF int stbi_write_jpg(char const *filename, int x, int y, int comp,
 
 /* Revision history
       1.16  (2021-07-11)
-             make LZ78 code emit uncompressed blocks when it would otherwise
+             make Deflate code emit uncompressed blocks when it would otherwise
    expand support writing BMPs with alpha channel 1.15  (2020-07-13) unknown
       1.14  (2020-02-02) updated JPEG writer to downsample chroma channels
       1.13
