@@ -39,8 +39,8 @@ auto Deflate::reset(void) -> void {
     lookahead_ = 0;
 
     token_buffer_.clear();
-    encode_buffer_ = 0;
-    encode_buffer_idx_ = 0;
+    buffer_ = 0;
+    buffer_idx_ = 0;
 }
 
 /**
@@ -145,19 +145,19 @@ auto Deflate::flushBlock(utils::BitWriter& writer, bool is_last_block)
 }
 
 /**
- * @brief LZSS with hash table optimization
+ * @brief LZSS with hash table optimization and Huffman encode
  *
  * @param input
  * @return std::vector<Token>
  */
 auto Deflate::compress(std::span<const uint8_t> read, std::span<uint8_t> write,
                        bool is_last) -> size_t {
-    utils::BitWriter writer(write, encode_buffer_, encode_buffer_idx_);
+    utils::BitWriter writer(write, buffer_, buffer_idx_);
     size_t read_offset = 0;
 
     while (read_offset < read.size() || lookahead_ > 0) {
         //
-        if (lookahead_ < MIN_MATCH && read_offset < read.size()) {
+        if (lookahead_ < MAX_MATCH && read_offset < read.size()) {
             fillWindow(read, read_offset);
         }
 
@@ -166,6 +166,7 @@ auto Deflate::compress(std::span<const uint8_t> read, std::span<uint8_t> write,
         size_t match_length = 0;
         size_t match_distance = 0;
 
+        //
         if (lookahead_ >= MIN_MATCH) {
             uint16_t hash_val = getHash(cursor_);
             uint16_t match_pos = head_[hash_val];
@@ -173,6 +174,7 @@ auto Deflate::compress(std::span<const uint8_t> read, std::span<uint8_t> write,
             prev_[cursor_ & (SLIDE_SIZE - 1)] = match_pos;
             head_[hash_val] = static_cast<uint16_t>(cursor_);
 
+            // Go to find the `longest match`
             size_t chain_length = MAX_CHAIN_LENGTH;
             while (match_pos != NULL_PTR && chain_length-- > 0) {
                 size_t distance = cursor_ - match_pos;
@@ -180,15 +182,17 @@ auto Deflate::compress(std::span<const uint8_t> read, std::span<uint8_t> write,
                 if (distance > SLIDE_SIZE || distance == 0) break;
 
                 size_t current_len = 0;
-                size_t max_possible =
-                    std::min({MAX_MATCH, lookahead_, WINDOW_SIZE - cursor_});
+                size_t max_possible = std::min(MAX_MATCH, lookahead_);
 
+                // For each one with the same `prefix`, try to find the length
+                // of match
                 while (current_len < max_possible &&
                        window_[cursor_ + current_len] ==
                            window_[match_pos + current_len]) {
                     current_len++;
                 }
 
+                // Update if `current value` is better
                 if (current_len > match_length) {
                     match_length = current_len;
                     match_distance = distance;
@@ -231,38 +235,11 @@ auto Deflate::compress(std::span<const uint8_t> read, std::span<uint8_t> write,
         writer.flush();
         reset();
     } else {
-        encode_buffer_ = writer.getBuffer();
-        encode_buffer_idx_ = writer.getBufferIdx();
+        buffer_ = writer.getBuffer();
+        buffer_idx_ = writer.getBufferIdx();
     }
 
     return writer.getBytesWritten();
-}
-
-/**
- * @brief
- *
- * @param tokens
- * @return std::vector<uint8_t>
- */
-std::vector<uint8_t> Deflate::decompress(const std::vector<Token>& tokens) {
-    std::vector<uint8_t> result;
-
-    for (const auto& token : tokens) {
-        // Meet (1, char)
-        if (token.is_literal) {
-            result.push_back(token.value);
-        }
-        // Meet (0, length, position)
-        else {
-            size_t start_idx = result.size() - token.position;
-            for (size_t i = 0; i < token.value; ++i) {
-                uint8_t ch = result[start_idx + i];
-                result.push_back(ch);
-            }
-        }
-    }
-
-    return result;
 }
 
 }  // namespace algorithm

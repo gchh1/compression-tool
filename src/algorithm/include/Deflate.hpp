@@ -32,9 +32,6 @@ class Deflate {
     auto compress(std::span<const uint8_t> read, std::span<uint8_t> write,
                   bool is_last) -> size_t;
 
-    auto decompress(std::span<const uint8_t> read, std::span<uint8_t> write)
-        -> size_t;
-
     auto reset(void) -> void;
 
    private:
@@ -64,8 +61,8 @@ class Deflate {
     // ===================================
     std::vector<Token> token_buffer_;
 
-    uint64_t encode_buffer_{0};
-    uint8_t encode_buffer_idx_{0};
+    uint64_t buffer_{0};
+    uint8_t buffer_idx_{0};
 
     // ===================================
     // Private method
