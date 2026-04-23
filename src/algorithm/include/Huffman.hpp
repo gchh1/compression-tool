@@ -11,8 +11,7 @@
 
 #include "HuffmanTree.hpp"
 
-namespace compressor {
-namespace algorithm {
+namespace compressor::algorithm {
 /**
  * @brief Huffman compress algorithm
  *
@@ -46,6 +45,4 @@ class Huffman {
     std::unique_ptr<HuffmanTree> huffman_tree_{nullptr};
 };
 
-}  // namespace algorithm
-
-}  // namespace compressor
+}  // namespace compressor::algorithm

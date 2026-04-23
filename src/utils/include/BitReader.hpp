@@ -33,6 +33,7 @@ class BitReader {
         fillBuffer();
     }
 
+    /** @brief Construct a BitReader to inherit the `buffer` */
     BitReader(std::span<const uint8_t> read, uint64_t res_buf, uint8_t res_idx)
         : read_(read), buffer_(res_buf), buffer_idx_(res_idx) {}
 
@@ -58,13 +59,11 @@ class BitReader {
     // Method we need
     // ===================================
 
-    /**
-     * @brief
-     *
-     * @return true We have read over the read_
-     * @return false Not yet
-     */
     auto isEOF(void) const -> bool { return is_eof_; }
+
+    auto getBuffer(void) const -> uint64_t { return buffer_; }
+
+    auto getBufferIdx(void) const -> uint8_t { return buffer_idx_; }
 
     /**
      * @brief Peek a bit by `MSB` first. Need to check `is_eof_` outside
@@ -78,7 +77,6 @@ class BitReader {
                 return 0;
             }
         }
-
         return (buffer_ >> (--buffer_idx_)) & 1;
     }
 

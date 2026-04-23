@@ -119,7 +119,7 @@ auto HuffmanTree::buildDictionary() -> std::array<HuffmanCode, 256> {
     return dict;
 }
 
-auto HuffmanTree::generateCodes(node* n, uint64_t current_node,
+auto HuffmanTree::generateCodes(node* n, uint64_t current_code,
                                 uint8_t current_length,
                                 std::array<HuffmanCode, 256>& dict) -> void {
     if (!n) {
@@ -127,12 +127,12 @@ auto HuffmanTree::generateCodes(node* n, uint64_t current_node,
     }
 
     if (n->isLeaf()) {
-        dict[n->symbol] = {current_node, current_length};
+        dict[n->symbol] = {current_code, current_length};
         return;
     }
 
-    generateCodes(n->left, current_node << 1, current_length + 1, dict);
-    generateCodes(n->right, (current_node << 1) | 1, current_length + 1, dict);
+    generateCodes(n->left, current_code << 1, current_length + 1, dict);
+    generateCodes(n->right, (current_code << 1) | 1, current_length + 1, dict);
 }
 
 auto HuffmanTree::serializeTree(utils::BitWriter& writer) const -> void {

@@ -3,8 +3,8 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 #include <span>
-#include <vector>
 
 #include "BitReader.hpp"
 #include "BitWriter.hpp"
@@ -46,32 +46,17 @@ auto Huffman::compress(std::span<const uint8_t> read, std::span<uint8_t> write,
 
         /* 2. Build and get the huffman tree */
         HuffmanTree huffman_tree(read);
-        std::vector<std::string> dictionary = huffman_tree.encode();
-
-        // Get the tree
-        std::vector<uint8_t> tree = huffman_tree.getTree();
+        auto dictionary = huffman_tree.buildDictionary();
 
         /* 3. Serialize the Huffman tree */
-        for (size_t i = 0; i < tree.size(); ++i) {
-            if (tree[i] == '0') {
-                writer.writeBit(0);
-            } else if (tree[i] == '1') {
-                writer.writeBit(1);
+        huffman_tree.serializeTree(writer);
 
-                // The following 8 bits is the leaf character
-                writer.writeBits(tree[++i], 8);
-            }
-        }
-
-        /* 3. Compress the input */
+        /* 4. Compress the input */
         for (const uint8_t &item : read) {
             // Get the Huffman code for each byte
-            const std::string temp = dictionary[item];
+            const auto &huffman_code = dictionary[item];
 
-            // Iterate the code and push to result bit by bit
-            for (const auto &elem : temp) {
-                writer.writeBit(elem - '0');
-            }
+            writer.writeBits(huffman_code.code, huffman_code.length);
         }
     }
 
@@ -100,56 +85,62 @@ auto Huffman::decompress(std::span<const uint8_t> read,
     size_t bytes_written = 0;
 
     /* 1. Decode the size of original data */
-    uint32_t original_size = (static_cast<uint32_t>(input[0]) << 24) |
-                             (static_cast<uint32_t>(input[1]) << 16) |
-                             (static_cast<uint32_t>(input[2]) << 8) |
-                             static_cast<uint32_t>(input[3]);
+    if (decode_state_ == DecodeState::READ_SIZE) {
+        uint64_t size_val = reader.readBits(32);
 
-    /* 2. Decode the Huffman Tree */
-    size_t byte_idx = 4;
-    uint8_t bit_idx = 0;
-
-    // Lambda helper function to read the input bit by bit
-    auto readBit = [&]() -> int {
-        // EOF protection
-        if (byte_idx >= input.size()) {
-            return -1;
+        if (reader.isEOF()) {
+            goto SAVE_STATE;
         }
 
-        int bit = (input[byte_idx] >> (7 - bit_idx)) & 1;
-
-        bit_idx++;
-        if (bit_idx == 8) {
-            bit_idx = 0;
-            byte_idx++;
-        }
-        return bit;
-    };
-
-    // Restore the Huffman Tree
-    HuffmanTree huffman_tree(readBit);
-
-    /* 3. Decode the data by the Tree */
-    node *root = huffman_tree.getRoot();
-    node *cursor = root;
-
-    while (result.size() < original_size) {
-        int bit = readBit();
-        if (bit == -1) {
-            break;
-        }
-
-        // Update the cursor
-        cursor = bit == 0 ? cursor->left : cursor->right;
-
-        // Reach leaf
-        if (cursor && cursor->isLeaf()) {
-            result.push_back(cursor->symbol);
-            cursor = root;
-        }
+        target_size_ = static_cast<uint32_t>(size_val);
+        decode_state_ = DecodeState::READ_TREE;
     }
 
-    return result;
+    /* 2. Decode the Huffman Tree */
+    if (decode_state_ == DecodeState::READ_TREE) {
+        huffman_tree_ = std::make_unique<HuffmanTree>(reader);
+        if (reader.isEOF()) {
+            goto SAVE_STATE;
+        }
+        current_cursor_ = huffman_tree_->getRoot();
+        decode_state_ = DecodeState::DECODE_DATA;
+    }
+
+    /* 3. Decode the data by the Tree */
+    if (decode_state_ == DecodeState::DECODE_DATA) {
+        while (current_decode_size_ < target_size_) {
+            if (bytes_written >= write.size()) {
+                break;
+            }
+
+            uint8_t bit = reader.readBit();
+
+            if (reader.isEOF()) {
+                break;
+            }
+
+            current_cursor_ =
+                (bit == 0) ? current_cursor_->left : current_cursor_->right;
+
+            if (current_cursor_ != nullptr && current_cursor_->isLeaf()) {
+                write[bytes_written++] = current_cursor_->symbol;
+                current_decode_size_++;
+
+                current_cursor_ = huffman_tree_->getRoot();
+            }
+        }
+
+        if (current_decode_size_ >= target_size_) {
+            decode_state_ = DecodeState::READ_SIZE;
+            huffman_tree_.reset();
+            current_cursor_ = nullptr;
+        }
+    }
+SAVE_STATE:
+    decode_buffer_ = reader.getBuffer();
+    decode_buffer_idx_ = reader.getBufferIdx();
+
+    return bytes_written;
 }
 
 }  // namespace compressor::algorithm

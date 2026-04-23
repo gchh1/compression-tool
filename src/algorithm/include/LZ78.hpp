@@ -2,6 +2,7 @@
 
 // Include lib here
 #include <cstdint>
+#include <span>
 #include <vector>
 
 #include "IAlgorithm.hpp"
@@ -11,7 +12,8 @@ namespace algorithm {
 
 class LZ78 {
    public:
-    static std::vector<Token> compress(const std::vector<uint8_t>& input);
+    static std::vector<Token> compress(std::span<const uint8_t> read,
+                                       std::span<uint8_t> write);
     static std::vector<uint8_t> decompress(const std::vector<Token>& tokens);
 
    private:

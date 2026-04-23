@@ -30,6 +30,7 @@ class BitWriter {
     /** @brief Construct a BitWriter by write */
     explicit BitWriter(std::span<uint8_t> write) : write_(write) {};
 
+    /** @brief Construct a BitWriter to inherit the `buffer` */
     BitWriter(std::span<uint8_t> write, uint64_t res_buffer, uint8_t res_idx)
         : write_(write), buffer_(res_buffer), buffer_idx_(res_idx) {}
 

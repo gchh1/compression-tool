@@ -41,10 +41,10 @@ struct HuffmanCode {
 };
 
 /**
- * @brief Basic Huffman Tree class, recieve a vector<uint8_t> byte stream and
- *        build to a vector<string> code dictionary.
- *        Since that the data stream is byte stream, instead of using
- *        unordered_map, we using a vecotr with capacity of 256.
+ * @brief Helpful class to build and manage `HuffmanTree`. As for constructor,
+ *        the class can receive `freq_map`, `symbols` and `BitReader`. Then
+ *        build a `dictionary`, which is an `array` of size `256`, each element
+ * is a `Huffman Code` stand for the `ASCII` index.
  *
  */
 class HuffmanTree {
@@ -74,7 +74,7 @@ class HuffmanTree {
         destory(destory, root_);
     }
 
-    /** @brief Return the dictionary */
+    /** @brief Build and return the dictionary */
     auto buildDictionary(void) -> std::array<HuffmanCode, 256>;
 
     /** @brief Return the Huffman Tree we build */
