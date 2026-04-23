@@ -1,1 +1,0 @@
-再Mingw/bin文件夹下找到mingw32-make.exe 修改名字为make

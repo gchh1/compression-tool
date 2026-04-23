@@ -6,31 +6,37 @@ namespace py = pybind11;
 
 namespace {
     // 包装函数，将 std::vector<uint8_t> 转换为 py::bytes
-    py::bytes compress_wrapper(core::algorithm::LZ77& lz, 
-                               py::bytes input,
-                               size_t search_size = 255,
-                               size_t lookahead_size = 255,
-                               core::algorithm::lz77MatchType match_type = core::algorithm::lz77MatchType::KMPNEXT) {
+    py::bytes compress_wrapper(
+        core::algorithm::LZ77& lz, 
+        py::bytes input,
+        size_t search_size = 255,
+        size_t lookahead_size = 255,
+        core::algorithm::lz77MatchType match_type = core::algorithm::lz77MatchType::KMPNEXT
+    ) {
         std::string input_str = input.cast<std::string>();
         std::vector<uint8_t> input_vec(input_str.begin(), input_str.end());
         std::vector<uint8_t> result = lz.Compress(input_vec, search_size, lookahead_size, match_type);
         return py::bytes(reinterpret_cast<const char*>(result.data()), result.size());
     }
     
-    py::bytes compress_ultra_wrapper(core::algorithm::LZ77& lz,
-                                     py::bytes input,
-                                     size_t search_size = 255,
-                                     size_t lookahead_size = 255,
-                                     size_t range = 3,
-                                     core::algorithm::lz77MatchType match_type = core::algorithm::lz77MatchType::KMPNEXT) {
+    py::bytes compress_ultra_wrapper(
+        core::algorithm::LZ77& lz,
+        py::bytes input,
+        size_t search_size = 255,
+        size_t lookahead_size = 255,
+        size_t range = 3,
+        core::algorithm::lz77MatchType match_type = core::algorithm::lz77MatchType::KMPNEXT
+    ) {
         std::string input_str = input.cast<std::string>();
         std::vector<uint8_t> input_vec(input_str.begin(), input_str.end());
         std::vector<uint8_t> result = lz.Compress_ultra(input_vec, search_size, lookahead_size, range, match_type);
         return py::bytes(reinterpret_cast<const char*>(result.data()), result.size());
     }
     
-    py::bytes decompress_wrapper(core::algorithm::LZ77& lz,
-                                 py::bytes input) {
+    py::bytes decompress_wrapper(
+        core::algorithm::LZ77& lz,
+        py::bytes input
+    ) {
         std::string input_str = input.cast<std::string>();
         std::vector<uint8_t> input_vec(input_str.begin(), input_str.end());
         std::vector<uint8_t> result = lz.Decompress(input_vec);
