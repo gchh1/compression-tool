@@ -6,7 +6,10 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 #include <span>
+
+#include "HuffmanTree.hpp"
 
 namespace compressor {
 namespace algorithm {
@@ -38,6 +41,9 @@ class Huffman {
 
     uint32_t target_size_{0};
     uint32_t current_decode_size_{0};
+    node* current_cursor_{nullptr};
+
+    std::unique_ptr<HuffmanTree> huffman_tree_{nullptr};
 };
 
 }  // namespace algorithm

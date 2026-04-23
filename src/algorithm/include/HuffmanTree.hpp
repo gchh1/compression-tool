@@ -4,7 +4,6 @@
 #include <array>
 #include <cstdint>
 #include <span>
-#include <string>
 #include <vector>
 
 #include "BitReader.hpp"

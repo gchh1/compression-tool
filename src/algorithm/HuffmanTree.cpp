@@ -1,22 +1,24 @@
 // Include lib here
 #include "HuffmanTree.hpp"
 
+#include <array>
 #include <cstdint>
 #include <queue>
-#include <string>
+#include <span>
 #include <vector>
 
-namespace compressor {
-namespace algorithm {
+#include "BitReader.hpp"
+#include "BitWriter.hpp"
+
+namespace compressor::algorithm {
 
 /**
  * @brief Construct a new Huffman Tree:: Huffman Tree object
  *
  * @param symbols
  */
-HuffmanTree::HuffmanTree(const std::vector<uint8_t>& symbols) {
+HuffmanTree::HuffmanTree(std::span<const uint8_t> symbols) {
     if (symbols.empty()) {
-        root_ = nullptr;
         return;
     }
     /* 1. Count the frequency of each symbol */
@@ -39,19 +41,32 @@ HuffmanTree::HuffmanTree(const std::vector<uint32_t>& freq_map) {
 }
 
 /**
- * @brief Return the encode
+ * @brief Construct a new Huffman Tree:: Huffman Tree object
  *
- * @return std::vector<std::string>
+ * @param reader
  */
-std::vector<std::string> HuffmanTree::encode(void) {
-    // Clear the tree to protect
-    tree_.clear();
-    std::vector<std::string> dictionary(256, "");
+HuffmanTree::HuffmanTree(utils::BitReader& reader) {
+    auto buildTreeRecursive = [&reader](auto& self) -> node* {
+        if (reader.isEOF()) {
+            return nullptr;
+        }
 
-    std::string temp = "";
-    preorder(root_, temp, dictionary);
+        uint8_t bit = reader.readBit();
+        if (reader.isEOF()) {
+            return nullptr;
+        }
 
-    return dictionary;
+        if (bit == 0) {
+            node* left = self(self);
+            node* right = self(self);
+            return new node(left, right);
+        } else {
+            uint8_t symbol = static_cast<uint8_t>(reader.readBits(8));
+            return new node(symbol, 0);
+        }
+    };
+
+    root_ = buildTreeRecursive(buildTreeRecursive);
 }
 
 /**
@@ -59,7 +74,7 @@ std::vector<std::string> HuffmanTree::encode(void) {
  *
  * @param freq_map
  */
-void HuffmanTree::buildTree(const std::vector<uint32_t>& freq_map) {
+auto HuffmanTree::buildTree(const std::vector<uint32_t>& freq_map) -> void {
     /* 2. Initialize the Huffman tree */
     std::priority_queue<node*, std::vector<node*>, Compare> pq;
 
@@ -86,9 +101,7 @@ void HuffmanTree::buildTree(const std::vector<uint32_t>& freq_map) {
         pq.pop();
 
         // Conbine the top two node to a new node
-        node* temp = new node(left, right);
-
-        pq.push(temp);
+        pq.push(new node(left, right));
     }
 
     /* 4. Assign the top */
@@ -96,39 +109,50 @@ void HuffmanTree::buildTree(const std::vector<uint32_t>& freq_map) {
 }
 
 /**
- * @brief Encode helper function, travel the tree by preorder
+ * @brief
  *
- * @param n
- * @param cur
- * @param res
+ * @return std::array<HuffmanCode, 256>
  */
-void HuffmanTree::preorder(node* n, std::string& cur,
-                           std::vector<std::string>& res) {
-    // Return condition #1: n is nullptr
-    if (n == nullptr) {
-        return;
-    }
-
-    // Return condition #2: n reach leaf
-    if (n->isLeaf()) {
-        res[n->symbol] = cur;
-
-        tree_.push_back('1');
-        tree_.push_back(n->symbol);
-        return;
-    }
-
-    tree_.push_back('0');
-
-    cur.push_back('0');
-    preorder(n->left, cur, res);
-    cur.pop_back();
-
-    cur.push_back('1');
-    preorder(n->right, cur, res);
-    cur.pop_back();
+auto HuffmanTree::buildDictionary() -> std::array<HuffmanCode, 256> {
+    std::array<HuffmanCode, 256> dict{};
+    generateCodes(root_, 0, 0, dict);
+    return dict;
 }
 
-}  // namespace algorithm
+auto HuffmanTree::generateCodes(node* n, uint64_t current_node,
+                                uint8_t current_length,
+                                std::array<HuffmanCode, 256>& dict) -> void {
+    if (!n) {
+        return;
+    }
 
-}  // namespace compressor
+    if (n->isLeaf()) {
+        dict[n->symbol] = {current_node, current_length};
+        return;
+    }
+
+    generateCodes(n->left, current_node << 1, current_length + 1, dict);
+    generateCodes(n->right, (current_node << 1) | 1, current_length + 1, dict);
+}
+
+auto HuffmanTree::serializeTree(utils::BitWriter& writer) const -> void {
+    serializeNode(writer, root_);
+}
+
+auto HuffmanTree::serializeNode(utils::BitWriter& writer, node* n) const
+    -> void {
+    if (!n) {
+        return;
+    }
+
+    if (n->isLeaf()) {
+        writer.writeBit(1);
+        writer.writeBits(n->symbol, 8);
+    } else {
+        writer.writeBit(0);
+        serializeNode(writer, n->left);
+        serializeNode(writer, n->right);
+    }
+}
+
+}  // namespace compressor::algorithm

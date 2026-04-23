@@ -19,6 +19,9 @@ auto Huffman::reset(void) -> void {
     decode_buffer_idx_ = 0;
     decode_state_ = DecodeState::READ_SIZE;
     current_decode_size_ = 0;
+
+    huffman_tree_.reset();
+    current_cursor_ = nullptr;
 }
 
 /**
