@@ -1,0 +1,2 @@
+cd d:\AAA_C\compression-tool; $env:PYTHONPATH="src"; pyinstaller --noconfirm --onefile --windowed --name "WebCompress" --distpath "dist" --workpath "build\PyInstaller" --specpath "build" "src\gui\main.py"
+cd d:\AAA_C\compression-tool; Copy-Item "dist\WebCompress.exe" "Package\bin\" -Force; Write-Host "Copied WebCompress.exe to Package\bin"

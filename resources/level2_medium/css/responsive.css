@@ -1,0 +1,220 @@
+/* Responsive Stylesheet - WebCompress Level 2 */
+@media screen and (max-width: 1024px) {
+    .container {
+        padding: 0 24px;
+    }
+
+    .hero-title {
+        font-size: 2.75rem;
+    }
+
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .header-container {
+        padding: 12px 16px;
+    }
+
+    .nav-list {
+        gap: 16px;
+    }
+
+    .nav-item {
+        font-size: 0.88rem;
+    }
+
+    .hero-banner {
+        height: 450px;
+        margin-top: 60px;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .section-title {
+        font-size: 1.75rem;
+    }
+
+    .section-subtitle {
+        font-size: 0.95rem;
+    }
+
+    .features-section,
+    .team-section,
+    .demo-section,
+    .about-content,
+    .contact-content {
+        padding: 48px 0;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .feature-card {
+        padding: 24px;
+    }
+
+    .stat-number {
+        font-size: 2.25rem;
+    }
+
+    .page-header {
+        padding: 56px 0 32px;
+        margin-top: 60px;
+    }
+
+    .page-title {
+        font-size: 2rem;
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .architecture-diagram {
+        padding: 0 16px;
+    }
+
+    .arch-layer {
+        padding: 16px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    :root {
+        --radius-md: 8px;
+        --radius-lg: 14px;
+    }
+
+    .logo-text {
+        font-size: 1.35rem;
+    }
+
+    .main-nav {
+        display: none;
+    }
+
+    .hero-banner {
+        height: 380px;
+    }
+
+    .hero-title {
+        font-size: 1.65rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.92rem;
+    }
+
+    .hero-content {
+        padding: 24px;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        font-size: 0.92rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .stat-item {
+        padding: 12px;
+    }
+
+    .stat-number {
+        font-size: 1.85rem;
+    }
+
+    .stat-unit {
+        font-size: 0.82rem;
+    }
+
+    .contact-form-wrapper {
+        padding: 24px;
+    }
+
+    .module-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .module-name {
+        min-width: auto;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-light: #1a1a2e;
+        --text-primary: #e8e8e8;
+        --text-secondary: #b2bec3;
+        --border-color: #3d3d5c;
+    }
+
+    .feature-card,
+    .sidebar-card,
+    .info-card,
+    .contact-form-wrapper {
+        background: #16213e;
+    }
+
+    .arch-layer {
+        background: #16213e;
+    }
+
+    .module-item {
+        background: #16213e;
+    }
+}
+
+@media print {
+    .site-header,
+    .hero-banner,
+    .stats-section,
+    .site-footer {
+        display: none;
+    }
+
+    body {
+        color: black;
+        background: white;
+    }
+
+    a {
+        text-decoration: underline;
+    }
+}

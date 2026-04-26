@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><title>产品详情 - WebCompress Pro</title>
+<link rel="stylesheet" href="css/main.css"><link rel="stylesheet" href="css/components.css"></head>
+<body>
+<header class="app-header"><div class="header-inner"><a class="brand-logo" href="index.html">WebCompress Pro</a>
+<nav class="main-navigation"><ul class="nav-menu"><li><a href="products.html">产品</a></li><li><a href="about.html">关于</a></li></ul></nav></div></header>
+<main class="page-content"><div class="container-lg">
+<h1>Deflate 压缩算法详解</h1>
+<article class="detail-article"><h2>算法概述</h2>
+<p>Deflate 是一种结合了 LZ77 字符串替换和 Huffman 编码的无损数据压缩算法规范。它被广泛应用于 ZIP、GZIP、PNG 等格式中。本项目的实现遵循 RFC 1951 规范，并在此基础上进行了多项性能优化。</p>
+<h2>核心组件</h2>
+<ol class="component-list"><li><strong>滑动窗口 (Sliding Window)</strong>: 维护最近处理的 32KB 数据作为字典，用于查找重复模式</li>
+<li><strong>哈希链 (Hash Chain)</strong>: 使用 3 元组哈希函数快速定位潜在匹配位置</li>
+<li><strong>惰性匹配 (Lazy Matching)</strong>: 在找到匹配后继续检查下一个位置是否有更长匹配</li>
+<li><strong>Huffman 编码</strong>: 将 LZ77 输出的 Token 流转换为变长二进制编码</li></ol>
+<h2>数据结构分析</h2>
+<table class="spec-table"><tr><td>窗口大小</td><td>SLIDE_SIZE = 32768 (32KB)</td></tr>
+<tr><td>总缓冲区</td><td>WINDOW_SIZE = 65536 (64KB 双缓冲)</td></tr>
+<tr><td>哈希表</td><td>HASH_SIZE = 32768 (15-bit hash)</td></tr>
+<tr><td>最大链长</td><td>MAX_CHAIN_LENGTH = 256</td></tr>
+<tr><td>最小匹配</td><td>MIN_MATCH = 3</td></tr>
+<tr><td>最大匹配</td><td>MAX_MATCH = 258</td></tr>
+<tr><td>Token 缓冲</td><td>MAX_BLOCK_TOKENS = 16384</td></tr></table></article></div></main>
+<footer class="site-footer-main"><p>&copy; 2026 WebCompress</p></footer>
+<script src="js/utils.js"></script><script src="js/analytics.js"></script></body></html>
