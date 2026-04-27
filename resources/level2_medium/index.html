@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebCompress - 现代化网页压缩系统</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <a href="index.html" class="logo-link">
+                <span class="logo-text">WebCompress</span>
+            </a>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-item active">首页</a></li>
+                    <li><a href="about.html" class="nav-item">关于我们</a></li>
+                    <li><a href="contact.html" class="nav-item">联系我们</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero-banner">
+        <div class="hero-overlay"></div>
+        <img src="images/hero.jpg" alt="Hero Banner" class="hero-bg">
+        <div class="hero-content">
+            <h1 class="hero-title">下一代网页压缩技术</h1>
+            <p class="hero-subtitle">基于 Deflate、LZSS 与 Huffman 编码的高效压缩引擎，为您的网页资源提供极致的压缩体验。</p>
+            <div class="hero-buttons">
+                <a href="#features" class="btn btn-primary">了解更多</a>
+                <a href="#demo" class="btn btn-secondary">在线演示</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features-section">
+        <div class="container">
+            <h2 class="section-title">核心特性</h2>
+            <p class="section-subtitle">我们采用业界领先的压缩算法组合，确保在保持数据完整性的同时最大化压缩效率。</p>
+            
+            <div class="features-grid">
+                <article class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>极速压缩</h3>
+                    <p>采用优化的 LZ77 滑动窗口算法（32KB 窗口大小），配合哈希表加速匹配查找。平均压缩速度达到 50MB/s 以上，适合实时压缩场景。</p>
+                    <ul class="feature-list">
+                        <li>32KB 滑动窗口</li>
+                        <li>哈希链快速匹配</li>
+                        <li>最大链长 256 限制</li>
+                        <li>支持流式处理</li>
+                    </ul>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>无损保证</h3>
+                    <p>所有文本类文件（HTML/CSS/JS）均采用完全无损的 Deflate 压缩方案。解压后通过 MD5 校验确保数据 100% 一致，不影响网页渲染效果。</p>
+                    <ul class="feature-list">
+                        <li>Deflate 标准算法</li>
+                        <li>Huffman 变长编码</li>
+                        <li>MD5 完整性校验</li>
+                        <li>字节级精确还原</li>
+                    </ul>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">🖼️</div>
+                    <h3>智能图片处理</h3>
+                    <p>针对 PNG/JPG 图片采用 Delta 预处理 + 可控质量压缩策略。用户可通过质量滑块平衡压缩率与视觉效果，满足不同场景需求。</p>
+                    <ul class="feature-list">
+                        <li>Delta 差分编码</li>
+                        <li>可调质量参数 (0-100)</li>
+                        <li>STB 图像库解析</li>
+                        <li>RGB 三通道处理</li>
+                    </ul>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">📦</div>
+                    <h3>多文件打包</h3>
+                    <p>自定义归档协议将整个网站的所有资源打包为单一字节流。支持批量解包还原，魔数校验确保数据安全传输与存储。</p>
+                    <ul class="feature-list">
+                        <li>自定义打包协议</li>
+                        <li>魔数: 0x503B0304</li>
+                        <li>元数据头信息</li>
+                        <li>顺序文件存储</li>
+                    </ul>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section id="stats" class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number" data-target="75">0</span>
+                    <span class="stat-unit">%平均压缩率</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-target="50">0</span>
+                    <span class="stat-unit">MB/s 处理速度</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-target="4">0</span>
+                    <span class="stat-unit">种核心算法</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-target="100">0</span>
+                    <span class="stat-unit">% 数据完整性</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="demo" class="demo-section">
+        <div class="container">
+            <h2 class="section-title">算法架构</h2>
+            <div class="architecture-diagram">
+                <div class="arch-layer input-layer">
+                    <span>输入层：原始网页资源</span>
+                </div>
+                <div class="arch-arrow">↓</div>
+                <div class="arch-layer preprocess-layer">
+                    <span>预处理层：类型识别 / Delta编码 / 文件打包</span>
+                </div>
+                <div class="arch-arrow">↓</div>
+                <div class="arch-layer compress-layer">
+                    <span>压缩层：LZ77 → Token流 → Huffman编码</span>
+                </div>
+                <div class="arch-arrow">↓</div>
+                <div class="arch-layer output-layer">
+                    <span>输出层：压缩字节流</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="team-section">
+        <div class="container">
+            <h2 class="section-title">开发团队</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="images/team.png" alt="Team Member" class="team-photo">
+                    <h4>核心算法工程师</h4>
+                    <p>负责 Deflate/LZSS/Huffman/Delta 等核心压缩算法的实现与优化</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <span class="logo-text">WebCompress</span>
+                <p>基于 C++20 的现代化网页压缩解决方案</p>
+            </div>
+            <div class="footer-links">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="about.html">关于</a></li>
+                    <li><a href="contact.html">联系</a></li>
+                </ul>
+            </div>
+            <div class="footer-tech">
+                <h4>技术栈</h4>
+                <ul>
+                    <li>C++20</li>
+                    <li>CMake 3.24+</li>
+                    <li>PyQt6</li>
+                    <li>Emscripten</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 WebCompress Project. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/utils.js"></script>
+    <script src="js/animation.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

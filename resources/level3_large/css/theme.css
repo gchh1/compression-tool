@@ -1,0 +1,43 @@
+/* Theme Variables & Dark Mode Support */
+[data-theme="dark"] {
+  --bg-body: #1a1a2e; --bg-white: #16213e;
+  --text-primary: #eaeaea; --text-secondary: #a0a0b8; --text-muted: #606078;
+  --border-color: #2a2a4a;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+.animate-fade-in { animation: fadeInUp 0.6s ease-out forwards; }
+.animate-slide-in { animation: slideInLeft 0.5s ease-out forwards; }
+.animate-pulse { animation: pulse 2s infinite ease-in-out; }
+
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+
+/* Loading skeleton */
+.skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: var(--radius-sm); }
+.skeleton-text { height: 16px; margin-bottom: 8px; }
+.skeleton-title { height: 24px; width: 60%; margin-bottom: 16px; }
+.skeleton-img { height: 200px; width: 100%; }
+
+/* Print styles */
+@media print {
+  .app-header, .site-footer-main, .btn-primary-sm, .cta-btn-primary, .cta-btn-secondary { display: none !important; }
+  body { background: #fff; color: #000; }
+  .page-content { margin-top: 0; }
+}

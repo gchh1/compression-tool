@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简单网页 - 压缩测试</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">
+                <img src="logo.png" alt="Logo" class="logo-img">
+                <span class="brand">WebCompress Demo</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">首页</a></li>
+                <li><a href="#about">关于</a></li>
+                <li><a href="#contact">联系</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section id="home" class="hero-section">
+            <h1>欢迎使用网页压缩系统</h1>
+            <p>这是一个用于测试压缩算法的简单网页示例。</p>
+            <p>本页面包含基本的 HTML 结构、CSS 样式和一张图片资源。</p>
+            <button class="cta-button" onclick="showAlert()">点击测试</button>
+        </section>
+
+        <section id="about" class="info-section">
+            <h2>关于本项目</h2>
+            <p>网页压缩系统是一个基于 C++ 核心引擎的现代化压缩工具。</p>
+            <p>它支持多种压缩算法，包括 Deflate、LZSS、Huffman 编码等。</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>高效压缩</h3>
+                    <p>采用优化的 LZ77 滑动窗口算法，配合 Huffman 变长编码，实现高压缩率。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>无损解压</h3>
+                    <p>所有文本文件均采用无损压缩方式，确保数据完整性。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>多格式支持</h3>
+                    <p>支持 HTML、CSS、JavaScript、PNG、JPG 等常见网页资源。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact-section">
+            <h2>联系我们</h2>
+            <form class="contact-form">
+                <input type="text" placeholder="您的姓名" required>
+                <input type="email" placeholder="电子邮箱" required>
+                <textarea placeholder="留言内容" rows="4"></textarea>
+                <button type="submit">发送消息</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 WebCompress System. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function showAlert() {
+            alert('JavaScript 运行正常！这是一个简单的交互测试。');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('页面加载完成');
+            
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+/* Layout Utilities */
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.text-center { text-align: center; }
+.mt-1 { margin-top: 8px; } .mt-2 { margin-top: 16px; } .mt-3 { margin-top: 24px; } .mt-4 { margin-top: 32px; }
+.mb-1 { margin-bottom: 8px; } .mb-2 { margin-bottom: 16px; } .mb-3 { margin-bottom: 24px; } .mb-4 { margin-bottom: 32px; }
+.p-1 { padding: 8px; } .p-2 { padding: 16px; } .p-3 { padding: 24px; } .p-4 { padding: 32px; }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+
+.article-page { max-width: 800px; margin-left: auto; margin-right: auto; }
+.article-meta { color: var(--text-muted); font-size: 14px; margin-bottom: 32px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color); }
+.blog-body h2 { font-size: 24px; margin-top: 36px; margin-bottom: 12px; color: var(--text-primary); }
+.blog-body p { color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px; font-size: 15px; }
+.blog-body pre { background: var(--text-primary); color: #f8f8f2; padding: 20px 24px;
+  border-radius: var(--radius-sm); overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 16px 0; }
+.blog-body code { font-family: 'Fira Code', 'Consolas', monospace; }
+
+@media (max-width: 1024px) {
+  .features-grid-layout { grid-template-columns: 1fr; }
+  .about-grid { grid-template-columns: 1fr; }
+  .contact-layout { grid-template-columns: 1fr; }
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .arch-flow { flex-direction: column; }
+  .arch-arrow { transform: rotate(90deg); }
+}
+@media (max-width: 640px) {
+  .product-grid { grid-template-columns: 1fr; }
+  .hero-metrics { grid-template-columns: 1fr 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .profile-layout { flex-direction: column; }
+  .team-roster { grid-template-columns: 1fr; }
+}

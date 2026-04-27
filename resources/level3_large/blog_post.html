@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><title>博客文章 - WebCompress Pro</title>
+<link rel="stylesheet" href="css/main.css"><link rel="stylesheet" href="css/components.css"></head>
+<body>
+<header class="app-header"><div class="header-inner"><a class="brand-logo" href="index.html">WebCompress Pro</a>
+<nav class="main-navigation"><ul class="nav-menu"><li><a href="blog.html">博客</a></li></ul></nav></div></header>
+<main class="page-content article-page"><div class="container-md">
+<h1>深入理解 Deflate 压缩中的哈希冲突处理策略</h1>
+<p class="article-meta">发布于 2026-04-20 · 作者: Algorithm Team · 阅读 8 分钟</p>
+<article class="blog-body"><h2>引言</h2>
+<p>Deflate 压缩算法的核心在于如何高效地找到输入数据中的重复模式。LZ77 通过维护一个滑动窗口作为字典，对新数据进行匹配查找。而查找效率的关键在于哈希表的设计与冲突处理策略。</p>
+<h2>哈希函数设计</h2>
+<p>本项目采用的哈希函数取连续 3 个字节进行异或组合，产生 15 位哈希值（HASH_SIZE = 32768）。选择 3 字节的原因是最小匹配长度 MIN_MATCH = 3。</p>
+<h2>冲突处理：链地址法</h2>
+<p>当多个位置的 3 元组映射到同一哈希桶时，我们使用 prev_ 数组形成链式结构。为了防止退化情况（如全零数据），设置 MAX_CHAIN_LENGTH = 256 限制最大搜索深度。</p>
+<h2>性能影响分析</h2>
+<p>在实际测试中，对于 HTML 文件（高重复率），平均链长约为 3-8；对于随机数据，可能达到上限 256。这验证了哈希函数在 Web 资源上的有效性。</p></article></div></main>
+<footer class="site-footer-main"><p>&copy; 2026 WebCompress</p></footer>
+<script src="js/utils.js"></script><script src="js/analytics.js"></script></body></html>

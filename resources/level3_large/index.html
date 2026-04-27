@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>WebCompress Pro - 企业级网页压缩解决方案</title>
+<link rel="stylesheet" href="css/main.css"><link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/layout.css"><link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<header class="app-header"><div class="header-inner"><a class="brand-logo" href="index.html">WebCompress<span class="badge">Pro</span></a>
+<nav class="main-navigation"><ul class="nav-menu"><li><a href="products.html">产品</a></li>
+<li><a href="blog.html">博客</a></li><li><a href="about.html">关于</a></li><li><a href="contact.html">联系</a></li>
+<li><a href="faq.html">FAQ</a></li><li><a href="login.html">登录</a></li></ul></nav>
+<div class="header-actions"><button class="btn-outline">注册</button><button class="btn-primary-sm">开始使用</button></div></div></header>
+
+<section class="hero-section"><div class="hero-bg-img"><img src="images/hero_banner.jpg" alt="Hero"></div>
+<div class="hero-overlay"></div><div class="hero-container">
+<h1 class="hero-headline">企业级网页压缩引擎</h1>
+<p class="hero-description">基于 Deflate、LZSS、Huffman 编码的混合压缩方案，为您的 Web 应用提供极致的加载性能优化。支持 HTML/CSS/JS/PNG/JPG 全格式，平均压缩率高达 75%。</p>
+<div class="hero-metrics"><div class="metric-card"><span class="metric-value">75%</span><span class="metric-label">平均压缩率</span></div>
+<div class="metric-card"><span class="metric-value">50ms</span><span class="metric-label">首包时间</span></div>
+<div class="metric-card"><span class="metric-value">99.9%</span><span class="metric-label">数据完整性</span></div>
+<div class="metric-card"><span class="metric-value">4种</span><span class="metric-label">核心算法</span></div></div>
+<div class="hero-cta-group"><button class="cta-btn-primary">免费试用</button><button class="cta-btn-secondary">查看演示</button></div>
+</div></section>
+
+<section id="features" class="features-showcase"><div class="container-lg">
+<h2 class="section-heading">核心技术特性</h2><p class="section-subheading">采用业界领先的压缩算法组合，针对 Web 资源特性深度优化</p>
+<div class="features-grid-layout"><article class="feature-block"><div class="feature-icon-wrapper"><span class="feature-icon">⚡</span></div>
+<h3 class="feature-title">LZ77 滑动窗口压缩</h3><p class="feature-desc">32KB 滑动窗口配合哈希链快速匹配，将字符串搜索从 O(n²) 优化至接近 O(n)。最大链长限制 256，防止退化情况。支持最长 258 字节匹配，最小 3 字节触发阈值。</p>
+<ul class="feature-specs"><li>窗口大小: 32KB (双缓冲 64KB)</li><li>哈希表: 32768 条目 (15-bit hash)</li><li>链长限制: MAX_CHAIN=256</li><li>匹配范围: 3-258 bytes</li></ul></article>
+
+<article class="feature-block"><div class="feature-icon-wrapper"><span class="feature-icon">🌳</span></div>
+<h3 class="feature-title">Huffman 变长编码</h3><p class="feature-desc">基于优先队列构建最优前缀编码树。286 个符号的字母表覆盖所有字面值和长度码。树结构通过前序遍历序列化到比特流中，解压端无损重建。</p>
+<ul class="feature-specs"><li>字母表: DEFLATE_ALPHABET_SIZE=286</li><li>符号位宽: DEFLATE_SYMBOL_BITS=9</li><li>序列化方式: 前序遍历 (0=内部, 1=叶子)</li><li>编码缓冲: 64-bit bit buffer</li></ul></article>
+
+<article class="feature-block"><div class="feature-icon-wrapper"><span class="feature-icon">📦</span></div>
+<h3 class="feature-title">LZSS 字典压缩</h3><p class="feature-desc">优化的 LZ77 变体，输出格式为标志位+数据对。12 位偏移 +4 位长度编码，每 8 个 token 共用一个标志字节。字典大小 4095，适合中小型文本文件。</p>
+<ul class="feature-specs"><li>字典大小: DICTIONARY_BUFFER=4095 (12-bit)</li><li>偏移编码: 12 bits</li><li>长度编码: 4 bits (+MIN_MATCH=3)</li><li>最大长度: MAX_MATCH=18</li></ul></article>
+
+<article class="feature-block"><div class="feature-icon-wrapper"><span class="feature-icon">🖼️</span></div>
+<h3 class="feature-title">Delta 图像预处理</h3><p class="feature-desc">针对 PNG/JPG 图片的差分编码策略。利用相邻像素的空间相关性进行预测编码，配合可调 quality 参数实现有损/无损切换。STB 库解析 RGB 三通道数据。</p>
+<ul class="feature-specs"><li>通道数: DESIRED_CHANNELS=3 (RGB)</li><li>质量参数: 0-100 (shift 计算)</li><li>图像库: stb_image / stb_image_write</li><li>处理流程: parse → Delta encode → compress</li></ul></article></div></div></section>
+
+<section class="architecture-diagram-section"><div class="container-lg">
+<h2 class="section-heading">系统架构图</h2><div class="arch-flow"><div class="arch-node input-node">输入层<br/>原始网页资源<br/>(HTML/CSS/JS/PNG)</div>
+<div class="arch-arrow">→</div><div class="arch-node preprocess-node">预处理层<br/>类型识别 | Delta编码<br/>Archiver 多文件打包</div>
+<div class="arch-arrow">→</div><div class="arch-node compress-node">压缩层<br/>LZ77 → Token流<br/>→ Huffman 编码</div>
+<div class="arch-arrow">→</div><div class="arch-node output-node">输出层<br/>压缩字节流<br/>(BitWriter 输出)</div></div></div></section>
+
+<footer class="site-footer-main"><div class="footer-grid"><div class="footer-brand-col"><h3>WebCompress Pro</h3>
+<p>基于 C++20 的现代化网页压缩引擎，提供 Python 和 WebAssembly 双端绑定。</p></div>
+<div class="footer-links-col"><h4>产品</h4><ul><li><a href="products.html">功能介绍</a></li>
+<li><a href="product_detail.html">详细文档</a></li></ul></div>
+<div class="footer-links-col"><h4>资源</h4><ul><li><a href="blog.html">技术博客</a></li>
+<li><a href="faq.html">常见问题</a></li></ul></div>
+<div class="footer-links-col"><h4>公司</h4><ul><li><a href="about.html">关于我们</a></li>
+<li><a href="contact.html">联系我们</a></li></ul></div></div>
+<div class="footer-bottom-bar"><p>&copy; 2026 WebCompress Project. All rights reserved.</p></div></footer>
+
+<script src="js/utils.js"></script><script src="js/api.js"></script><script src="js/analytics.js"></script>
+<script src="js/store.js"></script><script src="js/router.js"></script><script src="js/app.js"></script>
+<script src="js/components.js"></script></body></html>

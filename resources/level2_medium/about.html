@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于我们 - WebCompress</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <a href="index.html" class="logo-link"><span class="logo-text">WebCompress</span></a>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-item">首页</a></li>
+                    <li><a href="about.html" class="nav-item active">关于我们</a></li>
+                    <li><a href="contact.html" class="nav-item">联系我们</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">关于我们</h1>
+            <p class="page-desc">了解 WebCompress 项目的背景、目标与技术愿景</p>
+        </div>
+    </section>
+
+    <section class="about-content">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-text">
+                    <h2>项目背景</h2>
+                    <p>WebCompress 是一个学术性质的数据结构课程设计项目，旨在通过实现经典的压缩算法（Huffman 编码、LZ77/LZSS 字典编码、Deflate 混合压缩）来深入理解数据结构在工程实践中的应用。</p>
+                    
+                    <h2>技术目标</h2>
+                    <ul class="goal-list">
+                        <li><strong>算法层面：</strong>完整实现 Deflate 压缩标准，包括 LZ77 滑动窗口匹配与 Huffman 变长编码两个核心阶段</li>
+                        <li><strong>性能层面：</strong>通过哈希表优化匹配查找，将时间复杂度从 O(n²) 降低至接近 O(n)</li>
+                        <li><strong>应用层面：</strong>构建完整的网页资源压缩系统，支持 HTML/CSS/JS/PNG/JPG 等多种文件类型</li>
+                        <li><strong>扩展层面：</strong>提供 Python (PyQt6) 和 Web (WebAssembly) 双端绑定，实现跨平台使用</li>
+                    </ul>
+
+                    <h2>系统架构</h2>
+                    <p>本项目采用分层架构设计，底层为 C++ 核心引擎，上层为 Python/Web 绑定层。核心引擎包含以下模块：</p>
+                    <div class="module-list">
+                        <div class="module-item">
+                            <span class="module-name">algorithm</span>
+                            <span class="module-desc">基础算法：Deflate, LZSS, Huffman, Delta</span>
+                        </div>
+                        <div class="module-item">
+                            <span class="module-name">core</span>
+                            <span class="module-desc">压缩器封装：DeflateCompressor, LZSSCompressor</span>
+                        </div>
+                        <div class="module-item">
+                            <span class="module-name">preprocessor</span>
+                            <span class="module-desc">预处理：Archiver 打包, ImageParser 图像解析</span>
+                        </div>
+                        <div class="module-item">
+                            <span class="module-name">utils</span>
+                            <span class="module-desc">工具类：BitReader 位读取, BitWriter 位写入</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-sidebar">
+                    <div class="sidebar-card">
+                        <h3>项目信息</h3>
+                        <dl class="info-list">
+                            <dt>语言版本</dt><dd>C++20 / CMake 3.24+</dd>
+                            <dt>GUI 框架</dt><dd>PyQt6 6.11.0</dd>
+                            <dt>Web 绑定</dt><dd>Emscripten (WebAssembly)</dt>
+                            <dt>图像库</dt><dd>stb_image / stb_image_write</dt>
+                            <dt>Python 绑定</dt><dd>pybind11 3.0.3</dd>
+                        </dl>
+                    </div>
+                    <div class="sidebar-card">
+                        <h3>核心指标</h3>
+                        <dl class="info-list">
+                            <dt>滑动窗口</dt><dd>32KB</dd>
+                            <dt>哈希表大小</dt><dd>32768 条目</dd>
+                            <dt>最大链长</dt><dd>256</dd>
+                            <dt>Huffman 符号集</dt><dd>286 个符号</dd>
+                            <dt>最大匹配长度</dt><dd>258 字节</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-bottom">
+            <p>&copy; 2026 WebCompress Project. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/utils.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
