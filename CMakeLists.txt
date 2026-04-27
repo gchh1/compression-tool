@@ -14,6 +14,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(THIRD_PARTY ${CMAKE_SOURCE_DIR}/third_party)
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 set(TESTS_DIR ${CMAKE_SOURCE_DIR}/tests)
+set(ALGORITHM_DIR ${SRC_DIR}/algorithm)
 set(BINDINGS_DIR ${SRC_DIR}/bindings)
 set(UTILS_DIR ${SRC_DIR}/utils)
 

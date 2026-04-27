@@ -4,24 +4,29 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <span>
 
-namespace compressor {
-namespace algorithm {
+namespace compressor::algorithm {
+
+// ===================================
+// DeltaEncode
+// ===================================
 
 /**
  * @brief Construct a new Delta:: Delta object
  *
  * @param quality
  */
-Delta::Delta(int quality) { shift_ = quality < 100 ? (100 - quality) / 14 : 0; }
+DeltaEncode::DeltaEncode(int quality) {
+    shift_ = quality < 100 ? (100 - quality) / 14 : 0;
+    buffer_.resize(BUFFER_SIZE_);
+}
 
 /**
  * @brief
  *
  * @return auto
  */
-auto Delta::reset() -> void { prev_ = 0; }
+auto DeltaEncode::reset() -> void { prev_ = 0; }
 
 /**
  * @brief
@@ -29,14 +34,43 @@ auto Delta::reset() -> void { prev_ = 0; }
  * @param read
  * @param write
  */
-auto Delta::encode(std::span<const uint8_t> read, std::span<uint8_t> write)
-    -> void {
-    for (size_t i = 0; i < read.size(); ++i) {
-        uint8_t pixel = (read[i] >> shift_) << shift_;
-        write[i] = pixel - prev_;
-        prev_ = pixel;
+auto DeltaEncode::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
+    while (true) {
+        size_t read_remain = reader_.getRemainSize();
+        size_t write_remain = writer_.getRemainSize();
+        size_t process_bytes =
+            std::min({BUFFER_SIZE_, read_remain, write_remain});
+
+        if (process_bytes == 0) {
+            if (read_remain == 0) {
+                status.done = is_last_chunk;
+                status.need_input = !is_last_chunk;
+            }
+            if (write_remain == 0 && read_remain > 0) {
+                status.need_output = true;
+            }
+            return;
+        }
+
+        reader_.readBytes(buffer_.data(), process_bytes);
+
+        for (size_t i = 0; i < process_bytes; ++i) {
+            uint8_t pixel = (buffer_[i] >> shift_) << shift_;
+            buffer_[i] = pixel - prev_;
+            prev_ = pixel;
+        }
+
+        writer_.writeBytes(buffer_.data(), process_bytes);
     }
 }
+
+// ===================================
+// Delta decode
+// ===================================
+
+DeltaDecode::DeltaDecode() { buffer_.resize(BUFFER_SIZE_); }
+
+auto DeltaDecode::reset(void) -> void { prev_ = 0; }
 
 /**
  * @brief
@@ -44,15 +78,33 @@ auto Delta::encode(std::span<const uint8_t> read, std::span<uint8_t> write)
  * @param read
  * @param write
  */
-auto Delta::decode(std::span<const uint8_t> read, std::span<uint8_t> write)
-    -> void {
-    for (size_t i = 0; i < read.size(); ++i) {
-        uint8_t pixel = read[i] + prev_;
-        write[i] = pixel;
-        prev_ = pixel;
+auto DeltaDecode::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
+    while (true) {
+        size_t read_remain = reader_.getRemainSize();
+        size_t write_remain = writer_.getRemainSize();
+        size_t process_bytes =
+            std::min({BUFFER_SIZE_, read_remain, write_remain});
+
+        if (process_bytes == 0) {
+            if (read_remain == 0) {
+                status.done = is_last_chunk;
+                status.need_input = !is_last_chunk;
+            }
+            if (write_remain == 0 && read_remain > 0) {
+                status.need_output = true;
+            }
+            return;
+        }
+
+        reader_.readBytes(buffer_.data(), process_bytes);
+
+        for (size_t i = 0; i < process_bytes; ++i) {
+            buffer_[i] += prev_;
+            prev_ = buffer_[i];
+        }
+
+        writer_.writeBytes(buffer_.data(), process_bytes);
     }
 }
 
-}  // namespace algorithm
-
-}  // namespace compressor
+}  // namespace compressor::algorithm

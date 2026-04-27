@@ -62,11 +62,13 @@ class HuffmanTree {
     HuffmanTree& operator=(const HuffmanTree&) = delete;
 
     /** @brief Recieve byte stream, and init the Huffman Tree */
-    explicit HuffmanTree(const std::vector<uint32_t>& freq_map);
+    HuffmanTree(const std::vector<uint32_t>& freq_map, size_t dictionary_size,
+                size_t symbol_bits);
+
     explicit HuffmanTree(std::span<const uint8_t> symbols);
 
     /** @brief Build the Huffman Tree with preorder tree code */
-    explicit HuffmanTree(utils::BitReader& reader);
+    // explicit HuffmanTree(utils::BitReader& reader);
 
     /** @brief Obey RAII (Resources Acqusition is Initialization) */
     ~HuffmanTree() {
@@ -82,8 +84,7 @@ class HuffmanTree {
     }
 
     /** @brief Build and return the dictionary */
-    auto buildDictionary(void) const
-        -> std::array<HuffmanCode, DEFLATE_ALPHABET_SIZE>;
+    auto buildDictionary(void) const -> std::vector<HuffmanCode>;
 
     /** @brief Return the Huffman Tree we build */
     auto serializeTree(utils::BitWriter& writer) const -> void;
@@ -91,20 +92,30 @@ class HuffmanTree {
     /** @brief Return the root of the Huffman Tree */
     auto getRoot(void) -> node* const { return root_; }
 
+    auto getTreeSize(void) -> size_t const { return tree_size_; }
+
    private:
     /** @brief Build the huffman tree */
     auto buildTree(const std::vector<uint32_t>& freqMap) -> void;
 
     /** @brief Travel the Huffman Tree by preorder to get the code */
-    auto generateCodes(
-        node* n, uint64_t current_code, uint8_t current_length,
-        std::array<HuffmanCode, DEFLATE_ALPHABET_SIZE>& dict) const -> void;
+    auto generateCodes(node* n, uint64_t current_code, uint8_t current_length,
+                       std::vector<HuffmanCode>& dict) const -> void;
 
     /** @brief  */
     auto serializeNode(utils::BitWriter& writer, node* n) const -> void;
 
+    /** @brief  */
+    auto calcSerializedBits(const node* n) -> size_t const;
+
     /** @brief root of the Huffman Tree */
-    node* root_ = nullptr;
+    node* root_{nullptr};
+
+    size_t tree_size_{0};
+
+    /** @brief  */
+    size_t dictionary_size_{DEFLATE_ALPHABET_SIZE};
+    size_t symbol_bits_{DEFLATE_SYMBOL_BITS};
 };
 
 }  // namespace compressor::algorithm

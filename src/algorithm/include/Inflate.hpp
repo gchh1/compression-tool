@@ -15,22 +15,32 @@
 #include <span>
 #include <vector>
 
+#include "Deflate.hpp"
 #include "HuffmanTree.hpp"
 
 namespace compressor::algorithm {
-class Inflate {
+class Inflate : public AlgorithmBase {
    public:
-    auto decompress(std::span<const uint8_t> read, std::span<uint8_t> write,
-                    bool is_last) -> size_t;
+    Inflate();
 
-    auto reset(void) -> void;
+    auto reset(void) -> void override;
+
+   protected:
+    auto handle(AlgorithmStatus& status, bool is_last_chunk) -> void override;
 
    private:
+    static constexpr uint16_t DICTIONARY_SIZE = 32768;
+
     std::vector<uint8_t> window_;  // 32KB
     size_t decode_pos_{0};
 
-    enum class DecodeState { READ_BLOCK_HEADER, READ_TREE, DECODE_TOKENS };
-    DecodeState state_{DecodeState::READ_BLOCK_HEADER};
+    bool is_last_block_{false};
+
+    // ===================================
+    // State machine
+    // ===================================
+    enum class InflateState { READ_BLOCK_HEADER, READ_TREE, DECODE_TOKENS };
+    InflateState inflate_state_{InflateState::READ_BLOCK_HEADER};
 
     std::unique_ptr<HuffmanTree> huffman_tree_{nullptr};
     node* cursor_{nullptr};

@@ -13,6 +13,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <span>
 #include <utility>
 namespace compressor::utils {
@@ -23,7 +24,7 @@ class BitWriter {
     // ===================================
 
     /* Delete default constructor and copy */
-    BitWriter() = delete;
+    BitWriter() = default;
     BitWriter(const BitWriter &) = delete;
     BitWriter &operator=(const BitWriter &) = delete;
 
@@ -39,8 +40,7 @@ class BitWriter {
         : write_(std::exchange(that.write_, {})),
           byte_pos_(that.byte_pos_),
           buffer_(that.buffer_),
-          buffer_idx_(that.buffer_idx_),
-          is_overflow_(that.is_overflow_) {}
+          buffer_idx_(that.buffer_idx_) {}
 
     /* Only allow move assignment */
     BitWriter &operator=(BitWriter &&that) {
@@ -49,7 +49,6 @@ class BitWriter {
             byte_pos_ = that.byte_pos_;
             buffer_ = that.buffer_;
             buffer_idx_ = that.buffer_idx_;
-            is_overflow_ = that.is_overflow_;
         }
         return *this;
     }
@@ -58,30 +57,31 @@ class BitWriter {
     // Method we need
     // ===================================
 
-    auto isOverflow(void) const -> bool { return is_overflow_; }
-
-    auto getBuffer(void) const -> uint64_t { return buffer_; }
-
-    auto getBufferIdx(void) const -> uint8_t { return buffer_idx_; }
-
-    auto getBytesWritten(void) const -> size_t { return byte_pos_; }
+    /**
+     * @brief Return false if we don not have enough space to contain
+     *
+     * @param count
+     * @return true
+     * @return false
+     */
+    auto ensureSpace(uint8_t count) const -> bool {
+        return byte_pos_ + (buffer_idx_ + count) / 8 <= write_.size();
+    }
 
     /**
-     * @brief Write a bit to the write_ in little-endian
+     * @brief Write a bit to the write_ in `little-endian`
      *
      * @return int
      */
-    inline auto writeBit(uint8_t bit) -> void {
-        buffer_ = (buffer_ << 1) | (bit & 1);
+    auto writeBit(uint8_t bit) -> void {
+        buffer_ |= (static_cast<uint64_t>(bit & 1) << buffer_idx_);
         buffer_idx_++;
 
         if (buffer_idx_ == 8) {
+            write_[byte_pos_++] =
+                static_cast<uint8_t>(buffer_);  // 修复：LSB-first 直接强转
+            buffer_ >>= 8;
             buffer_idx_ = 0;
-            if (byte_pos_ < write_.size()) {
-                write_[byte_pos_++] = static_cast<uint8_t>(buffer_);
-            } else {
-                is_overflow_ = true;
-            }
         }
     }
 
@@ -93,26 +93,54 @@ class BitWriter {
      * @return true
      * @return false
      */
-    inline auto writeBits(uint64_t value, uint8_t count) -> void {
-        if (count == 0) {
-            return;
-        }
+    auto writeBits(uint64_t value, uint8_t count) -> void {
+        if (count == 0) return;
 
-        // Mask the high bits
         value &= (1ULL << count) - 1;
-
-        buffer_ = (buffer_ << count) | value;
+        buffer_ |= (value << buffer_idx_);
         buffer_idx_ += count;
 
-        while (buffer_idx_ >= 8) {
-            buffer_idx_ -= 8;
-            if (byte_pos_ < write_.size()) {
-                write_[byte_pos_++] =
-                    static_cast<uint8_t>(buffer_ >> buffer_idx_);
-            } else {
-                is_overflow_ = true;
-            }
+        // 凑够 32 位直接一次性写入
+        while (buffer_idx_ >= 32) {
+            uint32_t out_word = static_cast<uint32_t>(buffer_);
+            std::memcpy(write_.data() + byte_pos_, &out_word, 4);
+            byte_pos_ += 4;
+
+            buffer_ >>= 32;
+            buffer_idx_ -= 32;
         }
+
+        // 处理不够 32 位但够 8 位的情况
+        while (buffer_idx_ >= 8) {
+            write_[byte_pos_++] =
+                static_cast<uint8_t>(buffer_);  // 修复：取底端字节
+            buffer_ >>= 8;
+            buffer_idx_ -= 8;
+        }
+    }
+
+    /**
+     * @brief
+     *
+     * @param src
+     * @param count
+     * @return size_t
+     */
+    auto writeBytes(const uint8_t *src, size_t count) -> size_t {
+        while (buffer_idx_ >= 8) {
+            write_[byte_pos_++] = static_cast<uint8_t>(buffer_);
+            buffer_ >>= 8;
+            buffer_idx_ -= 8;
+        }
+
+        size_t remain = write_.size() - byte_pos_;
+        size_t to_copy = std::min(count, remain);
+
+        // 修复：拷贝长度就是 to_copy，而不是 8 * count！
+        std::memcpy(write_.data() + byte_pos_, src, to_copy);
+        byte_pos_ += to_copy;
+
+        return to_copy;
     }
 
     /**
@@ -121,18 +149,42 @@ class BitWriter {
      * @return size_t How many `bytes` we write into
      */
     auto flush() -> size_t {
-        if (buffer_idx_ > 0) {
-            if (byte_pos_ < write_.size()) {
-                write_[byte_pos_++] =
-                    static_cast<uint8_t>(buffer_ << (8 - buffer_idx_));
+        while (buffer_idx_ > 0) {
+            write_[byte_pos_++] = static_cast<uint8_t>(buffer_);
+            if (buffer_idx_ >= 8) {
+                buffer_ >>= 8;
+                buffer_idx_ -= 8;
             } else {
-                is_overflow_ = true;
+                buffer_ = 0;
+                buffer_idx_ = 0;
             }
-            buffer_idx_ = 0;
         }
         return byte_pos_;
     }
 
+    /**
+     * @brief Called when the source data change, but keep buffer
+     *
+     * @param write
+     */
+    auto changeSource(std::span<uint8_t> write) -> void {
+        write_ = write;
+        byte_pos_ = 0;
+    }
+
+    auto getBytesWritten(void) const -> size_t {
+        return byte_pos_ + (buffer_idx_ / 8);
+    }
+
+    auto getSourceSize(void) const -> size_t { return write_.size(); }
+
+    auto getRemainSize(void) const -> size_t {
+        return write_.size() - byte_pos_ - buffer_idx_ / 8;
+    }
+
+    // ===================================
+    // Private
+    // ===================================
    private:
     /** @brief Span resources that the class wrappered */
     std::span<uint8_t> write_;
@@ -145,9 +197,6 @@ class BitWriter {
 
     /** @brief  */
     uint8_t buffer_idx_{0};
-
-    /** @brief true if reach the end of `write_` */
-    bool is_overflow_{false};
 };
 
 }  // namespace compressor::utils

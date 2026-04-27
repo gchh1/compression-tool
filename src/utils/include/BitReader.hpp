@@ -11,7 +11,9 @@
 
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <span>
 #include <utility>
 
@@ -24,7 +26,7 @@ class BitReader {
     // ===================================
 
     /* Delete default constructor and copy */
-    BitReader() = delete;
+    BitReader() = default;
     BitReader(const BitReader &) = delete;
     BitReader &operator=(const BitReader &) = delete;
 
@@ -58,49 +60,105 @@ class BitReader {
     // ===================================
     // Method we need
     // ===================================
-
-    auto isEOF(void) const -> bool { return is_eof_; }
-
-    auto getBuffer(void) const -> uint64_t { return buffer_; }
-
-    auto getBufferIdx(void) const -> uint8_t { return buffer_idx_; }
-
-    /**
-     * @brief Peek a bit by `MSB` first. Need to check `is_eof_` outside
-     *
-     * @return uint8_t
-     */
-    inline auto readBit() -> uint8_t {
-        if (buffer_idx_ == 0) {
-            fillBuffer();
-            if (is_eof_) {
-                return 0;
-            }
-        }
-        return (buffer_ >> (--buffer_idx_)) & 1;
-    }
-
     /**
      * @brief
      *
-     * @param count maximum value `64`
-     * @return uint64_t
+     * @param count
+     * @return true
+     * @return false
      */
-    inline auto readBits(uint8_t count) -> uint64_t {
-        if (count == 0) {
-            return 0;
-        }
-
+    auto ensureBits(uint8_t count) -> bool {
         if (buffer_idx_ < count) {
             fillBuffer();
-            if (buffer_idx_ < count) {
-                is_eof_ = true;
-                return 0;
-            }
+        }
+        return buffer_idx_ >= count;
+    }
+
+    /**
+     * @brief Peek and consume a bit
+     *
+     * @return uint64_t
+     */
+    auto readBit(void) -> uint64_t { return readBits(1); }
+
+    /**
+     * @brief Peek and consume `count` bits
+     *
+     * @param count
+     * @return uint64_t
+     */
+    auto readBits(uint8_t count) -> uint64_t {
+        uint64_t res = peekBits(count);
+        consumeBits(count);
+        return res;
+    }
+
+    /**
+     * @brief Peek and consume `count` bytes
+     *
+     * @param dst
+     * @param count
+     * @return size_t
+     */
+    auto readBytes(uint8_t *dst, size_t count) -> size_t {
+        size_t copied = 0;
+
+        // 1. 吐出已经被吸入 64-bit 寄存器的字节
+        while (buffer_idx_ >= 8 && count > 0) {
+            *dst++ = static_cast<uint8_t>(buffer_);
+            buffer_ >>= 8;
+            buffer_idx_ -= 8;
+            count--;
+            copied++;
         }
 
-        buffer_idx_ -= count;
-        return (buffer_ >> buffer_idx_) & ((1ULL << count) - 1);
+        // 2. 绕过寄存器，极速提取底层数据
+        if (count > 0 && buffer_idx_ == 0) {
+            size_t remain = read_.size() - byte_pos_;
+            size_t to_copy = std::min(count, remain);
+
+            if (to_copy > 0) {
+                std::memcpy(dst, read_.data() + byte_pos_, to_copy);
+                byte_pos_ += to_copy;
+                copied += to_copy;
+                dst += to_copy;
+
+                fillBuffer();  // 重新蓄水
+            }
+        }
+        return copied;
+    }
+
+    /**
+     * @brief Called when the source data change, but keep buffer
+     *
+     * @param read
+     */
+    auto changeSource(std::span<const uint8_t> read) -> void {
+        read_ = read;
+        byte_pos_ = 0;
+
+        fillBuffer();
+    }
+
+    /**
+     * @brief Get the Byte Read object
+     *
+     * @return size_t
+     */
+    auto getByteRead(void) const -> size_t {
+        return byte_pos_ - (buffer_idx_ / 8);
+    }
+
+    /**
+     * @brief Get the Source Size object
+     *
+     * @return size_t
+     */
+    auto getSourceSize(void) const -> size_t { return read_.size(); }
+
+    auto getRemainSize(void) const -> size_t {
+        return (read_.size() - byte_pos_) + (buffer_idx_ / 8);
     }
 
    private:
@@ -116,23 +174,47 @@ class BitReader {
     /** @brief Point to the top of buffer */
     uint8_t buffer_idx_{0};
 
-    /** @brief EOF flag*/
-    bool is_eof_{false};
-
     /**
-     * @brief Fill the buffer by byte
+     * @brief Greedily fill the buffer_
      *
      */
-    inline auto fillBuffer(void) -> void {
-        // Seize bytes to buffer if available
-        while (byte_pos_ < read_.size() && buffer_idx_ <= 56) {
-            buffer_ = (buffer_ << 8) | read_[byte_pos_++];
-            buffer_idx_ += 8;
+    auto fillBuffer() -> void {
+        // If we are able to consume a word, do it!
+        while (buffer_idx_ <= 32 && (read_.size() - byte_pos_) >= 4) {
+            uint32_t next_word;
+            std::memcpy(&next_word, read_.data() + byte_pos_, 4);
+
+            buffer_ |= (static_cast<uint64_t>(next_word) << buffer_idx_);
+
+            buffer_idx_ += 32;
+            byte_pos_ += 4;
         }
 
-        if (buffer_idx_ == 0) {
-            is_eof_ = true;
+        while (buffer_idx_ <= 56 && byte_pos_ < read_.size()) {
+            uint64_t next_byte = read_[byte_pos_++];
+            buffer_ |= (next_byte << buffer_idx_);
+            buffer_idx_ += 8;
         }
+    }
+
+    /**
+     * @brief
+     *
+     * @param count
+     * @return uint64_t
+     */
+    auto peekBits(uint8_t count) const -> uint64_t {
+        return buffer_ & ((1ULL << count) - 1);
+    }
+
+    /**
+     * @brief
+     *
+     * @param count
+     */
+    auto consumeBits(uint8_t count) -> void {
+        buffer_ >>= count;
+        buffer_idx_ -= count;
     }
 };
 

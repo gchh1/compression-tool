@@ -45,3 +45,24 @@ make
 
 并且在```build_wasm/src/bindings```中构建了 html 前端
 
+
+## API
+### BitReader
+- ```auto BitReader::ensureBits(uint8_t count) -> bool```
+- ```auto BitReader::readBit(void) -> uint8_t```
+- ```auto BitReader::readBits(uint8_t count) -> uint64_t```
+- ```auto BitReader::readBytes(uint8_t* dst, size_t count) -> void```
+- ```auto BitReader::changeSource(std::span<const uint8_t> source) -> void```
+- ```auto BitReader::getByteRead(void) -> size_t```
+- ```auto BitReader::getSourceSize(void) -> size_t```
+
+
+### BitWriter
+- ```auto BitWriter::ensureSpace(uint8_t count) -> bool```
+- ```auto BitWriter::writeBit(uint8_t) -> void```
+- ```auto BitWriter::writeBits(uint64_t value, uint8_t) -> void```
+- ```auto writeBytes(const uint8_t* src, size_t count) -> size_t```
+- ```auto BitWriter::flush() -> void```
+- ```auto BitWriter::changeSource(std::span<uint8_t> source) -> void```
+- ```auto BitWriter::getByteWritten(void) -> size_t```
+- ```auto BitWriter::getSourceSize(void) -> size_t```

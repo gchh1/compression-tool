@@ -2,11 +2,14 @@ add_library(
     algorithm
     STATIC
     Delta.cpp
+    AlgorithmBase.cpp
     Deflate.cpp
-    Huffman.cpp
+
+    # Huffman.cpp
     HuffmanTree.cpp
-    LZ77.cpp
-    LZSS.cpp
+
+    # LZ77.cpp
+    # LZSS.cpp
 )
 
 target_include_directories(
