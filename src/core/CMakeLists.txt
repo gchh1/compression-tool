@@ -1,8 +1,7 @@
 add_library(
     core
     STATIC
-    DeflateCompressor.cpp
-    LZSSCompressor.cpp
+    StreamProcessor.cpp
 )
 
 target_include_directories(
