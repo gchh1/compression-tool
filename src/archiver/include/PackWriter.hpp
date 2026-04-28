@@ -32,7 +32,8 @@ class PackWriter {
    public:
     PackWriter() = default;
 
-    auto beginFile(const std::string& filepath, AlgorithmID algo) -> void;
+    auto beginFile(const std::string& filepath, AlgorithmID comp_algo,
+                   AlgorithmID preproc_algo = AlgorithmID::None) -> void;
 
     auto pushFileData(std::span<const uint8_t> data) -> void;
 
@@ -49,7 +50,9 @@ class PackWriter {
 
     std::vector<uint8_t> current_comp_buffer_;
 
-    std::unique_ptr<processor::StreamProcessor> processor_;
+    std::unique_ptr<processor::StreamProcessor> compressor_;
+
+    std::unique_ptr<processor::StreamProcessor> preprocessor_;
 
     std::vector<uint8_t> output_bffer_;
 

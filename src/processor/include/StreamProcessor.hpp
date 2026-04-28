@@ -65,4 +65,6 @@ class StreamProcessor {
     auto processChunks(bool is_last) -> void;
 };
 
+auto drain(StreamProcessor& from, StreamProcessor& to) -> void;
+
 }  // namespace compressor::processor

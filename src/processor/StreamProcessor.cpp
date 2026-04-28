@@ -91,4 +91,19 @@ auto StreamProcessor::processChunks(bool is_last) -> void {
     }
 }
 
+/**
+ * @brief Helper function
+ *
+ * @param from
+ * @param to
+ */
+auto drain(StreamProcessor& from, StreamProcessor& to) -> void {
+    while (true) {
+        auto out = from.pull();
+        if (out.empty()) break;
+        to.push(out, false);
+        from.consume(out.size());
+    }
+}
+
 }  // namespace compressor::processor

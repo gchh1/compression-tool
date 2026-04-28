@@ -19,14 +19,15 @@ namespace compressor::archiver {
  * @param filepath
  * @param algo
  */
-auto PackWriter::beginFile(const std::string& filepath, AlgorithmID algo)
-    -> void {
+auto PackWriter::beginFile(const std::string& filepath, AlgorithmID comp_algo,
+                           AlgorithmID preproc_algo) -> void {
     if (finished_) return;
     if (file_open_) closeCurrentFile();
 
     /* 1. Initialize the header */
     entry_header_.filepath = filepath;
-    entry_header_.algorithm_id = algo;
+    entry_header_.preproc_algo_id = preproc_algo;
+    entry_header_.comp_algo_id = comp_algo;
     entry_header_.original_size = 0;
     entry_header_.compressed_size = 0;
     current_comp_buffer_.clear();
@@ -36,9 +37,15 @@ auto PackWriter::beginFile(const std::string& filepath, AlgorithmID algo)
     header_offset_ = output_bffer_.size() + header.size() - sizeof(uint64_t);
     output_bffer_.insert(output_bffer_.end(), header.begin(), header.end());
 
-    /* 3. Create compressor */
-    auto compressor = core::createAlgorithm(algo);
-    processor_ =
+    /* 3. Create preprocessor */
+
+    auto preprocessor = core::createAlgorithm(preproc_algo);
+    preprocessor_ =
+        std::make_unique<processor::StreamProcessor>(std::move(preprocessor));
+
+    /* 4. Create compressor_ */
+    auto compressor = core::createAlgorithm(comp_algo);
+    compressor_ =
         std::make_unique<processor::StreamProcessor>(std::move(compressor));
     file_open_ = true;
 }
@@ -52,7 +59,13 @@ auto PackWriter::pushFileData(std::span<const uint8_t> data) -> void {
     if (!file_open_) return;
 
     entry_header_.original_size += data.size();
-    processor_->push(data, false);
+
+    if (preprocessor_) {
+        preprocessor_->push(data, false);
+        drain(*preprocessor_, *compressor_);
+    } else {
+        compressor_->push(data, false);
+    }
     drainProcessor();
 }
 
@@ -63,9 +76,9 @@ auto PackWriter::pushFileData(std::span<const uint8_t> data) -> void {
 auto PackWriter::endFile(void) -> void {
     if (!file_open_) return;
 
-    processor_->finish();
+    compressor_->finish();
     drainProcessor();
-    processor_.reset();
+    compressor_.reset();
 
     auto* dest = output_bffer_.data() + header_offset_;
     std::memcpy(dest, &current_compressed_size_, sizeof(uint64_t));
@@ -103,11 +116,11 @@ auto PackWriter::consumeOutput(size_t n) -> void {
  */
 auto PackWriter::drainProcessor(void) -> void {
     while (true) {
-        auto out = processor_->pull();
+        auto out = compressor_->pull();
         if (out.empty()) break;
         output_bffer_.insert(output_bffer_.end(), out.begin(), out.end());
         current_compressed_size_ += out.size();
-        processor_->consume(out.size());
+        compressor_->consume(out.size());
     }
 }
 
@@ -126,9 +139,9 @@ auto PackWriter::finish(void) -> void {
  *
  */
 auto PackWriter::closeCurrentFile(void) -> void {
-    if (processor_) {
-        processor_->finish();
-        processor_.reset();
+    if (compressor_) {
+        compressor_->finish();
+        compressor_.reset();
     }
 
     file_open_ = false;
