@@ -1,17 +1,18 @@
 add_library(
-    core
+    processor
     STATIC
-    AlgorithmFactory.cpp
+    StreamProcessor.cpp
 )
 
 target_include_directories(
-    core
+    processor
     PUBLIC
     include
 )
 
 target_link_libraries(
-    core
+    processor
     PUBLIC
     algorithm
+    core
 )

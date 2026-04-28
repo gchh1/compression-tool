@@ -1,17 +1,19 @@
 add_library(
-    core
+    archiver
     STATIC
-    AlgorithmFactory.cpp
+    PackReader.cpp
+    PackWriter.cpp
 )
 
 target_include_directories(
-    core
+    archiver
     PUBLIC
     include
 )
 
 target_link_libraries(
-    core
+    archiver
     PUBLIC
-    algorithm
+    core
+    processor
 )

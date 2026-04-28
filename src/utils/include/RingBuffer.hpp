@@ -58,7 +58,13 @@ class RingBuffer {
     /** @brief Return the size */
     auto size(void) const -> size_t { return size_; }
 
-    auto reset(void) -> void;
+    auto empty(void) const -> bool { return size_ == 0; }
+
+    /** @brief Reset */
+    auto reset(void) -> void {
+        head_ = 0;
+        size_ = 0;
+    };
 
    private:
     std::vector<uint8_t> ring_;
@@ -90,5 +96,17 @@ class RingBuffer {
         head_ = 0;
     }
 
-    auto compact(void) -> void;
+    /** @brief Compact head to 0 */
+    auto compact(void) -> void {
+        if (head_ == 0) return;
+
+        size_t first_part =
+            size_ < (capacity_ - head_) ? size_ : (capacity_ - head_);
+        std::memmove(ring_.data(), ring_.data() + head_, first_part);
+        if (first_part < size_) {
+            std::memmove(ring_.data() + first_part, ring_.data(),
+                         size_ - first_part);
+        }
+        head_ = 0;
+    };
 };
