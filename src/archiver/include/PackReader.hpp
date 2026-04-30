@@ -1,14 +1,3 @@
-/**
- * @file PackReader.hpp
- * @author yhc
- * @brief
- * @version 0.1
- * @date 2026-04-28
- *
- * @copyright Copyright (c) 2026
- *
- */
-
 #pragma once
 
 #include <cstddef>
@@ -17,19 +6,17 @@
 
 #include "EntryHeader.hpp"
 #include "IDataReader.hpp"
-#include "StreamProcessor.hpp"
+#include "Pipeline.hpp"
 
 namespace compressor::archiver {
 class PackReader {
    public:
     explicit PackReader(std::unique_ptr<IDataReader> reader);
 
-    /** @brief Extract all the `EntryHeader` */
     auto getEntries(void) const -> const std::vector<EntryHeader>&;
 
-    /** @brief  */
     auto extractStream(size_t index) const
-        -> std::unique_ptr<processor::StreamProcessor>;
+        -> std::unique_ptr<processor::Pipeline>;
 
    private:
     const size_t ENTRY_CHUNK_SIZE = 4096;
@@ -39,7 +26,6 @@ class PackReader {
 
     std::vector<EntryHeader> entries_;
 
-    /** @brief  */
     auto buildIndex(void) -> void;
 };
 }  // namespace compressor::archiver

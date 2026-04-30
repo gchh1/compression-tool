@@ -1,6 +1,7 @@
 add_library(
     processor
     STATIC
+    Pipeline.cpp
     StreamProcessor.cpp
 )
 

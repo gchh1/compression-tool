@@ -14,17 +14,25 @@
 #include <memory>
 
 #include "Deflate.hpp"
+#include "Delta.hpp"
 #include "Inflate.hpp"
 
 namespace compressor::core {
 
 auto createAlgorithm(AlgorithmID id) -> std::unique_ptr<algorithm::IAlgorithm> {
     switch (id) {
+        case AlgorithmID::None:
+            return nullptr;
         case AlgorithmID::Deflate:
             return std::make_unique<algorithm::Deflate>();
         case AlgorithmID::Inflate:
             return std::make_unique<algorithm::Inflate>();
+        case AlgorithmID::DeltaEncode:
+            return std::make_unique<algorithm::DeltaEncode>();
+        case AlgorithmID::DeltaDecode:
+            return std::make_unique<algorithm::DeltaDecode>();
     }
+    return nullptr;
 }
 
 }  // namespace compressor::core

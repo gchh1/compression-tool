@@ -1,16 +1,3 @@
-/**
- * @file PackWriter.hpp
- * @author yhc
- * @brief For raw files or folder, we need to `compress` and `package` them into
- *        a `package`. As for the procedure, each file is compressed to [header]
- *        + [compressed context] seperately.
- * @version 0.1
- * @date 2026-04-28
- *
- * @copyright Copyright (c) 2026
- *
- */
-
 #pragma once
 
 #include <cstddef>
@@ -22,7 +9,7 @@
 
 #include "AlgorithmFactory.hpp"
 #include "EntryHeader.hpp"
-#include "StreamProcessor.hpp"
+#include "Pipeline.hpp"
 
 namespace compressor::archiver {
 
@@ -48,13 +35,9 @@ class PackWriter {
    private:
     EntryHeader entry_header_;
 
-    std::vector<uint8_t> current_comp_buffer_;
+    std::vector<uint8_t> output_buffer_;
 
-    std::unique_ptr<processor::StreamProcessor> compressor_;
-
-    std::unique_ptr<processor::StreamProcessor> preprocessor_;
-
-    std::vector<uint8_t> output_bffer_;
+    std::unique_ptr<processor::Pipeline> pipeline_;
 
     size_t output_pos_{0};
 
@@ -65,8 +48,9 @@ class PackWriter {
     bool finished_{false};
     bool file_open_{false};
 
-    auto drainProcessor(void) -> void;
+    auto drainOutput(void) -> void;
 
     auto closeCurrentFile(void) -> void;
 };
+
 }  // namespace compressor::archiver

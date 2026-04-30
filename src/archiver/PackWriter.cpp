@@ -1,4 +1,3 @@
-
 #include "PackWriter.hpp"
 
 #include <cstddef>
@@ -10,142 +9,91 @@
 #include <utility>
 
 #include "AlgorithmFactory.hpp"
-#include "StreamProcessor.hpp"
+#include "Pipeline.hpp"
 
 namespace compressor::archiver {
-/**
- * @brief Called when front end scan a new file
- *
- * @param filepath
- * @param algo
- */
+
 auto PackWriter::beginFile(const std::string& filepath, AlgorithmID comp_algo,
                            AlgorithmID preproc_algo) -> void {
     if (finished_) return;
     if (file_open_) closeCurrentFile();
 
-    /* 1. Initialize the header */
     entry_header_.filepath = filepath;
     entry_header_.preproc_algo_id = preproc_algo;
     entry_header_.comp_algo_id = comp_algo;
     entry_header_.original_size = 0;
     entry_header_.compressed_size = 0;
-    current_comp_buffer_.clear();
 
-    /* 2. Hold the head place */
     auto header = entry_header_.serialize();
-    header_offset_ = output_bffer_.size() + header.size() - sizeof(uint64_t);
-    output_bffer_.insert(output_bffer_.end(), header.begin(), header.end());
+    header_offset_ =
+        output_buffer_.size() + header.size() - sizeof(uint64_t);
+    output_buffer_.insert(output_buffer_.end(), header.begin(), header.end());
 
-    /* 3. Create preprocessor */
+    auto preproc = core::createAlgorithm(preproc_algo);
+    auto comp = core::createAlgorithm(comp_algo);
+    pipeline_ = std::make_unique<processor::Pipeline>(std::move(preproc),
+                                                      std::move(comp));
 
-    auto preprocessor = core::createAlgorithm(preproc_algo);
-    preprocessor_ =
-        std::make_unique<processor::StreamProcessor>(std::move(preprocessor));
-
-    /* 4. Create compressor_ */
-    auto compressor = core::createAlgorithm(comp_algo);
-    compressor_ =
-        std::make_unique<processor::StreamProcessor>(std::move(compressor));
     file_open_ = true;
 }
 
-/**
- * @brief
- *
- * @param data
- */
 auto PackWriter::pushFileData(std::span<const uint8_t> data) -> void {
     if (!file_open_) return;
 
     entry_header_.original_size += data.size();
-
-    if (preprocessor_) {
-        preprocessor_->push(data, false);
-        drain(*preprocessor_, *compressor_);
-    } else {
-        compressor_->push(data, false);
-    }
-    drainProcessor();
+    pipeline_->push(data);
+    drainOutput();
 }
 
-/**
- * @brief
- *
- */
+auto PackWriter::pullOutput(void) -> std::span<const uint8_t> const {
+    return {output_buffer_.data() + output_pos_,
+            output_buffer_.size() - output_pos_};
+}
+
+auto PackWriter::consumeOutput(size_t n) -> void {
+    n = std::min(n, output_buffer_.size() - output_pos_);
+    output_pos_ += n;
+    if (output_pos_ == output_buffer_.size()) {
+        output_buffer_.clear();
+        output_pos_ = 0;
+    }
+}
+
 auto PackWriter::endFile(void) -> void {
     if (!file_open_) return;
 
-    compressor_->finish();
-    drainProcessor();
-    compressor_.reset();
+    pipeline_->finish();
+    drainOutput();
+    pipeline_.reset();
 
-    auto* dest = output_bffer_.data() + header_offset_;
+    auto* dest = output_buffer_.data() + header_offset_;
     std::memcpy(dest, &current_compressed_size_, sizeof(uint64_t));
 
     file_open_ = false;
 }
 
-/**
- * @brief
- *
- * @return std::span<const uint8_t> const
- */
-auto PackWriter::pullOutput(void) -> std::span<const uint8_t> const {
-    return {output_bffer_.data() + output_pos_,
-            output_bffer_.size() - output_pos_};
-}
-
-/**
- * @brief
- *
- * @param n
- */
-auto PackWriter::consumeOutput(size_t n) -> void {
-    n = std::min(n, output_bffer_.size() - output_pos_);
-    output_pos_ += n;
-    if (output_pos_ == output_bffer_.size()) {
-        output_bffer_.clear();
-        output_pos_ = 0;
-    }
-}
-
-/**
- * @brief
- *
- */
-auto PackWriter::drainProcessor(void) -> void {
-    while (true) {
-        auto out = compressor_->pull();
-        if (out.empty()) break;
-        output_bffer_.insert(output_bffer_.end(), out.begin(), out.end());
-        current_compressed_size_ += out.size();
-        compressor_->consume(out.size());
-    }
-}
-
-/**
- * @brief
- *
- */
 auto PackWriter::finish(void) -> void {
     if (finished_) return;
     if (file_open_) closeCurrentFile();
     finished_ = true;
 }
 
-/**
- * @brief
- *
- */
-auto PackWriter::closeCurrentFile(void) -> void {
-    if (compressor_) {
-        compressor_->finish();
-        compressor_.reset();
+auto PackWriter::drainOutput(void) -> void {
+    while (true) {
+        auto out = pipeline_->pull();
+        if (out.empty()) break;
+        output_buffer_.insert(output_buffer_.end(), out.begin(), out.end());
+        current_compressed_size_ += out.size();
+        pipeline_->consume(out.size());
     }
+}
 
+auto PackWriter::closeCurrentFile(void) -> void {
+    if (pipeline_) {
+        pipeline_->finish();
+        pipeline_.reset();
+    }
     file_open_ = false;
-    current_comp_buffer_.clear();
 }
 
 }  // namespace compressor::archiver
