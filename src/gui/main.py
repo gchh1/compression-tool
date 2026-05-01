@@ -50,7 +50,7 @@ def run_cli():
     print("-" * 80)
     for r in results:
         comp_size = len(r.compressed_data) if r.compressed_data else 0
-        status = f"{r.compression_ratio:.1f}%" if r.status.value == "done" else r.status.value
+        status = f"{r.compression_ratio:.2f}%" if r.status.value == "done" else r.status.value
         print(f"{r.name:<30} {r.type.value:<8} {r.size:>10} {comp_size:>10} {status:>8} {r.compression_time_ms:.1f}ms")
 
 
@@ -61,7 +61,7 @@ def run_gui():
     from gui.widgets.main_window import MainWindow
 
     app = QApplication(sys.argv)
-    app.setApplicationName("WebCompress Pro")
+    app.setApplicationName("WebCompress")
 
     window = MainWindow()
     window.show()

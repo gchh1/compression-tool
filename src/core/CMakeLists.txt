@@ -2,6 +2,9 @@ add_library(
     core
     STATIC
     AlgorithmFactory.cpp
+    LZSSCompressor.cpp
+    DeflateCompressor.cpp
+    LZMineCompressor.cpp
 )
 
 target_include_directories(
