@@ -17,6 +17,7 @@ set(TESTS_DIR ${CMAKE_SOURCE_DIR}/tests)
 set(ALGORITHM_DIR ${SRC_DIR}/algorithm)
 set(BINDINGS_DIR ${SRC_DIR}/bindings)
 set(UTILS_DIR ${SRC_DIR}/utils)
+set(MEMORY_DIR ${SRC_DIR}/memory)
 
 # ========= set build option ==========
 option(BUILD_WASM "Build WebAssembly bindings for browser frontend" OFF)

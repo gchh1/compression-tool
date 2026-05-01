@@ -8,3 +8,25 @@ target_link_libraries(
     PRIVATE
     algorithm
 )
+
+add_executable(
+    test_PackWriter
+    test_PackWriter.cpp
+)
+
+target_link_libraries(
+    test_PackWriter
+    PRIVATE
+    archiver
+    processor
+    memory
+)
+
+add_executable(test_SP_Deflate test_SP_Deflate.cpp)
+target_link_libraries(test_SP_Deflate PRIVATE processor memory algorithm)
+
+add_executable(test_Inflate test_Inflate.cpp)
+target_link_libraries(test_Inflate PRIVATE api)
+
+add_executable(test_PackWriter_RoundTrip test_PackWriter_RoundTrip.cpp)
+target_link_libraries(test_PackWriter_RoundTrip PRIVATE api)

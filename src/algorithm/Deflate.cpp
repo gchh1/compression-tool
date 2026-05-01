@@ -2,8 +2,6 @@
 
 #include "Deflate.hpp"
 
-#include <sys/stat.h>
-
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
@@ -38,6 +36,7 @@ auto Deflate::reset(void) -> void {
 
     token_buffer_.clear();
     token_flush_idx_ = 0;
+    bfinal_ = false;
 
     deflate_state_ = DeflateState::FIND_MATCHES;
 }
@@ -49,8 +48,8 @@ auto Deflate::reset(void) -> void {
  * @param read_offset
  */
 auto Deflate::fillWindow(void) -> void {
-    while (cursor_ >= WINDOW_SIZE - MAX_MATCH) {
-        if (cursor_ + lookahead_ >= WINDOW_SIZE) {
+    while (reader_.getRemainSize() > 0) {
+        if (cursor_ >= SLIDE_SIZE && cursor_ + lookahead_ >= WINDOW_SIZE) {
             slideWindow();
         }
 
@@ -202,8 +201,14 @@ auto Deflate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk)
     dictionary_ = huffman_tree_->buildDictionary();
     dist_dictionary_ = dist_tree_->buildDictionary();
 
+    bfinal_ = is_last_chunk && (lookahead_ == 0);
+
     if (writer_.ensureSpace(huffman_tree_->getTreeSize() +
-                            dist_tree_->getTreeSize())) {
+                            dist_tree_->getTreeSize() + 3)) {
+        // Block header: BFINAL (1 bit) + BTYPE = 2 (2 bits)
+        writer_.writeBit(bfinal_ ? 1 : 0);
+        writer_.writeBits(2, 2);
+
         huffman_tree_->serializeTree(writer_);
         dist_tree_->serializeTree(writer_);
 
@@ -245,12 +250,14 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
 
     token_buffer_.clear();
 
-    if (is_last_chunk && lookahead_ == 0) {
-        // 写入 EOF
+    // Always write EOF to terminate the block
+    {
         const auto& eof_code = dictionary_[256];
         writer_.writeBits(eof_code.code, eof_code.length);
+    }
 
-        writer_.flush();  // 最终扫尾，补齐字节
+    if (bfinal_) {
+        writer_.flush();
         status.done = true;
         return;
     }

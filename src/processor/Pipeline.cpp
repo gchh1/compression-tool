@@ -1,50 +1,60 @@
 #include "Pipeline.hpp"
 
+#include <memory>
+#include <span>
 #include <utility>
+#include <vector>
 
 namespace compressor::processor {
 
-Pipeline::Pipeline(std::unique_ptr<IAlgorithm> first,
-                   std::unique_ptr<IAlgorithm> second)
-    : first_(std::make_unique<StreamProcessor>(std::move(first))) {
-    if (second) {
-        second_ = std::make_unique<StreamProcessor>(std::move(second));
+Pipeline::Pipeline(std::vector<std::unique_ptr<IAlgorithm>> algorithms,
+                   std::shared_ptr<memory::MemoryPool> pool) {
+    for (auto& algo : algorithms) {
+        if (algo) {
+            stages_.push_back(
+                std::make_unique<StreamProcessor>(std::move(algo), pool));
+        }
     }
 }
 
-auto Pipeline::push(std::span<const uint8_t> data, bool is_last) -> void {
-    if (finished_) return;
-    first_->push(data, is_last);
-    drainInternal();
+auto Pipeline::push(memory::DataChunk chunk, bool is_last) -> void {
+    if (finished_ || stages_.empty()) return;
+    stages_.front()->push(std::move(chunk), is_last);
+    drainAll();
 }
 
-auto Pipeline::pull(void) -> std::span<const uint8_t> {
-    if (second_) return second_->pull();
-    return first_->pull();
+auto Pipeline::push(std::span<const uint8_t> data, bool is_last) -> void {
+    if (finished_ || stages_.empty()) return;
+    stages_.front()->push(data, is_last);
+    drainAll();
+}
+
+auto Pipeline::pull() -> memory::DataChunk {
+    if (stages_.empty()) return {};
+    return stages_.back()->pull();
 }
 
 auto Pipeline::consume(size_t n) -> void {
-    if (second_)
-        second_->consume(n);
-    else
-        first_->consume(n);
+    if (!stages_.empty()) stages_.back()->consume(n);
 }
 
-auto Pipeline::finish(void) -> void {
+auto Pipeline::finish() -> void {
     if (finished_) return;
-    first_->finish();
-    drainInternal();
-    if (second_) {
-        second_->finish();
+    if (!stages_.empty()) {
+        stages_.front()->finish();
+        drainAll();
+        for (size_t i = 1; i < stages_.size(); ++i) {
+            stages_[i]->finish();
+        }
     }
     finished_ = true;
 }
 
-auto Pipeline::isFinished(void) const -> bool { return finished_; }
+auto Pipeline::isFinished() const -> bool { return finished_; }
 
-auto Pipeline::drainInternal(void) -> void {
-    if (second_) {
-        drain(*first_, *second_);
+auto Pipeline::drainAll() -> void {
+    for (size_t i = 0; i + 1 < stages_.size(); ++i) {
+        drain(*stages_[i], *stages_[i + 1]);
     }
 }
 

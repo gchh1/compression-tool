@@ -7,8 +7,10 @@
 #include <span>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "AlgorithmFactory.hpp"
+#include "DataChunk.hpp"
 #include "Pipeline.hpp"
 
 namespace compressor::archiver {
@@ -18,77 +20,123 @@ auto PackWriter::beginFile(const std::string& filepath, AlgorithmID comp_algo,
     if (finished_) return;
     if (file_open_) closeCurrentFile();
 
+    // Init the `entry header`
     entry_header_.filepath = filepath;
     entry_header_.preproc_algo_id = preproc_algo;
     entry_header_.comp_algo_id = comp_algo;
     entry_header_.original_size = 0;
     entry_header_.compressed_size = 0;
 
+    // Serialize header into own mutable buffer (allows endFile patching)
     auto header = entry_header_.serialize();
-    header_offset_ =
-        output_buffer_.size() + header.size() - sizeof(uint64_t);
-    output_buffer_.insert(output_buffer_.end(), header.begin(), header.end());
+    header_offset_ = header.size() - sizeof(uint64_t);
+    header_buffer_ = std::move(header);
+    header_pos_ = 0;
 
-    auto preproc = core::createAlgorithm(preproc_algo);
-    auto comp = core::createAlgorithm(comp_algo);
-    pipeline_ = std::make_unique<processor::Pipeline>(std::move(preproc),
-                                                      std::move(comp));
+    output_chunks_.clear();
+    chunk_idx_ = 0;
+    current_compressed_size_ = 0;
+
+    std::vector<std::unique_ptr<algorithm::IAlgorithm>> algos;
+    if (auto a = core::createAlgorithm(preproc_algo)) algos.push_back(std::move(a));
+    if (auto a = core::createAlgorithm(comp_algo)) algos.push_back(std::move(a));
+    pipeline_ = std::make_unique<processor::Pipeline>(std::move(algos), pool_);
 
     file_open_ = true;
 }
 
-auto PackWriter::pushFileData(std::span<const uint8_t> data) -> void {
+auto PackWriter::pushFileData(memory::DataChunk chunk) -> void {
     if (!file_open_) return;
 
-    entry_header_.original_size += data.size();
-    pipeline_->push(data);
+    entry_header_.original_size += chunk.size();
+    pipeline_->push(std::move(chunk));
     drainOutput();
 }
 
-auto PackWriter::pullOutput(void) -> std::span<const uint8_t> const {
-    return {output_buffer_.data() + output_pos_,
-            output_buffer_.size() - output_pos_};
+auto PackWriter::pushFileData(std::span<const uint8_t> data) -> void {
+    if (!file_open_ || data.empty()) return;
+
+    auto v = std::make_shared<std::vector<uint8_t>>(data.begin(), data.end());
+    auto size = data.size();
+    pushFileData(memory::DataChunk::adopt(std::move(v), size));
+}
+
+auto PackWriter::pullOutput() -> std::span<const uint8_t> {
+    // Serve header first
+    if (header_pos_ < header_buffer_.size())
+        return {header_buffer_.data() + header_pos_,
+                header_buffer_.size() - header_pos_};
+
+    // Then serve compressed-data chunks
+    while (chunk_idx_ < output_chunks_.size()) {
+        auto v = output_chunks_[chunk_idx_].view();
+        if (!v.empty()) return v;
+        chunk_idx_++;
+    }
+    return {};
 }
 
 auto PackWriter::consumeOutput(size_t n) -> void {
-    n = std::min(n, output_buffer_.size() - output_pos_);
-    output_pos_ += n;
-    if (output_pos_ == output_buffer_.size()) {
-        output_buffer_.clear();
-        output_pos_ = 0;
+    // Consume from header
+    if (header_pos_ < header_buffer_.size()) {
+        size_t hdr_n = std::min(n, header_buffer_.size() - header_pos_);
+        header_pos_ += hdr_n;
+        n -= hdr_n;
+        if (n == 0) return;
+    }
+
+    // Consume from chunks
+    while (n > 0 && chunk_idx_ < output_chunks_.size()) {
+        auto& chunk = output_chunks_[chunk_idx_];
+        if (n >= chunk.size()) {
+            n -= chunk.size();
+            chunk_idx_++;
+        } else {
+            output_chunks_[chunk_idx_] = chunk.slice(n, chunk.size() - n);
+            n = 0;
+        }
+    }
+
+    // Drop fully-consumed chunks
+    if (chunk_idx_ > 0) {
+        output_chunks_.erase(output_chunks_.begin(),
+                             output_chunks_.begin() + chunk_idx_);
+        chunk_idx_ = 0;
     }
 }
 
-auto PackWriter::endFile(void) -> void {
+auto PackWriter::endFile() -> void {
     if (!file_open_) return;
 
     pipeline_->finish();
     drainOutput();
     pipeline_.reset();
 
-    auto* dest = output_buffer_.data() + header_offset_;
-    std::memcpy(dest, &current_compressed_size_, sizeof(uint64_t));
+    // Patch original_size and compressed_size into header buffer
+    std::memcpy(header_buffer_.data() + header_offset_ - sizeof(uint64_t),
+                &entry_header_.original_size, sizeof(uint64_t));
+    std::memcpy(header_buffer_.data() + header_offset_,
+                &current_compressed_size_, sizeof(uint64_t));
 
     file_open_ = false;
 }
 
-auto PackWriter::finish(void) -> void {
+auto PackWriter::finish() -> void {
     if (finished_) return;
     if (file_open_) closeCurrentFile();
     finished_ = true;
 }
 
-auto PackWriter::drainOutput(void) -> void {
+auto PackWriter::drainOutput() -> void {
     while (true) {
-        auto out = pipeline_->pull();
-        if (out.empty()) break;
-        output_buffer_.insert(output_buffer_.end(), out.begin(), out.end());
-        current_compressed_size_ += out.size();
-        pipeline_->consume(out.size());
+        auto chunk = pipeline_->pull();
+        if (chunk.empty()) break;
+        current_compressed_size_ += chunk.size();
+        output_chunks_.push_back(std::move(chunk));
     }
 }
 
-auto PackWriter::closeCurrentFile(void) -> void {
+auto PackWriter::closeCurrentFile() -> void {
     if (pipeline_) {
         pipeline_->finish();
         pipeline_.reset();

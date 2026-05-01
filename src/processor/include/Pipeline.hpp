@@ -1,22 +1,14 @@
-/**
- * @file Pipeline.hpp
- * @author yhc
- * @brief
- * @version 0.1
- * @date 2026-04-30
- *
- * @copyright Copyright (c) 2026
- *
- */
-
 #pragma once
 
 #include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <span>
+#include <vector>
 
+#include "DataChunk.hpp"
 #include "IAlgorithm.hpp"
+#include "MemoryPool.hpp"
 #include "StreamProcessor.hpp"
 
 namespace compressor::processor {
@@ -25,25 +17,29 @@ using algorithm::IAlgorithm;
 
 class Pipeline {
    public:
-    Pipeline(std::unique_ptr<IAlgorithm> first,
-             std::unique_ptr<IAlgorithm> second = nullptr);
+    Pipeline(std::vector<std::unique_ptr<IAlgorithm>> algorithms,
+             std::shared_ptr<memory::MemoryPool> pool = nullptr);
 
+    /// Zero-copy push into the first stage.
+    auto push(memory::DataChunk chunk, bool is_last = false) -> void;
+
+    /// Convenience: wraps span in an owned DataChunk.
     auto push(std::span<const uint8_t> data, bool is_last = false) -> void;
 
-    auto pull(void) -> std::span<const uint8_t>;
+    /// Pull processed data from the last stage.
+    auto pull() -> memory::DataChunk;
 
     auto consume(size_t n) -> void;
 
-    auto finish(void) -> void;
+    auto finish() -> void;
 
-    auto isFinished(void) const -> bool;
+    auto isFinished() const -> bool;
 
    private:
-    std::unique_ptr<StreamProcessor> first_;
-    std::unique_ptr<StreamProcessor> second_;
+    std::vector<std::unique_ptr<StreamProcessor>> stages_;
     bool finished_{false};
 
-    auto drainInternal(void) -> void;
+    auto drainAll() -> void;
 };
 
 }  // namespace compressor::processor

@@ -44,7 +44,8 @@ class BitReader {
         : read_(std::exchange(that.read_, {})),
           byte_pos_(that.byte_pos_),
           buffer_(that.buffer_),
-          buffer_idx_(that.buffer_idx_) {}
+          buffer_idx_(that.buffer_idx_),
+          total_bits_consumed_(that.total_bits_consumed_) {}
 
     /* Only allow move assignment */
     BitReader &operator=(BitReader &&that) {
@@ -53,6 +54,7 @@ class BitReader {
             byte_pos_ = that.byte_pos_;
             buffer_ = that.buffer_;
             buffer_idx_ = that.buffer_idx_;
+            total_bits_consumed_ = that.total_bits_consumed_;
         }
         return *this;
     }
@@ -88,6 +90,7 @@ class BitReader {
      * @return uint64_t
      */
     auto readBits(uint8_t count) -> uint64_t {
+        if (!ensureBits(count)) return 0;
         uint64_t res = peekBits(count);
         consumeBits(count);
         return res;
@@ -108,6 +111,7 @@ class BitReader {
             *dst++ = static_cast<uint8_t>(buffer_);
             buffer_ >>= 8;
             buffer_idx_ -= 8;
+            total_bits_consumed_ += 8;
             count--;
             copied++;
         }
@@ -120,6 +124,7 @@ class BitReader {
             if (to_copy > 0) {
                 std::memcpy(dst, read_.data() + byte_pos_, to_copy);
                 byte_pos_ += to_copy;
+                total_bits_consumed_ += to_copy * 8;
                 copied += to_copy;
                 dst += to_copy;
 
@@ -135,10 +140,19 @@ class BitReader {
      * @param read
      */
     auto changeSource(std::span<const uint8_t> read) -> void {
+        uint8_t skip_bits = total_bits_consumed_ % 8;
+
         read_ = read;
         byte_pos_ = 0;
-
+        buffer_ = 0;
+        buffer_idx_ = 0;
         fillBuffer();
+
+        // Skip bits already consumed from the first byte of the new span
+        if (skip_bits > 0 && buffer_idx_ >= skip_bits) {
+            buffer_ >>= skip_bits;
+            buffer_idx_ -= skip_bits;
+        }
     }
 
     /**
@@ -147,7 +161,7 @@ class BitReader {
      * @return size_t
      */
     auto getByteRead(void) const -> size_t {
-        return byte_pos_ - (buffer_idx_ / 8);
+        return total_bits_consumed_ / 8;
     }
 
     /**
@@ -159,6 +173,10 @@ class BitReader {
 
     auto getRemainSize(void) const -> size_t {
         return (read_.size() - byte_pos_) + (buffer_idx_ / 8);
+    }
+
+    auto getRemainingBits(void) const -> size_t {
+        return (read_.size() - byte_pos_) * 8 + buffer_idx_;
     }
 
    private:
@@ -173,6 +191,9 @@ class BitReader {
 
     /** @brief Point to the top of buffer */
     uint8_t buffer_idx_{0};
+
+    /** @brief Total bits consumed across all spans (for byte-alignment tracking) */
+    size_t total_bits_consumed_{0};
 
     /**
      * @brief Greedily fill the buffer_
@@ -215,6 +236,7 @@ class BitReader {
     auto consumeBits(uint8_t count) -> void {
         buffer_ >>= count;
         buffer_idx_ -= count;
+        total_bits_consumed_ += count;
     }
 };
 

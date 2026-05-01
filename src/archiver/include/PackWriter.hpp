@@ -2,13 +2,16 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <deque>
 #include <memory>
 #include <span>
 #include <string>
 #include <vector>
 
 #include "AlgorithmFactory.hpp"
+#include "DataChunk.hpp"
 #include "EntryHeader.hpp"
+#include "MemoryPool.hpp"
 #include "Pipeline.hpp"
 
 namespace compressor::archiver {
@@ -19,38 +22,48 @@ class PackWriter {
    public:
     PackWriter() = default;
 
+    explicit PackWriter(std::shared_ptr<memory::MemoryPool> pool)
+        : pool_(std::move(pool)) {}
+
+    /** @brief Give the algorithm to process the file and build the `entry
+     *         header` for the file*/
     auto beginFile(const std::string& filepath, AlgorithmID comp_algo,
                    AlgorithmID preproc_algo = AlgorithmID::None) -> void;
 
+    /** @brief  */
+    auto pushFileData(memory::DataChunk chunk) -> void;
     auto pushFileData(std::span<const uint8_t> data) -> void;
 
-    auto pullOutput(void) -> std::span<const uint8_t> const;
+    auto pullOutput() -> std::span<const uint8_t>;
 
     auto consumeOutput(size_t n) -> void;
 
-    auto endFile(void) -> void;
+    auto endFile() -> void;
 
-    auto finish(void) -> void;
+    auto finish() -> void;
 
    private:
     EntryHeader entry_header_;
 
-    std::vector<uint8_t> output_buffer_;
+    std::shared_ptr<memory::MemoryPool> pool_;
+
+    std::vector<uint8_t> header_buffer_;
+    size_t header_pos_{0};
+    size_t header_offset_{0};
+
+    std::deque<memory::DataChunk> output_chunks_;
+    size_t chunk_idx_{0};
 
     std::unique_ptr<processor::Pipeline> pipeline_;
-
-    size_t output_pos_{0};
-
-    size_t header_offset_{0};
 
     size_t current_compressed_size_{0};
 
     bool finished_{false};
     bool file_open_{false};
 
-    auto drainOutput(void) -> void;
+    auto drainOutput() -> void;
 
-    auto closeCurrentFile(void) -> void;
+    auto closeCurrentFile() -> void;
 };
 
 }  // namespace compressor::archiver

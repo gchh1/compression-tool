@@ -62,8 +62,10 @@ auto PackReader::extractStream(size_t index) const
     auto postproc_algo =
         core::createAlgorithm(core::getPostpressorID(meta.preproc_algo_id));
 
-    auto pipeline = std::make_unique<processor::Pipeline>(
-        std::move(decomp_algo), std::move(postproc_algo));
+    std::vector<std::unique_ptr<algorithm::IAlgorithm>> algos;
+    if (auto a = std::move(decomp_algo)) algos.push_back(std::move(a));
+    if (auto a = std::move(postproc_algo)) algos.push_back(std::move(a));
+    auto pipeline = std::make_unique<processor::Pipeline>(std::move(algos));
 
     std::vector<uint8_t> buffer(INPUT_BUFFER_SIZE);
     uint64_t comp_remain = meta.compressed_size;

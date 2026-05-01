@@ -20,13 +20,13 @@ constexpr uint8_t DEFLATE_SYMBOL_BITS = 9;
 
 /** @brief Node struct */
 struct node {
-    uint8_t symbol;
+    uint16_t symbol;
     uint32_t frequency;
     node* left = nullptr;
     node* right = nullptr;
 
     /* Constructor */
-    node(uint8_t d, uint32_t f) : symbol(d), frequency(f) {}
+    node(uint16_t d, uint32_t f) : symbol(d), frequency(f) {}
     // Construct with left node and right node
     node(node* l, node* r)
         : frequency(l->frequency + r->frequency), left(l), right(r) {}
@@ -67,8 +67,9 @@ class HuffmanTree {
 
     explicit HuffmanTree(std::span<const uint8_t> symbols);
 
-    /** @brief Build the Huffman Tree with preorder tree code */
-    // explicit HuffmanTree(utils::BitReader& reader);
+    /** @brief Build the Huffman Tree by deserializing from bitstream */
+    explicit HuffmanTree(utils::BitReader& reader, size_t symbol_bits,
+                         size_t dictionary_size);
 
     /** @brief Obey RAII (Resources Acqusition is Initialization) */
     ~HuffmanTree() {

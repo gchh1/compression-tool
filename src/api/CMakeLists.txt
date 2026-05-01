@@ -1,20 +1,20 @@
 add_library(
-    processor
+    api
     STATIC
-    Pipeline.cpp
-    StreamProcessor.cpp
+    api.cpp
 )
 
 target_include_directories(
-    processor
+    api
     PUBLIC
     include
 )
 
 target_link_libraries(
-    processor
+    api
     PUBLIC
-    algorithm
+    archiver
+    processor
     core
     memory
 )

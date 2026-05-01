@@ -764,3 +764,96 @@ packed_file (offset=meta.data_offset)
 2. **BitWriter 的批量写入**（攒够 32 bit 才 memcpy）减少了字节级写入的开销，利用现代 CPU 的 64-bit 寄存器做位操作。
 3. **RingBuffer 的 compact 策略**：只在 `readSpan()` 时如果数据跨环末尾才 compact，append 时用两段 memcpy 处理跨环写入，避免频繁 memmove。
 4. **当前 output_buffer_ 全在内存**，对于大文件夹（几百 MB）需要改造为**流式写出**——`pullOutput/consumeOutput` 接口已经为此预留：外部调用 pullOutput 获取数据写磁盘，consumeOutput 释放已写出的缓冲区前端。
+
+---
+对，output 也从同一个池里拿 chunk。至于读写不对称，当前实现**没处理好**——RingBuffer 和 `output_buffer_` 都会无限扩容。用共享内存池恰好能天然解决。
+
+## 一池共享：读、压缩中间态、写都用同一个池
+
+```
+              ┌─────────────── MemoryPool (固定 N 个 chunk) ───────────────┐
+              │                                                             │
+  硬盘 ──read──→ [A] ──推入──→ StreamProcessor ──产出──→ [B] ──write──→ 硬盘
+              │  ↑                            ↑              ↑              │
+              │  └── B 写完释放，A 处理完释放 ──┘              │              │
+              │                                                  │              │
+              │  所有 chunk 都在池中循环，不 new/delete             │
+              └─────────────────────────────────────────────────────────────┘
+```
+
+Pool 只提供固定个 chunk。谁需要 buffer 就从池拿；用完了引用计数归零，deleter 自动归还。池空了就阻塞，这就是背压。
+
+## 读写不对称怎么处理
+
+你说的情况：read 还没消费完，write 已经写满了——这恰好就是共享池自动处理的场景：
+
+```
+假设池 = 6 个 chunk
+
+时刻 1: Reader 拿了 3 个 chunk 填满数据，池剩 3 个
+         [A:已读] [B:已读] [C:已读] [空闲] [空闲] [空闲]
+
+时刻 2: 压缩拿 A 处理，产出放到从池里新拿的 D、E
+         [A:压缩中] [B:等待] [C:等待] [D:压缩完] [E:压缩完] [空闲]
+
+时刻 3: Writer 正在慢慢写 D，压缩产出又拿了最后一个 F
+         此时池空了！
+         [A:压缩中] [B:等待] [C:等待] [D:写入中] [E:待写入] [F:压缩完]
+
+时刻 4: Reader 想读下一块 → pool.acquire() → 阻塞!
+         压缩线程想产出 → pool.acquire() → 也阻塞!
+         Writer 写完 D → D 归还池 → Writer 拿 E 继续写
+         Reader 被唤醒，拿到刚释放的 chunk → 继续读盘
+```
+
+整个过程不需要任何显式的"读快慢"判断——**池空就是信号，谁拿不到谁等**。这就是优雅之处。
+
+## 当前实现的问题
+
+回看当前代码，读写不对称时有两个会无限膨胀的点：
+
+```cpp
+// RingBuffer::ensureCapacity —— 下游堵了就无脑扩容，没有上限
+auto ensureCapacity(size_t total_size) -> void {
+    if (total_size <= capacity_) return;
+    size_t new_cap = capacity_ * 2;
+    while (new_cap < total_size) new_cap *= 2;
+    // ... 重新分配，内存持续增长
+}
+
+// PackWriter::drainOutput —— 输出积压在 output_buffer_，也只增不减
+output_buffer_.insert(output_buffer_.end(), out.begin(), out.end());
+```
+
+压缩慢于读盘时，这两个 buffer 会悄悄吃光内存。
+
+## 输入端的取舍
+
+输入端稍微特殊：算法需要**连续**的 span（`process(std::span<const uint8_t>, ...)`），而池 chunk 天然是分块的。两种处理方式：
+
+**方案 A：输入端保留 RingBuffer（接受拷贝 #1）**
+
+读盘拿到的 pool chunk → 拷进 RingBuffer → 立即归还 chunk。RingBuffer 给算法提供连续视图。这保留了当前算法的接口不变，拷贝 #1 的代价换来简单。RingBuffer 只需设个上限，满了就停止从上游拉。
+
+**方案 B：RingBuffer 存 DataChunk 引用（零拷贝但算法接口得改）**
+
+RingBuffer 不存字节，存一个 `deque<DataChunk>`。`readSpan()` 时只能返回当前最前面 chunk 的 span（可能不是全部剩余数据）。算法一次只能看到一块，跨 chunk 边界时必须等下轮。改动较大，但零拷贝。
+
+建议先走 **方案 A**——输入端保留 RingBuffer + 容量上限，拷贝 #1/#2 保留。输出端改池化方案，消除拷贝 #3/#4，收益最大而改动集中在输出路径。
+
+## 池 + 流水线的最终形态
+
+```
+固定内存预算 = N × CHUNK_SIZE
+
+   Reader 线程                Worker 线程              Writer 线程
+   ──────────                ──────────               ──────────
+   pool.acquire() → chunk    pipeline.push(chunk)     pipeline.pull() → DataChunk
+   read(chunk)               compress()               write(chunk.view())
+   DataChunk::adopt(chunk)   pool.acquire() → out     chunk 引用归零
+        ↓                         ↓                        ↓
+   shared_ptr 传入              产出 DataChunk        pool.release(out)
+   流水线                        共享所有权             唤醒 Reader
+```
+
+内存用量被严格限制在池大小，快慢不对称由池的满/空自动调节。要不要我把整个 MemoryPool + DataChunk 的代码写出来？

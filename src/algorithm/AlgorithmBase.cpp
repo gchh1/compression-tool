@@ -19,7 +19,7 @@ auto AlgorithmBase::process(std::span<const uint8_t> read,
     AlgorithmStatus status;
 
     handle(status, is_last_chunk);
-    status.bytes_consumed = reader_.getByteRead();
+    status.bytes_consumed = read.size() > 0 ? reader_.getByteRead() : 0;
     status.bytes_produced = writer_.getBytesWritten();
 
     return status;

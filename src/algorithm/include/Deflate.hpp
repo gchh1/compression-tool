@@ -91,6 +91,8 @@ class Deflate : public AlgorithmBase {
 
     std::vector<HuffmanCode> dictionary_;
     std::vector<HuffmanCode> dist_dictionary_;
+
+    bool bfinal_{false};
     // ===================================
     // Private methods
     // ===================================

@@ -8,6 +8,7 @@ add_library(
     # Huffman.cpp
     HuffmanTree.cpp
 
+    Inflate.cpp
     # LZ77.cpp
     # LZSS.cpp
 )
@@ -16,5 +17,10 @@ target_include_directories(
     algorithm
     PUBLIC
     include
-    ${UTILS_DIR}/include
+)
+
+target_link_libraries(
+    algorithm
+    PUBLIC
+    utils
 )
