@@ -38,8 +38,7 @@ auto DeltaEncode::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
     while (true) {
         size_t read_remain = reader_.getRemainSize();
         size_t write_remain = writer_.getRemainSize();
-        size_t process_bytes =
-            std::min({BUFFER_SIZE_, read_remain, write_remain});
+        size_t process_bytes = std::min(BUFFER_SIZE_, std::min(read_remain, write_remain));
 
         if (process_bytes == 0) {
             if (read_remain == 0) {
@@ -82,8 +81,7 @@ auto DeltaDecode::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
     while (true) {
         size_t read_remain = reader_.getRemainSize();
         size_t write_remain = writer_.getRemainSize();
-        size_t process_bytes =
-            std::min({BUFFER_SIZE_, read_remain, write_remain});
+        size_t process_bytes = std::min(BUFFER_SIZE_, std::min(read_remain, write_remain));
 
         if (process_bytes == 0) {
             if (read_remain == 0) {
@@ -105,6 +103,24 @@ auto DeltaDecode::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
 
         writer_.writeBytes(buffer_.data(), process_bytes);
     }
+}
+
+std::vector<uint8_t> Delta::encode(std::vector<uint8_t> data, int quality) {
+    DeltaEncode enc(quality);
+    enc.reset();
+    std::vector<uint8_t> out(data.size());
+    AlgorithmStatus status = enc.process(data, out, true);
+    out.resize(status.bytes_produced);
+    return out;
+}
+
+std::vector<uint8_t> Delta::decode(std::vector<uint8_t> data) {
+    DeltaDecode dec;
+    dec.reset();
+    std::vector<uint8_t> out(data.size() * 2);
+    AlgorithmStatus status = dec.process(data, out, true);
+    out.resize(status.bytes_produced);
+    return out;
 }
 
 }  // namespace compressor::algorithm

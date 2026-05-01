@@ -1,84 +1,489 @@
 from __future__ import annotations
 
+import logging
+import os
+
 from PyQt6.QtCore import Qt, QMimeData, QUrl, QThread, pyqtSignal
-from PyQt6.QtGui import QAction, QDragEnterEvent, QDropEvent
+from PyQt6.QtGui import QAction, QDragEnterEvent, QDropEvent, QBrush
 from PyQt6.QtWidgets import (
     QMainWindow, QFileDialog, QMessageBox, QToolBar, QWidget,
-    QStatusBar, QProgressBar, QLabel, QVBoxLayout, QTableWidget,
-    QTableWidgetItem, QComboBox
+    QStatusBar, QProgressBar, QLabel, QVBoxLayout, QHBoxLayout,
+    QTableWidget, QTableWidgetItem, QComboBox, QMenu, QDialog, QPushButton
 )
+
+logger = logging.getLogger("gui.main_window")
+
+from gui.core.models import Record, FileRecord, FolderRecord, CompressionStatus, AlgorithmType, formatted_size
+
 
 WINDOW_WIDTH = 900
 WINDOW_HEIGHT = 700
 
-COL_NAME = 0
-COL_SIZE = 1
-COL_TYPE = 2
-COL_STATUS = 3
-COL_RATIO = 4
 
+
+
+
+
+
+
+# ============================================================
+#  压缩工作线程
+# ============================================================
 
 class CompressionWorker(QThread):
     """后台压缩工作线程"""
-    
-    progress = pyqtSignal(int, str)  # (行号, 状态)
-    finished_row = pyqtSignal(int, object)  # (行号, CompressionResult)
-    error = pyqtSignal(int, str)  # (行号, 错误信息)
-    
-    def __init__(self, file_list: list[tuple[int, str]]):
-        super().__init__()
-        self._file_list = file_list
-    
-    def run(self):
-        from gui.core.engine import CompressionEngine
-        from gui.core.models import AlgorithmType
-        
-        engine = CompressionEngine()
-        
-        for row_idx, file_path in self._file_list:
-            try:
-                self.progress.emit(row_idx, "压缩中...")
-                
-                with open(file_path, 'rb') as f:
-                    data = f.read()
-                
-                if engine.available:
-                    result = engine.compress(data, AlgorithmType.DEFLATE)
-                    ratio = f"{result.compression_ratio:.1f}%"
-                else:
-                    import zlib
-                    compressed = zlib.compress(data)
-                    ratio = f"{(1 - len(compressed)/len(data)) * 100:.1f}%"
-                
-                self.finished_row.emit(row_idx, {
-                    'ratio': ratio,
-                    'original_size': len(data),
-                    'compressed_size': len(compressed) if not engine.available else result.compressed_size
-                })
-                self.progress.emit(row_idx, "已完成")
-                
-            except Exception as e:
-                self.error.emit(row_idx, str(e))
-                self.progress.emit(row_idx, "失败")
 
+    progress = pyqtSignal(int, str) # 考虑删除
+    finished_row = pyqtSignal(int)  # (行号)
+    error = pyqtSignal(int)
+
+    def __init__(self, tasks: list[tuple[int, Record]], algorithm: AlgorithmType = AlgorithmType.DEFLATE):
+        super().__init__()
+        self.tasks = tasks
+        self.algorithm = algorithm
+
+    def single_compress(self, row_idx: int, record: Record) -> None:
+        import traceback
+        logger.info("[compress] START row=%d file=%s algo=%s", row_idx, getattr(record, 'path', '?'), self.algorithm.value)
+        try:
+            from gui.core.engine import CompressionEngine
+            engine = CompressionEngine()
+            if not engine.available:
+                raise RuntimeError("C++ core_engine not available")
+
+            record.load_raw_data()
+            record.extract_features()
+            logger.info("[compress] loaded raw data: %d bytes", len(record.raw_data))
+
+            if isinstance(record, FileRecord):
+                record.algorithm = self.algorithm
+                if self.algorithm == AlgorithmType.AUTO:
+                    try:
+                        import strategy
+                        decision_engine = strategy.RamdomForest()
+                        record.algorithm = decision_engine.decide(record)
+                    except Exception as e:
+                        logger.warning("[compress] AUTO decision failed, fallback to DEFLATE: %s", e)
+                        record.algorithm = AlgorithmType.DEFLATE
+
+            logger.info("[compress] compressing with %s ...", record.algorithm.value)
+            result = engine.compress(record.raw_data, record.algorithm)
+            logger.info("[compress] compress done: %d -> %d bytes", len(record.raw_data), result.compressed_size)
+
+            record.compressed_data = list(result.data)
+            record.compression_time_ms = result.time_ms
+            if hasattr(result, 'error_message') and result.error_message:
+                record.status = CompressionStatus.FAILED
+                record.error_message = result.error_message
+                self.error.emit(row_idx)
+            else:
+                record.status = CompressionStatus.DONE
+                record.compression_ratio = result.compressed_size / record.size if record.size > 0 else 0
+                self.finished_row.emit(row_idx)
+
+        except Exception as e:
+            logger.error("[compress] CRASH row=%d file=%s: %s\n%s", row_idx, getattr(record, 'path', '?'), e, traceback.format_exc())
+            record.status = CompressionStatus.FAILED
+            record.error_message = str(e)
+            self.error.emit(row_idx)
+
+    def run(self) -> None:
+        for row_idx, record in self.tasks:
+            if isinstance(record, FolderRecord):
+                for filerecord in record.files:
+                    self.single_compress(row_idx, filerecord)
+            elif isinstance(record, FileRecord):
+                self.single_compress(row_idx, record)
+
+
+
+
+
+# ============================================================
+#  文件表格组件
+# ============================================================
+
+class FileTableWidget(QTableWidget):
+    """文件列表表格，封装文件添加、状态更新等操作"""
+    COL_CHECK = 0
+    COL_NAME = 1
+    COL_SIZE = 2
+    COL_TYPE = 3
+    COL_STATUS = 4
+    COL_RATIO = 5
+
+    Record_Role = Qt.ItemDataRole.UserRole
+    Check_Role = Qt.ItemDataRole.UserRole + 1
+
+    selection_changed = pyqtSignal()
+    request_demo = pyqtSignal(int)  # row
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._selected: set[int] = set()
+        self._setup_ui()
+
+    def _setup_ui(self) -> None:
+        self.setColumnCount(6)
+        self.setHorizontalHeaderLabels(["☐", "文件名", "大小", "类型", "状态", "压缩率"])
+        self.horizontalHeader().setStretchLastSection(True)
+        self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        self.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        self.setAlternatingRowColors(True)
+
+        self.setColumnWidth(self.COL_CHECK, 36)
+        self.setColumnWidth(self.COL_NAME, 260)
+        self.setColumnWidth(self.COL_SIZE, 100)
+        self.setColumnWidth(self.COL_TYPE, 80)
+        self.setColumnWidth(self.COL_STATUS, 100)
+        self.setColumnWidth(self.COL_RATIO, 80)
+
+    def mousePressEvent(self, event) -> None:
+        try:
+            item = self.itemAt(event.pos())
+            logger.debug("mousePressEvent: pos=%s, item=%s", event.pos(), item)
+            if item is not None:
+                row = item.row()
+                col = item.column()
+                logger.debug("mousePressEvent: row=%d, col=%d", row, col)
+                if col != self.COL_CHECK:
+                    self._toggle_row(row)
+                    return
+            super().mousePressEvent(event)
+        except Exception as e:
+            logger.exception("mousePressEvent crash: %s", e)
+
+    def contextMenuEvent(self, event) -> None:
+        try:
+            item = self.itemAt(event.pos())
+            if item is None:
+                return
+            row = item.row()
+            logger.debug("contextMenuEvent: row=%d", row)
+            menu = QMenu(self)
+            delete_action = menu.addAction("🗑 删除该行")
+            menu.addSeparator()
+            demo_action = menu.addAction("🔧 压缩演示")
+            action = menu.exec(event.globalPos())
+            if action == delete_action:
+                logger.info("右键删除行: %d", row)
+                self.remove_row(row)
+            elif action == demo_action:
+                logger.info("右键压缩演示: 行%d", row)
+                self.request_demo.emit(row)
+        except Exception as e:
+            logger.exception("contextMenuEvent crash: %s", e)
+
+    def remove_row(self, row: int) -> None:
+        try:
+            logger.info("remove_row: 删除行%d, 当前选中=%s", row, sorted(self._selected))
+            self._selected.discard(row)
+            self.removeRow(row)
+            reindex = set()
+            for r in self._selected:
+                if r > row:
+                    reindex.add(r - 1)
+                else:
+                    reindex.add(r)
+            self._selected = reindex
+            self.selection_changed.emit()
+            logger.info("remove_row 完成: 选中=%s", sorted(self._selected))
+        except Exception as e:
+            logger.exception("remove_row crash: row=%d, err=%s", row, e)
+
+    def _toggle_row(self, row: int) -> None:
+        try:
+            check_item = self.item(row, self.COL_CHECK)
+            if check_item is None:
+                logger.warning("_toggle_row: 行%d 无check_item", row)
+                return
+            checked = check_item.data(self.Check_Role) or False
+            logger.debug("_toggle_row: row=%d, checked=%s -> %s", row, checked, not checked)
+            check_item.setData(self.Check_Role, not checked)
+            check_item.setText("☑" if not checked else "☐")
+
+            bg = QBrush(Qt.GlobalColor.lightGray) if not checked else QBrush()
+            for col in range(1, self.columnCount()):
+                ci = self.item(row, col)
+                if ci:
+                    ci.setBackground(bg)
+
+            if not checked:
+                self._selected.add(row)
+            else:
+                self._selected.discard(row)
+            self.selection_changed.emit()
+            logger.debug("_toggle_row 完成: row=%d, selected=%s", row, sorted(self._selected))
+        except Exception as e:
+            logger.exception("_toggle_row crash: row=%d, err=%s", row, e)
+
+    def select_all(self, checked: bool = True) -> None:
+        for row in range(self.rowCount()):
+            check_item = self.item(row, self.COL_CHECK)
+            if check_item is None:
+                continue
+            current = check_item.data(self.Check_Role) or False
+            if current != checked:
+                self._toggle_row(row)
+        if not checked:
+            self._selected.clear()
+        self.selection_changed.emit()
+
+    @property
+    def selected_rows(self) -> list[int]:
+        return sorted(self._selected)
+
+    @property
+    def is_all_selected(self) -> bool:
+        return self.rowCount() > 0 and len(self._selected) == self.rowCount()
+
+
+    def add_file(self, path: str) -> int:
+        try:
+            logger.info("add_file: %s", path)
+            record = FileRecord(path)
+
+            row = self.rowCount()
+            self.insertRow(row)
+
+            check_item = QTableWidgetItem("☐")
+            check_item.setData(self.Check_Role, False)
+            self.setItem(row, self.COL_CHECK, check_item)
+
+            name_item = QTableWidgetItem(record.name)
+            name_item.setData(self.Record_Role, record)
+
+            self.setItem(row, self.COL_NAME, name_item)
+            self.setItem(row, self.COL_SIZE, QTableWidgetItem(formatted_size(record.size)))
+            self.setItem(row, self.COL_TYPE, QTableWidgetItem(record.type.value))
+            self.setItem(row, self.COL_STATUS, QTableWidgetItem(record.status.value))
+            self.setItem(row, self.COL_RATIO, QTableWidgetItem("--"))
+
+            logger.debug("add_file 完成: row=%d, name=%s", row, record.name)
+            return row
+        except Exception as e:
+            logger.exception("add_file crash: path=%s, err=%s", path, e)
+            return -1
+
+    def add_folder(self, path: str) -> int:
+        record = FolderRecord(path)
+
+        row = self.rowCount()
+        self.insertRow(row)
+
+        check_item = QTableWidgetItem("☐")
+        check_item.setData(self.Check_Role, False)
+        self.setItem(row, self.COL_CHECK, check_item)
+
+        name_item = QTableWidgetItem(f"[{record.name}]")
+        name_item.setData(self.Record_Role, record)
+        name_item.setForeground(Qt.GlobalColor.gray)
+
+        self.setItem(row, self.COL_NAME, name_item)
+        self.setItem(row, self.COL_SIZE, QTableWidgetItem(f"{record.filenum} 文件 / {formatted_size(record.size)}"))
+        self.setItem(row, self.COL_TYPE, QTableWidgetItem("Folder"))
+        self.setItem(row, self.COL_STATUS, QTableWidgetItem(record.status.value))
+        self.setItem(row, self.COL_RATIO, QTableWidgetItem("--"))
+        return row
+
+    def add_paths(self, paths: list[str]) -> tuple[int, int]:
+        count_files = 0
+        count_dirs = 0
+        for path in paths:
+            if os.path.isdir(path):
+                self.add_folder(path)
+                count_dirs += 1
+            elif os.path.isfile(path):
+                self.add_file(path)
+                count_files += 1
+        return count_files, count_dirs
+
+    def update(self, row: int) -> None:
+        try:
+            item = self.item(row, self.COL_NAME)
+            if not item:
+                return
+            record = item.data(self.Record_Role)
+            if not record:
+                return
+            self.setItem(row, self.COL_STATUS, QTableWidgetItem(record.status.value))
+            ratio_str = f"{record.compression_ratio:.2f}%" if (record.status == CompressionStatus.DONE and record.size > 0) else "--"
+            self.setItem(row, self.COL_RATIO, QTableWidgetItem(ratio_str))
+        except Exception as e:
+            logger.error("[FileTableWidget.update] CRASH row=%d: %s", row, e, exc_info=True)
+
+    def get_record(self, row: int) -> Record | None:
+        item = self.item(row, self.COL_NAME)
+        if not item:
+            return None
+        return item.data(self.Record_Role)
+
+    def get_records(self, row_list: list[int] | None = None) -> list[Record]:
+        if row_list is None:
+            row_list = self.selected_rows
+        records: list[Record] = []
+        for row in row_list:
+            rec = self.get_record(row)
+            if rec is not None:
+                records.append(rec)
+        return records
+
+    def mark_error(self, row: int) -> None:
+        try:
+            self.update_status(row, CompressionStatus.FAILED.value)
+            item = self.item(row, self.COL_STATUS)
+            if item:
+                item.setForeground(Qt.GlobalColor.red)
+        except Exception as e:
+            logger.error("[mark_error] CRASH row=%d: %s", row, e, exc_info=True)
+
+    def clear_all(self) -> None:
+        self._selected.clear()
+        self.setRowCount(0)
+
+
+
+# ============================================================
+#  状态栏组件
+# ============================================================
+
+class StatusBarWidget(QWidget):
+    """自定义状态栏，包含状态文本和进度条"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._setup_ui()
+
+    def _setup_ui(self) -> None:
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        self._status_label = QLabel("就绪")
+        layout.addWidget(self._status_label, stretch=1)
+
+        self._progress = QProgressBar()
+        self._progress.setRange(0, 100)
+        self._progress.setValue(0)
+        self._progress.setFixedWidth(200)
+        self._progress.setTextVisible(True)
+        layout.addWidget(self._progress)
+
+    def set_status_text(self, text: str) -> None:
+        self._status_label.setText(text)
+
+    def set_progress_value(self, value: int) -> None:
+        self._progress.setValue(value)
+
+    def reset(self) -> None:
+        self.set_status_text("就绪")
+        self.set_progress_value(0)
+
+
+# ============================================================
+#  算法选择器
+# ============================================================
+
+class AlgorithmSelector(QComboBox):
+    """算法选择下拉框"""
+
+    ALGORITHMS = [
+        ("LZMine (KMP+DP)", AlgorithmType.LZMINE),
+        ("LZSS", AlgorithmType.LZSS),
+        ("Deflate", AlgorithmType.DEFLATE),
+        ("Huffman", AlgorithmType.HUFFMAN),
+        ("Auto", AlgorithmType.AUTO),
+    ]
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._setup_ui()
+
+    def _setup_ui(self) -> None:
+        for label, value in self.ALGORITHMS:
+            self.addItem(label, value)
+        self.setToolTip("选择压缩算法")
+
+    @property
+    def current_algorithm(self) -> AlgorithmType:
+        return self.currentData()
+
+# ============================================================
+#  压缩演示对话框
+# ============================================================
+
+class CompressDemoDialog(QDialog):
+    def __init__(self, record: Record, algorithm: AlgorithmType, parent=None):
+        super().__init__(parent)
+        self._record = record
+        self._algorithm = algorithm
+        self.setWindowTitle(f"压缩演示 - {record.name}")
+        self.setMinimumWidth(500)
+        self._setup_ui()
+
+    def _setup_ui(self) -> None:
+        layout = QVBoxLayout(self)
+
+        info_layout = QVBoxLayout()
+        info_layout.addWidget(QLabel(f"<b>文件:</b> {self._record.path}"))
+        info_layout.addWidget(QLabel(f"<b>大小:</b> {formatted_size(self._record.size)}"))
+        info_layout.addWidget(QLabel(f"<b>类型:</b> {self._record.type.value}"))
+        info_layout.addWidget(QLabel(f"<b>算法:</b> {self._algorithm.value}"))
+
+        status_text = self._record.status.value if hasattr(self._record, 'status') else "未压缩"
+        info_layout.addWidget(QLabel(f"<b>状态:</b> {status_text}"))
+
+        if hasattr(self._record, 'compressed_data') and self._record.compressed_data:
+            ratio = self._record.compression_ratio if hasattr(self._record, 'compression_ratio') else 0
+            info_layout.addWidget(QLabel(f"<b>压缩后:</b> {formatted_size(len(self._record.compressed_data))}"))
+            info_layout.addWidget(QLabel(f"<b>压缩率:</b> {ratio:.1f}%"))
+
+        layout.addLayout(info_layout)
+        layout.addSpacing(16)
+
+        btn_layout = QHBoxLayout()
+        close_btn = QPushButton("关闭")
+        close_btn.clicked.connect(self.accept)
+        btn_layout.addStretch()
+        btn_layout.addWidget(close_btn)
+        layout.addLayout(btn_layout)
+
+
+# ============================================================
+#  主窗口
+# ============================================================
+
+"""
+note:
+做一个高级选项
+用于激活脚本文件的token字典,用于提高压缩效率
+"""
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("WebCompress Pro")
+        self.setWindowTitle("WebCompress")
         self.resize(WINDOW_WIDTH, WINDOW_HEIGHT)
-        
-        # 启用拖拽
+
         self.setAcceptDrops(True)
-        
-        # 压缩线程
-        self._worker = None
-        
+        self._worker: CompressionWorker | None = None
+
+        # 组件实例化
+        self._table = FileTableWidget()
+        self._statusbar = StatusBarWidget()
+        self._algo_selector = AlgorithmSelector()
+
         self._setup_menu()
         self._setup_toolbar()
-        self._setup_statusbar()
         self._setup_central()
 
+        # 安装状态栏
+        bar = QStatusBar()
+        self.setStatusBar(bar)
+        bar.addPermanentWidget(self._statusbar)
+
+        self._table.request_demo.connect(self._on_compress_demo)
+
+    # ========== 菜单设置 ==========
     def _setup_menu(self) -> None:
         bar = self.menuBar()
 
@@ -86,14 +491,12 @@ class MainWindow(QMainWindow):
 
         add_file_action = QAction("添加文件 (&F)", self)
         add_file_action.setShortcut("Ctrl+F")
-        add_file_action.setToolTip("选择要压缩的文件")
-        add_file_action.triggered.connect(self._on_browse)
+        add_file_action.triggered.connect(self._on_add_files)
         file_menu.addAction(add_file_action)
 
         add_folder_action = QAction("添加文件夹 (&D)", self)
         add_folder_action.setShortcut("Ctrl+D")
-        add_folder_action.setToolTip("选择要压缩的文件夹")
-        add_folder_action.triggered.connect(self._on_add_folders)
+        add_folder_action.triggered.connect(self._on_add_folder)
         file_menu.addAction(add_folder_action)
 
         file_menu.addSeparator()
@@ -109,18 +512,21 @@ class MainWindow(QMainWindow):
         about_action.triggered.connect(self._on_about)
         help_menu.addAction(about_action)
 
+    # ========== 工具栏设置 ==========
     def _setup_toolbar(self) -> None:
         toolbar = QToolBar("主工具栏")
         toolbar.setMovable(False)
         self.addToolBar(toolbar)
 
-        # 算法选择
-        self._algo_combo = QComboBox()
-        self._algo_combo.addItem("Deflate (推荐)", "deflate")
-        self._algo_combo.addItem("LZSS", "lzss")
-        self._algo_combo.setToolTip("选择压缩算法")
-        toolbar.addWidget(self._algo_combo)
+        self._select_all_action = QAction("☐ 全选", self)
+        self._select_all_action.setToolTip("全选/取消全选")
+        self._select_all_action.triggered.connect(self._on_toggle_select_all)
+        self._table.selection_changed.connect(self._update_select_button)
+        toolbar.addAction(self._select_all_action)
 
+        toolbar.addSeparator()
+
+        toolbar.addWidget(self._algo_selector)
         toolbar.addSeparator()
 
         self._compress_action = QAction("▶️ 开始压缩", self)
@@ -130,63 +536,54 @@ class MainWindow(QMainWindow):
 
         toolbar.addSeparator()
 
-        self._export_action = QAction("💾 导出结果", self)
-        self._export_action.setToolTip("导出压缩后的文件")
-        self._export_action.triggered.connect(self._on_export)
-        toolbar.addAction(self._export_action)
+        export_action = QAction("💾 导出结果", self)
+        export_action.setToolTip("导出压缩后的文件")
+        export_action.triggered.connect(self._on_export)
+        toolbar.addAction(export_action)
 
-    def _setup_statusbar(self) -> None:
-        bar = QStatusBar()
-        self.setStatusBar(bar)
-
-        self._status_label = QLabel("就绪")
-        bar.addPermanentWidget(self._status_label, stretch=1)
-
-        self._progress = QProgressBar()
-        self._progress.setRange(0, 100)
-        self._progress.setValue(0)
-        self._progress.setFixedWidth(200)
-        self._progress.setTextVisible(True)
-        bar.addPermanentWidget(self._progress)
-
+    # ========== 中央区域 ==========
     def _setup_central(self) -> None:
         central = QWidget()
         layout = QVBoxLayout(central)
-
-        self._table = QTableWidget()
-        self._table.setColumnCount(5)
-        self._table.setHorizontalHeaderLabels(["文件名", "大小", "类型", "状态", "压缩率"])
-        self._table.horizontalHeader().setStretchLastSection(True)
-        self._table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
-        self._table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
-        self._table.setAlternatingRowColors(True)
-
-        self._table.setColumnWidth(COL_NAME, 280)
-        self._table.setColumnWidth(COL_SIZE, 100)
-        self._table.setColumnWidth(COL_TYPE, 80)
-        self._table.setColumnWidth(COL_STATUS, 100)
-        self._table.setColumnWidth(COL_RATIO, 80)
-
         layout.addWidget(self._table)
         self.setCentralWidget(central)
 
-    def _set_status(self, text: str) -> None:
-        self._status_label.setText(text)
-
-    def _set_progress(self, value: int) -> None:
-        self._progress.setValue(value)
-
-    def _on_browse(self) -> None:
-        paths, _ = QFileDialog.getOpenFileNames(
-            self, "选择文件", "", "所有文件 (*)"
-        )
+    # ========== 文件操作 ==========
+    def _on_add_files(self) -> None:
+        paths, _ = QFileDialog.getOpenFileNames(self, "选择文件", "", "所有文件 (*)")
         if paths:
             self._add_paths(paths)
 
-    def _on_add_folders(self) -> None:
+    def _on_add_folder(self) -> None:
         folder = QFileDialog.getExistingDirectory(self, "选择文件夹")
         if folder:
             self._add_paths([folder])
+
+    def _add_paths(self, paths: list[str]) -> None:
+        files, dirs = self._table.add_paths(paths)
+        parts = []
+        if files > 0:
+            parts.append(f"{files} 个文件")
+        if dirs > 0:
+            parts.append(f"{dirs} 个文件夹")
+        if parts:
+            self._statusbar.set_status_text(f"已添加 {', '.join(parts)}")
+
+    def _on_clear(self) -> None:
+        self._table.clear_all()
+        self._statusbar.set_status_text("已清空列表")
+        self._update_select_button()
+
+    def _on_toggle_select_all(self) -> None:
+        self._table.select_all(checked=not self._table.is_all_selected)
+
+    def _update_select_button(self) -> None:
+        if self._table.is_all_selected:
+            self._select_all_action.setText("☑ 取消全选")
+            self._select_all_action.setToolTip("取消全选所有文件")
+        else:
+            self._select_all_action.setText("☐ 全选")
+            self._select_all_action.setToolTip("选中所有文件")
 
     # ========== 拖拽支持 ==========
     def dragEnterEvent(self, event: QDragEnterEvent) -> None:
@@ -198,182 +595,93 @@ class MainWindow(QMainWindow):
         paths = [url.toLocalFile() for url in urls if url.isLocalFile()]
         if paths:
             self._add_paths(paths)
-    
-    def _on_clear(self) -> None:
-        self._table.setRowCount(0)
-        self._set_status("已清空列表")
 
-    def _add_paths(self, paths: list[str]) -> None:
-        import os
-        ext_map = {
-            ".html": "网页", ".htm": "网页",
-            ".css": "样式", ".js": "脚本",
-            ".json": "数据", ".xml": "数据",
-            ".png": "图片", ".jpg": "图片", ".jpeg": "图片",
-            ".gif": "图片", ".svg": "图片", ".ico": "图标",
-            ".txt": "文本", ".md": "文本",
-        }
-        count_files = 0
-        count_dirs = 0
-        
-        for path in paths:
-            if os.path.isdir(path):
-                self._add_folder_row(path, ext_map)
-                count_dirs += 1
-            elif os.path.isfile(path):
-                self._add_file_row(path, ext_map)
-                count_files += 1
-        
-        msg_parts = []
-        if count_files > 0:
-            msg_parts.append(f"{count_files} 个文件")
-        if count_dirs > 0:
-            msg_parts.append(f"{count_dirs} 个文件夹")
-        
-        if msg_parts:
-            self._set_status(f"已添加 {', '.join(msg_parts)}")
-
-    def _add_file_row(self, path: str, ext_map: dict) -> None:
-        import os
-        name = os.path.basename(path)
-        size = os.path.getsize(path)
-        ext = os.path.splitext(path)[1].lower()
-        file_type = ext_map.get(ext, "其他")
-        
-        row = self._table.rowCount()
-        self._table.insertRow(row)
-        
-        name_item = QTableWidgetItem(name)
-        name_item.setData(Qt.ItemDataRole.UserRole, path)
-        
-        self._table.setItem(row, COL_NAME, name_item)
-        self._table.setItem(row, COL_SIZE, QTableWidgetItem(self._format_size(size)))
-        self._table.setItem(row, COL_TYPE, QTableWidgetItem(file_type))
-        self._table.setItem(row, COL_STATUS, QTableWidgetItem("等待中"))
-        self._table.setItem(row, COL_RATIO, QTableWidgetItem("--"))
-
-    def _add_folder_row(self, path: str, ext_map: dict) -> None:
-        import os
-        name = os.path.basename(path)
-        
-        # 统计文件夹内文件数和总大小
-        file_count = 0
-        total_size = 0
-        for f in os.listdir(path):
-            fp = os.path.join(path, f)
-            if os.path.isfile(fp):
-                file_count += 1
-                total_size += os.path.getsize(fp)
-        
-        row = self._table.rowCount()
-        self._table.insertRow(row)
-        
-        name_item = QTableWidgetItem(f"[{name}]")
-        name_item.setData(Qt.ItemDataRole.UserRole, path)
-        name_item.setForeground(Qt.GlobalColor.blue)  # 文件夹用蓝色标识
-        
-        self._table.setItem(row, COL_NAME, name_item)
-        self._table.setItem(row, COL_SIZE, QTableWidgetItem(f"{file_count} 文件 / {self._format_size(total_size)}"))
-        self._table.setItem(row, COL_TYPE, QTableWidgetItem("📁 文件夹"))
-        self._table.setItem(row, COL_STATUS, QTableWidgetItem("等待中"))
-        self._table.setItem(row, COL_RATIO, QTableWidgetItem("--"))
-
-    def _format_size(self, size: int) -> str:
-        if size < 1024:
-            return f"{size} B"
-        elif size < 1024 * 1024:
-            return f"{size / 1024:.1f} KB"
-        else:
-            return f"{size / (1024 * 1024):.1f} MB"
-
+    # ========== 压缩操作 ==========
     def _on_compress(self) -> None:
         if self._worker and self._worker.isRunning():
             QMessageBox.warning(self, "提示", "压缩任务正在进行中...")
             return
-        
-        # 收集所有文件路径
-        file_list = []
-        for row in range(self._table.rowCount()):
-            item = self._table.item(row, COL_NAME)
-            if item:
-                path = item.data(Qt.ItemDataRole.UserRole)
-                import os
-                if os.path.isfile(path):
-                    file_list.append((row, path))
-        
-        if not file_list:
-            QMessageBox.warning(self, "提示", "请先添加文件！")
+
+        records = self._table.get_records()
+        if not records:
+            QMessageBox.warning(self, "提示", "请先选中文件！")
             return
-        
-        # 禁用按钮
+
+        tasks = list(enumerate(records))
+
         self._compress_action.setEnabled(False)
-        
-        # 创建工作线程
-        self._worker = CompressionWorker(file_list)
-        self._worker.progress.connect(self._update_row_status)
-        self._worker.finished_row.connect(self._update_row_result)
-        self._worker.error.connect(self._show_error)
+
+        self._worker = CompressionWorker(tasks, self._algo_selector.current_algorithm)
+        self._worker.finished_row.connect(self._on_row_finished)
+        self._worker.error.connect(self._table.mark_error)
         self._worker.finished.connect(self._on_compression_finished)
-        
-        # 更新状态
-        total = len(file_list)
-        self._set_status(f"开始压缩 {total} 个文件...")
-        self._set_progress(0)
-        
-        # 启动线程
+
+        file_count = sum(len(r.files) if isinstance(r, FolderRecord) else 1 for r in records)
+        self._statusbar.set_status_text(f"开始压缩 {file_count} 个文件...")
+        self._statusbar.set_progress_value(0)
         self._worker.start()
 
-    def _update_row_status(self, row: int, status: str) -> None:
-        self._table.setItem(row, COL_STATUS, QTableWidgetItem(status))
-        # 更新进度
-        done_count = 0
-        total = self._table.rowCount()
-        for r in range(total):
-            item = self._table.item(r, COL_STATUS)
-            if item and item.text() in ("已完成", "失败"):
-                done_count += 1
-        progress = int(done_count / total * 100) if total > 0 else 0
-        self._set_progress(progress)
-
-    def _update_row_result(self, row: int, result: dict) -> None:
-        ratio = result.get('ratio', '--')
-        self._table.setItem(row, COL_RATIO, QTableWidgetItem(ratio))
-
-    def _show_error(self, row: int, error_msg: str) -> None:
-        self._table.setItem(row, COL_STATUS, QTableWidgetItem("失败"))
-        self._table.item(row, COL_STATUS).setForeground(Qt.GlobalColor.red)
+    def _on_row_finished(self, row: int) -> None:
+        try:
+            self._table.update(row)
+            done = sum(
+                1 for r in range(self._table.rowCount())
+                if (item := self._table.item(r, self._table.COL_STATUS)) and item.text() in (CompressionStatus.DONE.value, CompressionStatus.FAILED.value)
+            )
+            total = self._table.rowCount()
+            progress = int(done / total * 100) if total else 0
+            self._statusbar.set_progress_value(progress)
+        except Exception as e:
+            logger.error("[_on_row_finished] CRASH row=%d: %s", row, e, exc_info=True)
 
     def _on_compression_finished(self) -> None:
-        self._compress_action.setEnabled(True)
-        self._set_progress(100)
-        self._set_status("压缩完成")
-        QMessageBox.information(self, "完成", "所有文件已处理完毕！")
+        try:
+            self._compress_action.setEnabled(True)
+            self._statusbar.set_progress_value(100)
+            self._statusbar.set_status_text("压缩完成")
+            QMessageBox.information(self, "完成", "所有文件已处理完毕！")
+        except Exception as e:
+            logger.error("[_on_compression_finished] CRASH: %s", e, exc_info=True)
 
+    # ========== 压缩演示 ==========
+    def _on_compress_demo(self, row: int) -> None:
+        record = self._table.get_record(row)
+        if record is None:
+            return
+        dlg = CompressDemoDialog(record, self._algo_selector.current_algorithm, parent=self)
+        dlg.exec()
+
+    # ========== 导出操作 ==========
     def _on_export(self) -> None:
         export_dir = QFileDialog.getExistingDirectory(self, "选择导出目录")
         if not export_dir:
             return
-        
-        import os
+
+        selected = self._table.selected_rows
+        if not selected:
+            QMessageBox.warning(self, "提示", "没有选中的文件")
+            return
+
         exported = 0
-        for row in range(self._table.rowCount()):
-            item = self._table.item(row, COL_STATUS)
-            if item and item.text() == "已完成":
-                name_item = self._table.item(row, COL_NAME)
-                if name_item:
+        for row in selected:
+            status_item = self._table.item(row, self._table.COL_STATUS)
+            if status_item and status_item.text() == CompressionStatus.DONE.value:
+                name_item = self._table.item(row, self._table.COL_NAME)
+                record = self._table.get_record(row)
+                if name_item and record and record.compressed_data:
                     original_name = name_item.text()
                     export_path = os.path.join(export_dir, f"{original_name}.compressed")
-                    # TODO: 实际保存压缩数据
                     with open(export_path, 'wb') as f:
-                        f.write(b'compressed_data_placeholder')
+                        f.write(record.compressed_data)
                     exported += 1
-        
+
         if exported > 0:
-            self._set_status(f"已导出 {exported} 个文件到 {export_dir}")
+            self._statusbar.set_status_text(f"已导出 {exported} 个文件到 {export_dir}")
             QMessageBox.information(self, "导出完成", f"已成功导出 {exported} 个文件！")
         else:
             QMessageBox.warning(self, "提示", "没有可导出的文件（请先压缩）")
 
+    # ========== 关于 ==========
     def _on_about(self) -> None:
         QMessageBox.about(
             self,

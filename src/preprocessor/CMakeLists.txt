@@ -1,6 +1,7 @@
 add_library(
     preprocessor
     STATIC
+    Archiver.cpp
     ImageParser.cpp
     ImagePreprocessor.cpp
 )

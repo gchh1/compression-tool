@@ -5,10 +5,10 @@ from pathlib import Path
 
 from gui.core.models import (
     AlgorithmType,
-    BatchResult,
-    CompressionResult,
+
     CompressionStatus,
     FileRecord,
+    FolderRecord,
 )
 
 
@@ -40,107 +40,75 @@ class CompressionEngine:
     def available(self) -> bool:
         return self._engine is not None
 
-    def compress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE) -> CompressionResult:
+    def compress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE) -> self._engine.CompressorResult:
         if not self.available:
             raise RuntimeError("C++ core_engine not available")
 
         if algorithm == AlgorithmType.LZSS:
             compressor = self._engine.LZSSCompressor()
+        elif algorithm == AlgorithmType.LZMINE:
+            compressor = self._engine.LZMineCompressor()
         elif algorithm == AlgorithmType.DEFLATE:
             compressor = self._engine.DeflateCompressor()
 
         result = compressor.compress(list(data))
-        return CompressionResult(
-            original_size=result.original_size,
-            compressed_size=result.compressed_size,
-            compression_ratio=result.compression_ratio,
-            time_ms=result.time_ms,
-            data=bytes(result.data),
-        )
 
-    def decompress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE) -> CompressionResult:
+        cr = self._engine.CompressorResult()
+        cr.original_size = result.original_size
+        cr.compressed_size = result.compressed_size
+        cr.compression_ratio = result.compression_ratio
+        cr.time_ms = result.time_ms
+        cr.data = list(result.data)
+        return cr
+
+    def decompress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE) -> self._engine.CompressorResult:   
         if not self.available:
             raise RuntimeError("C++ core_engine not available")
 
         if algorithm == AlgorithmType.LZSS:
             compressor = self._engine.LZSSCompressor()
+        elif algorithm == AlgorithmType.LZMINE:
+            compressor = self._engine.LZMineCompressor()
         elif algorithm == AlgorithmType.DEFLATE:
             compressor = self._engine.DeflateCompressor()
 
         result = compressor.decompress(list(data))
-        return CompressionResult(
-            original_size=result.original_size,
-            compressed_size=result.compressed_size,
-            compression_ratio=result.compression_ratio,
-            time_ms=result.time_ms,
-            data=bytes(result.data),
-        )
-
-    def compress_file(self, record: FileRecord, algorithm: AlgorithmType = AlgorithmType.DEFLATE) -> FileRecord:
-        record.algorithm = algorithm
-        record.status = CompressionStatus.COMPRESSING
-        try:
-            result = self.compress(record.raw_data, algorithm)
-            record.compressed_data = result.data
-            record.compression_ratio = result.compression_ratio
-            record.compression_time_ms = result.time_ms
-            record.status = CompressionStatus.DONE
-        except Exception as e:
-            record.status = CompressionStatus.FAILED
-            record.error_message = str(e)
-            logger.error("compress failed for %s: %s", record.name, e)
-        return record
-
-    def compress_batch(self, records: list[FileRecord], algorithm: AlgorithmType = AlgorithmType.DEFLATE) -> BatchResult:
-        batch = BatchResult()
-        for rec in records:
-            result = self.compress_file(rec, algorithm)
-            batch.files.append(result)
-            if result.status == CompressionStatus.DONE:
-                batch.total_original += result.size
-                batch.total_compressed += len(result.compressed_data or b"")
-                batch.total_time_ms += result.compression_time_ms
-            else:
-                batch.errors.append(f"{result.name}: {result.error_message}")
-        return batch
+        cr = self._engine.CompressorResult()
+        cr.original_size = result.original_size
+        cr.compressed_size = result.compressed_size
+        cr.time_ms = result.time_ms
+        cr.data = list(result.data)
+        return cr
 
     def pack_files(self, records: list[FileRecord]) -> bytes:
         if not self.available:
             raise RuntimeError("C++ core_engine not available")
 
-        web_files = []
+        files = []
         for rec in records:
-            wf = self._engine.WebFile()
-            wf.name = rec.path
-            wf.context = list(rec.raw_data)
-            web_files.append(wf)
+            f = self._engine.File()
+            f.filepath = rec.path
+            f.context = list(rec.raw_data)
+            files.append(f)
 
-        packed = self._engine.Archiver.pack(web_files)
+        packed = self._engine.Archiver.pack(files)
         return bytes(packed)
 
     def unpack_archive(self, data: bytes) -> list[FileRecord]:
         if not self.available:
             raise RuntimeError("C++ core_engine not available")
-
         raw_files = self._engine.Archiver.unpack(list(data))
         records = []
         for wf in raw_files:
             records.append(FileRecord(
-                path=wf.name,
-                name=Path(wf.name).name,
-                extension=Path(wf.name).suffix.lower(),
+                path=wf.filepath,
+                name=Path(wf.filepath).name,
+                extension=Path(wf.filepath).suffix.lower(),
                 size=len(wf.context),
-                type=_identify_from_ext(Path(wf.name).suffix.lower()),
+                type=_identify_from_ext(Path(wf.filepath).suffix.lower()),
                 raw_data=bytes(wf.context),
             ))
         return records
 
 # 从文件扩展名判断资源类型
 
-def _identify_from_ext(ext: str):
-    from gui.core.models import ResourceType, TEXT_EXTENSIONS, IMAGE_EXTENSIONS
-    if ext in TEXT_EXTENSIONS:
-        return ResourceType.TEXT
-    if ext in IMAGE_EXTENSIONS:
-        return ResourceType.IMAGE
-    return ResourceType.BINARY

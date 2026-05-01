@@ -4,6 +4,7 @@
 #include "ICompressor.hpp"
 #include "DeflateCompressor.hpp"
 #include "LZSSCompressor.hpp"
+#include "LZMineCompressor.hpp"
 #include "Archiver.hpp"
 
 namespace py = pybind11;
@@ -24,16 +25,12 @@ PYBIND11_MODULE(core_engine, m) {
         .def_readwrite("success", &CompressorResult::success)
         .def_readwrite("error_message", &CompressorResult::error_message);
 
-    py::class_<WebFile>(m, "WebFile")
-        .def(py::init<>())
-        .def_readwrite("name", &WebFile::name)
-        .def_readwrite("content", &WebFile::content);
-
     // ===== 算法枚举 =====
 
     py::enum_<CompressorAlgorithm>(m, "CompressorAlgorithm")
         .value("DEFLATE", CompressorAlgorithm::Deflate)
         .value("LZSS", CompressorAlgorithm::LZSS)
+        .value("LZMINE", CompressorAlgorithm::LZMINE)
         .export_values();
 
     // ===== 压缩器接口 =====
@@ -41,8 +38,7 @@ PYBIND11_MODULE(core_engine, m) {
     py::class_<ICompressor, std::shared_ptr<ICompressor>>(m, "ICompressor")
         .def("compress", &ICompressor::compress)
         .def("decompress", &ICompressor::decompress)
-        .def("get_algorithm_name", &ICompressor::get_algorithm_name)
-        .def("compress_batch", &ICompressor::compress_batch);
+        .def("get_algorithm_name", &ICompressor::get_algorithm_name);
 
     py::class_<DeflateCompressor, ICompressor,
                std::shared_ptr<DeflateCompressor>>(m, "DeflateCompressor")
@@ -52,17 +48,20 @@ PYBIND11_MODULE(core_engine, m) {
                std::shared_ptr<LZSSCompressor>>(m, "LZSSCompressor")
         .def(py::init<>());
 
-    // ===== 工厂 =====
+    py::class_<LZMineCompressor, ICompressor,
+               std::shared_ptr<LZMineCompressor>>(m, "LZMineCompressor")
+        .def(py::init<>());
 
-    py::class_<CompressorFactory>(m, "CompressorFactory")
-        .def_static("create", &CompressorFactory::create)
-        .def_static("list_algorithms", &CompressorFactory::list_algorithms);
+    // ===== 打包器 File 结构体 =====
+
+    py::class_<File>(m, "File")
+        .def(py::init<>())
+        .def_readwrite("filepath", &File::filepath)
+        .def_readwrite("context", &File::context);
 
     // ===== 打包器 =====
 
     py::class_<Archiver>(m, "Archiver")
         .def_static("pack", &Archiver::pack)
-        .def_static("unpack", &Archiver::unpack)
-        .def_static("pack_and_compress", &Archiver::pack_and_compress)
-        .def_static("decompress_and_unpack", &Archiver::decompress_and_unpack);
+        .def_static("unpack", &Archiver::unpack);
 }

@@ -5,11 +5,15 @@ add_library(
     AlgorithmBase.cpp
     Deflate.cpp
 
-    # Huffman.cpp
+    # Huffman.cpp (pre-existing compile errors)
     HuffmanTree.cpp
 
+    LZMine.cpp
+    LZSS.cpp
+
+    # Inflate.cpp (pre-existing compile errors)
+
     # LZ77.cpp
-    # LZSS.cpp
 )
 
 target_include_directories(

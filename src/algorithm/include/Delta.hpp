@@ -69,4 +69,10 @@ class DeltaDecode : public AlgorithmBase {
     uint8_t prev_{0};
 };
 
+class Delta {
+public:
+    static std::vector<uint8_t> encode(std::vector<uint8_t> data, int quality = 100);
+    static std::vector<uint8_t> decode(std::vector<uint8_t> data);
+};
+
 }  // namespace compressor::algorithm
