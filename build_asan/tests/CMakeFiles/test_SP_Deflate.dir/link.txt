@@ -1,0 +1,1 @@
+/usr/bin/c++ -fsanitize=address -fno-omit-frame-pointer -g -g -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/test_SP_Deflate.dir/test_SP_Deflate.cpp.o -o test_SP_Deflate  ../src/processor/libprocessor.a ../src/algorithm/libalgorithm.a ../src/core/libcore.a ../src/algorithm/libalgorithm.a

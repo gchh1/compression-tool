@@ -1,0 +1,2 @@
+/usr/bin/ar qc libprocessor.a CMakeFiles/processor.dir/Pipeline.cpp.o CMakeFiles/processor.dir/StreamProcessor.cpp.o
+/usr/bin/ranlib libprocessor.a

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebCompress Pro</title>
+<style>
+  :root {
+    --bg: #1a1a2e;
+    --surface: #16213e;
+    --primary: #0f3460;
+    --accent: #e94560;
+    --text: #eee;
+    --text-dim: #999;
+    --border: #2a2a4a;
+    --green: #4ecca3;
+    --orange: #f0a500;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .container { width: 100%; max-width: 900px; padding: 24px 20px; }
+  header { text-align: center; margin-bottom: 24px; }
+  header h1 { font-size: 1.8rem; font-weight: 600; }
+  header h1 span { color: var(--accent); }
+  header p { color: var(--text-dim); font-size: 0.85rem; margin-top: 4px; }
+  .status-bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 14px; background: var(--surface);
+    border-radius: 8px; margin-bottom: 16px;
+    font-size: 0.85rem; color: var(--text-dim);
+  }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .status-dot.loading { background: var(--orange); animation: pulse 1s infinite; }
+  .status-dot.ready { background: var(--green); }
+  .status-dot.error { background: var(--accent); }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; margin-bottom: 16px;
+  }
+  .panel h2 { font-size: 1rem; font-weight: 600; margin-bottom: 12px; }
+  .drop-zone {
+    border: 2px dashed var(--border); border-radius: 10px;
+    padding: 40px 20px; text-align: center; cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--accent); background: rgba(233,69,96,0.05);
+  }
+  .drop-zone p { color: var(--text-dim); font-size: 0.9rem; }
+  .drop-zone .icon { font-size: 2rem; margin-bottom: 8px; }
+  .file-list { list-style: none; }
+  .file-list li {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 10px; border-radius: 6px;
+    background: rgba(255,255,255,0.03); margin-bottom: 4px; font-size: 0.85rem;
+  }
+  .file-list li .name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .file-list li .size { color: var(--text-dim); margin: 0 12px; white-space: nowrap; }
+  .file-list li .remove { cursor: pointer; color: var(--accent); font-weight: bold; padding: 2px 6px; border-radius: 4px; }
+  .file-list li .remove:hover { background: var(--accent); color: #fff; }
+  .controls { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  select, button {
+    padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--primary); color: var(--text); font-size: 0.85rem;
+    cursor: pointer; font-family: inherit; transition: background 0.15s;
+  }
+  select:hover, button:hover { background: #1a4a80; }
+  button.accent { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  button.accent:hover { background: #d63850; }
+  button.accent:disabled { opacity: 0.4; cursor: not-allowed; }
+  button.green { background: var(--green); border-color: var(--green); color: #111; font-weight: 600; }
+  button.green:hover { background: #3db88d; }
+  button.green:disabled { opacity: 0.4; cursor: not-allowed; }
+  .results-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .results-table th { text-align: left; padding: 8px 10px; color: var(--text-dim); font-weight: 500; border-bottom: 1px solid var(--border); }
+  .results-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .results-table .ratio { color: var(--green); font-weight: 600; }
+  .results-table .ratio.bad { color: var(--accent); }
+  .results-table .download { color: var(--accent); cursor: pointer; text-decoration: underline; font-size: 0.8rem; }
+  .hidden { display: none !important; }
+  .info-row { display: flex; gap: 24px; flex-wrap: wrap; font-size: 0.85rem; color: var(--text-dim); }
+  .info-row strong { color: var(--text); }
+  footer { text-align: center; color: var(--text-dim); font-size: 0.75rem; padding: 20px; margin-top: auto; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Web<span>Compress</span> Pro</h1>
+    <p>Browser-based compression powered by WebAssembly</p>
+  </header>
+
+  <div class="status-bar">
+    <div class="status-dot loading" id="statusDot"></div>
+    <span id="statusText">Loading WebAssembly module...</span>
+  </div>
+
+  <div class="panel">
+    <h2>Files</h2>
+    <div class="drop-zone" id="dropZone">
+      <div class="icon">+</div>
+      <p>Drag &amp; drop files or folders here, or click to browse</p>
+      <input type="file" id="fileInput" multiple style="display:none">
+    </div>
+    <div style="text-align:center; margin-top:12px;">
+      <button id="folderBtn" style="font-size:0.8rem;">Select Folder</button>
+      <input type="file" id="folderInput" webkitdirectory style="display:none">
+    </div>
+    <ul class="file-list hidden" id="fileList"></ul>
+    <div style="margin-top:8px; text-align:center;">
+      <button id="clearBtn" class="hidden" style="font-size:0.8rem;">Clear all</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Compression</h2>
+    <div class="controls">
+      <select id="algoSelect">
+        <option value="deflate">Deflate</option>
+        <option value="delta+deflate">Delta + Deflate</option>
+      </select>
+      <select id="modeSelect">
+        <option value="single">Single file</option>
+        <option value="pack">Pack &amp; compress</option>
+      </select>
+      <button class="accent" id="compressBtn" disabled>Compress</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Decompression</h2>
+    <div class="controls">
+      <select id="decompModeSelect">
+        <option value="single">Single file</option>
+        <option value="unpack">Unpack archive</option>
+      </select>
+      <button class="green" id="decompressBtn" disabled>Decompress</button>
+    </div>
+  </div>
+
+  <div class="panel hidden" id="resultsPanel">
+    <h2>Results</h2>
+    <div class="info-row" id="resultsInfo"></div>
+    <div style="margin-top:12px">
+      <table class="results-table">
+        <thead><tr><th>File</th><th>Original</th><th>Compressed</th><th>Ratio</th><th>Time</th><th></th></tr></thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+    <div id="zipDownloadRow" class="hidden" style="text-align:center; margin-top:12px;">
+      <button class="accent" id="downloadZipBtn">Download All as ZIP</button>
+    </div>
+  </div>
+</div>
+
+<footer>WebCompress Pro &copy; 2026 &mdash; C++20 + WebAssembly</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="compressor_wasm.js"></script>
+<script>
+var Module = null;
+var files = [];
+
+var $ = function(id) { return document.getElementById(id); };
+var statusDot = $('statusDot');
+var statusText = $('statusText');
+var dropZone = $('dropZone');
+var fileInput = $('fileInput');
+var fileList = $('fileList');
+var clearBtn = $('clearBtn');
+var compressBtn = $('compressBtn');
+var decompressBtn = $('decompressBtn');
+var algoSelect = $('algoSelect');
+var modeSelect = $('modeSelect');
+var decompModeSelect = $('decompModeSelect');
+var folderBtn = $('folderBtn');
+var folderInput = $('folderInput');
+var resultsPanel = $('resultsPanel');
+var resultsInfo = $('resultsInfo');
+var resultsBody = $('resultsBody');
+var zipDownloadRow = $('zipDownloadRow');
+var downloadZipBtn = $('downloadZipBtn');
+
+function setStatus(state, text) {
+  statusDot.className = 'status-dot ' + state;
+  statusText.textContent = text;
+}
+
+function wrapFiles(arr) {
+  return arr.map(function(f) {
+    return { name: f.name, file: f };
+  });
+}
+
+async function readAllEntries(dirReader) {
+  var all = [];
+  while (true) {
+    var batch = await new Promise(function(resolve, reject) {
+      dirReader.readEntries(resolve, reject);
+    });
+    if (batch.length === 0) break;
+    all = all.concat(Array.from(batch));
+  }
+  return all;
+}
+
+async function scanEntry(entry, path) {
+  var results = [];
+  if (entry.isFile) {
+    var file = await new Promise(function(resolve, reject) {
+      entry.file(resolve, reject);
+    });
+    var fullPath = path ? path + '/' + entry.name : entry.name;
+    results.push({ name: fullPath, file: file });
+  } else if (entry.isDirectory) {
+    var reader = entry.createReader();
+    var entries = await readAllEntries(reader);
+    var subPath = path ? path + '/' + entry.name : entry.name;
+    for (var j = 0; j < entries.length; j++) {
+      var subResults = await scanEntry(entries[j], subPath);
+      results = results.concat(subResults);
+    }
+  }
+  return results;
+}
+
+CompressorModule().then(function(m) {
+  Module = m;
+  setStatus('ready', 'WASM module loaded. Ready.');
+  updateButtons();
+}).catch(function(err) {
+  setStatus('error', 'Failed to load WASM: ' + err.message);
+  console.error(err);
+});
+
+// ---- file handling ----
+dropZone.addEventListener('click', function() { fileInput.click(); });
+dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', function() { dropZone.classList.remove('drag-over'); });
+dropZone.addEventListener('drop', async function(e) {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+
+  var items = e.dataTransfer.items;
+  if (items && items.length > 0) {
+    var entries = [];
+    for (var i = 0; i < items.length; i++) {
+      var entry = items[i].webkitGetAsEntry();
+      if (entry) entries.push(entry);
+    }
+    if (entries.length > 0) {
+      var scanned = [];
+      for (var i = 0; i < entries.length; i++) {
+        var batch = await scanEntry(entries[i], '');
+        scanned = scanned.concat(batch);
+      }
+      if (scanned.length > 0) {
+        files = files.concat(scanned);
+        renderFileList();
+        return;
+      }
+    }
+  }
+  // Fallback: flat files
+  addFiles(Array.from(e.dataTransfer.files));
+});
+fileInput.addEventListener('change', function() {
+  addFiles(Array.from(fileInput.files));
+  fileInput.value = '';
+});
+
+folderBtn.addEventListener('click', function() { folderInput.click(); });
+folderInput.addEventListener('change', async function() {
+  var wrapped = Array.from(folderInput.files).map(function(f) {
+    return { name: f.webkitRelativePath, file: f };
+  });
+  files = files.concat(wrapped);
+  renderFileList();
+  folderInput.value = '';
+});
+
+function addFiles(arr) { files = files.concat(wrapFiles(arr)); renderFileList(); }
+function removeFile(i) { files.splice(i, 1); renderFileList(); }
+
+function renderFileList() {
+  if (files.length === 0) {
+    fileList.classList.add('hidden'); clearBtn.classList.add('hidden');
+    dropZone.classList.remove('hidden');
+  } else {
+    fileList.classList.remove('hidden'); clearBtn.classList.remove('hidden');
+    dropZone.classList.add('hidden');
+    var sorted = files.slice().sort(function(a, b) {
+      return a.name.localeCompare(b.name);
+    });
+    fileList.innerHTML = sorted.map(function(f) {
+      var idx = files.indexOf(f);
+      return '<li><span class="name">' + esc(f.name) + '</span>' +
+        '<span class="size">' + fmtSize(f.file.size) + '</span>' +
+        '<span class="remove" onclick="removeFile(' + idx + ')">X</span></li>';
+    }).join('');
+  }
+  updateButtons();
+}
+
+clearBtn.addEventListener('click', function() {
+  files = []; renderFileList(); resultsPanel.classList.add('hidden');
+});
+
+// ---- helpers ----
+function esc(s) {
+  var d = document.createElement('div');
+  d.textContent = s; return d.innerHTML;
+}
+function fmtSize(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+  return (b / 1048576).toFixed(2) + ' MB';
+}
+function getChain() {
+  var v = algoSelect.value;
+  if (v === 'deflate') return [Module.AlgorithmID.Deflate];
+  if (v === 'delta+deflate') return [Module.AlgorithmID.DeltaEncode, Module.AlgorithmID.Deflate];
+  return [Module.AlgorithmID.Deflate];
+}
+async function readFileAsBytes(file) {
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.onload = function() { resolve(new Uint8Array(reader.result)); };
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(file);
+  });
+}
+function updateButtons() {
+  var ready = Module !== null && files.length > 0;
+  compressBtn.disabled = !ready;
+  decompressBtn.disabled = !ready;
+}
+
+// Convert Emscripten VectorUint8 to native Uint8Array
+function vecToBytes(vec) {
+  if (!vec || typeof vec.size !== 'function') return new Uint8Array(0);
+  var n = vec.size();
+  var arr = new Uint8Array(n);
+  for (var i = 0; i < n; i++) arr[i] = vec.get(i);
+  return arr;
+}
+
+// ---- compress ----
+compressBtn.addEventListener('click', async function() {
+  if (!Module || files.length === 0) return;
+  var chain = getChain();
+  var mode = modeSelect.value;
+  var t0 = performance.now();
+  try {
+    if (mode === 'pack' || files.length > 1) {
+      var jsFiles = [];
+      for (var i = 0; i < files.length; i++) {
+        var b = await readFileAsBytes(files[i].file);
+        jsFiles.push({ name: files[i].name, content: b });
+      }
+      var packed = Module.packAndCompress(jsFiles, chain);
+      var packedBytes = vecToBytes(packed);
+      var totalOrig = jsFiles.reduce(function(s, f) { return s + f.content.length; }, 0);
+      showResults([{ name: 'archive.pack', originalSize: totalOrig, compressedSize: packedBytes.length, timeMs: performance.now() - t0, data: packedBytes }]);
+    } else {
+      var bytes = await readFileAsBytes(files[0].file);
+      var result = Module.compress(bytes, chain);
+      var data = vecToBytes(result.data);
+      showResults([{ name: files[0].name + '.compressed', originalSize: result.originalSize, compressedSize: result.compressedSize, timeMs: performance.now() - t0, data: data }]);
+    }
+  } catch (err) {
+    alert('Compression failed: ' + err.message);
+    console.error(err);
+  }
+});
+
+// ---- decompress ----
+decompressBtn.addEventListener('click', async function() {
+  if (!Module || files.length === 0) return;
+  var mode = decompModeSelect.value;
+  try {
+    if (mode === 'unpack') {
+      var bytes = await readFileAsBytes(files[0].file);
+      var count = Module.decompressAndUnpack(bytes);
+      console.log('Unpacked entries:', count);
+      var results = [];
+      for (var i = 0; i < count; i++) {
+        var name = Module.getUnpackedName(i);
+        var data = vecToBytes(Module.getUnpackedContent(i));
+        console.log('Entry:', name, 'size:', data.length);
+        results.push({ name: name, originalSize: data.length, compressedSize: 0, timeMs: 0, data: data });
+      }
+      showResults(results, true);
+    } else {
+      var bytes = await readFileAsBytes(files[0].file);
+      var chain = getChain().map(function(id) {
+        if (id === Module.AlgorithmID.Deflate) return Module.AlgorithmID.Inflate;
+        if (id === Module.AlgorithmID.DeltaEncode) return Module.AlgorithmID.DeltaDecode;
+        return id;
+      }).reverse();
+      var t0 = performance.now();
+      var result = Module.decompress(bytes, chain);
+      var data = vecToBytes(result.data);
+      var name = files[0].name;
+      if (name.endsWith('.compressed')) name = name.slice(0, -11);
+      else name += '.decompressed';
+      showResults([{ name: name, originalSize: result.originalSize, compressedSize: result.compressedSize, timeMs: performance.now() - t0, data: data }]);
+    }
+  } catch (err) {
+    alert('Decompression failed: ' + err.message);
+    console.error(err);
+  }
+});
+
+// ---- results ----
+function showResults(entries, isDecompress) {
+  resultsPanel.classList.remove('hidden');
+  var totalOrig = 0, totalComp = 0, totalMs = 0;
+  entries.forEach(function(e) {
+    totalOrig += e.originalSize;
+    totalComp += e.compressedSize || e.data.length;
+    totalMs += e.timeMs;
+  });
+  var ratio = totalOrig > 0 ? (totalComp / totalOrig * 100).toFixed(1) : '-';
+  resultsInfo.innerHTML =
+    '<span><strong>Files:</strong> ' + entries.length + '</span>' +
+    '<span><strong>Total original:</strong> ' + fmtSize(totalOrig) + '</span>' +
+    '<span><strong>Total ' + (isDecompress ? 'decompressed' : 'compressed') + ':</strong> ' + fmtSize(totalComp) + '</span>' +
+    '<span><strong>Ratio:</strong> ' + ratio + '%</span>' +
+    '<span><strong>Time:</strong> ' + totalMs.toFixed(1) + ' ms</span>';
+
+  resultsBody.innerHTML = entries.map(function(e, i) {
+    var r = e.originalSize > 0 ? (e.data.length / e.originalSize * 100).toFixed(1) : '-';
+    var cls = parseFloat(r) < 100 ? 'ratio' : 'ratio bad';
+    return '<tr><td>' + esc(e.name) + '</td>' +
+      '<td>' + fmtSize(e.originalSize) + '</td>' +
+      '<td>' + fmtSize(e.data.length) + '</td>' +
+      '<td class="' + cls + '">' + r + '%</td>' +
+      '<td>' + e.timeMs.toFixed(1) + ' ms</td>' +
+      '<td><span class="download" data-idx="' + i + '">Download</span></td></tr>';
+  }).join('');
+
+  resultsBody.querySelectorAll('.download').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var idx = parseInt(this.dataset.idx);
+      var entry = entries[idx];
+      var blob = new Blob([entry.data], { type: 'application/octet-stream' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = entry.name; a.click();
+      URL.revokeObjectURL(url);
+    });
+  });
+
+  // ZIP download for multi-file decompression
+  if (isDecompress && entries.length > 1) {
+    zipDownloadRow.classList.remove('hidden');
+    downloadZipBtn.onclick = async function() {
+      var zip = new JSZip();
+      for (var i = 0; i < entries.length; i++) {
+        zip.file(entries[i].name, entries[i].data);
+      }
+      var zipBlob = await zip.generateAsync({type: 'blob'});
+      var url = URL.createObjectURL(zipBlob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'unpacked.zip';
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+  } else {
+    zipDownloadRow.classList.add('hidden');
+  }
+
+  // Auto-add result to file list for round-trip
+  if (!isDecompress && entries.length === 1) {
+    var blob = new Blob([entries[0].data], { type: 'application/octet-stream' });
+    files = [{ name: entries[0].name, file: new File([blob], entries[0].name) }];
+    renderFileList();
+  }
+}
+</script>
+</body>
+</html>

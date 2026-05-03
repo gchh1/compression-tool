@@ -1,0 +1,16 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/yhc/yhc/proj/compression-tool/build_native/cmake_install.cmake",
+		"/Users/yhc/yhc/proj/compression-tool/build_native/src/cmake_install.cmake",
+		"/Users/yhc/yhc/proj/compression-tool/build_native/src/memory/cmake_install.cmake",
+		"/Users/yhc/yhc/proj/compression-tool/build_native/src/utils/cmake_install.cmake",
+		"/Users/yhc/yhc/proj/compression-tool/build_native/src/algorithm/cmake_install.cmake",
+		"/Users/yhc/yhc/proj/compression-tool/build_native/src/api/cmake_install.cmake",
+		"/Users/yhc/yhc/proj/compression-tool/build_native/src/core/cmake_install.cmake",
+		"/Users/yhc/yhc/proj/compression-tool/build_native/src/archiver/cmake_install.cmake",
+		"/Users/yhc/yhc/proj/compression-tool/build_native/src/processor/cmake_install.cmake",
+		"/Users/yhc/yhc/proj/compression-tool/build_native/tests/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

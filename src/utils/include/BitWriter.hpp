@@ -64,7 +64,7 @@ class BitWriter {
      * @return true
      * @return false
      */
-    auto ensureSpace(uint8_t count) const -> bool {
+    auto ensureSpace(size_t count) const -> bool {
         return byte_pos_ + (buffer_idx_ + count) / 8 <= write_.size();
     }
 

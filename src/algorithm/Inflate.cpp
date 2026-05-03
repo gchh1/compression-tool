@@ -83,7 +83,7 @@ auto Inflate::reset(void) -> void {
     has_pending_extra_ = false;
 }
 
-auto Inflate::handle(AlgorithmStatus& status, bool /*is_last_chunk*/) -> void {
+auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
     while (true) {
         // ---- Phase: COPY (only when between tokens, not mid-decode) ----
         while (copy_length_ > 0 &&
@@ -127,7 +127,11 @@ auto Inflate::handle(AlgorithmStatus& status, bool /*is_last_chunk*/) -> void {
 
         // ---- Input check ----
         if (reader_.getRemainingBits() == 0) {
-            status.need_input = true;
+            if (is_last_chunk) {
+                status.done = true;
+            } else {
+                status.need_input = true;
+            }
             return;
         }
 
@@ -136,9 +140,13 @@ auto Inflate::handle(AlgorithmStatus& status, bool /*is_last_chunk*/) -> void {
             uint8_t extra = pending_extra_;
             has_pending_extra_ = false;
             if (reader_.getRemainingBits() < extra) {
-                pending_extra_ = extra;
-                has_pending_extra_ = true;
-                status.need_input = true;
+                if (is_last_chunk) {
+                    status.done = true;
+                } else {
+                    pending_extra_ = extra;
+                    has_pending_extra_ = true;
+                    status.need_input = true;
+                }
                 return;
             }
             uint16_t ev = static_cast<uint16_t>(reader_.readBits(extra));
@@ -155,6 +163,11 @@ auto Inflate::handle(AlgorithmStatus& status, bool /*is_last_chunk*/) -> void {
         // ---- State machine ----
         switch (inflate_state_) {
             case InflateState::READ_BLOCK_HEADER: {
+                if (reader_.getRemainingBits() < 3) {
+                    if (is_last_chunk) { status.done = true; }
+                    else { status.need_input = true; }
+                    return;
+                }
                 uint64_t bfinal = reader_.readBit();
                 uint64_t btype = reader_.readBits(2);
                 is_last_block_ = (bfinal == 1);
@@ -163,14 +176,20 @@ auto Inflate::handle(AlgorithmStatus& status, bool /*is_last_chunk*/) -> void {
             }
 
             case InflateState::READ_LL_TREE: {
-                if (reader_.getRemainSize() < 1) {
-                    status.need_input = true;
+                if (reader_.getRemainingBits() == 0) {
+                    if (is_last_chunk) { status.done = true; }
+                    else { status.need_input = true; }
                     return;
                 }
+                auto saved = reader_.savePosition();
                 ll_tree_ = std::make_unique<HuffmanTree>(reader_, 9, 286);
                 ll_cursor_ = ll_tree_->getRoot();
                 if (!ll_cursor_) {
-                    status.need_input = true;
+                    if (is_last_chunk) { status.done = true; }
+                    else {
+                        reader_.restorePosition(saved);
+                        status.need_input = true;
+                    }
                     return;
                 }
                 inflate_state_ = InflateState::READ_D_TREE;
@@ -178,15 +197,22 @@ auto Inflate::handle(AlgorithmStatus& status, bool /*is_last_chunk*/) -> void {
             }
 
             case InflateState::READ_D_TREE: {
-                if (reader_.getRemainSize() < 1) {
-                    status.need_input = true;
+                if (reader_.getRemainingBits() == 0) {
+                    if (is_last_chunk) { status.done = true; }
+                    else { status.need_input = true; }
                     return;
                 }
+                auto saved = reader_.savePosition();
                 dist_tree_ =
                     std::make_unique<HuffmanTree>(reader_, 5, 30);
                 dist_cursor_ = dist_tree_->getRoot();
                 if (!dist_cursor_) {
-                    status.need_input = true;
+                    if (is_last_chunk) {
+                        status.done = true;
+                    } else {
+                        reader_.restorePosition(saved);
+                        status.need_input = true;
+                    }
                     return;
                 }
                 inflate_state_ = InflateState::DECODE_TOKEN;
@@ -195,17 +221,29 @@ auto Inflate::handle(AlgorithmStatus& status, bool /*is_last_chunk*/) -> void {
 
             case InflateState::DECODE_TOKEN: {
                 if (reader_.getRemainingBits() == 0) {
-                    status.need_input = true;
+                    if (is_last_chunk) {
+                        status.done = true;
+                    } else {
+                        status.need_input = true;
+                    }
                     return;
                 }
                 uint64_t bit = reader_.readBit();
                 if (!ll_cursor_) {
-                    status.need_input = true;
+                    if (is_last_chunk) {
+                        status.done = true;
+                    } else {
+                        status.need_input = true;
+                    }
                     return;
                 }
                 ll_cursor_ = (bit == 0) ? ll_cursor_->left : ll_cursor_->right;
                 if (!ll_cursor_) {
-                    status.need_input = true;
+                    if (is_last_chunk) {
+                        status.done = true;
+                    } else {
+                        status.need_input = true;
+                    }
                     return;
                 }
 
@@ -241,9 +279,13 @@ auto Inflate::handle(AlgorithmStatus& status, bool /*is_last_chunk*/) -> void {
                     uint8_t extra = kLengthExtraBits[idx];
                     if (extra > 0) {
                         if (reader_.getRemainingBits() < extra) {
-                            pending_extra_ = extra;
-                            has_pending_extra_ = true;
-                            status.need_input = true;
+                            if (is_last_chunk) {
+                                status.done = true;
+                            } else {
+                                pending_extra_ = extra;
+                                has_pending_extra_ = true;
+                                status.need_input = true;
+                            }
                             return;
                         }
                         uint16_t ev = static_cast<uint16_t>(
@@ -257,18 +299,30 @@ auto Inflate::handle(AlgorithmStatus& status, bool /*is_last_chunk*/) -> void {
 
             case InflateState::DECODE_DISTANCE: {
                 if (reader_.getRemainingBits() == 0) {
-                    status.need_input = true;
+                    if (is_last_chunk) {
+                        status.done = true;
+                    } else {
+                        status.need_input = true;
+                    }
                     return;
                 }
                 uint64_t bit = reader_.readBit();
                 if (!dist_cursor_) {
-                    status.need_input = true;
+                    if (is_last_chunk) {
+                        status.done = true;
+                    } else {
+                        status.need_input = true;
+                    }
                     return;
                 }
                 dist_cursor_ =
                     (bit == 0) ? dist_cursor_->left : dist_cursor_->right;
                 if (!dist_cursor_) {
-                    status.need_input = true;
+                    if (is_last_chunk) {
+                        status.done = true;
+                    } else {
+                        status.need_input = true;
+                    }
                     return;
                 }
 
@@ -281,9 +335,13 @@ auto Inflate::handle(AlgorithmStatus& status, bool /*is_last_chunk*/) -> void {
                 uint8_t extra = kDistanceExtraBits[dist_code];
                 if (extra > 0) {
                     if (reader_.getRemainingBits() < extra) {
-                        pending_extra_ = extra;
-                        has_pending_extra_ = true;
-                        status.need_input = true;
+                        if (is_last_chunk) {
+                            status.done = true;
+                        } else {
+                            pending_extra_ = extra;
+                            has_pending_extra_ = true;
+                            status.need_input = true;
+                        }
                         return;
                     }
                     uint16_t ev = static_cast<uint16_t>(

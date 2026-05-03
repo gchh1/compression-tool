@@ -215,13 +215,14 @@ auto Deflate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk)
         token_flush_idx_ = 0;
         deflate_state_ = DeflateState::FLUSH_TOKENS;
     } else {
+        status.need_output = true;
     }
 }
 
 auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
     -> void {
     while (token_flush_idx_ < token_buffer_.size()) {
-        if (!writer_.ensureSpace(6)) {
+        if (!writer_.ensureSpace(48)) {
             status.need_output = true;
             return;
         }
@@ -248,13 +249,16 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
         token_flush_idx_++;
     }
 
-    token_buffer_.clear();
-
-    // Always write EOF to terminate the block
+    // Write EOF to terminate the block
     {
         const auto& eof_code = dictionary_[256];
+        if (!writer_.ensureSpace(eof_code.length)) {
+            status.need_output = true;
+            return;
+        }
         writer_.writeBits(eof_code.code, eof_code.length);
     }
+    token_buffer_.clear();
 
     if (bfinal_) {
         writer_.flush();

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import os
+import tempfile
 
 from PyQt6.QtCore import Qt, QMimeData, QUrl, QThread, pyqtSignal
 from PyQt6.QtGui import QAction, QDragEnterEvent, QDropEvent, QBrush
@@ -42,18 +43,16 @@ class CompressionWorker(QThread):
         self.tasks = tasks
         self.algorithm = algorithm
 
-    def single_compress(self, row_idx: int, record: Record) -> None:
+    def single_compress(self, row_idx: int, record: Record,
+                        notify: bool = True) -> None:
         import traceback
-        logger.info("[compress] START row=%d file=%s algo=%s", row_idx, getattr(record, 'path', '?'), self.algorithm.value)
+        logger.info("[compress] START row=%d file=%s algo=%s",
+                    row_idx, getattr(record, 'path', '?'), self.algorithm.value)
         try:
             from gui.core.engine import CompressionEngine
             engine = CompressionEngine()
             if not engine.available:
                 raise RuntimeError("C++ core_engine not available")
-
-            record.load_raw_data()
-            record.extract_features()
-            logger.info("[compress] loaded raw data: %d bytes", len(record.raw_data))
 
             if isinstance(record, FileRecord):
                 record.algorithm = self.algorithm
@@ -63,26 +62,45 @@ class CompressionWorker(QThread):
                         decision_engine = strategy.RamdomForest()
                         record.algorithm = decision_engine.decide(record)
                     except Exception as e:
-                        logger.warning("[compress] AUTO decision failed, fallback to DEFLATE: %s", e)
+                        logger.warning("[compress] AUTO decision failed, fallback: %s", e)
                         record.algorithm = AlgorithmType.DEFLATE
 
-            logger.info("[compress] compressing with %s ...", record.algorithm.value)
-            result = engine.compress(record.raw_data, record.algorithm)
-            logger.info("[compress] compress done: %d -> %d bytes", len(record.raw_data), result.compressed_size)
+            # Streaming compress: file → temp file, constant memory
+            suffix = '.compressed'
+            fd, tmp_path = tempfile.mkstemp(suffix=suffix)
+            os.close(fd)
+            try:
+                logger.info("[compress] streaming %s -> %s", record.path, tmp_path)
+                result = engine.compress_file(record.path, tmp_path,
+                                              self.algorithm)
+                logger.info("[compress] done: %d -> %d bytes",
+                            result['original_size'], result['compressed_size'])
 
-            record.compressed_data = list(result.data)
-            record.compression_time_ms = result.time_ms
-            if hasattr(result, 'error_message') and result.error_message:
-                record.status = CompressionStatus.FAILED
-                record.error_message = result.error_message
-                self.error.emit(row_idx)
-            else:
-                record.status = CompressionStatus.DONE
-                record.compression_ratio = result.compressed_size / record.size if record.size > 0 else 0
-                self.finished_row.emit(row_idx)
+                if result['success']:
+                    with open(tmp_path, 'rb') as f:
+                        record.compressed_data = f.read()
+                    record.status = CompressionStatus.DONE
+                    record.compression_ratio = (
+                        result['compressed_size'] / record.size
+                        if record.size > 0 else 0)
+                    record.compression_time_ms = result['time_ms']
+                    if notify:
+                        self.finished_row.emit(row_idx)
+                else:
+                    record.status = CompressionStatus.FAILED
+                    record.error_message = result.get('error_message', '')
+                    if notify:
+                        self.error.emit(row_idx)
+            finally:
+                try:
+                    os.unlink(tmp_path)
+                except OSError:
+                    pass
 
         except Exception as e:
-            logger.error("[compress] CRASH row=%d file=%s: %s\n%s", row_idx, getattr(record, 'path', '?'), e, traceback.format_exc())
+            logger.error("[compress] CRASH row=%d file=%s: %s\n%s",
+                         row_idx, getattr(record, 'path', '?'), e,
+                         traceback.format_exc())
             record.status = CompressionStatus.FAILED
             record.error_message = str(e)
             self.error.emit(row_idx)
@@ -91,12 +109,59 @@ class CompressionWorker(QThread):
         for row_idx, record in self.tasks:
             if isinstance(record, FolderRecord):
                 for filerecord in record.files:
-                    self.single_compress(row_idx, filerecord)
+                    self.single_compress(row_idx, filerecord, notify=False)
+                # Update folder record status after all child files done
+                failed = sum(1 for f in record.files
+                             if f.status == CompressionStatus.FAILED)
+                if failed == 0:
+                    record.status = CompressionStatus.DONE
+                    record.compression_ratio = (
+                        sum(len(f.compressed_data) for f in record.files
+                            if f.compressed_data) / record.size
+                        if record.size > 0 else 1.0)
+                elif failed == record.filenum:
+                    record.status = CompressionStatus.FAILED
+                else:
+                    record.status = CompressionStatus.DONE  # partial
+                record.compression_time_ms = sum(
+                    f.compression_time_ms for f in record.files)
+                self.finished_row.emit(row_idx)
             elif isinstance(record, FileRecord):
                 self.single_compress(row_idx, record)
 
 
 
+
+
+# ============================================================
+#  解压工作线程
+# ============================================================
+
+class DecompressWorker(QThread):
+    finished_file = pyqtSignal(str, bool, str)  # path, success, message
+
+    def __init__(self, tasks: list[tuple[str, str]]):
+        """tasks: list of (input_path, output_path)"""
+        super().__init__()
+        self.tasks = tasks
+
+    def run(self) -> None:
+        from gui.core.engine import CompressionEngine
+        engine = CompressionEngine()
+        if not engine.available:
+            for inp, _ in self.tasks:
+                self.finished_file.emit(inp, False, "core_engine not available")
+            return
+        for inp, out in self.tasks:
+            try:
+                result = engine.decompress_file(inp, out)
+                if result['success']:
+                    self.finished_file.emit(inp, True,
+                        f"{result['original_size']} -> {result['compressed_size']} bytes")
+                else:
+                    self.finished_file.emit(inp, False, result['error_message'])
+            except Exception as e:
+                self.finished_file.emit(inp, False, str(e))
 
 
 # ============================================================
@@ -141,14 +206,10 @@ class FileTableWidget(QTableWidget):
     def mousePressEvent(self, event) -> None:
         try:
             item = self.itemAt(event.pos())
-            logger.debug("mousePressEvent: pos=%s, item=%s", event.pos(), item)
             if item is not None:
                 row = item.row()
-                col = item.column()
-                logger.debug("mousePressEvent: row=%d, col=%d", row, col)
-                if col != self.COL_CHECK:
-                    self._toggle_row(row)
-                    return
+                self._toggle_row(row)
+                return
             super().mousePressEvent(event)
         except Exception as e:
             logger.exception("mousePressEvent crash: %s", e)
@@ -330,7 +391,8 @@ class FileTableWidget(QTableWidget):
 
     def mark_error(self, row: int) -> None:
         try:
-            self.update_status(row, CompressionStatus.FAILED.value)
+            self.setItem(row, self.COL_STATUS,
+                         QTableWidgetItem(CompressionStatus.FAILED.value))
             item = self.item(row, self.COL_STATUS)
             if item:
                 item.setForeground(Qt.GlobalColor.red)
@@ -387,10 +449,7 @@ class AlgorithmSelector(QComboBox):
     """算法选择下拉框"""
 
     ALGORITHMS = [
-        ("LZMine (KMP+DP)", AlgorithmType.LZMINE),
-        ("LZSS", AlgorithmType.LZSS),
         ("Deflate", AlgorithmType.DEFLATE),
-        ("Huffman", AlgorithmType.HUFFMAN),
         ("Auto", AlgorithmType.AUTO),
     ]
 
@@ -466,6 +525,7 @@ class MainWindow(QMainWindow):
 
         self.setAcceptDrops(True)
         self._worker: CompressionWorker | None = None
+        self._decompress_worker: DecompressWorker | None = None
 
         # 组件实例化
         self._table = FileTableWidget()
@@ -540,6 +600,13 @@ class MainWindow(QMainWindow):
         export_action.setToolTip("导出压缩后的文件")
         export_action.triggered.connect(self._on_export)
         toolbar.addAction(export_action)
+
+        toolbar.addSeparator()
+
+        decompress_action = QAction("🔓 解压文件", self)
+        decompress_action.setToolTip("解压 .compressed 文件")
+        decompress_action.triggered.connect(self._on_decompress)
+        toolbar.addAction(decompress_action)
 
     # ========== 中央区域 ==========
     def _setup_central(self) -> None:
@@ -672,7 +739,10 @@ class MainWindow(QMainWindow):
                     original_name = name_item.text()
                     export_path = os.path.join(export_dir, f"{original_name}.compressed")
                     with open(export_path, 'wb') as f:
-                        f.write(record.compressed_data)
+                        data = record.compressed_data
+                        if isinstance(data, list):
+                            data = bytes(data)
+                        f.write(data)
                     exported += 1
 
         if exported > 0:
@@ -680,6 +750,41 @@ class MainWindow(QMainWindow):
             QMessageBox.information(self, "导出完成", f"已成功导出 {exported} 个文件！")
         else:
             QMessageBox.warning(self, "提示", "没有可导出的文件（请先压缩）")
+
+    # ========== 解压操作 ==========
+    def _on_decompress(self) -> None:
+        if self._decompress_worker and self._decompress_worker.isRunning():
+            QMessageBox.warning(self, "提示", "解压任务正在进行中...")
+            return
+
+        paths, _ = QFileDialog.getOpenFileNames(
+            self, "选择要解压的文件", "",
+            "压缩文件 (*.compressed);;所有文件 (*)")
+        if not paths:
+            return
+
+        tasks = []
+        for p in paths:
+            out = p
+            if out.endswith('.compressed'):
+                out = out[:-11]
+            else:
+                out = p + '.decompressed'
+            tasks.append((p, out))
+
+        self._decompress_worker = DecompressWorker(tasks)
+        self._decompress_worker.finished_file.connect(self._on_decompress_finished)
+        self._decompress_worker.finished.connect(
+            lambda: self._statusbar.set_status_text("解压完成"))
+        self._statusbar.set_status_text(f"解压 {len(tasks)} 个文件...")
+        self._decompress_worker.start()
+
+    def _on_decompress_finished(self, path: str, success: bool, msg: str):
+        if success:
+            self._statusbar.set_status_text(f"解压成功: {os.path.basename(path)} ({msg})")
+        else:
+            logger.error("解压失败: %s - %s", path, msg)
+            QMessageBox.warning(self, "解压失败", f"{path}\n{msg}")
 
     # ========== 关于 ==========
     def _on_about(self) -> None:

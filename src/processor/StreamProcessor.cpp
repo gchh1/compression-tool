@@ -56,7 +56,6 @@ auto StreamProcessor::finish() -> std::vector<uint8_t> {
         processChunks(true);
         publishCurrent();
     }
-    // Leave output in ready_chunks_ for pull(); return empty for compat.
     return {};
 }
 
@@ -128,12 +127,39 @@ auto StreamProcessor::processChunks(bool is_last) -> void {
             finished_ = true;
             break;
         }
-        if (status.need_input) break;
+        if (status.need_input) {
+            // When stuck on a tiny front chunk with more chunks queued,
+            // merge its trailing bytes into the next chunk so the algorithm
+            // sees a continuous span for Huffman tree construction.
+            if (status.bytes_consumed == 0 && in_chunks_.size() > 1) {
+                size_t remaining = in_chunks_.front().size() - in_pos_;
+                if (remaining > 0 && remaining <= 1024) {
+                    auto merged = std::make_shared<std::vector<uint8_t>>();
+                    auto front_span = readSpan();
+                    merged->assign(front_span.begin(), front_span.end());
+                    in_chunks_.pop_front();
+                    in_pos_ = 0;
+                    auto next_span = readSpan();
+                    merged->insert(merged->end(), next_span.begin(),
+                                   next_span.end());
+                    in_chunks_.pop_front();
+                    in_chunks_.push_front(
+                        memory::DataChunk::adopt(merged, merged->size()));
+                    continue;
+                }
+            }
+            if (is_last && !finished_) continue;
+            publishCurrent();
+            break;
+        }
         if (status.need_output) {
-            if (out_pos_ >= current_out_->size()) {
-                publishCurrent();
-                if (pool_) continue;  // stay in loop, get new chunk
-                break;  // no pool = single fixed buffer
+            publishCurrent();
+            if (!pool_) continue;
+            if (is_last && !finished_) {
+                current_out_ = std::make_shared<std::vector<uint8_t>>(
+                    pool_->chunkSize());
+                out_pos_ = 0;
+                continue;
             }
             break;
         }

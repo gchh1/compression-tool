@@ -1,67 +1,102 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "ICompressor.hpp"
-#include "DeflateCompressor.hpp"
-#include "LZSSCompressor.hpp"
-#include "LZMineCompressor.hpp"
-#include "Archiver.hpp"
+#include <span>
+#include <vector>
+
+#include "api.hpp"
 
 namespace py = pybind11;
-using namespace compressor::core;
+
+using namespace compressor::api;
+
+namespace {
+
+auto pyCompress(const std::vector<uint8_t>& data,
+                const std::vector<AlgorithmID>& chain) -> CompressResult {
+    return compress(data, std::span<const AlgorithmID>(chain));
+}
+
+auto pyDecompress(const std::vector<uint8_t>& data,
+                  const std::vector<AlgorithmID>& chain) -> CompressResult {
+    return decompress(data, std::span<const AlgorithmID>(chain));
+}
+
+auto pyPackAndCompress(const std::vector<WebFile>& files,
+                       const std::vector<AlgorithmID>& chain)
+    -> std::vector<uint8_t> {
+    return packAndCompress(files, std::span<const AlgorithmID>(chain));
+}
+
+#ifndef __EMSCRIPTEN__
+
+auto pyCompressFile(const std::string& input_path,
+                    const std::string& output_path,
+                    const std::vector<AlgorithmID>& chain) -> CompressResult {
+    return compressFile(input_path, output_path,
+                        std::span<const AlgorithmID>(chain));
+}
+
+auto pyDecompressFile(const std::string& input_path,
+                      const std::string& output_path,
+                      const std::vector<AlgorithmID>& chain) -> CompressResult {
+    return decompressFile(input_path, output_path,
+                          std::span<const AlgorithmID>(chain));
+}
+
+auto pyCompressDirectory(const std::string& dir_path,
+                         const std::string& output_path,
+                         const std::vector<AlgorithmID>& chain) -> CompressResult {
+    return compressDirectory(dir_path, output_path,
+                             std::span<const AlgorithmID>(chain));
+}
+
+#endif
+
+}  // namespace
 
 PYBIND11_MODULE(core_engine, m) {
     m.doc() = "Web Compressor C++ Core Engine";
 
-    // ===== 数据结构 =====
+    py::enum_<AlgorithmID>(m, "AlgorithmID")
+        .value("None", AlgorithmID::None)
+        .value("Deflate", AlgorithmID::Deflate)
+        .value("Inflate", AlgorithmID::Inflate)
+        .value("DeltaEncode", AlgorithmID::DeltaEncode)
+        .value("DeltaDecode", AlgorithmID::DeltaDecode);
 
-    py::class_<CompressorResult>(m, "CompressorResult")
+    py::class_<CompressResult>(m, "CompressResult")
         .def(py::init<>())
-        .def_readwrite("data", &CompressorResult::data)
-        .def_readwrite("original_size", &CompressorResult::original_size)
-        .def_readwrite("compressed_size", &CompressorResult::compressed_size)
-        .def_readwrite("compression_ratio", &CompressorResult::compression_ratio)
-        .def_readwrite("time_ms", &CompressorResult::time_ms)
-        .def_readwrite("success", &CompressorResult::success)
-        .def_readwrite("error_message", &CompressorResult::error_message);
+        .def_readwrite("data", &CompressResult::data)
+        .def_readwrite("original_size", &CompressResult::original_size)
+        .def_readwrite("compressed_size", &CompressResult::compressed_size)
+        .def_readwrite("compression_ratio", &CompressResult::compression_ratio)
+        .def_readwrite("time_ms", &CompressResult::time_ms)
+        .def_readwrite("success", &CompressResult::success)
+        .def_readwrite("error_message", &CompressResult::error_message);
 
-    // ===== 算法枚举 =====
-
-    py::enum_<CompressorAlgorithm>(m, "CompressorAlgorithm")
-        .value("DEFLATE", CompressorAlgorithm::Deflate)
-        .value("LZSS", CompressorAlgorithm::LZSS)
-        .value("LZMINE", CompressorAlgorithm::LZMINE)
-        .export_values();
-
-    // ===== 压缩器接口 =====
-
-    py::class_<ICompressor, std::shared_ptr<ICompressor>>(m, "ICompressor")
-        .def("compress", &ICompressor::compress)
-        .def("decompress", &ICompressor::decompress)
-        .def("get_algorithm_name", &ICompressor::get_algorithm_name);
-
-    py::class_<DeflateCompressor, ICompressor,
-               std::shared_ptr<DeflateCompressor>>(m, "DeflateCompressor")
-        .def(py::init<>());
-
-    py::class_<LZSSCompressor, ICompressor,
-               std::shared_ptr<LZSSCompressor>>(m, "LZSSCompressor")
-        .def(py::init<>());
-
-    py::class_<LZMineCompressor, ICompressor,
-               std::shared_ptr<LZMineCompressor>>(m, "LZMineCompressor")
-        .def(py::init<>());
-
-    // ===== 打包器 File 结构体 =====
-
-    py::class_<File>(m, "File")
+    py::class_<WebFile>(m, "WebFile")
         .def(py::init<>())
-        .def_readwrite("filepath", &File::filepath)
-        .def_readwrite("context", &File::context);
+        .def_readwrite("name", &WebFile::name)
+        .def_readwrite("content", &WebFile::content);
 
-    // ===== 打包器 =====
+    m.def("compress", &pyCompress,
+          "Compress a single buffer with the given algorithm chain");
+    m.def("decompress", &pyDecompress,
+          "Decompress a single buffer with the given algorithm chain");
+    m.def("pack_and_compress", &pyPackAndCompress,
+          "Pack multiple files into a compressed archive");
+    m.def("decompress_and_unpack", &decompressAndUnpack,
+          "Unpack a compressed archive back into individual files");
 
-    py::class_<Archiver>(m, "Archiver")
-        .def_static("pack", &Archiver::pack)
-        .def_static("unpack", &Archiver::unpack);
+#ifndef __EMSCRIPTEN__
+    m.def("compress_file", &pyCompressFile,
+          "Stream-compress a single file to output_path");
+    m.def("decompress_file", &pyDecompressFile,
+          "Stream-decompress a single file to output_path");
+    m.def("compress_directory", &pyCompressDirectory,
+          "Recursively pack and compress a directory into an archive file");
+    m.def("decompress_and_unpack_to_disk", &decompressAndUnpackToDisk,
+          "Unpack a compressed archive to disk, preserving directory structure");
+#endif
 }

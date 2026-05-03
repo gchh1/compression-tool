@@ -1,0 +1,2 @@
+/usr/bin/ar qc libarchiver.a CMakeFiles/archiver.dir/FileReader.cpp.o CMakeFiles/archiver.dir/PackReader.cpp.o CMakeFiles/archiver.dir/PackWriter.cpp.o
+/usr/bin/ranlib libarchiver.a

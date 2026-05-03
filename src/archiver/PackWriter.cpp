@@ -15,19 +15,16 @@
 
 namespace compressor::archiver {
 
-auto PackWriter::beginFile(const std::string& filepath, AlgorithmID comp_algo,
-                           AlgorithmID preproc_algo) -> void {
+auto PackWriter::beginFile(const std::string& filepath,
+                           std::span<const AlgorithmID> chain) -> void {
     if (finished_) return;
     if (file_open_) closeCurrentFile();
 
-    // Init the `entry header`
     entry_header_.filepath = filepath;
-    entry_header_.preproc_algo_id = preproc_algo;
-    entry_header_.comp_algo_id = comp_algo;
+    entry_header_.algo_chain.assign(chain.begin(), chain.end());
     entry_header_.original_size = 0;
     entry_header_.compressed_size = 0;
 
-    // Serialize header into own mutable buffer (allows endFile patching)
     auto header = entry_header_.serialize();
     header_offset_ = header.size() - sizeof(uint64_t);
     header_buffer_ = std::move(header);
@@ -38,8 +35,9 @@ auto PackWriter::beginFile(const std::string& filepath, AlgorithmID comp_algo,
     current_compressed_size_ = 0;
 
     std::vector<std::unique_ptr<algorithm::IAlgorithm>> algos;
-    if (auto a = core::createAlgorithm(preproc_algo)) algos.push_back(std::move(a));
-    if (auto a = core::createAlgorithm(comp_algo)) algos.push_back(std::move(a));
+    for (auto id : chain) {
+        if (auto a = core::createAlgorithm(id)) algos.push_back(std::move(a));
+    }
     pipeline_ = std::make_unique<processor::Pipeline>(std::move(algos), pool_);
 
     file_open_ = true;

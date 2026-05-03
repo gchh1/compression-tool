@@ -1,0 +1,1 @@
+/usr/bin/c++ -fsanitize=address -fno-omit-frame-pointer -g -g -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/test_Inflate.dir/test_Inflate.cpp.o -o test_Inflate  ../src/api/libapi.a ../src/archiver/libarchiver.a ../src/processor/libprocessor.a ../src/core/libcore.a ../src/algorithm/libalgorithm.a

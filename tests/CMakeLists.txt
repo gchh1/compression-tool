@@ -30,3 +30,9 @@ target_link_libraries(test_Inflate PRIVATE api)
 
 add_executable(test_PackWriter_RoundTrip test_PackWriter_RoundTrip.cpp)
 target_link_libraries(test_PackWriter_RoundTrip PRIVATE api)
+
+add_executable(test_CompressFile test_CompressFile.cpp)
+target_link_libraries(test_CompressFile PRIVATE api)
+
+add_executable(test_Mem test_Mem.cpp)
+target_link_libraries(test_Mem PRIVATE api)

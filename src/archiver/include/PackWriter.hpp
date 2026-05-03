@@ -25,10 +25,9 @@ class PackWriter {
     explicit PackWriter(std::shared_ptr<memory::MemoryPool> pool)
         : pool_(std::move(pool)) {}
 
-    /** @brief Give the algorithm to process the file and build the `entry
-     *         header` for the file*/
-    auto beginFile(const std::string& filepath, AlgorithmID comp_algo,
-                   AlgorithmID preproc_algo = AlgorithmID::None) -> void;
+    /** @brief Start a file entry with an algorithm chain (last = compressor). */
+    auto beginFile(const std::string& filepath,
+                   std::span<const AlgorithmID> chain) -> void;
 
     /** @brief  */
     auto pushFileData(memory::DataChunk chunk) -> void;
@@ -56,7 +55,7 @@ class PackWriter {
 
     std::unique_ptr<processor::Pipeline> pipeline_;
 
-    size_t current_compressed_size_{0};
+    uint64_t current_compressed_size_{0};
 
     bool finished_{false};
     bool file_open_{false};

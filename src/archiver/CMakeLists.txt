@@ -1,6 +1,7 @@
 add_library(
     archiver
     STATIC
+    FileReader.cpp
     PackReader.cpp
     PackWriter.cpp
 )

@@ -1,3 +1,4 @@
+#include <array>
 #include <cassert>
 #include <iostream>
 #include <memory>
@@ -18,7 +19,7 @@ int main() {
         auto pool = std::make_shared<MemoryPool>(8, 65536);
         PackWriter writer(pool);
 
-        writer.beginFile("test.txt", AlgorithmID::Deflate);
+        writer.beginFile("test.txt", std::array{AlgorithmID::Deflate});
 
         // Generate repetitive data (good for compression)
         std::string input = "Hello, World! This is a compression test. ";

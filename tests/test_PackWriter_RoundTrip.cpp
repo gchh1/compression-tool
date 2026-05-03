@@ -1,3 +1,4 @@
+#include <array>
 #include <cassert>
 #include <cstdint>
 #include <iostream>
@@ -44,7 +45,7 @@ int main() {
     }
 
     // Pack + compress
-    auto packed = api::packAndCompress(input, api::AlgorithmID::Deflate);
+    auto packed = api::packAndCompress(input, std::array{api::AlgorithmID::Deflate});
     size_t total_orig = 0;
     for (const auto& f : input) total_orig += f.content.size();
     std::cout << "Packed: " << total_orig << "B -> " << packed.size() << "B ("

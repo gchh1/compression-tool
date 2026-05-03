@@ -1,3 +1,4 @@
+#include <array>
 #include <cassert>
 #include <cstdint>
 #include <iostream>
@@ -16,14 +17,14 @@ int main() {
         std::string input = "Hello World! This is a Deflate round-trip test.";
         std::vector<uint8_t> original(input.begin(), input.end());
 
-        auto comp = api::compress(original, api::AlgorithmID::Deflate);
+        auto comp = api::compress(original, std::array{api::AlgorithmID::Deflate});
         assert(comp.success);
         std::cout << "Test 1 (string): " << original.size() << "B -> "
                   << comp.compressed_size << "B ("
                   << (100.0 * comp.compressed_size / original.size()) << "%)"
                   << std::endl;
 
-        auto decomp = api::decompress(comp.data, api::AlgorithmID::Inflate);
+        auto decomp = api::decompress(comp.data, std::array{api::AlgorithmID::Inflate});
         assert(decomp.success);
         assert(decomp.data == original);
         std::cout << "  [PASS] Round-trip verified" << std::endl;
@@ -36,14 +37,14 @@ int main() {
         for (int i = 0; i < 500; ++i)
             original.insert(original.end(), pattern.begin(), pattern.end());
 
-        auto comp = api::compress(original, api::AlgorithmID::Deflate);
+        auto comp = api::compress(original, std::array{api::AlgorithmID::Deflate});
         assert(comp.success);
         std::cout << "Test 2 (repetitive): " << original.size() << "B -> "
                   << comp.compressed_size << "B ("
                   << (100.0 * comp.compressed_size / original.size()) << "%)"
                   << std::endl;
 
-        auto decomp = api::decompress(comp.data, api::AlgorithmID::Inflate);
+        auto decomp = api::decompress(comp.data, std::array{api::AlgorithmID::Inflate});
         assert(decomp.success);
         assert(decomp.data == original);
         std::cout << "  [PASS] Round-trip verified" << std::endl;
@@ -55,14 +56,14 @@ int main() {
         for (size_t i = 0; i < original.size(); ++i)
             original[i] = static_cast<uint8_t>((i * 7 + 13) & 0xFF);
 
-        auto comp = api::compress(original, api::AlgorithmID::Deflate);
+        auto comp = api::compress(original, std::array{api::AlgorithmID::Deflate});
         assert(comp.success);
         std::cout << "Test 3 (pseudo-random): " << original.size() << "B -> "
                   << comp.compressed_size << "B ("
                   << (100.0 * comp.compressed_size / original.size()) << "%)"
                   << std::endl;
 
-        auto decomp = api::decompress(comp.data, api::AlgorithmID::Inflate);
+        auto decomp = api::decompress(comp.data, std::array{api::AlgorithmID::Inflate});
         assert(decomp.success);
         assert(decomp.data == original);
         std::cout << "  [PASS] Round-trip verified" << std::endl;
@@ -74,14 +75,14 @@ int main() {
         for (size_t i = 0; i < original.size(); ++i)
             original[i] = static_cast<uint8_t>(i * 3 + 7);
 
-        auto comp = api::compress(original, api::AlgorithmID::Deflate);
+        auto comp = api::compress(original, std::array{api::AlgorithmID::Deflate});
         assert(comp.success);
         std::cout << "Test 4 (multi-block): " << original.size() << "B -> "
                   << comp.compressed_size << "B ("
                   << (100.0 * comp.compressed_size / original.size()) << "%)"
                   << std::endl;
 
-        auto decomp = api::decompress(comp.data, api::AlgorithmID::Inflate);
+        auto decomp = api::decompress(comp.data, std::array{api::AlgorithmID::Inflate});
         assert(decomp.success);
         if (decomp.data != original) {
             std::cerr << "  MISMATCH: decsz=" << decomp.data.size() << " orsz=" << original.size() << std::endl;
@@ -109,10 +110,10 @@ int main() {
     {
         std::vector<uint8_t> original = {'X'};
 
-        auto comp = api::compress(original, api::AlgorithmID::Deflate);
+        auto comp = api::compress(original, std::array{api::AlgorithmID::Deflate});
         assert(comp.success);
 
-        auto decomp = api::decompress(comp.data, api::AlgorithmID::Inflate);
+        auto decomp = api::decompress(comp.data, std::array{api::AlgorithmID::Inflate});
         assert(decomp.success);
         assert(decomp.data == original);
         std::cout << "Test 5 (single byte): [PASS]" << std::endl;
@@ -122,10 +123,10 @@ int main() {
     {
         std::vector<uint8_t> original;
 
-        auto comp = api::compress(original, api::AlgorithmID::Deflate);
+        auto comp = api::compress(original, std::array{api::AlgorithmID::Deflate});
         assert(comp.success);
 
-        auto decomp = api::decompress(comp.data, api::AlgorithmID::Inflate);
+        auto decomp = api::decompress(comp.data, std::array{api::AlgorithmID::Inflate});
         assert(decomp.success);
         assert(decomp.data == original);
         std::cout << "Test 6 (empty): [PASS]" << std::endl;

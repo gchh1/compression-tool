@@ -36,9 +36,6 @@ class CompressionStatus(Enum):
 class AlgorithmType(Enum):
     AUTO = "auto"
     DEFLATE = "deflate"
-    HUFFMAN = "huffman"
-    LZSS = "lzss"
-    LZMINE = "lzmine"
     NONE = "none"
 
 

@@ -1,20 +1,15 @@
-from __future__ import annotations # 延迟求值
+from __future__ import annotations
 
 import logging
 from pathlib import Path
 
 from gui.core.models import (
     AlgorithmType,
-
     CompressionStatus,
     FileRecord,
-    FolderRecord,
 )
 
-
-# 定义一个日志记录器，用于记录压缩引擎的运行时信息
-logger = logging.getLogger(__name__) # __name__ 是当前模块的名称，用于日志记录器的名称
-# _core_engine 是一个全局变量，用于存储C++ core_engine的实例
+logger = logging.getLogger(__name__)
 _core_engine = None
 
 
@@ -32,6 +27,39 @@ def _get_engine():
         return None
 
 
+def _algo_chain(algorithm: AlgorithmType) -> list:
+    """Map AlgorithmType to compression AlgorithmID chain."""
+    if algorithm == AlgorithmType.DEFLATE:
+        return [_get_engine().AlgorithmID.Deflate]
+    elif algorithm == AlgorithmType.NONE:
+        return []
+    elif algorithm == AlgorithmType.AUTO:
+        return [_get_engine().AlgorithmID.Deflate]
+    return []
+
+
+def _decomp_chain(algorithm: AlgorithmType) -> list:
+    """Map AlgorithmType to decompression AlgorithmID chain."""
+    if algorithm == AlgorithmType.DEFLATE:
+        return [_get_engine().AlgorithmID.Inflate]
+    elif algorithm == AlgorithmType.NONE:
+        return []
+    elif algorithm == AlgorithmType.AUTO:
+        return [_get_engine().AlgorithmID.Inflate]
+    return []
+
+
+def _result_to_dict(result) -> dict:
+    return {
+        'original_size': result.original_size,
+        'compressed_size': result.compressed_size,
+        'compression_ratio': result.compression_ratio,
+        'time_ms': result.time_ms,
+        'success': result.success,
+        'error_message': result.error_message,
+    }
+
+
 class CompressionEngine:
     def __init__(self):
         self._engine = _get_engine()
@@ -40,45 +68,19 @@ class CompressionEngine:
     def available(self) -> bool:
         return self._engine is not None
 
-    def compress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE) -> self._engine.CompressorResult:
+    def compress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE):
         if not self.available:
             raise RuntimeError("C++ core_engine not available")
 
-        if algorithm == AlgorithmType.LZSS:
-            compressor = self._engine.LZSSCompressor()
-        elif algorithm == AlgorithmType.LZMINE:
-            compressor = self._engine.LZMineCompressor()
-        elif algorithm == AlgorithmType.DEFLATE:
-            compressor = self._engine.DeflateCompressor()
+        chain = _algo_chain(algorithm)
+        return self._engine.compress(list(data), chain)
 
-        result = compressor.compress(list(data))
-
-        cr = self._engine.CompressorResult()
-        cr.original_size = result.original_size
-        cr.compressed_size = result.compressed_size
-        cr.compression_ratio = result.compression_ratio
-        cr.time_ms = result.time_ms
-        cr.data = list(result.data)
-        return cr
-
-    def decompress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE) -> self._engine.CompressorResult:   
+    def decompress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE):
         if not self.available:
             raise RuntimeError("C++ core_engine not available")
 
-        if algorithm == AlgorithmType.LZSS:
-            compressor = self._engine.LZSSCompressor()
-        elif algorithm == AlgorithmType.LZMINE:
-            compressor = self._engine.LZMineCompressor()
-        elif algorithm == AlgorithmType.DEFLATE:
-            compressor = self._engine.DeflateCompressor()
-
-        result = compressor.decompress(list(data))
-        cr = self._engine.CompressorResult()
-        cr.original_size = result.original_size
-        cr.compressed_size = result.compressed_size
-        cr.time_ms = result.time_ms
-        cr.data = list(result.data)
-        return cr
+        chain = _decomp_chain(algorithm)
+        return self._engine.decompress(list(data), chain)
 
     def pack_files(self, records: list[FileRecord]) -> bytes:
         if not self.available:
@@ -86,29 +88,77 @@ class CompressionEngine:
 
         files = []
         for rec in records:
-            f = self._engine.File()
-            f.filepath = rec.path
-            f.context = list(rec.raw_data)
+            f = self._engine.WebFile()
+            f.name = rec.path
+            f.content = list(rec.raw_data)
             files.append(f)
 
-        packed = self._engine.Archiver.pack(files)
+        chain = [_get_engine().AlgorithmID.Deflate]
+        packed = self._engine.pack_and_compress(files, chain)
         return bytes(packed)
 
     def unpack_archive(self, data: bytes) -> list[FileRecord]:
         if not self.available:
             raise RuntimeError("C++ core_engine not available")
-        raw_files = self._engine.Archiver.unpack(list(data))
+
+        raw_files = self._engine.decompress_and_unpack(list(data))
         records = []
         for wf in raw_files:
             records.append(FileRecord(
-                path=wf.filepath,
-                name=Path(wf.filepath).name,
-                extension=Path(wf.filepath).suffix.lower(),
-                size=len(wf.context),
-                type=_identify_from_ext(Path(wf.filepath).suffix.lower()),
-                raw_data=bytes(wf.context),
+                path=wf.name,
+                name=Path(wf.name).name,
+                extension=Path(wf.name).suffix.lower(),
+                size=len(wf.content),
+                type=_identify_from_ext(Path(wf.name).suffix.lower()),
+                raw_data=bytes(wf.content),
             ))
         return records
 
-# 从文件扩展名判断资源类型
+    # ---- streaming file API ----
 
+    def compress_file(self, input_path: str, output_path: str,
+                      algorithm: AlgorithmType = AlgorithmType.DEFLATE) -> dict:
+        """Stream-compress a single file (any size) to disk."""
+        if not self.available:
+            raise RuntimeError("C++ core_engine not available")
+        chain = _algo_chain(algorithm)
+        result = self._engine.compress_file(input_path, output_path, chain)
+        return _result_to_dict(result)
+
+    def decompress_file(self, input_path: str, output_path: str,
+                        algorithm: AlgorithmType = AlgorithmType.DEFLATE) -> dict:
+        """Stream-decompress a single file to disk."""
+        if not self.available:
+            raise RuntimeError("C++ core_engine not available")
+        chain = _decomp_chain(algorithm)
+        result = self._engine.decompress_file(input_path, output_path, chain)
+        return _result_to_dict(result)
+
+    def compress_directory(self, dir_path: str, output_path: str,
+                           algorithm: AlgorithmType = AlgorithmType.DEFLATE) -> dict:
+        """Recursively pack and compress a directory into an archive file."""
+        if not self.available:
+            raise RuntimeError("C++ core_engine not available")
+        chain = _algo_chain(algorithm)
+        result = self._engine.compress_directory(dir_path, output_path, chain)
+        return _result_to_dict(result)
+
+    def decompress_and_unpack_to_disk(self, input_path: str,
+                                       output_dir: str) -> dict:
+        """Unpack an archive to disk, preserving directory structure."""
+        if not self.available:
+            raise RuntimeError("C++ core_engine not available")
+        result = self._engine.decompress_and_unpack_to_disk(
+            input_path, output_dir)
+        return _result_to_dict(result)
+
+
+def _identify_from_ext(ext: str):
+    from gui.core.models import SCRIPT_EXTENSIONS, TEXT_EXTENSIONS, IMAGE_EXTENSIONS, ResourceType
+    if ext in TEXT_EXTENSIONS:
+        return ResourceType.TEXT
+    if ext in IMAGE_EXTENSIONS:
+        return ResourceType.IMAGE
+    if ext in SCRIPT_EXTENSIONS:
+        return ResourceType.SCRIPT
+    return ResourceType.UNKNOWN

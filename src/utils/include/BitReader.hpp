@@ -179,6 +179,24 @@ class BitReader {
         return (read_.size() - byte_pos_) * 8 + buffer_idx_;
     }
 
+    struct Position {
+        size_t byte_pos;
+        uint64_t buffer;
+        uint8_t buffer_idx;
+        size_t total_bits;
+    };
+
+    auto savePosition() const -> Position {
+        return {byte_pos_, buffer_, buffer_idx_, total_bits_consumed_};
+    }
+
+    auto restorePosition(Position pos) -> void {
+        byte_pos_ = pos.byte_pos;
+        buffer_ = pos.buffer;
+        buffer_idx_ = pos.buffer_idx;
+        total_bits_consumed_ = pos.total_bits;
+    }
+
    private:
     /** @brief Span resources that the class wrappered */
     std::span<const uint8_t> read_;
