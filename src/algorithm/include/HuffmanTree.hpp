@@ -95,6 +95,8 @@ class HuffmanTree {
 
     auto getTreeSize(void) -> size_t const { return tree_size_; }
 
+    auto getCodeLengths() const -> std::vector<uint8_t>;
+
    private:
     /** @brief Build the huffman tree */
     auto buildTree(const std::vector<uint32_t>& freqMap) -> void;

@@ -12,10 +12,12 @@
 #pragma once
 
 #include <cstdint>
+#include <optional>
 #include <span>
 
 #include "BitReader.hpp"
 #include "BitWriter.hpp"
+#include "BlockProfile.hpp"
 namespace compressor::algorithm {
 
 /**
@@ -41,6 +43,10 @@ class IAlgorithm {
         -> AlgorithmStatus = 0;
 
     virtual auto reset(void) -> void = 0;
+
+    virtual auto getBlockProfile() -> std::optional<BlockProfile> {
+        return std::nullopt;
+    }
 };
 
 class AlgorithmBase : public IAlgorithm {

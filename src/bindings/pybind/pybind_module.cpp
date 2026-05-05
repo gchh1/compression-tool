@@ -65,6 +65,21 @@ PYBIND11_MODULE(core_engine, m) {
         .value("DeltaEncode", AlgorithmID::DeltaEncode)
         .value("DeltaDecode", AlgorithmID::DeltaDecode);
 
+    py::class_<BlockInfo>(m, "BlockInfo")
+        .def(py::init<>())
+        .def_readwrite("block_index", &BlockInfo::block_index)
+        .def_readwrite("literal_count", &BlockInfo::literal_count)
+        .def_readwrite("match_count", &BlockInfo::match_count)
+        .def_readwrite("ll_tree_bits", &BlockInfo::ll_tree_bits)
+        .def_readwrite("dist_tree_bits", &BlockInfo::dist_tree_bits)
+        .def_readwrite("output_bytes", &BlockInfo::output_bytes)
+        .def_readwrite("ll_code_lengths", &BlockInfo::ll_code_lengths)
+        .def_readwrite("dist_code_lengths", &BlockInfo::dist_code_lengths);
+
+    py::class_<BlockProfile>(m, "BlockProfile")
+        .def(py::init<>())
+        .def_readwrite("blocks", &BlockProfile::blocks);
+
     py::class_<CompressResult>(m, "CompressResult")
         .def(py::init<>())
         .def_readwrite("data", &CompressResult::data)
@@ -73,7 +88,8 @@ PYBIND11_MODULE(core_engine, m) {
         .def_readwrite("compression_ratio", &CompressResult::compression_ratio)
         .def_readwrite("time_ms", &CompressResult::time_ms)
         .def_readwrite("success", &CompressResult::success)
-        .def_readwrite("error_message", &CompressResult::error_message);
+        .def_readwrite("error_message", &CompressResult::error_message)
+        .def_readwrite("block_profile", &CompressResult::block_profile);
 
     py::class_<WebFile>(m, "WebFile")
         .def(py::init<>())

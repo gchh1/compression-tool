@@ -17,10 +17,27 @@ def _get_engine():
     global _core_engine
     if _core_engine is not None:
         return _core_engine
+
+    import sys
+    from pathlib import Path
+
+    # Search for the pybind .so relative to the project root
+    # engine.py → core/ → gui/ → src/ → project root
+    _proj_root = Path(__file__).resolve().parent.parent.parent.parent
+    _candidates = [
+        _proj_root / "build" / "src" / "bindings" / "pybind",
+        _proj_root / "build" / "src" / "bindings",
+        _proj_root / "build_pybind" / "src" / "bindings" / "pybind",
+        _proj_root / "build_pybind" / "src" / "bindings",
+    ]
+    for _p in _candidates:
+        if _p.is_dir():
+            sys.path.insert(0, str(_p))
+
     try:
         import core_engine
         _core_engine = core_engine
-        logger.info("C++ core_engine loaded")
+        logger.info("C++ core_engine loaded from %s", core_engine.__file__)
         return _core_engine
     except ImportError:
         logger.warning("core_engine not available, using fallback")
@@ -50,7 +67,7 @@ def _decomp_chain(algorithm: AlgorithmType) -> list:
 
 
 def _result_to_dict(result) -> dict:
-    return {
+    d = {
         'original_size': result.original_size,
         'compressed_size': result.compressed_size,
         'compression_ratio': result.compression_ratio,
@@ -58,6 +75,26 @@ def _result_to_dict(result) -> dict:
         'success': result.success,
         'error_message': result.error_message,
     }
+    bp = result.block_profile
+    if bp is not None:
+        d['block_profile'] = {
+            'blocks': [
+                {
+                    'block_index': b.block_index,
+                    'literal_count': b.literal_count,
+                    'match_count': b.match_count,
+                    'll_tree_bits': b.ll_tree_bits,
+                    'dist_tree_bits': b.dist_tree_bits,
+                    'output_bytes': b.output_bytes,
+                    'll_code_lengths': list(b.ll_code_lengths),
+                    'dist_code_lengths': list(b.dist_code_lengths),
+                }
+                for b in bp.blocks
+            ]
+        }
+    else:
+        d['block_profile'] = None
+    return d
 
 
 class CompressionEngine:

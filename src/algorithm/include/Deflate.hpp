@@ -36,6 +36,8 @@ class Deflate : public AlgorithmBase {
 
     auto reset(void) -> void override;
 
+    auto getBlockProfile() -> std::optional<BlockProfile> override;
+
    protected:
     auto handle(AlgorithmStatus& algorithm_status, bool is_last_chunk)
         -> void override;
@@ -93,6 +95,9 @@ class Deflate : public AlgorithmBase {
     std::vector<HuffmanCode> dist_dictionary_;
 
     bool bfinal_{false};
+
+    std::vector<BlockInfo> block_profile_;
+
     // ===================================
     // Private methods
     // ===================================

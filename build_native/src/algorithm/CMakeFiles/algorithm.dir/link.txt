@@ -1,2 +1,0 @@
-/usr/bin/ar qc libalgorithm.a CMakeFiles/algorithm.dir/Delta.cpp.o CMakeFiles/algorithm.dir/AlgorithmBase.cpp.o CMakeFiles/algorithm.dir/Deflate.cpp.o CMakeFiles/algorithm.dir/HuffmanTree.cpp.o CMakeFiles/algorithm.dir/Inflate.cpp.o CMakeFiles/algorithm.dir/LZMine.cpp.o CMakeFiles/algorithm.dir/LZSS.cpp.o
-/usr/bin/ranlib libalgorithm.a

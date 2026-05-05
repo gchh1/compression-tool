@@ -2,15 +2,19 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <optional>
 #include <span>
 #include <string>
 #include <vector>
 
 #include "AlgorithmFactory.hpp"
+#include "BlockProfile.hpp"
 
 namespace compressor::api {
 
 using AlgorithmID = core::AlgorithmID;
+using BlockInfo = algorithm::BlockInfo;
+using BlockProfile = algorithm::BlockProfile;
 
 struct CompressResult {
     std::vector<uint8_t> data;
@@ -20,6 +24,7 @@ struct CompressResult {
     double time_ms{0.0};
     bool success{false};
     std::string error_message;
+    std::optional<BlockProfile> block_profile;
 };
 
 struct WebFile {

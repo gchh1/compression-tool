@@ -52,6 +52,14 @@ auto Pipeline::finish() -> void {
 
 auto Pipeline::isFinished() const -> bool { return finished_; }
 
+auto Pipeline::getBlockProfile() -> std::optional<algorithm::BlockProfile> {
+    for (auto& stage : stages_) {
+        auto p = stage->getBlockProfile();
+        if (p) return p;
+    }
+    return std::nullopt;
+}
+
 auto Pipeline::drainAll() -> void {
     for (size_t i = 0; i + 1 < stages_.size(); ++i) {
         drain(*stages_[i], *stages_[i + 1]);

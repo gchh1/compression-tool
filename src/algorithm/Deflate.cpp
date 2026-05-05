@@ -38,15 +38,19 @@ auto Deflate::reset(void) -> void {
     token_flush_idx_ = 0;
     bfinal_ = false;
 
+    block_profile_.clear();
+
     deflate_state_ = DeflateState::FIND_MATCHES;
 }
 
-/**
- * @brief
- *
- * @param read
- * @param read_offset
- */
+auto Deflate::getBlockProfile() -> std::optional<BlockProfile> {
+    if (block_profile_.empty()) return std::nullopt;
+    BlockProfile p;
+    p.blocks = std::move(block_profile_);
+    block_profile_.clear();
+    return p;
+}
+
 auto Deflate::fillWindow(void) -> void {
     while (reader_.getRemainSize() > 0) {
         if (cursor_ >= SLIDE_SIZE && cursor_ + lookahead_ >= WINDOW_SIZE) {
@@ -200,6 +204,32 @@ auto Deflate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk)
 
     dictionary_ = huffman_tree_->buildDictionary();
     dist_dictionary_ = dist_tree_->buildDictionary();
+
+    // ---- record block profile ----
+    {
+        BlockInfo info;
+        info.block_index = block_profile_.size();
+        info.ll_tree_bits = huffman_tree_->getTreeSize();
+        info.dist_tree_bits = dist_tree_->getTreeSize();
+
+        // Length base table (matching Inflate::kLengthBase)
+        static constexpr uint16_t kLenBase[] = {
+            3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,
+            35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258};
+        for (const auto& t : token_buffer_) {
+            if (t.is_literal) {
+                info.literal_count++;
+                info.output_bytes += 1;
+            } else {
+                info.match_count++;
+                info.output_bytes +=
+                    kLenBase[t.code - 257] + t.length_extra_val;
+            }
+        }
+        info.ll_code_lengths = huffman_tree_->getCodeLengths();
+        info.dist_code_lengths = dist_tree_->getCodeLengths();
+        block_profile_.push_back(std::move(info));
+    }
 
     bfinal_ = is_last_chunk && (lookahead_ == 0);
 

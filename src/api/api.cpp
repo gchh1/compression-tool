@@ -83,6 +83,8 @@ auto compress(const std::vector<uint8_t>& data,
         result.data.insert(result.data.end(), v.begin(), v.end());
     }
 
+    result.block_profile = pipeline.getBlockProfile();
+
     auto t1 = std::chrono::high_resolution_clock::now();
     result.time_ms =
         std::chrono::duration<double, std::milli>(t1 - t0).count();
@@ -276,6 +278,8 @@ auto compressFile(const std::string& input_path,
                      static_cast<std::streamsize>(v.size()));
         total_written += v.size();
     }
+
+    result.block_profile = pipeline.getBlockProfile();
 
     auto t1 = std::chrono::high_resolution_clock::now();
     result.time_ms =

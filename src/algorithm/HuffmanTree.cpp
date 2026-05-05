@@ -173,4 +173,13 @@ auto HuffmanTree::serializeNode(utils::BitWriter& writer, node* n) const
     }
 }
 
+auto HuffmanTree::getCodeLengths() const -> std::vector<uint8_t> {
+    auto dict = buildDictionary();
+    std::vector<uint8_t> lengths(dictionary_size_, 0);
+    for (size_t i = 0; i < dictionary_size_; ++i) {
+        lengths[i] = dict[i].length;
+    }
+    return lengths;
+}
+
 }  // namespace compressor::algorithm

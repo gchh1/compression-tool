@@ -102,6 +102,7 @@ class FileRecord(Record):
         self.status: CompressionStatus = CompressionStatus.PENDING
         self.algorithm: AlgorithmType = AlgorithmType.DEFLATE if not self.type == ResourceType.COMPRESSED else AlgorithmType.NONE
         self.error_message: str = ""
+        self.block_profile: dict | None = None
         #=====features============
         self.content_entropy: float = 0.0
         self.repetition_ratio: float = 0.0

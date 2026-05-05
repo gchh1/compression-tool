@@ -1,1 +1,0 @@
-/usr/bin/c++  -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/test_PackWriter.dir/test_PackWriter.cpp.o -o test_PackWriter  ../src/archiver/libarchiver.a ../src/processor/libprocessor.a ../src/core/libcore.a ../src/algorithm/libalgorithm.a
