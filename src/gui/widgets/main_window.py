@@ -1,245 +1,234 @@
-"""Main window — three-column IDE-style layout."""
+"""Main window — Bandizip-style toolbar + CompressPage / ArchivePage."""
 
 from __future__ import annotations
 
 import logging
 import os
-import tempfile
 
-from PyQt6.QtCore import Qt, QMimeData, QUrl, pyqtSignal, QThread
-from PyQt6.QtGui import QAction, QDragEnterEvent, QDropEvent
+from PyQt6.QtCore import Qt, QThread, pyqtSignal
+from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import (
     QMainWindow, QFileDialog, QMessageBox, QToolBar, QWidget,
     QStatusBar, QProgressBar, QLabel, QVBoxLayout, QHBoxLayout,
-    QPushButton, QComboBox, QSplitter, QStackedWidget, QApplication,
-    QFrame,
+    QPushButton, QStackedWidget, QApplication, QFrame, QDialog,
 )
 
 logger = logging.getLogger("gui.main_window")
 
 from gui.core.models import (
-    Record, FileRecord, FolderRecord, CompressionStatus,
-    AlgorithmType, formatted_size,
+    Record, FileRecord, FolderRecord, ArchiveEntry,
+    CompressionStatus, AlgorithmType, formatted_size,
 )
 
-# ── Views ──
-from gui.widgets.dashboard_view import DashboardView
-from gui.widgets.compression_view import CompressionView
-from gui.widgets.analysis_view import AnalysisView
-from gui.widgets.comparison_view import ComparisonView
-from gui.widgets.network_view import NetworkView
-
-# ── Panels ──
-from gui.widgets.resource_tree import ResourceTree
-from gui.widgets.property_panel import PropertyPanel
-
-WINDOW_WIDTH = 1200
-WINDOW_HEIGHT = 800
-
-NAV_BUTTON_STYLE = """
-QPushButton {
-    text-align: left;
-    padding: 10px 12px;
-    border: none;
-    border-radius: 6px;
-    font-size: 13px;
-    background: transparent;
-}
-QPushButton:hover { background: #e8e8e8; }
-QPushButton:checked { background: #4a90d9; color: white; font-weight: bold; }
-"""
+WINDOW_WIDTH = 1000
+WINDOW_HEIGHT = 650
 
 
 # ═══════════════════════════════════════════════════════
-#  Compression worker (preserved from original)
+#  Workers
 # ═══════════════════════════════════════════════════════
 
-class CompressionWorker(QThread):
+class CompressWorker(QThread):
+    """Compress files/folders to disk using streaming backend."""
 
     progress = pyqtSignal(int, str)
-    finished_row = pyqtSignal(int)
-    error = pyqtSignal(int)
+    item_finished = pyqtSignal(int, dict)
+    all_finished = pyqtSignal()
 
-    def __init__(self, tasks: list[tuple[int, Record]],
+    def __init__(self, tasks: list[tuple[Record, str]],
                  algorithm: AlgorithmType = AlgorithmType.DEFLATE):
         super().__init__()
         self.tasks = tasks
         self.algorithm = algorithm
 
-    def single_compress(self, row_idx: int, record: Record,
-                        notify: bool = True) -> None:
-        import traceback
-        logger.info("[compress] START row=%d file=%s algo=%s",
-                    row_idx, getattr(record, 'path', '?'), self.algorithm.value)
-        try:
-            from gui.core.engine import CompressionEngine
-            engine = CompressionEngine()
-            if not engine.available:
-                raise RuntimeError("C++ core_engine not available")
-
-            if isinstance(record, FileRecord):
-                record.algorithm = self.algorithm
-                if self.algorithm == AlgorithmType.AUTO:
-                    record.algorithm = AlgorithmType.DEFLATE
-
-            suffix = '.compressed'
-            fd, tmp_path = tempfile.mkstemp(suffix=suffix)
-            os.close(fd)
-            try:
-                logger.info("[compress] streaming %s -> %s", record.path, tmp_path)
-                result = engine.compress_file(record.path, tmp_path,
-                                              self.algorithm)
-                logger.info("[compress] done: %d -> %d bytes",
-                            result['original_size'], result['compressed_size'])
-
-                if result['success']:
-                    with open(tmp_path, 'rb') as f:
-                        record.compressed_data = f.read()
-                    record.status = CompressionStatus.DONE
-                    record.compression_ratio = (
-                        result['compressed_size'] / record.size
-                        if record.size > 0 else 0)
-                    record.compression_time_ms = result['time_ms']
-                    record.block_profile = result.get('block_profile')
-                    if notify:
-                        self.finished_row.emit(row_idx)
-                else:
-                    record.status = CompressionStatus.FAILED
-                    record.error_message = result.get('error_message', '')
-                    if notify:
-                        self.error.emit(row_idx)
-            finally:
-                try:
-                    os.unlink(tmp_path)
-                except OSError:
-                    pass
-
-        except Exception as e:
-            logger.error("[compress] CRASH row=%d file=%s: %s\n%s",
-                         row_idx, getattr(record, 'path', '?'), e,
-                         traceback.format_exc())
-            record.status = CompressionStatus.FAILED
-            record.error_message = str(e)
-            self.error.emit(row_idx)
-
-    def run(self) -> None:
-        for row_idx, record in self.tasks:
-            if isinstance(record, FolderRecord):
-                for filerecord in record.files:
-                    self.single_compress(row_idx, filerecord, notify=False)
-                failed = sum(1 for f in record.files
-                             if f.status == CompressionStatus.FAILED)
-                if failed == 0:
-                    record.status = CompressionStatus.DONE
-                    record.compression_ratio = (
-                        sum(len(f.compressed_data) for f in record.files
-                            if f.compressed_data) / record.size
-                        if record.size > 0 else 1.0)
-                elif failed == record.filenum:
-                    record.status = CompressionStatus.FAILED
-                else:
-                    record.status = CompressionStatus.DONE
-                record.compression_time_ms = sum(
-                    f.compression_time_ms for f in record.files)
-                self.finished_row.emit(row_idx)
-            elif isinstance(record, FileRecord):
-                self.single_compress(row_idx, record)
-
-
-class DecompressWorker(QThread):
-    finished_file = pyqtSignal(str, bool, str)
-
-    def __init__(self, tasks: list[tuple[str, str]]):
-        super().__init__()
-        self.tasks = tasks
-
     def run(self) -> None:
         from gui.core.engine import CompressionEngine
         engine = CompressionEngine()
         if not engine.available:
-            for inp, _ in self.tasks:
-                self.finished_file.emit(inp, False, "core_engine not available")
+            for i, _ in enumerate(self.tasks):
+                self.item_finished.emit(i, {
+                    'success': False, 'error_message': 'C++ core_engine not available'
+                })
             return
-        for inp, out in self.tasks:
+
+        for i, (rec, output_path) in enumerate(self.tasks):
+            name = getattr(rec, 'name', '')
+            self.progress.emit(i, f"正在压缩 {name} ...")
+
             try:
-                result = engine.decompress_file(inp, out)
-                if result['success']:
-                    self.finished_file.emit(inp, True,
-                        f"{result['original_size']} -> {result['compressed_size']} bytes")
+                if isinstance(rec, FolderRecord):
+                    result = engine.compress_directory(rec.path, output_path,
+                                                       self.algorithm)
                 else:
-                    self.finished_file.emit(inp, False, result['error_message'])
+                    result = engine.compress_file(rec.path, output_path,
+                                                  self.algorithm)
+
+                rec.status = CompressionStatus.DONE if result['success'] else CompressionStatus.FAILED
+                if result.get('error_message'):
+                    rec.error_message = result['error_message']
+                rec.compression_ratio = result.get('compression_ratio', 1.0)
+                rec.compression_time_ms = result.get('time_ms', 0)
+                rec.block_profile = result.get('block_profile')
+                if result['success']:
+                    rec.compressed_data = b''  # mark as done (data is on disk)
+
+                self.item_finished.emit(i, result)
+
             except Exception as e:
-                self.finished_file.emit(inp, False, str(e))
+                logger.error("[CompressWorker] %s: %s", name, e, exc_info=True)
+                rec.status = CompressionStatus.FAILED
+                rec.error_message = str(e)
+                self.item_finished.emit(i, {'success': False, 'error_message': str(e)})
+
+        self.all_finished.emit()
+
+
+class ArchiveListWorker(QThread):
+    """Read a .compressed archive and return its entry list."""
+
+    finished = pyqtSignal(list, str)      # entries, archive_path
+    error = pyqtSignal(str)
+
+    def __init__(self, archive_path: str):
+        super().__init__()
+        self.archive_path = archive_path
+
+    def run(self) -> None:
+        try:
+            with open(self.archive_path, 'rb') as f:
+                data = f.read()
+
+            from gui.core.engine import _get_engine
+            engine = _get_engine()
+            if engine is None:
+                self.error.emit("C++ core_engine not available")
+                return
+
+            web_files = engine.decompress_and_unpack(list(data))
+            entries = [ArchiveEntry(name=wf.name, size=len(wf.content))
+                       for wf in web_files]
+            self.finished.emit(entries, self.archive_path)
+
+        except Exception as e:
+            logger.error("[ArchiveListWorker] %s", e, exc_info=True)
+            self.error.emit(str(e))
+
+
+class ArchiveExtractWorker(QThread):
+    """Extract a .compressed archive to disk."""
+
+    progress = pyqtSignal(str)
+    finished = pyqtSignal(bool, str)
+
+    def __init__(self, archive_path: str, output_dir: str):
+        super().__init__()
+        self.archive_path = archive_path
+        self.output_dir = output_dir
+
+    def run(self) -> None:
+        try:
+            self.progress.emit("正在解压...")
+            from gui.core.engine import CompressionEngine
+            engine = CompressionEngine()
+            if not engine.available:
+                self.finished.emit(False, "C++ core_engine not available")
+                return
+
+            result = engine.decompress_and_unpack_to_disk(
+                self.archive_path, self.output_dir)
+            if result['success']:
+                self.finished.emit(True,
+                    f"已解压到 {self.output_dir} ({formatted_size(result['original_size'])} → {formatted_size(result['compressed_size'])})")
+            else:
+                self.finished.emit(False, result.get('error_message', '未知错误'))
+
+        except Exception as e:
+            logger.error("[ArchiveExtractWorker] %s", e, exc_info=True)
+            self.finished.emit(False, str(e))
 
 
 # ═══════════════════════════════════════════════════════
-#  Navigation sidebar
+#  ArchivePage — browse archive contents
 # ═══════════════════════════════════════════════════════
 
-class NavSidebar(QFrame):
-    """Left navigation sidebar with view-switching buttons and resource tree."""
+class ArchivePage(QWidget):
+    """Shows the contents of an opened .compressed archive."""
 
-    view_changed = pyqtSignal(int)
-
-    NAV_ITEMS = [
-        ("📊  概览", 0),
-        ("⚙  压缩", 1),
-        ("🔬  分析", 2),
-        ("⚖  对比", 3),
-        ("📡  传输", 4),
-    ]
+    extract_requested = pyqtSignal()
+    close_requested = pyqtSignal()
+    entry_double_clicked = pyqtSignal(object)
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setFixedWidth(220)
-        self.setFrameShape(QFrame.Shape.NoFrame)
-        self.setStyleSheet("background: #2b2b2b;")
+        self._archive_path: str = ""
+        self._entries: list[ArchiveEntry] = []
+        self._setup_ui()
 
+    def _setup_ui(self) -> None:
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(6, 8, 6, 8)
-        layout.setSpacing(2)
+        layout.setContentsMargins(16, 16, 16, 16)
 
-        # App title
-        title = QLabel("WebCompress")
-        title.setStyleSheet("font-size: 15px; font-weight: bold; padding: 8px 12px; color: #333;")
-        layout.addWidget(title)
+        # Header
+        self._title = QLabel("压缩包内容")
+        self._title.setStyleSheet("font-size: 18px; font-weight: bold; padding: 0 0 4px 0;")
+        layout.addWidget(self._title)
 
-        # Nav buttons
-        self._nav_buttons: list[QPushButton] = []
-        for label, idx in self.NAV_ITEMS:
-            btn = QPushButton(label)
-            btn.setCheckable(True)
-            btn.setStyleSheet(NAV_BUTTON_STYLE)
-            btn.clicked.connect(lambda checked, i=idx: self._on_click(i))
-            if idx == 0:
-                btn.setChecked(True)
-                btn.setStyleSheet(btn.styleSheet() +
-                    "QPushButton:checked { background: #4a90d9; color: white; font-weight: bold; }")
-            self._nav_buttons.append(btn)
-            layout.addWidget(btn)
+        self._info = QLabel("")
+        self._info.setStyleSheet("color: #888; font-size: 12px; padding-bottom: 8px;")
+        layout.addWidget(self._info)
 
-        # Separator
-        sep = QFrame()
-        sep.setFrameShape(QFrame.Shape.HLine)
-        sep.setStyleSheet("color: #ddd; margin: 8px 4px;")
-        layout.addWidget(sep)
+        # Content tree
+        from gui.widgets.resource_tree import ResourceTree
+        self.tree = ResourceTree()
+        self.tree.file_double_clicked.connect(self.entry_double_clicked.emit)
+        layout.addWidget(self.tree)
 
-        # Resource tree
-        self.resource_tree = ResourceTree()
-        layout.addWidget(self.resource_tree)
+        # Buttons
+        btn_layout = QHBoxLayout()
+        extract_btn = QPushButton("📂 解压全部")
+        extract_btn.setStyleSheet(self._btn_style("#27ae60"))
+        extract_btn.clicked.connect(self.extract_requested.emit)
+        btn_layout.addWidget(extract_btn)
 
-        layout.addStretch()
+        extract_sel_btn = QPushButton("📄 解压所选")
+        extract_sel_btn.setStyleSheet(self._btn_style("#4a90d9"))
+        extract_sel_btn.clicked.connect(self._on_extract_selected)
+        btn_layout.addWidget(extract_sel_btn)
 
-    def _on_click(self, index: int) -> None:
-        for i, btn in enumerate(self._nav_buttons):
-            if i == index:
-                btn.setChecked(True)
-            else:
-                btn.setChecked(False)
-        self.view_changed.emit(index)
+        close_btn = QPushButton("✕ 关闭压缩包")
+        close_btn.setStyleSheet(self._btn_style("#888"))
+        close_btn.clicked.connect(self.close_requested.emit)
+        btn_layout.addWidget(close_btn)
 
-    def set_view(self, index: int) -> None:
-        self._on_click(index)
+        btn_layout.addStretch()
+        layout.addLayout(btn_layout)
+
+    @staticmethod
+    def _btn_style(color: str) -> str:
+        return (
+            f"QPushButton {{ background: {color}; color: white; font-weight: bold; "
+            "padding: 8px 20px; border-radius: 6px; font-size: 13px; }}"
+        )
+
+    def _on_extract_selected(self) -> None:
+        selected = self.tree.get_selected_records()
+        if not selected:
+            QMessageBox.information(self, "提示", "请先选择要解压的文件")
+        else:
+            self.extract_requested.emit()
+
+    def set_entries(self, entries: list[ArchiveEntry], archive_path: str) -> None:
+        self._entries = entries
+        self._archive_path = archive_path
+        name = os.path.basename(archive_path)
+        total_size = sum(e.size for e in entries)
+        self._title.setText(f"📦 {name}")
+        self._info.setText(f"{len(entries)} 个文件，总大小 {formatted_size(total_size)}")
+        self.tree.load_archive_entries(entries)
+
+    @property
+    def archive_path(self) -> str:
+        return self._archive_path
 
 
 # ═══════════════════════════════════════════════════════
@@ -249,13 +238,17 @@ class NavSidebar(QFrame):
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("WebCompress — 网页资源压缩系统")
+        self.setWindowTitle("WebCompress — 压缩工具")
         self.resize(WINDOW_WIDTH, WINDOW_HEIGHT)
         self.setAcceptDrops(True)
 
         self._records: list[Record] = []
-        self._worker: CompressionWorker | None = None
-        self._decompress_worker: DecompressWorker | None = None
+        self._current_archive: str = ""
+
+        # Workers
+        self._compress_worker: CompressWorker | None = None
+        self._list_worker: ArchiveListWorker | None = None
+        self._extract_worker: ArchiveExtractWorker | None = None
 
         self._setup_menu()
         self._setup_central()
@@ -267,31 +260,31 @@ class MainWindow(QMainWindow):
         bar = self.menuBar()
 
         file_menu = bar.addMenu("文件 (&F)")
-        add_file_action = QAction("添加文件 (&F)", self)
-        add_file_action.setShortcut("Ctrl+F")
-        add_file_action.triggered.connect(self._on_add_files)
-        file_menu.addAction(add_file_action)
-
-        add_folder_action = QAction("添加文件夹 (&D)", self)
-        add_folder_action.setShortcut("Ctrl+D")
-        add_folder_action.triggered.connect(self._on_add_folder)
-        file_menu.addAction(add_folder_action)
-
+        for label, slot, shortcut in [
+            ("添加文件 (&F)", self._on_add_files, "Ctrl+O"),
+            ("添加文件夹 (&D)", self._on_add_folder, "Ctrl+D"),
+            ("打开压缩包 (&P)", self._on_open_archive, "Ctrl+Shift+O"),
+        ]:
+            action = QAction(label, self)
+            action.setShortcut(shortcut)
+            action.triggered.connect(slot)
+            file_menu.addAction(action)
         file_menu.addSeparator()
-        clear_action = QAction("清空列表 (&C)", self)
-        clear_action.setShortcut("Ctrl+Shift+C")
-        clear_action.triggered.connect(self._on_clear)
-        file_menu.addAction(clear_action)
+        exit_action = QAction("退出 (&Q)", self)
+        exit_action.setShortcut("Ctrl+Q")
+        exit_action.triggered.connect(self.close)
+        file_menu.addAction(exit_action)
 
-        export_action = QAction("导出结果 (&E)", self)
-        export_action.setShortcut("Ctrl+E")
-        export_action.triggered.connect(self._on_export)
-        file_menu.addAction(export_action)
-
-        file_menu.addSeparator()
-        decompress_action = QAction("解压文件...", self)
-        decompress_action.triggered.connect(self._on_decompress)
-        file_menu.addAction(decompress_action)
+        tools_menu = bar.addMenu("工具 (&T)")
+        for label, slot in [
+            ("📊 项目概览", self._open_dashboard),
+            ("🔬 压缩分析", self._open_analysis),
+            ("⚖ 工具对比", self._open_comparison),
+            ("📡 网络模拟", self._open_network),
+        ]:
+            action = QAction(label, self)
+            action.triggered.connect(slot)
+            tools_menu.addAction(action)
 
         help_menu = bar.addMenu("帮助 (&H)")
         about_action = QAction("关于 (&A)", self)
@@ -302,90 +295,99 @@ class MainWindow(QMainWindow):
 
     def _setup_central(self) -> None:
         central = QWidget()
-        main_layout = QHBoxLayout(central)
-        main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.setSpacing(0)
+        layout = QVBoxLayout(central)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
 
-        # Left: nav sidebar
-        self._nav = NavSidebar()
-        self._nav.view_changed.connect(self._on_view_changed)
-        main_layout.addWidget(self._nav)
+        # Toolbar
+        self._setup_toolbar()
 
-        # Vertical separator
-        vsep = QFrame()
-        vsep.setFrameShape(QFrame.Shape.VLine)
-        vsep.setStyleSheet("color: #ddd;")
-        main_layout.addWidget(vsep)
-
-        # Center: stacked views
+        # Stacked widget: compress page / archive page
         self._stack = QStackedWidget()
 
-        self._dashboard = DashboardView()
-        self._compression_view = CompressionView()
-        self._analysis = AnalysisView()
-        self._comparison = ComparisonView()
-        self._network = NetworkView()
+        from gui.widgets.compression_view import CompressPage
+        self._compress_page = CompressPage()
+        self._compress_page.add_files_requested.connect(self._on_add_files)
+        self._compress_page.add_folder_requested.connect(self._on_add_folder)
+        self._compress_page.compress_requested.connect(self._on_compress)
+        self._compress_page.clear_requested.connect(self._on_clear)
+        self._compress_page.file_selected.connect(self._on_file_selected)
+        self._stack.addWidget(self._compress_page)  # index 0
 
-        self._stack.addWidget(self._dashboard)       # index 0
-        self._stack.addWidget(self._compression_view) # index 1
-        self._stack.addWidget(self._analysis)         # index 2
-        self._stack.addWidget(self._comparison)       # index 3
-        self._stack.addWidget(self._network)          # index 4
+        self._archive_page = ArchivePage()
+        self._archive_page.extract_requested.connect(self._on_extract)
+        self._archive_page.close_requested.connect(self._on_close_archive)
+        self._archive_page.entry_double_clicked.connect(self._on_entry_properties)
+        self._stack.addWidget(self._archive_page)  # index 1
 
-        main_layout.addWidget(self._stack, stretch=1)
-
-        # Vertical separator
-        vsep2 = QFrame()
-        vsep2.setFrameShape(QFrame.Shape.VLine)
-        vsep2.setStyleSheet("color: #ddd;")
-        main_layout.addWidget(vsep2)
-
-        # Right: property panel
-        self._property_panel = PropertyPanel()
-        main_layout.addWidget(self._property_panel)
-
+        layout.addWidget(self._stack)
         self.setCentralWidget(central)
 
-        # Wire signals
-        self._nav.resource_tree.file_selected.connect(self._on_file_selected)
-        self._nav.resource_tree.file_double_clicked.connect(self._on_file_analyze)
-        self._nav.resource_tree.compress_requested.connect(self._on_single_compress)
+    def _setup_toolbar(self) -> None:
+        tb = QToolBar("主工具栏")
+        tb.setMovable(False)
+        tb.setStyleSheet(
+            "QToolBar { background: #f5f5f5; border-bottom: 1px solid #ddd; "
+            "padding: 4px 8px; spacing: 6px; }"
+        )
 
-        self._compression_view.compress_all.connect(self._on_compress)
-        self._compression_view.incremental_compress.connect(self._on_incremental_compress)
-        self._compression_view.pack_requested.connect(self._on_pack)
+        btn_style = (
+            "QPushButton { padding: 6px 14px; border: 1px solid #ccc; "
+            "border-radius: 4px; font-size: 12px; background: white; }"
+            "QPushButton:hover { background: #e8e8e8; }"
+        )
 
-    def _on_view_changed(self, index: int) -> None:
-        self._stack.setCurrentIndex(index)
-        # Refresh views when switching to them
-        if index == 0:
-            self._dashboard.update_from_records(self._records)
-        elif index == 1:
-            self._compression_view.load_records(self._records)
-        elif index == 2:
-            self._analysis.set_records(self._records)
-        elif index == 4:
-            self._network.update_from_records(self._records)
+        for label, slot in [
+            ("+ 添加文件", self._on_add_files),
+            ("+ 添加文件夹", self._on_add_folder),
+        ]:
+            btn = QPushButton(label)
+            btn.setStyleSheet(btn_style)
+            btn.clicked.connect(slot)
+            tb.addWidget(btn)
+
+        self._compress_tb_btn = QPushButton("▶ 压缩")
+        self._compress_tb_btn.setStyleSheet(
+            "QPushButton { padding: 6px 18px; background: #27ae60; color: white; "
+            "font-weight: bold; border: none; border-radius: 4px; font-size: 12px; }"
+            "QPushButton:hover { background: #219a52; }"
+        )
+        self._compress_tb_btn.clicked.connect(self._on_compress)
+        tb.addWidget(self._compress_tb_btn)
+
+        open_btn = QPushButton("📂 打开压缩包")
+        open_btn.setStyleSheet(btn_style)
+        open_btn.clicked.connect(self._on_open_archive)
+        tb.addWidget(open_btn)
+
+        tb.addSeparator()
+
+        for label, slot in [
+            ("📊 概览", self._open_dashboard),
+            ("🔬 分析", self._open_analysis),
+            ("⚖ 对比", self._open_comparison),
+            ("📡 传输", self._open_network),
+        ]:
+            btn = QPushButton(label)
+            btn.setStyleSheet(btn_style)
+            btn.clicked.connect(slot)
+            tb.addWidget(btn)
+
+        self.addToolBar(tb)
 
     # ── Status bar ────────────────────────────────────
 
     def _setup_statusbar(self) -> None:
         bar = QStatusBar()
         self.setStatusBar(bar)
-
         self._status_label = QLabel("就绪")
         bar.addWidget(self._status_label, stretch=1)
-
         self._progress = QProgressBar()
         self._progress.setRange(0, 100)
         self._progress.setValue(0)
         self._progress.setFixedWidth(200)
         self._progress.setTextVisible(True)
         bar.addPermanentWidget(self._progress)
-
-        self._mem_label = QLabel("")
-        self._mem_label.setStyleSheet("color: #888; font-size: 11px; padding: 0 8px;")
-        bar.addPermanentWidget(self._mem_label)
 
     def _set_status(self, text: str, progress: int = -1) -> None:
         self._status_label.setText(text)
@@ -395,7 +397,7 @@ class MainWindow(QMainWindow):
     # ── File operations ───────────────────────────────
 
     def _on_add_files(self) -> None:
-        paths, _ = QFileDialog.getOpenFileNames(self, "选择文件", "", "所有文件 (*)")
+        paths, _ = QFileDialog.getOpenFileNames(self, "选择文件", "", "所有文件 (*);;压缩包 (*.compressed)")
         if paths:
             self._add_paths(paths)
 
@@ -406,6 +408,9 @@ class MainWindow(QMainWindow):
 
     def _add_paths(self, paths: list[str]) -> None:
         for path in paths:
+            if path.endswith('.compressed') and os.path.isfile(path):
+                self._open_archive_path(path)
+                continue
             if os.path.isdir(path):
                 rec = FolderRecord(path)
             elif os.path.isfile(path):
@@ -414,182 +419,205 @@ class MainWindow(QMainWindow):
                 continue
             self._records.append(rec)
 
-        self._nav.resource_tree.load_records(self._records)
-        self._dashboard.update_from_records(self._records)
-        self._compression_view.load_records(self._records)
-        self._network.update_from_records(self._records)
-
-        count = len(paths)
-        self._set_status(f"已添加 {count} 个资源", 0)
+        self._compress_page.load_records(self._records)
+        count = len(self._records)
+        self._set_status(f"已添加 {count} 个项目", 0)
 
     def _on_clear(self) -> None:
         self._records.clear()
-        self._nav.resource_tree.load_records([])
-        self._dashboard.update_from_records([])
-        self._compression_view.load_records([])
-        self._network.update_from_records([])
-        self._property_panel.set_record(None)
+        self._compress_page.load_records([])
         self._set_status("已清空列表", 0)
 
-    # ── File selection ────────────────────────────────
-
     def _on_file_selected(self, rec: Record) -> None:
-        if isinstance(rec, FileRecord):
-            self._property_panel.set_record(rec)
-            self._comparison.set_file(
-                rec.path,
-                {
-                    'compressed_size': len(rec.compressed_data) if rec.compressed_data else rec.size,
-                    'compression_ratio': rec.compression_ratio,
-                    'time_ms': rec.compression_time_ms,
-                } if rec.status == CompressionStatus.DONE else None
-            )
+        if isinstance(rec, (FileRecord, ArchiveEntry)):
+            from gui.widgets.property_panel import show_property_dialog
+            # Don't auto-show dialog on selection; handled via double-click
+            pass
 
-    def _on_file_analyze(self, rec: Record) -> None:
-        """Double-click: jump to analysis view."""
-        if isinstance(rec, FileRecord):
-            self._nav.set_view(2)  # Analysis view
-            self._analysis.set_records(self._records)
-
-    def _on_single_compress(self, rec: Record) -> None:
-        """Right-click: compress single file."""
-        if isinstance(rec, FileRecord):
-            self._records = [rec]
-            self._on_compress()
+    def _on_entry_properties(self, entry: ArchiveEntry) -> None:
+        from gui.widgets.property_panel import show_property_dialog
+        show_property_dialog(self, entry)
 
     # ── Compression ───────────────────────────────────
 
     def _on_compress(self) -> None:
-        if self._worker and self._worker.isRunning():
+        if self._compress_worker and self._compress_worker.isRunning():
             QMessageBox.warning(self, "提示", "压缩任务正在进行中...")
             return
 
         records = self._records
         if not records:
-            QMessageBox.warning(self, "提示", "请先添加文件！")
-            return
-
-        tasks = list(enumerate(records))
-
-        self._worker = CompressionWorker(tasks, AlgorithmType.DEFLATE)
-        self._worker.finished_row.connect(self._on_row_finished)
-        self._worker.finished.connect(self._on_compression_finished)
-
-        file_count = sum(
-            len(r.files) if isinstance(r, FolderRecord) else 1
-            for r in records
-        )
-        self._set_status(f"正在压缩 {file_count} 个文件...", 0)
-        self._worker.start()
-
-    def _on_incremental_compress(self) -> None:
-        QMessageBox.information(self, "提示", "增量压缩功能将在后续版本中实现")
-
-    def _on_pack(self) -> None:
-        QMessageBox.information(self, "提示",
-            "打包功能请先完成压缩，然后使用 文件→导出结果")
-
-    def _on_row_finished(self, row: int) -> None:
-        try:
-            rec = self._records[row] if row < len(self._records) else None
-            if rec:
-                if isinstance(rec, FolderRecord):
-                    for f in rec.files:
-                        self._nav.resource_tree.update_compression_result(f)
-                else:
-                    self._nav.resource_tree.update_compression_result(rec)
-
-            # Update all views
-            self._compression_view.load_records(self._records)
-            self._dashboard.update_from_records(self._records)
-            self._network.update_from_records(self._records)
-            self._analysis.set_records(self._records)
-
-            # Show the last compressed file's profile
-            if isinstance(rec, FileRecord) and rec.block_profile:
-                self._property_panel.set_record(rec)
-        except Exception as e:
-            logger.error("[_on_row_finished] CRASH row=%d: %s", row, e, exc_info=True)
-
-    def _on_compression_finished(self) -> None:
-        self._set_status("压缩完成", 100)
-        QMessageBox.information(self, "完成", "所有文件已处理完毕！")
-
-    # ── Export ────────────────────────────────────────
-
-    def _on_export(self) -> None:
-        export_dir = QFileDialog.getExistingDirectory(self, "选择导出目录")
-        if not export_dir:
-            return
-
-        exported = 0
-        for rec in self._records:
-            files = rec.files if isinstance(rec, FolderRecord) else [rec]
-            for f in files:
-                if f.status == CompressionStatus.DONE and f.compressed_data:
-                    export_path = os.path.join(export_dir, f"{f.name}.compressed")
-                    with open(export_path, 'wb') as out:
-                        data = f.compressed_data
-                        if isinstance(data, list):
-                            data = bytes(data)
-                        out.write(data)
-                    exported += 1
-
-        if exported > 0:
-            self._set_status(f"已导出 {exported} 个文件到 {export_dir}")
-            QMessageBox.information(self, "导出完成",
-                                    f"已成功导出 {exported} 个文件！")
-        else:
-            QMessageBox.warning(self, "提示",
-                                "没有可导出的文件（请先压缩）")
-
-    # ── Decompress ────────────────────────────────────
-
-    def _on_decompress(self) -> None:
-        if self._decompress_worker and self._decompress_worker.isRunning():
-            QMessageBox.warning(self, "提示", "解压任务正在进行中...")
-            return
-
-        paths, _ = QFileDialog.getOpenFileNames(
-            self, "选择要解压的文件", "",
-            "压缩文件 (*.compressed);;所有文件 (*)")
-        if not paths:
+            QMessageBox.warning(self, "提示", "请先添加文件或文件夹！")
             return
 
         tasks = []
-        for p in paths:
-            out = p
-            if out.endswith('.compressed'):
-                out = out[:-11]
-            else:
-                out = p + '.decompressed'
-            tasks.append((p, out))
+        for rec in records:
+            name = getattr(rec, 'name', 'file')
+            default_name = f"{name}.compressed"
+            out_path, _ = QFileDialog.getSaveFileName(
+                self, f"保存压缩文件 — {name}",
+                default_name, "压缩文件 (*.compressed)")
+            if out_path:
+                tasks.append((rec, out_path))
 
-        self._decompress_worker = DecompressWorker(tasks)
-        self._decompress_worker.finished_file.connect(self._on_decompress_finished)
-        self._decompress_worker.finished.connect(
-            lambda: self._set_status("解压完成"))
-        self._set_status(f"正在解压 {len(tasks)} 个文件...")
-        self._decompress_worker.start()
+        if not tasks:
+            return
 
-    def _on_decompress_finished(self, path: str, success: bool, msg: str):
-        if success:
-            self._set_status(f"解压成功: {os.path.basename(path)} ({msg})")
+        self._compress_worker = CompressWorker(tasks, AlgorithmType.DEFLATE)
+        self._compress_worker.progress.connect(
+            lambda i, msg: self._set_status(msg))
+        self._compress_worker.item_finished.connect(self._on_compress_item_done)
+        self._compress_worker.all_finished.connect(self._on_compress_all_done)
+        self._set_status(f"正在压缩 {len(tasks)} 个项目...", 0)
+        self._compress_worker.start()
+
+    def _on_compress_item_done(self, idx: int, result: dict) -> None:
+        if result.get('success'):
+            self._set_status(f"完成: 压缩率 {result.get('compression_ratio', 1) * 100:.1f}%")
         else:
-            logger.error("解压失败: %s - %s", path, msg)
-            QMessageBox.warning(self, "解压失败", f"{path}\n{msg}")
+            self._set_status(f"失败: {result.get('error_message', '未知错误')}")
+        self._compress_page.load_records(self._records)
+
+    def _on_compress_all_done(self) -> None:
+        self._set_status("全部压缩完成", 100)
+        QMessageBox.information(self, "完成", "所有项目已压缩完毕！")
+        self._compress_page.load_records(self._records)
+
+    # ── Archive operations ────────────────────────────
+
+    def _on_open_archive(self) -> None:
+        path, _ = QFileDialog.getOpenFileName(
+            self, "打开压缩包", "",
+            "压缩文件 (*.compressed);;所有文件 (*)")
+        if path:
+            self._open_archive_path(path)
+
+    def _open_archive_path(self, path: str) -> None:
+        if self._list_worker and self._list_worker.isRunning():
+            return
+
+        self._set_status(f"正在读取 {os.path.basename(path)} ...")
+        self._list_worker = ArchiveListWorker(path)
+        self._list_worker.finished.connect(self._on_archive_listed)
+        self._list_worker.error.connect(self._on_archive_error)
+        self._list_worker.start()
+
+    def _on_archive_listed(self, entries: list[ArchiveEntry], archive_path: str) -> None:
+        self._current_archive = archive_path
+        self._archive_page.set_entries(entries, archive_path)
+        self._stack.setCurrentIndex(1)
+        self._set_status(f"已打开 {os.path.basename(archive_path)} — {len(entries)} 个文件")
+
+    def _on_archive_error(self, msg: str) -> None:
+        self._set_status("打开压缩包失败")
+        QMessageBox.warning(self, "错误", f"无法打开压缩包:\n{msg}")
+
+    def _on_extract(self) -> None:
+        if not self._current_archive:
+            return
+        if self._extract_worker and self._extract_worker.isRunning():
+            QMessageBox.warning(self, "提示", "解压任务正在进行中...")
+            return
+
+        # Suggest directory name based on archive name
+        default_dir = os.path.splitext(self._current_archive)[0]
+        out_dir = QFileDialog.getExistingDirectory(self, "选择解压目录")
+        if not out_dir:
+            return
+
+        self._extract_worker = ArchiveExtractWorker(self._current_archive, out_dir)
+        self._extract_worker.progress.connect(lambda msg: self._set_status(msg))
+        self._extract_worker.finished.connect(self._on_extract_done)
+        self._set_status("正在解压...")
+        self._extract_worker.start()
+
+    def _on_extract_done(self, success: bool, msg: str) -> None:
+        if success:
+            self._set_status("解压完成", 100)
+            QMessageBox.information(self, "解压完成", msg)
+        else:
+            self._set_status("解压失败")
+            QMessageBox.warning(self, "解压失败", msg)
+
+    def _on_close_archive(self) -> None:
+        self._current_archive = ""
+        self._stack.setCurrentIndex(0)
+        self._set_status("已关闭压缩包", 0)
 
     # ── Drag & drop ───────────────────────────────────
 
-    def dragEnterEvent(self, event: QDragEnterEvent) -> None:
+    def dragEnterEvent(self, event) -> None:
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
 
-    def dropEvent(self, event: QDropEvent) -> None:
+    def dropEvent(self, event) -> None:
         urls = event.mimeData().urls()
         paths = [url.toLocalFile() for url in urls if url.isLocalFile()]
         if paths:
-            self._add_paths(paths)
+            for p in paths:
+                if p.endswith('.compressed') and os.path.isfile(p):
+                    self._open_archive_path(p)
+                elif os.path.isdir(p) or os.path.isfile(p):
+                    self._add_paths([p])
+
+    # ── Analysis dialogs ──────────────────────────────
+
+    def _open_dashboard(self) -> None:
+        from gui.widgets.dashboard_view import DashboardView
+        dlg = QDialog(self)
+        dlg.setWindowTitle("项目概览")
+        dlg.resize(750, 520)
+        layout = QVBoxLayout(dlg)
+        view = DashboardView()
+        view.update_from_records(self._records)
+        layout.addWidget(view)
+        dlg.exec()
+
+    def _open_analysis(self) -> None:
+        from gui.widgets.analysis_view import AnalysisView
+        dlg = QDialog(self)
+        dlg.setWindowTitle("压缩分析")
+        dlg.resize(800, 600)
+        layout = QVBoxLayout(dlg)
+        view = AnalysisView()
+        view.set_records(self._records)
+        layout.addWidget(view)
+        dlg.exec()
+
+    def _open_comparison(self) -> None:
+        from gui.widgets.comparison_view import ComparisonView
+        dlg = QDialog(self)
+        dlg.setWindowTitle("工具对比")
+        dlg.resize(700, 450)
+        layout = QVBoxLayout(dlg)
+        view = ComparisonView()
+        # Set the first available file with compression results
+        for rec in self._records:
+            files = rec.files if isinstance(rec, FolderRecord) else [rec]
+            for f in files:
+                if isinstance(f, FileRecord) and f.status == CompressionStatus.DONE:
+                    view.set_file(
+                        f.path,
+                        {
+                            'compressed_size': len(f.compressed_data) if f.compressed_data else f.size,
+                            'compression_ratio': f.compression_ratio,
+                            'time_ms': f.compression_time_ms,
+                        }
+                    )
+                    break
+        layout.addWidget(view)
+        dlg.exec()
+
+    def _open_network(self) -> None:
+        from gui.widgets.network_view import NetworkView
+        dlg = QDialog(self)
+        dlg.setWindowTitle("网络传输模拟")
+        dlg.resize(700, 500)
+        layout = QVBoxLayout(dlg)
+        view = NetworkView()
+        view.update_from_records(self._records)
+        layout.addWidget(view)
+        dlg.exec()
 
     # ── About ─────────────────────────────────────────
 
@@ -597,24 +625,17 @@ class MainWindow(QMainWindow):
         QMessageBox.about(
             self,
             "关于 WebCompress",
-            "WebCompress — 网页资源压缩系统\n\n"
-            "基于 Deflate/LZ77 与 Huffman 编码的高效压缩工具。\n"
-            "支持 HTML/CSS/JS/PNG/JPG 等网页常见资源。\n\n"
-            "特性:\n"
-            "• 流式压缩/解压，常量内存占用\n"
-            "• 块级压缩剖析与 Huffman 树可视化\n"
-            "• 与 gzip/ZIP 对比评测\n"
-            "• 多网络环境传输模拟\n\n"
-            "© 2026 数据结构课程设计"
+            "WebCompress — 压缩工具\n\n"
+            "基于 Deflate/LZ77 与 Huffman 编码的高效压缩。\n"
+            "支持文件夹打包、压缩包浏览与解压。\n\n"
+            "© 2026"
         )
 
     # ── Cleanup ───────────────────────────────────────
 
     def closeEvent(self, event) -> None:
-        if self._worker and self._worker.isRunning():
-            self._worker.quit()
-            self._worker.wait()
-        if self._decompress_worker and self._decompress_worker.isRunning():
-            self._decompress_worker.quit()
-            self._decompress_worker.wait()
+        for w in [self._compress_worker, self._list_worker, self._extract_worker]:
+            if w and w.isRunning():
+                w.quit()
+                w.wait()
         event.accept()

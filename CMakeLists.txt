@@ -10,6 +10,8 @@ project(
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+
 # ========= set variables for paths ========= 
 set(THIRD_PARTY ${CMAKE_SOURCE_DIR}/third_party)
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)

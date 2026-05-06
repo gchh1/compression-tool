@@ -72,9 +72,9 @@ def _filetype(ext: str) -> ResourceType:
     if ext in SCRIPT_EXTENSIONS:
         return ResourceType.SCRIPT
     if ext in COMPRESSED:
-        return ResourceType.BINARY
-    if ext in BINARY_EXTENSIONS: # debug 请检查这里
         return ResourceType.COMPRESSED
+    if ext in BINARY_EXTENSIONS:
+        return ResourceType.BINARY
     return ResourceType.UNKNOWN
 
 class Record:
@@ -210,3 +210,12 @@ NETWORK_PROFILES: dict[str, NetworkProfile] = {
     "WiFi": NetworkProfile("WiFi", 50_000_000, 20),
     "Ethernet": NetworkProfile("Ethernet", 1_000_000_000, 1),
 }
+
+
+class ArchiveEntry:
+    """Represents a file entry inside a .compressed archive for browsing."""
+
+    def __init__(self, name: str, size: int):
+        self.name = name
+        self.size = size
+        self.is_directory = name.endswith("/")

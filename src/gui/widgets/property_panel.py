@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QScrollArea, QFrame,
 )
 
-from gui.core.models import FileRecord, formatted_size
+from gui.core.models import ArchiveEntry, FileRecord, formatted_size
 
 
 class PropertyPanel(QWidget):
@@ -79,13 +79,17 @@ class PropertyPanel(QWidget):
         self._form_layout.addLayout(section)
         return section
 
-    def set_record(self, rec: FileRecord | None) -> None:
+    def set_record(self, rec: FileRecord | ArchiveEntry | None) -> None:
         self._record = rec
         if rec is None:
-            self._name_label.setText("(未选择)")
-            self._type_label.setText("")
-            self._size_label.setText("")
-            self._path_label.setText("")
+            self._clear()
+            return
+
+        if isinstance(rec, ArchiveEntry):
+            self._name_label.setText(rec.name.split('/')[-1])
+            self._type_label.setText("类型: 压缩包内条目")
+            self._size_label.setText(f"大小: {formatted_size(rec.size)}")
+            self._path_label.setText(f"路径: {rec.name}")
             self._status_label.setText("")
             self._algo_label.setText("")
             self._ratio_label.setText("")
@@ -98,7 +102,6 @@ class PropertyPanel(QWidget):
         self._size_label.setText(f"大小: {formatted_size(rec.size)}")
         self._path_label.setText(f"路径: {rec.path}")
 
-        # Compression results
         from gui.core.models import CompressionStatus
         if rec.status == CompressionStatus.PENDING:
             self._status_label.setText("状态: ⏳ 等待压缩")
@@ -124,3 +127,28 @@ class PropertyPanel(QWidget):
             self._ratio_label.setText(f"错误: {rec.error_message}")
             self._time_label.setText("")
             self._blocks_label.setText("")
+
+    def _clear(self) -> None:
+        self._name_label.setText("(未选择)")
+        self._type_label.setText("")
+        self._size_label.setText("")
+        self._path_label.setText("")
+        self._status_label.setText("")
+        self._algo_label.setText("")
+        self._ratio_label.setText("")
+        self._time_label.setText("")
+        self._blocks_label.setText("")
+
+
+def show_property_dialog(parent, record) -> None:
+    from PyQt6.QtWidgets import QDialog, QVBoxLayout
+
+    name = record.name if hasattr(record, 'name') else str(record)
+    dialog = QDialog(parent)
+    dialog.setWindowTitle(f"属性 - {name}")
+    dialog.resize(350, 420)
+    layout = QVBoxLayout(dialog)
+    panel = PropertyPanel()
+    panel.set_record(record)
+    layout.addWidget(panel)
+    dialog.exec()
