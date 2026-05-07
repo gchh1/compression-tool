@@ -10,29 +10,12 @@ target_link_libraries(
 )
 
 add_executable(
-    test_PackWriter
-    test_PackWriter.cpp
+    test_roundtrip
+    test_roundtrip.cpp
 )
 
 target_link_libraries(
-    test_PackWriter
+    test_roundtrip
     PRIVATE
-    archiver
-    processor
-    memory
+    algorithm
 )
-
-add_executable(test_SP_Deflate test_SP_Deflate.cpp)
-target_link_libraries(test_SP_Deflate PRIVATE processor memory algorithm)
-
-add_executable(test_Inflate test_Inflate.cpp)
-target_link_libraries(test_Inflate PRIVATE api)
-
-add_executable(test_PackWriter_RoundTrip test_PackWriter_RoundTrip.cpp)
-target_link_libraries(test_PackWriter_RoundTrip PRIVATE api)
-
-add_executable(test_CompressFile test_CompressFile.cpp)
-target_link_libraries(test_CompressFile PRIVATE api)
-
-add_executable(test_Mem test_Mem.cpp)
-target_link_libraries(test_Mem PRIVATE api)

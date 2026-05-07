@@ -67,9 +67,8 @@ class HuffmanTree {
 
     explicit HuffmanTree(std::span<const uint8_t> symbols);
 
-    /** @brief Build the Huffman Tree by deserializing from bitstream */
-    explicit HuffmanTree(utils::BitReader& reader, size_t symbol_bits,
-                         size_t dictionary_size);
+    /** @brief Build the Huffman Tree with preorder tree code */
+    // explicit HuffmanTree(utils::BitReader& reader);
 
     /** @brief Obey RAII (Resources Acqusition is Initialization) */
     ~HuffmanTree() {
@@ -94,8 +93,6 @@ class HuffmanTree {
     auto getRoot(void) -> node* const { return root_; }
 
     auto getTreeSize(void) -> size_t const { return tree_size_; }
-
-    auto getCodeLengths() const -> std::vector<uint8_t>;
 
    private:
     /** @brief Build the huffman tree */

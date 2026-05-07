@@ -13,7 +13,7 @@ find_package(pybind11 REQUIRED)
 pybind11_add_module(core_engine pybind_module.cpp)
 
 target_include_directories(core_engine PRIVATE
-    ${CMAKE_SOURCE_DIR}/src/api/include
+    ${CMAKE_SOURCE_DIR}/src/preprocessor/include
 )
 
-target_link_libraries(core_engine PRIVATE api)
+target_link_libraries(core_engine PRIVATE core algorithm preprocessor archiver)

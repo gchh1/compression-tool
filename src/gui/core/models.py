@@ -17,12 +17,14 @@ def formatted_size(size_bytes: int) -> str:
 
 
 class ResourceType(Enum):
+    AUDIO = "audio"
     BINARY = "binary"
     COMPRESSED = "compressed"
     IMAGE = "image"
     SCRIPT = "script"
     TEXT = "text"
     UNKNOWN = "unknown"
+    VIDEO = "video"
 
 
 
@@ -36,7 +38,75 @@ class CompressionStatus(Enum):
 class AlgorithmType(Enum):
     AUTO = "auto"
     DEFLATE = "deflate"
+    HUFFMAN = "huffman"
+    LZSS = "lzss"
+    LZMINE = "lzmine"
+    LZCRAZY = "lzcrazy"
+    CRAZYFLATE = "crazyflate"
+    MYFLATE = "myflate"
+    GZIP = "gzip"
+    TRANSFORMER = "transformer (beta)"
     NONE = "none"
+
+
+class AlgorithmParamDef:
+    def __init__(self, key: str, label: str, default, min_val, max_val, step=1, suffix: str = ""):
+        self.key = key
+        self.label = label
+        self.default = default
+        self.min_val = min_val
+        self.max_val = max_val
+        self.step = step
+        self.suffix = suffix
+
+
+ALGORITHM_PARAMS: dict[AlgorithmType, list[AlgorithmParamDef]] = {
+    AlgorithmType.LZSS: [
+        AlgorithmParamDef("search_size", "搜索窗口大小", 4095, 255, 65535, 256, ""),
+        AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 18, 4, 255, 1, ""),
+        AlgorithmParamDef("min_match", "最小匹配长度", 3, 2, 15, 1, ""),
+    ],
+    AlgorithmType.LZCRAZY: [
+        AlgorithmParamDef("search_size", "搜索窗口大小", 4096, 256, 65536, 256, " B"),
+        AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 18, 4, 258, 1, ""),
+        AlgorithmParamDef("min_match", "最小匹配长度", 3, 1, 6, 1, ""),
+    ],
+    AlgorithmType.LZMINE: [
+        AlgorithmParamDef("search_size", "搜索窗口大小", 4096, 256, 65536, 256, " B"),
+        AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 256, 16, 65536, 16, " B"),
+        AlgorithmParamDef("min_match", "最小匹配长度", 3, 2, 15, 1, ""),
+        AlgorithmParamDef("dp_depth", "DP优化深度", 3, 1, 32, 1, ""),
+    ],
+    AlgorithmType.CRAZYFLATE: [
+        AlgorithmParamDef("search_size", "搜索窗口大小", 4096, 256, 65536, 256, " B"),
+        AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 258, 16, 258, 1, ""),
+        AlgorithmParamDef("min_match", "最小匹配长度", 3, 1, 6, 1, ""),
+        AlgorithmParamDef("dp_depth", "DP优化深度", 6, 1, 32, 1, ""),
+        AlgorithmParamDef("max_chain_length", "最大搜索链长", 128, 4, 4096, 4, ""),
+    ],
+    AlgorithmType.MYFLATE: [
+        AlgorithmParamDef("search_size", "搜索窗口大小", 4096, 256, 32768, 256, " B"),
+        AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 256, 16, 4096, 16, " B"),
+        AlgorithmParamDef("min_match", "最小匹配长度", 4, 2, 6, 1, ""),
+        AlgorithmParamDef("dp_depth", "DP优化深度", 6, 1, 32, 1, ""),
+        AlgorithmParamDef("max_chain_length", "最大搜索链长", 256, 4, 4096, 4, ""),
+    ],
+    AlgorithmType.DEFLATE: [
+        AlgorithmParamDef("search_size", "搜索窗口大小", 32768, 1024, 65536, 1024, " B"),
+        AlgorithmParamDef("min_match", "最小匹配长度", 3, 2, 6, 1, ""),
+        AlgorithmParamDef("max_chain_length", "最大搜索链长", 256, 4, 4096, 4, ""),
+    ],
+    AlgorithmType.GZIP: [
+        AlgorithmParamDef("compression_level", "压缩级别", 6, 1, 9, 1, ""),
+    ],
+}
+
+
+def get_default_config() -> dict[AlgorithmType, dict[str, int]]:
+    config = {}
+    for algo, params in ALGORITHM_PARAMS.items():
+        config[algo] = {p.key: p.default for p in params}
+    return config
 
 
 
@@ -48,19 +118,28 @@ SCRIPT_EXTENSIONS = frozenset({
 })
 
 TEXT_EXTENSIONS = frozenset({
-      ".txt", ".md", ".yaml", ".yml",
+      ".txt", ".md", ".yaml", ".yml", ".csv", ".log", ".ini", ".cfg", ".conf", ".toml",
 })
 
 IMAGE_EXTENSIONS = frozenset({
-    ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp",
+    ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".ico", ".tiff", ".tif", ".svg",
+})
+
+AUDIO_EXTENSIONS = frozenset({
+    ".wav", ".mp3", ".ogg", ".flac", ".aac", ".wma", ".m4a", ".opus", ".mid", ".midi",
+})
+
+VIDEO_EXTENSIONS = frozenset({
+    ".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".m4v", ".mpg", ".mpeg",
 })
 
 BINARY_EXTENSIONS = frozenset({
-    ".bin", ".dat", ".exe", ".dll", ".so", ".a", ".o",
+    ".bin", ".dat", ".exe", ".dll", ".so", ".a", ".o", ".lib", ".pdb", ".obj",
 })
 
 COMPRESSED = frozenset({
-    ".gz", ".zip", ".rar", ".7z",
+    ".gz", ".zip", ".rar", ".7z", ".tar", ".bz2", ".xz", ".zst",
+    ".wcx",
 })
 
 
@@ -69,6 +148,10 @@ def _filetype(ext: str) -> ResourceType:
         return ResourceType.TEXT
     if ext in IMAGE_EXTENSIONS:
         return ResourceType.IMAGE
+    if ext in AUDIO_EXTENSIONS:
+        return ResourceType.AUDIO
+    if ext in VIDEO_EXTENSIONS:
+        return ResourceType.VIDEO
     if ext in SCRIPT_EXTENSIONS:
         return ResourceType.SCRIPT
     if ext in COMPRESSED:
@@ -102,7 +185,7 @@ class FileRecord(Record):
         self.status: CompressionStatus = CompressionStatus.PENDING
         self.algorithm: AlgorithmType = AlgorithmType.DEFLATE if not self.type == ResourceType.COMPRESSED else AlgorithmType.NONE
         self.error_message: str = ""
-        self.block_profile: dict | None = None
+        self.is_stored: bool = False
         #=====features============
         self.content_entropy: float = 0.0
         self.repetition_ratio: float = 0.0
@@ -210,12 +293,3 @@ NETWORK_PROFILES: dict[str, NetworkProfile] = {
     "WiFi": NetworkProfile("WiFi", 50_000_000, 20),
     "Ethernet": NetworkProfile("Ethernet", 1_000_000_000, 1),
 }
-
-
-class ArchiveEntry:
-    """Represents a file entry inside a .compressed archive for browsing."""
-
-    def __init__(self, name: str, size: int):
-        self.name = name
-        self.size = size
-        self.is_directory = name.endswith("/")

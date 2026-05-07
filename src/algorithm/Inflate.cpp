@@ -2,356 +2,183 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <memory>
+#include <cstring>
+#include <vector>
 
 #include "BitReader.hpp"
-#include "BitWriter.hpp"
 #include "HuffmanTree.hpp"
 
 namespace compressor::algorithm {
 
-// ---- Length lookup tables (matching Deflate::getLengthCode) ----
-const uint16_t Inflate::kLengthBase[] = {
-    3,   4,   5,   6,   7,   8,   9,   10,   // 257-264
-    11,  13,  15,  17,                         // 265-268
-    19,  23,  27,  31,                         // 269-272
-    35,  43,  51,  59,                         // 273-276
-    67,  83,  99,  115,                        // 277-280
-    131, 163, 195, 227,                        // 281-284
-    258                                        // 285
-};
-const uint8_t Inflate::kLengthExtraBits[] = {
-    0, 0, 0, 0, 0, 0, 0, 0,  // 257-264
-    1, 1, 1, 1,              // 265-268
-    2, 2, 2, 2,              // 269-272
-    3, 3, 3, 3,              // 273-276
-    4, 4, 4, 4,              // 277-280
-    5, 5, 5, 5,              // 281-284
-    0                         // 285
-};
-
-// ---- Distance lookup tables (matching Deflate::getDistCode) ----
-const uint16_t Inflate::kDistanceBase[] = {
-    1,    2,    3,    4,          // 0-3
-    5,    7,                       // 4-5
-    9,    13,                      // 6-7
-    17,   25,                      // 8-9
-    33,   49,                      // 10-11
-    65,   97,                      // 12-13
-    129,  193,                     // 14-15
-    257,  385,                     // 16-17
-    513,  769,                     // 18-19
-    1025, 1537,                    // 20-21
-    2049, 3073,                    // 22-23
-    4097, 6145,                    // 24-25
-    8193, 12289,                   // 26-27
-    16385, 24577                   // 28-29
-};
-const uint8_t Inflate::kDistanceExtraBits[] = {
-    0,  0,  0,  0,   // 0-3
-    1,  1,            // 4-5
-    2,  2,            // 6-7
-    3,  3,            // 8-9
-    4,  4,            // 10-11
-    5,  5,            // 12-13
-    6,  6,            // 14-15
-    7,  7,            // 16-17
-    8,  8,            // 18-19
-    9,  9,            // 20-21
-    10, 10,           // 22-23
-    11, 11,           // 24-25
-    12, 12,           // 26-27
-    13, 13            // 28-29
-};
-
 Inflate::Inflate() { reset(); }
 
 auto Inflate::reset(void) -> void {
-    window_.assign(DICTIONARY_SIZE, 0);
-    decode_pos_ = 0;
-    is_last_block_ = false;
-    inflate_state_ = InflateState::READ_BLOCK_HEADER;
-    ll_tree_.reset();
-    dist_tree_.reset();
-    ll_cursor_ = nullptr;
+    output_buf_.clear();
+    destroyTree(lit_root_);
+    destroyTree(dist_root_);
+    lit_root_ = nullptr;
+    dist_root_ = nullptr;
+    lit_cursor_ = nullptr;
     dist_cursor_ = nullptr;
-    copy_length_ = 0;
-    copy_distance_ = 0;
-    pending_byte_ = 0;
-    has_pending_ = false;
-    pending_extra_ = 0;
-    has_pending_extra_ = false;
+    decode_state_ = DecodeState::READ_TREES;
+    pending_length_ = 0;
+    pending_dist_ = 0;
+}
+
+void Inflate::destroyTree(node* n) {
+    if (!n) return;
+    destroyTree(n->left);
+    destroyTree(n->right);
+    delete n;
+}
+
+auto Inflate::readHuffmanTree(node*& root, size_t symbol_bits) -> bool {
+    if (!reader_.ensureBits(1)) return false;
+    bool is_leaf = (reader_.readBit() == 1);
+
+    if (is_leaf) {
+        if (!reader_.ensureBits(static_cast<uint8_t>(symbol_bits))) return false;
+        uint16_t sym = static_cast<uint16_t>(reader_.readBits(static_cast<uint8_t>(symbol_bits)));
+        root = new node(sym, 0);
+    } else {
+        root = new node(static_cast<uint16_t>(0), static_cast<uint32_t>(0));
+        if (!readHuffmanTree(root->left, symbol_bits)) return false;
+        if (!readHuffmanTree(root->right, symbol_bits)) return false;
+    }
+    return true;
+}
+
+void Inflate::decodeLengthCode(uint16_t symbol, uint16_t& length, uint8_t& extra_bits) {
+    if (symbol < 257 || symbol > 285) {
+        length = 0;
+        extra_bits = 0;
+        return;
+    }
+    size_t idx = symbol - 257;
+    length = static_cast<uint16_t>(LENGTH_BASES[idx]);
+    extra_bits = LENGTH_EXTRA[idx];
+}
+
+void Inflate::decodeDistCode(uint16_t symbol, uint16_t& dist, uint8_t& extra_bits) {
+    if (symbol >= DISTANCE_DICTIONARY_SIZE) {
+        dist = 0;
+        extra_bits = 0;
+        return;
+    }
+    dist = static_cast<uint16_t>(DIST_BASES[symbol]);
+    extra_bits = DIST_EXTRA[symbol];
 }
 
 auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
     while (true) {
-        // ---- Phase: COPY (only when between tokens, not mid-decode) ----
-        while (copy_length_ > 0 &&
-               inflate_state_ == InflateState::DECODE_TOKEN) {
-            // Flush pending literal before match copy
-            if (has_pending_) {
-                if (writer_.getRemainSize() == 0) {
-                    status.need_output = true;
-                    return;
-                }
-                writer_.writeBytes(&pending_byte_, 1);
-                window_[decode_pos_ & DICT_MASK] = pending_byte_;
-                decode_pos_++;
-                has_pending_ = false;
-                continue;  // retry copy after flush
-            }
+        if (decode_state_ == DecodeState::READ_TREES) {
+            destroyTree(lit_root_);
+            destroyTree(dist_root_);
+            lit_root_ = nullptr;
+            dist_root_ = nullptr;
 
-            if (writer_.getRemainSize() == 0) {
-                status.need_output = true;
-                return;
-            }
-            uint8_t byte =
-                window_[(decode_pos_ - copy_distance_) & DICT_MASK];
-            writer_.writeBytes(&byte, 1);
-            window_[decode_pos_ & DICT_MASK] = byte;
-            decode_pos_++;
-            copy_length_--;
-        }
-
-        // Flush any pending literal
-        if (has_pending_) {
-            if (writer_.getRemainSize() == 0) {
-                status.need_output = true;
-                return;
-            }
-            writer_.writeBytes(&pending_byte_, 1);
-            window_[decode_pos_ & DICT_MASK] = pending_byte_;
-            decode_pos_++;
-            has_pending_ = false;
-        }
-
-        // ---- Input check ----
-        if (reader_.getRemainingBits() == 0) {
-            if (is_last_chunk) {
-                status.done = true;
-            } else {
+            if (!readHuffmanTree(lit_root_, DEFLATE_SYMBOL_BITS)) {
                 status.need_input = true;
-            }
-            return;
-        }
-
-        // ---- Resume pending extra bits if interrupted ----
-        if (has_pending_extra_) {
-            uint8_t extra = pending_extra_;
-            has_pending_extra_ = false;
-            if (reader_.getRemainingBits() < extra) {
-                if (is_last_chunk) {
-                    status.done = true;
-                } else {
-                    pending_extra_ = extra;
-                    has_pending_extra_ = true;
-                    status.need_input = true;
-                }
                 return;
             }
-            uint16_t ev = static_cast<uint16_t>(reader_.readBits(extra));
-            if (inflate_state_ == InflateState::DECODE_TOKEN) {
-                copy_length_ += ev;
-                inflate_state_ = InflateState::DECODE_DISTANCE;
-            } else {
-                copy_distance_ += ev;
-                inflate_state_ = InflateState::DECODE_TOKEN;
+
+            if (!readHuffmanTree(dist_root_, DISTANCE_SYMBOL_BITS)) {
+                status.need_input = true;
+                return;
             }
+
+            lit_cursor_ = lit_root_;
+            dist_cursor_ = dist_root_;
+            decode_state_ = DecodeState::DECODE_TOKENS;
             continue;
         }
 
-        // ---- State machine ----
-        switch (inflate_state_) {
-            case InflateState::READ_BLOCK_HEADER: {
-                if (reader_.getRemainingBits() < 3) {
-                    if (is_last_chunk) { status.done = true; }
-                    else { status.need_input = true; }
-                    return;
-                }
-                uint64_t bfinal = reader_.readBit();
-                uint64_t btype = reader_.readBits(2);
-                is_last_block_ = (bfinal == 1);
-                inflate_state_ = InflateState::READ_LL_TREE;
-                break;
+        if (decode_state_ == DecodeState::DECODE_TOKENS) {
+            if (!reader_.ensureBits(1)) {
+                status.need_input = true;
+                return;
             }
 
-            case InflateState::READ_LL_TREE: {
-                if (reader_.getRemainingBits() == 0) {
-                    if (is_last_chunk) { status.done = true; }
-                    else { status.need_input = true; }
-                    return;
-                }
-                auto saved = reader_.savePosition();
-                ll_tree_ = std::make_unique<HuffmanTree>(reader_, 9, 286);
-                ll_cursor_ = ll_tree_->getRoot();
-                if (!ll_cursor_) {
-                    if (is_last_chunk) { status.done = true; }
-                    else {
-                        reader_.restorePosition(saved);
-                        status.need_input = true;
-                    }
-                    return;
-                }
-                inflate_state_ = InflateState::READ_D_TREE;
-                break;
+            bool bit = (reader_.readBit() == 1);
+            lit_cursor_ = bit ? lit_cursor_->right : lit_cursor_->left;
+
+            if (!lit_cursor_->isLeaf()) continue;
+
+            uint16_t symbol = lit_cursor_->symbol;
+            lit_cursor_ = lit_root_;
+
+            if (symbol < 256) {
+                output_buf_.push_back(static_cast<uint8_t>(symbol));
+                continue;
             }
 
-            case InflateState::READ_D_TREE: {
-                if (reader_.getRemainingBits() == 0) {
-                    if (is_last_chunk) { status.done = true; }
-                    else { status.need_input = true; }
-                    return;
-                }
-                auto saved = reader_.savePosition();
-                dist_tree_ =
-                    std::make_unique<HuffmanTree>(reader_, 5, 30);
-                dist_cursor_ = dist_tree_->getRoot();
-                if (!dist_cursor_) {
-                    if (is_last_chunk) {
-                        status.done = true;
-                    } else {
-                        reader_.restorePosition(saved);
-                        status.need_input = true;
-                    }
-                    return;
-                }
-                inflate_state_ = InflateState::DECODE_TOKEN;
-                break;
-            }
-
-            case InflateState::DECODE_TOKEN: {
-                if (reader_.getRemainingBits() == 0) {
-                    if (is_last_chunk) {
-                        status.done = true;
-                    } else {
-                        status.need_input = true;
-                    }
-                    return;
-                }
-                uint64_t bit = reader_.readBit();
-                if (!ll_cursor_) {
-                    if (is_last_chunk) {
-                        status.done = true;
-                    } else {
-                        status.need_input = true;
-                    }
-                    return;
-                }
-                ll_cursor_ = (bit == 0) ? ll_cursor_->left : ll_cursor_->right;
-                if (!ll_cursor_) {
-                    if (is_last_chunk) {
-                        status.done = true;
-                    } else {
-                        status.need_input = true;
-                    }
-                    return;
-                }
-
-                if (!ll_cursor_->isLeaf()) break;
-
-                uint16_t symbol = ll_cursor_->symbol;
-                ll_cursor_ = ll_tree_->getRoot();
-
-                if (symbol < 256) {
-                    if (writer_.getRemainSize() == 0) {
-                        pending_byte_ = static_cast<uint8_t>(symbol);
-                        has_pending_ = true;
+            if (symbol == 256) {
+                for (size_t i = 0; i < output_buf_.size(); i++) {
+                    if (!writer_.ensureSpace(1)) {
                         status.need_output = true;
                         return;
                     }
-                    uint8_t b = static_cast<uint8_t>(symbol);
-                    writer_.writeBytes(&b, 1);
-                    window_[decode_pos_ & DICT_MASK] = b;
-                    decode_pos_++;
-                } else if (symbol == 256) {
-                    if (is_last_block_) {
-                        status.done = true;
-                        return;
-                    }
-                    inflate_state_ = InflateState::READ_BLOCK_HEADER;
-                    if (writer_.getRemainSize() == 0) {
-                        status.need_output = true;
-                        return;
-                    }
-                } else {
-                    size_t idx = symbol - 257;
-                    copy_length_ = kLengthBase[idx];
-                    uint8_t extra = kLengthExtraBits[idx];
-                    if (extra > 0) {
-                        if (reader_.getRemainingBits() < extra) {
-                            if (is_last_chunk) {
-                                status.done = true;
-                            } else {
-                                pending_extra_ = extra;
-                                has_pending_extra_ = true;
-                                status.need_input = true;
-                            }
-                            return;
-                        }
-                        uint16_t ev = static_cast<uint16_t>(
-                            reader_.readBits(extra));
-                        copy_length_ += ev;
-                    }
-                    inflate_state_ = InflateState::DECODE_DISTANCE;
+                    writer_.writeBits(output_buf_[i], 8);
                 }
-                break;
+                output_buf_.clear();
+                status.done = true;
+                return;
             }
 
-            case InflateState::DECODE_DISTANCE: {
-                if (reader_.getRemainingBits() == 0) {
-                    if (is_last_chunk) {
-                        status.done = true;
-                    } else {
-                        status.need_input = true;
-                    }
+            uint16_t base_len = 0;
+            uint8_t len_extra = 0;
+            decodeLengthCode(symbol, base_len, len_extra);
+            pending_length_ = base_len;
+
+            if (len_extra > 0) {
+                if (!reader_.ensureBits(len_extra)) {
+                    status.need_input = true;
                     return;
                 }
-                uint64_t bit = reader_.readBit();
-                if (!dist_cursor_) {
-                    if (is_last_chunk) {
-                        status.done = true;
-                    } else {
-                        status.need_input = true;
-                    }
-                    return;
-                }
-                dist_cursor_ =
-                    (bit == 0) ? dist_cursor_->left : dist_cursor_->right;
-                if (!dist_cursor_) {
-                    if (is_last_chunk) {
-                        status.done = true;
-                    } else {
-                        status.need_input = true;
-                    }
-                    return;
-                }
-
-                if (!dist_cursor_->isLeaf()) break;
-
-                uint16_t dist_code = dist_cursor_->symbol;
-                dist_cursor_ = dist_tree_->getRoot();
-
-                copy_distance_ = kDistanceBase[dist_code];
-                uint8_t extra = kDistanceExtraBits[dist_code];
-                if (extra > 0) {
-                    if (reader_.getRemainingBits() < extra) {
-                        if (is_last_chunk) {
-                            status.done = true;
-                        } else {
-                            pending_extra_ = extra;
-                            has_pending_extra_ = true;
-                            status.need_input = true;
-                        }
-                        return;
-                    }
-                    uint16_t ev = static_cast<uint16_t>(
-                        reader_.readBits(extra));
-                    copy_distance_ += ev;
-                }
-
-                inflate_state_ = InflateState::DECODE_TOKEN;
-                break;
+                pending_length_ += static_cast<uint16_t>(reader_.readBits(len_extra));
             }
+
+            dist_cursor_ = dist_root_;
+            while (true) {
+                if (!reader_.ensureBits(1)) {
+                    status.need_input = true;
+                    return;
+                }
+                bool dbit = (reader_.readBit() == 1);
+                dist_cursor_ = dbit ? dist_cursor_->right : dist_cursor_->left;
+                if (dist_cursor_->isLeaf()) break;
+            }
+
+            uint16_t dist_sym = dist_cursor_->symbol;
+            uint16_t base_dist = 0;
+            uint8_t dist_extra_count = 0;
+            decodeDistCode(dist_sym, base_dist, dist_extra_count);
+            pending_dist_ = base_dist;
+
+            if (dist_extra_count > 0) {
+                if (!reader_.ensureBits(dist_extra_count)) {
+                    status.need_input = true;
+                    return;
+                }
+                pending_dist_ += static_cast<uint16_t>(reader_.readBits(dist_extra_count));
+            }
+
+            decode_state_ = DecodeState::COPY_MATCH;
+            continue;
+        }
+
+        if (decode_state_ == DecodeState::COPY_MATCH) {
+            if (pending_dist_ > output_buf_.size()) {
+                status.done = false;
+                return;
+            }
+            size_t src_start = output_buf_.size() - pending_dist_;
+            for (size_t i = 0; i < pending_length_; i++) {
+                output_buf_.push_back(output_buf_[src_start + i]);
+            }
+
+            decode_state_ = DecodeState::DECODE_TOKENS;
+            continue;
         }
     }
 }

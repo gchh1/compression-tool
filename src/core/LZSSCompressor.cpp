@@ -17,6 +17,8 @@ auto LZSSCompressor::compress(std::vector<uint8_t> data) -> CompressorResult {
     auto end_time = std::chrono::high_resolution_clock::now();
     result.original_size = data.size();
     result.compressed_size = result.data.size();
+    result.compression_ratio =
+        static_cast<double>(result.compressed_size) / result.original_size;
     std::chrono::duration<double, std::milli> elapsed = end_time - start_time;
     result.time_ms = elapsed.count();
 
@@ -31,6 +33,8 @@ auto LZSSCompressor::decompress(std::vector<uint8_t> data) -> CompressorResult {
     auto end_time = std::chrono::high_resolution_clock::now();
     result.original_size = data.size();
     result.compressed_size = result.data.size();
+    result.compression_ratio =
+        static_cast<double>(result.compressed_size) / result.original_size;
     std::chrono::duration<double, std::milli> elapsed = end_time - start_time;
     result.time_ms = elapsed.count();
 

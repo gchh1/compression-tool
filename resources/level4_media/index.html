@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MediaHub - 多媒体资源中心</title>
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html">
+      <img src="images/logo.png" alt="Logo" class="brand-logo">
+      <span class="brand-text">MediaHub</span>
+    </a>
+    <nav class="main-nav">
+      <a href="#gallery" class="nav-link active">图库</a>
+      <a href="#audio" class="nav-link">音频</a>
+      <a href="#about" class="nav-link">关于</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <img src="images/banner.png" alt="Banner" class="hero-banner">
+  <div class="hero-overlay">
+    <h1 class="hero-title">多媒体资源中心</h1>
+    <p class="hero-subtitle">图片 · 音频 · 视频 · 数据 — 一站式媒体管理</p>
+  </div>
+</section>
+
+<main class="container">
+  <section id="gallery" class="section">
+    <h2 class="section-title">图片画廊</h2>
+    <div class="gallery-grid">
+      <figure class="gallery-item">
+        <img src="images/photo_landscape.png" alt="Landscape">
+        <figcaption>风景照片</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="images/photo_portrait.png" alt="Portrait">
+        <figcaption>人像照片</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="images/thumbnail_grid.png" alt="Thumbnails">
+        <figcaption>缩略图网格</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="images/hero_illustration.svg" alt="Illustration">
+        <figcaption>矢量插画</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="images/photo_bmp.bmp" alt="BMP Photo">
+        <figcaption>BMP 位图</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="images/icon.png" alt="Icon">
+        <figcaption>图标</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="audio" class="section">
+    <h2 class="section-title">音频资源</h2>
+    <div class="audio-list">
+      <div class="audio-card">
+        <div class="audio-icon">&#9835;</div>
+        <div class="audio-info">
+          <h3>背景音乐</h3>
+          <p>5.0 秒 · 44100 Hz · 单声道</p>
+        </div>
+        <audio controls src="audio/background_music.wav"></audio>
+      </div>
+      <div class="audio-card">
+        <div class="audio-icon">&#9834;</div>
+        <div class="audio-info">
+          <h3>通知提示音</h3>
+          <p>0.5 秒 · 22050 Hz · 单声道</p>
+        </div>
+        <audio controls src="audio/notification.wav"></audio>
+      </div>
+      <div class="audio-card">
+        <div class="audio-icon">&#9833;</div>
+        <div class="audio-info">
+          <h3>语音样本</h3>
+          <p>3.0 秒 · 22050 Hz · 单声道</p>
+        </div>
+        <audio controls src="audio/voice_sample.wav"></audio>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="section">
+    <h2 class="section-title">资源统计</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">6</div>
+        <div class="stat-label">图片文件</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">3</div>
+        <div class="stat-label">音频文件</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">792</div>
+        <div class="stat-label">总大小 (KB)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">5</div>
+        <div class="stat-label">文件格式</div>
+      </div>
+    </div>
+    <div class="format-table-wrap">
+      <table class="format-table">
+        <thead>
+          <tr><th>格式</th><th>扩展名</th><th>类型</th><th>特点</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>PNG</td><td>.png</td><td>无损位图</td><td>支持透明，适合图标和截图</td></tr>
+          <tr><td>BMP</td><td>.bmp</td><td>无压缩位图</td><td>体积大，无损失，适合压缩测试</td></tr>
+          <tr><td>SVG</td><td>.svg</td><td>矢量图</td><td>文本格式，缩放无损，压缩率极高</td></tr>
+          <tr><td>WAV</td><td>.wav</td><td>无损音频</td><td>PCM 编码，体积大，适合压缩测试</td></tr>
+          <tr><td>JSON</td><td>.json</td><td>数据交换</td><td>文本格式，结构化数据，压缩率好</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>MediaHub &copy; 2026 — 多媒体资源中心 · 压缩测试素材</p>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>

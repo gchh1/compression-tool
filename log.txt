@@ -1,0 +1,64 @@
+﻿:50:27 [INFO] gui.main_window: [compress] START row=1 file=D:\AAA_C\compression-tool\resources\level4_media\index.html algo=lzmine
+11:50:27 [INFO] gui.main_window: [compress] loaded raw data: 4770 bytes
+11:50:27 [INFO] gui.main_window: [compress] compressing with lzmine ...
+11:50:27 [INFO] gui.main_window: [compress] compress done: 4770 -> 2725 bytes
+11:50:27 [INFO] gui.main_window: [compress] START row=1 file=D:\AAA_C\compression-tool\resources\level4_media\media_catalog.json algo=lzmine
+11:50:27 [INFO] gui.main_window: [compress] loaded raw data: 10599 bytes
+11:50:27 [INFO] gui.main_window: [compress] compressing with lzmine ...
+11:50:27 [INFO] gui.main_window: [compress] compress done: 10599 -> 1919 bytes
+11:50:27 [INFO] gui.main_window: [compress] START row=1 file=D:\AAA_C\compression-tool\resources\level4_media\media_index.csv algo=lzmine
+11:50:27 [INFO] gui.main_window: [compress] loaded raw data: 10926 bytes
+11:50:27 [INFO] gui.main_window: [compress] compressing with lzmine ...
+11:50:27 [INFO] gui.main_window: [compress] compress done: 10926 -> 6570 bytes
+11:50:27 [INFO] gui.main_window: [compress] START row=1 file=D:\AAA_C\compression-tool\resources\level4_media\audio\background_music.wav algo=lzmine
+11:50:27 [INFO] gui.main_window: [compress] loaded raw data: 441044 bytes
+11:50:27 [INFO] gui.main_window: [compress] compressing with lzmine ...
+11:50:27 [INFO] gui.main_window: [compress] compress done: 441044 -> 78337 bytes
+11:50:27 [INFO] gui.main_window: [compress] START row=1 file=D:\AAA_C\compression-tool\resources\level4_media\audio\notification.wav algo=lzmine
+11:50:27 [INFO] gui.main_window: [compress] loaded raw data: 22094 bytes
+11:50:27 [INFO] gui.main_window: [compress] compressing with lzmine ...
+11:50:27 [INFO] gui.main_window: [compress] compress done: 22094 -> 22105 bytes
+11:50:27 [INFO] gui.main_window: [compress] START row=1 file=D:\AAA_C\compression-tool\resources\level4_media\audio\voice_sample.wav algo=lzmine
+11:50:27 [INFO] gui.main_window: [compress] loaded raw data: 132344 bytes
+11:50:27 [INFO] gui.main_window: [compress] compressing with lzmine ...
+11:50:27 [INFO] gui.main_window: [compress] compress done: 132344 -> 11387 bytes
+11:50:27 [INFO] gui.main_window: [compress] START row=1 file=D:\AAA_C\compression-tool\resources\level4_media\css\main.css algo=lzmine
+11:50:27 [INFO] gui.main_window: [compress] loaded raw data: 3301 bytes
+11:50:27 [INFO] gui.main_window: [compress] compressing with lzmine ...
+11:50:27 [INFO] gui.main_window: [compress] compress done: 3301 -> 2164 bytes
+11:50:27 [INFO] gui.main_window: [compress] START row=1 file=D:\AAA_C\compression-tool\resources\level4_media\images\banner.png algo=lzmine
+11:50:27 [INFO] gui.main_window: [compress] loaded raw data: 33078 bytes
+11:50:27 [INFO] gui.main_window: [compress] compressing with lzmine ...
+11:50:27 [INFO] gui.main_window: [compress] compress done: 33078 -> 13099 bytes
+11:50:27 [INFO] gui.main_window: [compress] START row=1 file=D:\AAA_C\compression-tool\resources\level4_media\images\hero_illustration.svg algo=lzmine
+11:50:27 [INFO] gui.main_window: [compress] loaded raw data: 1945 bytes
+11:50:27 [INFO] gui.main_window: [compress] compressing with lzmine ...
+11:50:27 [INFO] gui.main_window: [compress] compress done: 1945 -> 1069 bytes
+11:50:27 [INFO] gui.main_window: [compress] START row=1 file=D:\AAA_C\compression-tool\resources\level4_media\images\icon.png algo=lzmine
+11:50:27 [INFO] gui.main_window: [compress] loaded raw data: 98 bytes
+11:50:27 [INFO] gui.main_window: [compress] compressing with lzmine ...
+11:50:27 [INFO] gui.main_window: [compress] compress done: 98 -> 110 bytes
+11:50:27 [INFO] gui.main_window: [compress] START row=1 file=D:\AAA_C\compression-tool\resources\level4_media\images\logo.png algo=lzmine
+11:50:27 [INFO] gui.main_window: [compress] loaded raw data: 7858 bytes
+11:50:27 [INFO] gui.main_window: [compress] compressing with lzmine ...
+11:50:27 [INFO] gui.main_window: [compress] compress done: 7858 -> 7872 bytes
+11:50:27 [INFO] gui.main_window: [compress] START row=1 file=D:\AAA_C\compression-tool\resources\level4_media\images\photo_bmp.bmp algo=lzmine
+11:50:27 [INFO] gui.main_window: [compress] loaded raw data: 90054 bytes
+11:50:27 [INFO] gui.main_window: [compress] compressing with lzmine ...
+11:50:27 [INFO] gui.main_window: [compress] compress done: 90054 -> 90070 bytes
+11:50:27 [INFO] gui.main_window: [compress] START row=1 file=D:\AAA_C\compression-tool\resources\level4_media\images\photo_landscape.png algo=lzmine
+11:50:27 [INFO] gui.main_window: [compress] loaded raw data: 1409 bytes
+11:50:27 [INFO] gui.main_window: [compress] compressing with lzmine ...
+11:50:27 [INFO] gui.main_window: [compress] compress done: 1409 -> 196 bytes
+11:50:27 [INFO] gui.main_window: [compress] START row=1 file=D:\AAA_C\compression-tool\resources\level4_media\images\photo_portrait.png algo=lzmine
+11:50:27 [INFO] gui.main_window: [compress] loaded raw data: 58284 bytes
+11:50:27 [INFO] gui.main_window: [compress] compressing with lzmine ...
+11:50:27 [INFO] gui.main_window: [compress] compress done: 58284 -> 14404 bytes
+11:50:27 [INFO] gui.main_window: [compress] START row=1 file=D:\AAA_C\compression-tool\resources\level4_media\images\thumbnail_grid.png algo=lzmine
+11:50:27 [INFO] gui.main_window: [compress] loaded raw data: 1345 bytes
+11:50:27 [INFO] gui.main_window: [compress] compressing with lzmine ...
+11:50:27 [INFO] gui.main_window: [compress] compress done: 1345 -> 328 bytes
+11:50:27 [INFO] gui.main_window: [compress] START row=1 file=D:\AAA_C\compression-tool\resources\level4_media\js\app.js algo=lzmine
+11:50:27 [INFO] gui.main_window: [compress] loaded raw data: 1615 bytes
+11:50:27 [INFO] gui.main_window: [compress] compressing with lzmine ...
+11:50:27 [INFO] gui.main_window: [compress] compress done: 1615 -> 1122 bytes

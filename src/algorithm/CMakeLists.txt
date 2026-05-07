@@ -8,11 +8,12 @@ add_library(
     # Huffman.cpp (pre-existing compile errors)
     HuffmanTree.cpp
 
-    Inflate.cpp
     LZMine.cpp
+    LZCrazy.cpp
+    CrazyFlate.cpp
     LZSS.cpp
-
-    # Inflate.cpp (pre-existing compile errors)
+    MyFlate.cpp
+    Inflate.cpp
 
     # LZ77.cpp
 )
@@ -21,10 +22,5 @@ target_include_directories(
     algorithm
     PUBLIC
     include
-)
-
-target_link_libraries(
-    algorithm
-    PUBLIC
-    utils
+    ${UTILS_DIR}/include
 )

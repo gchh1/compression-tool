@@ -1,0 +1,568 @@
+{
+  "site": "MediaHub",
+  "version": "2.0",
+  "media": [
+    {
+      "id": 1,
+      "type": "image",
+      "src": "images/banner.png",
+      "alt": "Site Banner",
+      "width": 800,
+      "height": 200
+    },
+    {
+      "id": 2,
+      "type": "image",
+      "src": "images/photo_landscape.png",
+      "alt": "Landscape",
+      "width": 400,
+      "height": 300
+    },
+    {
+      "id": 3,
+      "type": "image",
+      "src": "images/photo_portrait.png",
+      "alt": "Portrait",
+      "width": 300,
+      "height": 400
+    },
+    {
+      "id": 4,
+      "type": "audio",
+      "src": "audio/background_music.wav",
+      "title": "Background Music",
+      "duration": 5.0
+    },
+    {
+      "id": 5,
+      "type": "audio",
+      "src": "audio/notification.wav",
+      "title": "Notification",
+      "duration": 0.5
+    },
+    {
+      "id": 6,
+      "type": "audio",
+      "src": "audio/voice_sample.wav",
+      "title": "Voice Sample",
+      "duration": 3.0
+    },
+    {
+      "id": 7,
+      "type": "image",
+      "src": "images/thumbnail_grid.png",
+      "alt": "Thumbnails",
+      "width": 256,
+      "height": 256
+    },
+    {
+      "id": 8,
+      "type": "image",
+      "src": "images/photo_bmp.bmp",
+      "alt": "BMP Photo",
+      "width": 200,
+      "height": 150
+    },
+    {
+      "id": 100,
+      "type": "image",
+      "src": "images/thumb_0.png",
+      "alt": "Media item 0",
+      "tags": [
+        "art"
+      ]
+    },
+    {
+      "id": 101,
+      "type": "audio",
+      "src": "images/thumb_1.png",
+      "alt": "Media item 1",
+      "tags": [
+        "photo",
+        "tech"
+      ]
+    },
+    {
+      "id": 102,
+      "type": "audio",
+      "src": "images/thumb_2.png",
+      "alt": "Media item 2",
+      "tags": [
+        "tech"
+      ]
+    },
+    {
+      "id": 103,
+      "type": "image",
+      "src": "images/thumb_3.png",
+      "alt": "Media item 3",
+      "tags": [
+        "art",
+        "music"
+      ]
+    },
+    {
+      "id": 104,
+      "type": "image",
+      "src": "images/thumb_4.png",
+      "alt": "Media item 4",
+      "tags": [
+        "photo"
+      ]
+    },
+    {
+      "id": 105,
+      "type": "audio",
+      "src": "images/thumb_5.png",
+      "alt": "Media item 5",
+      "tags": [
+        "art"
+      ]
+    },
+    {
+      "id": 106,
+      "type": "audio",
+      "src": "images/thumb_6.png",
+      "alt": "Media item 6",
+      "tags": [
+        "art",
+        "tech",
+        "music"
+      ]
+    },
+    {
+      "id": 107,
+      "type": "image",
+      "src": "images/thumb_7.png",
+      "alt": "Media item 7",
+      "tags": [
+        "photo"
+      ]
+    },
+    {
+      "id": 108,
+      "type": "audio",
+      "src": "images/thumb_8.png",
+      "alt": "Media item 8",
+      "tags": [
+        "photo",
+        "art",
+        "photo"
+      ]
+    },
+    {
+      "id": 109,
+      "type": "audio",
+      "src": "images/thumb_9.png",
+      "alt": "Media item 9",
+      "tags": [
+        "tech",
+        "tech"
+      ]
+    },
+    {
+      "id": 110,
+      "type": "audio",
+      "src": "images/thumb_10.png",
+      "alt": "Media item 10",
+      "tags": [
+        "nature"
+      ]
+    },
+    {
+      "id": 111,
+      "type": "image",
+      "src": "images/thumb_11.png",
+      "alt": "Media item 11",
+      "tags": [
+        "tech"
+      ]
+    },
+    {
+      "id": 112,
+      "type": "audio",
+      "src": "images/thumb_12.png",
+      "alt": "Media item 12",
+      "tags": [
+        "nature",
+        "art",
+        "art"
+      ]
+    },
+    {
+      "id": 113,
+      "type": "audio",
+      "src": "images/thumb_13.png",
+      "alt": "Media item 13",
+      "tags": [
+        "music",
+        "photo",
+        "nature"
+      ]
+    },
+    {
+      "id": 114,
+      "type": "image",
+      "src": "images/thumb_14.png",
+      "alt": "Media item 14",
+      "tags": [
+        "photo",
+        "music",
+        "music"
+      ]
+    },
+    {
+      "id": 115,
+      "type": "image",
+      "src": "images/thumb_15.png",
+      "alt": "Media item 15",
+      "tags": [
+        "art",
+        "tech"
+      ]
+    },
+    {
+      "id": 116,
+      "type": "audio",
+      "src": "images/thumb_16.png",
+      "alt": "Media item 16",
+      "tags": [
+        "music"
+      ]
+    },
+    {
+      "id": 117,
+      "type": "image",
+      "src": "images/thumb_17.png",
+      "alt": "Media item 17",
+      "tags": [
+        "nature",
+        "music",
+        "photo"
+      ]
+    },
+    {
+      "id": 118,
+      "type": "image",
+      "src": "images/thumb_18.png",
+      "alt": "Media item 18",
+      "tags": [
+        "music"
+      ]
+    },
+    {
+      "id": 119,
+      "type": "image",
+      "src": "images/thumb_19.png",
+      "alt": "Media item 19",
+      "tags": [
+        "photo",
+        "nature",
+        "photo"
+      ]
+    },
+    {
+      "id": 120,
+      "type": "audio",
+      "src": "images/thumb_20.png",
+      "alt": "Media item 20",
+      "tags": [
+        "nature",
+        "nature"
+      ]
+    },
+    {
+      "id": 121,
+      "type": "audio",
+      "src": "images/thumb_21.png",
+      "alt": "Media item 21",
+      "tags": [
+        "tech",
+        "nature"
+      ]
+    },
+    {
+      "id": 122,
+      "type": "image",
+      "src": "images/thumb_22.png",
+      "alt": "Media item 22",
+      "tags": [
+        "nature",
+        "nature",
+        "art"
+      ]
+    },
+    {
+      "id": 123,
+      "type": "image",
+      "src": "images/thumb_23.png",
+      "alt": "Media item 23",
+      "tags": [
+        "tech",
+        "tech",
+        "art"
+      ]
+    },
+    {
+      "id": 124,
+      "type": "image",
+      "src": "images/thumb_24.png",
+      "alt": "Media item 24",
+      "tags": [
+        "photo",
+        "photo"
+      ]
+    },
+    {
+      "id": 125,
+      "type": "audio",
+      "src": "images/thumb_25.png",
+      "alt": "Media item 25",
+      "tags": [
+        "photo"
+      ]
+    },
+    {
+      "id": 126,
+      "type": "image",
+      "src": "images/thumb_26.png",
+      "alt": "Media item 26",
+      "tags": [
+        "music",
+        "art",
+        "music"
+      ]
+    },
+    {
+      "id": 127,
+      "type": "audio",
+      "src": "images/thumb_27.png",
+      "alt": "Media item 27",
+      "tags": [
+        "art",
+        "nature",
+        "tech"
+      ]
+    },
+    {
+      "id": 128,
+      "type": "image",
+      "src": "images/thumb_28.png",
+      "alt": "Media item 28",
+      "tags": [
+        "music"
+      ]
+    },
+    {
+      "id": 129,
+      "type": "image",
+      "src": "images/thumb_29.png",
+      "alt": "Media item 29",
+      "tags": [
+        "photo",
+        "tech",
+        "photo"
+      ]
+    },
+    {
+      "id": 130,
+      "type": "image",
+      "src": "images/thumb_30.png",
+      "alt": "Media item 30",
+      "tags": [
+        "nature"
+      ]
+    },
+    {
+      "id": 131,
+      "type": "image",
+      "src": "images/thumb_31.png",
+      "alt": "Media item 31",
+      "tags": [
+        "nature"
+      ]
+    },
+    {
+      "id": 132,
+      "type": "image",
+      "src": "images/thumb_32.png",
+      "alt": "Media item 32",
+      "tags": [
+        "nature",
+        "photo"
+      ]
+    },
+    {
+      "id": 133,
+      "type": "image",
+      "src": "images/thumb_33.png",
+      "alt": "Media item 33",
+      "tags": [
+        "art",
+        "tech"
+      ]
+    },
+    {
+      "id": 134,
+      "type": "image",
+      "src": "images/thumb_34.png",
+      "alt": "Media item 34",
+      "tags": [
+        "photo",
+        "photo",
+        "art"
+      ]
+    },
+    {
+      "id": 135,
+      "type": "image",
+      "src": "images/thumb_35.png",
+      "alt": "Media item 35",
+      "tags": [
+        "art",
+        "tech"
+      ]
+    },
+    {
+      "id": 136,
+      "type": "image",
+      "src": "images/thumb_36.png",
+      "alt": "Media item 36",
+      "tags": [
+        "art"
+      ]
+    },
+    {
+      "id": 137,
+      "type": "audio",
+      "src": "images/thumb_37.png",
+      "alt": "Media item 37",
+      "tags": [
+        "art",
+        "art"
+      ]
+    },
+    {
+      "id": 138,
+      "type": "image",
+      "src": "images/thumb_38.png",
+      "alt": "Media item 38",
+      "tags": [
+        "nature",
+        "nature",
+        "art"
+      ]
+    },
+    {
+      "id": 139,
+      "type": "audio",
+      "src": "images/thumb_39.png",
+      "alt": "Media item 39",
+      "tags": [
+        "tech"
+      ]
+    },
+    {
+      "id": 140,
+      "type": "image",
+      "src": "images/thumb_40.png",
+      "alt": "Media item 40",
+      "tags": [
+        "photo"
+      ]
+    },
+    {
+      "id": 141,
+      "type": "audio",
+      "src": "images/thumb_41.png",
+      "alt": "Media item 41",
+      "tags": [
+        "art"
+      ]
+    },
+    {
+      "id": 142,
+      "type": "image",
+      "src": "images/thumb_42.png",
+      "alt": "Media item 42",
+      "tags": [
+        "art",
+        "tech"
+      ]
+    },
+    {
+      "id": 143,
+      "type": "image",
+      "src": "images/thumb_43.png",
+      "alt": "Media item 43",
+      "tags": [
+        "photo",
+        "nature"
+      ]
+    },
+    {
+      "id": 144,
+      "type": "image",
+      "src": "images/thumb_44.png",
+      "alt": "Media item 44",
+      "tags": [
+        "photo",
+        "nature",
+        "nature"
+      ]
+    },
+    {
+      "id": 145,
+      "type": "image",
+      "src": "images/thumb_45.png",
+      "alt": "Media item 45",
+      "tags": [
+        "art"
+      ]
+    },
+    {
+      "id": 146,
+      "type": "audio",
+      "src": "images/thumb_46.png",
+      "alt": "Media item 46",
+      "tags": [
+        "tech",
+        "art"
+      ]
+    },
+    {
+      "id": 147,
+      "type": "image",
+      "src": "images/thumb_47.png",
+      "alt": "Media item 47",
+      "tags": [
+        "art"
+      ]
+    },
+    {
+      "id": 148,
+      "type": "image",
+      "src": "images/thumb_48.png",
+      "alt": "Media item 48",
+      "tags": [
+        "music",
+        "art"
+      ]
+    },
+    {
+      "id": 149,
+      "type": "audio",
+      "src": "images/thumb_49.png",
+      "alt": "Media item 49",
+      "tags": [
+        "photo",
+        "art"
+      ]
+    }
+  ],
+  "settings": {
+    "theme": "dark",
+    "autoplay": false,
+    "quality": "high"
+  }
+}

@@ -1,118 +1,172 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include <span>
-#include <vector>
-
-#include "api.hpp"
+#include "ICompressor.hpp"
+#include "DeflateCompressor.hpp"
+#include "LZSSCompressor.hpp"
+#include "LZMineCompressor.hpp"
+#include "LZCrazyCompressor.hpp"
+#include "CrazyFlateCompressor.hpp"
+#include "MyFlateCompressor.hpp"
+#include "GzipCompressor.hpp"
+#include "Archiver.hpp"
 
 namespace py = pybind11;
-
-using namespace compressor::api;
-
-namespace {
-
-auto pyCompress(const std::vector<uint8_t>& data,
-                const std::vector<AlgorithmID>& chain) -> CompressResult {
-    return compress(data, std::span<const AlgorithmID>(chain));
-}
-
-auto pyDecompress(const std::vector<uint8_t>& data,
-                  const std::vector<AlgorithmID>& chain) -> CompressResult {
-    return decompress(data, std::span<const AlgorithmID>(chain));
-}
-
-auto pyPackAndCompress(const std::vector<WebFile>& files,
-                       const std::vector<AlgorithmID>& chain)
-    -> std::vector<uint8_t> {
-    return packAndCompress(files, std::span<const AlgorithmID>(chain));
-}
-
-#ifndef __EMSCRIPTEN__
-
-auto pyCompressFile(const std::string& input_path,
-                    const std::string& output_path,
-                    const std::vector<AlgorithmID>& chain) -> CompressResult {
-    return compressFile(input_path, output_path,
-                        std::span<const AlgorithmID>(chain));
-}
-
-auto pyDecompressFile(const std::string& input_path,
-                      const std::string& output_path,
-                      const std::vector<AlgorithmID>& chain) -> CompressResult {
-    return decompressFile(input_path, output_path,
-                          std::span<const AlgorithmID>(chain));
-}
-
-auto pyCompressDirectory(const std::string& dir_path,
-                         const std::string& output_path,
-                         const std::vector<AlgorithmID>& chain) -> CompressResult {
-    return compressDirectory(dir_path, output_path,
-                             std::span<const AlgorithmID>(chain));
-}
-
-#endif
-
-}  // namespace
+using namespace compressor::core;
 
 PYBIND11_MODULE(core_engine, m) {
     m.doc() = "Web Compressor C++ Core Engine";
 
-    py::enum_<AlgorithmID>(m, "AlgorithmID")
-        .value("None", AlgorithmID::None)
-        .value("Deflate", AlgorithmID::Deflate)
-        .value("Inflate", AlgorithmID::Inflate)
-        .value("DeltaEncode", AlgorithmID::DeltaEncode)
-        .value("DeltaDecode", AlgorithmID::DeltaDecode);
+    // ===== 数据结构 =====
 
-    py::class_<BlockInfo>(m, "BlockInfo")
+    py::class_<CompressorResult>(m, "CompressorResult")
         .def(py::init<>())
-        .def_readwrite("block_index", &BlockInfo::block_index)
-        .def_readwrite("literal_count", &BlockInfo::literal_count)
-        .def_readwrite("match_count", &BlockInfo::match_count)
-        .def_readwrite("ll_tree_bits", &BlockInfo::ll_tree_bits)
-        .def_readwrite("dist_tree_bits", &BlockInfo::dist_tree_bits)
-        .def_readwrite("output_bytes", &BlockInfo::output_bytes)
-        .def_readwrite("ll_code_lengths", &BlockInfo::ll_code_lengths)
-        .def_readwrite("dist_code_lengths", &BlockInfo::dist_code_lengths);
+        .def_readwrite("data", &CompressorResult::data)
+        .def_readwrite("original_size", &CompressorResult::original_size)
+        .def_readwrite("compressed_size", &CompressorResult::compressed_size)
+        .def_readwrite("compression_ratio", &CompressorResult::compression_ratio)
+        .def_readwrite("time_ms", &CompressorResult::time_ms)
+        .def_readwrite("success", &CompressorResult::success)
+        .def_readwrite("error_message", &CompressorResult::error_message);
 
-    py::class_<BlockProfile>(m, "BlockProfile")
+    // ===== 算法枚举 =====
+
+    py::enum_<CompressorAlgorithm>(m, "CompressorAlgorithm")
+        .value("DEFLATE", CompressorAlgorithm::Deflate)
+        .value("LZSS", CompressorAlgorithm::LZSS)
+        .value("LZMINE", CompressorAlgorithm::LZMINE)
+        .value("LZCRAZY", CompressorAlgorithm::LZCRAZY)
+        .value("CRAZYFLATE", CompressorAlgorithm::CRAZYFLATE)
+        .export_values();
+
+    // ===== 压缩器接口 =====
+
+    py::class_<ICompressor, std::shared_ptr<ICompressor>>(m, "ICompressor")
+        .def("compress", &ICompressor::compress, py::call_guard<py::gil_scoped_release>())
+        .def("decompress", &ICompressor::decompress, py::call_guard<py::gil_scoped_release>())
+        .def("get_algorithm_name", &ICompressor::get_algorithm_name);
+
+    py::class_<DeflateCompressor, ICompressor,
+               std::shared_ptr<DeflateCompressor>>(m, "DeflateCompressor")
         .def(py::init<>())
-        .def_readwrite("blocks", &BlockProfile::blocks);
+        .def("set_search_size", &DeflateCompressor::set_search_size)
+        .def("get_search_size", &DeflateCompressor::get_search_size)
+        .def("set_min_match", &DeflateCompressor::set_min_match)
+        .def("get_min_match", &DeflateCompressor::get_min_match)
+        .def("set_max_chain_length", &DeflateCompressor::set_max_chain_length)
+        .def("get_max_chain_length", &DeflateCompressor::get_max_chain_length);
 
-    py::class_<CompressResult>(m, "CompressResult")
+    py::class_<LZSSCompressor, ICompressor,
+               std::shared_ptr<LZSSCompressor>>(m, "LZSSCompressor")
         .def(py::init<>())
-        .def_readwrite("data", &CompressResult::data)
-        .def_readwrite("original_size", &CompressResult::original_size)
-        .def_readwrite("compressed_size", &CompressResult::compressed_size)
-        .def_readwrite("compression_ratio", &CompressResult::compression_ratio)
-        .def_readwrite("time_ms", &CompressResult::time_ms)
-        .def_readwrite("success", &CompressResult::success)
-        .def_readwrite("error_message", &CompressResult::error_message)
-        .def_readwrite("block_profile", &CompressResult::block_profile);
+        .def("set_search_size", &LZSSCompressor::set_search_size)
+        .def("get_search_size", &LZSSCompressor::get_search_size)
+        .def("set_min_match", &LZSSCompressor::set_min_match)
+        .def("get_min_match", &LZSSCompressor::get_min_match)
+        .def("set_lookahead_size", &LZSSCompressor::set_lookahead_size)
+        .def("get_lookahead_size", &LZSSCompressor::get_lookahead_size);
 
-    py::class_<WebFile>(m, "WebFile")
+    py::class_<LZMineCompressor, ICompressor,
+               std::shared_ptr<LZMineCompressor>>(m, "LZMineCompressor")
         .def(py::init<>())
-        .def_readwrite("name", &WebFile::name)
-        .def_readwrite("content", &WebFile::content);
+        .def("set_search_size", &LZMineCompressor::set_search_size)
+        .def("get_search_size", &LZMineCompressor::get_search_size)
+        .def("set_lookahead_size", &LZMineCompressor::set_lookahead_size)
+        .def("get_lookahead_size", &LZMineCompressor::get_lookahead_size)
+        .def("set_dp_depth", &LZMineCompressor::set_dp_depth)
+        .def("get_dp_depth", &LZMineCompressor::get_dp_depth)
+        .def("set_dp_range", &LZMineCompressor::set_dp_range)
+        .def("get_dp_range", &LZMineCompressor::get_dp_range)
+        .def("get_dp_visualization", &LZMineCompressor::get_dp_visualization,
+             py::arg("data"), py::arg("range") = 3);
 
-    m.def("compress", &pyCompress,
-          "Compress a single buffer with the given algorithm chain");
-    m.def("decompress", &pyDecompress,
-          "Decompress a single buffer with the given algorithm chain");
-    m.def("pack_and_compress", &pyPackAndCompress,
-          "Pack multiple files into a compressed archive");
-    m.def("decompress_and_unpack", &decompressAndUnpack,
-          "Unpack a compressed archive back into individual files");
+    py::class_<LZCrazyCompressor, ICompressor,
+               std::shared_ptr<LZCrazyCompressor>>(m, "LZCrazyCompressor")
+        .def(py::init<>())
+        .def("set_search_size", &LZCrazyCompressor::set_search_size)
+        .def("get_search_size", &LZCrazyCompressor::get_search_size)
+        .def("set_lookahead_size", &LZCrazyCompressor::set_lookahead_size)
+        .def("get_lookahead_size", &LZCrazyCompressor::get_lookahead_size)
+        .def("set_min_match", &LZCrazyCompressor::set_min_match)
+        .def("get_min_match", &LZCrazyCompressor::get_min_match);
 
-#ifndef __EMSCRIPTEN__
-    m.def("compress_file", &pyCompressFile,
-          "Stream-compress a single file to output_path");
-    m.def("decompress_file", &pyDecompressFile,
-          "Stream-decompress a single file to output_path");
-    m.def("compress_directory", &pyCompressDirectory,
-          "Recursively pack and compress a directory into an archive file");
-    m.def("decompress_and_unpack_to_disk", &decompressAndUnpackToDisk,
-          "Unpack a compressed archive to disk, preserving directory structure");
-#endif
+    py::class_<CrazyFlateCompressor, ICompressor,
+               std::shared_ptr<CrazyFlateCompressor>>(m, "CrazyFlateCompressor")
+        .def(py::init<>())
+        .def("set_search_size", &CrazyFlateCompressor::set_search_size)
+        .def("get_search_size", &CrazyFlateCompressor::get_search_size)
+        .def("set_lookahead_size", &CrazyFlateCompressor::set_lookahead_size)
+        .def("get_lookahead_size", &CrazyFlateCompressor::get_lookahead_size)
+        .def("set_min_match", &CrazyFlateCompressor::set_min_match)
+        .def("get_min_match", &CrazyFlateCompressor::get_min_match)
+        .def("set_dp_depth", &CrazyFlateCompressor::set_dp_depth)
+        .def("get_dp_depth", &CrazyFlateCompressor::get_dp_depth)
+        .def("set_max_chain_length", &CrazyFlateCompressor::set_max_chain_length)
+        .def("get_max_chain_length", &CrazyFlateCompressor::get_max_chain_length);
+
+    py::class_<compressor::algorithm::LZMine::Triple>(m, "LZMineTriple")
+        .def_readonly("offset", &compressor::algorithm::LZMine::Triple::offset)
+        .def_readonly("length", &compressor::algorithm::LZMine::Triple::length)
+        .def_readonly("next_byte", &compressor::algorithm::LZMine::Triple::next_byte);
+
+    py::class_<compressor::algorithm::LZMine::DPCandidate>(m, "LZMineDPCandidate")
+        .def_readonly("offset", &compressor::algorithm::LZMine::DPCandidate::offset)
+        .def_readonly("length", &compressor::algorithm::LZMine::DPCandidate::length)
+        .def_readonly("next_byte", &compressor::algorithm::LZMine::DPCandidate::next_byte)
+        .def_readonly("is_chosen", &compressor::algorithm::LZMine::DPCandidate::is_chosen);
+
+    py::class_<compressor::algorithm::LZMine::DPState>(m, "LZMineDPState")
+        .def_readonly("position", &compressor::algorithm::LZMine::DPState::position)
+        .def_readonly("reachable", &compressor::algorithm::LZMine::DPState::reachable)
+        .def_readonly("token_count", &compressor::algorithm::LZMine::DPState::token_count)
+        .def_readonly("predecessor", &compressor::algorithm::LZMine::DPState::predecessor)
+        .def_readonly("choice", &compressor::algorithm::LZMine::DPState::choice);
+
+    py::class_<compressor::algorithm::LZMine::DPStep>(m, "LZMineDPStep")
+        .def_readonly("position", &compressor::algorithm::LZMine::DPStep::position)
+        .def_readonly("candidates", &compressor::algorithm::LZMine::DPStep::candidates)
+        .def_readonly("best_token_count", &compressor::algorithm::LZMine::DPStep::best_token_count);
+
+    py::class_<compressor::algorithm::LZMine::DPVisualization>(m, "LZMineDPVisualization")
+        .def_readonly("steps", &compressor::algorithm::LZMine::DPVisualization::steps)
+        .def_readonly("dp_array", &compressor::algorithm::LZMine::DPVisualization::dp_array)
+        .def_readonly("optimal_path", &compressor::algorithm::LZMine::DPVisualization::optimal_path)
+        .def_readonly("input_length", &compressor::algorithm::LZMine::DPVisualization::input_length)
+        .def_readonly("search_size", &compressor::algorithm::LZMine::DPVisualization::search_size)
+        .def_readonly("lookahead_size", &compressor::algorithm::LZMine::DPVisualization::lookahead_size);
+
+    py::class_<MyFlateCompressor, ICompressor,
+               std::shared_ptr<MyFlateCompressor>>(m, "MyFlateCompressor")
+        .def(py::init<>())
+        .def("set_search_size", &MyFlateCompressor::set_search_size)
+        .def("get_search_size", &MyFlateCompressor::get_search_size)
+        .def("set_lookahead_size", &MyFlateCompressor::set_lookahead_size)
+        .def("get_lookahead_size", &MyFlateCompressor::get_lookahead_size)
+        .def("set_min_match", &MyFlateCompressor::set_min_match)
+        .def("get_min_match", &MyFlateCompressor::get_min_match)
+        .def("set_max_chain_length", &MyFlateCompressor::set_max_chain_length)
+        .def("get_max_chain_length", &MyFlateCompressor::get_max_chain_length)
+        .def("set_dp_depth", &MyFlateCompressor::set_dp_depth)
+        .def("get_dp_depth", &MyFlateCompressor::get_dp_depth)
+        .def("set_dp_sub_match_max", &MyFlateCompressor::set_dp_sub_match_max)
+        .def("get_dp_sub_match_max", &MyFlateCompressor::get_dp_sub_match_max);
+
+    py::class_<GzipCompressor, ICompressor,
+               std::shared_ptr<GzipCompressor>>(m, "GzipCompressor")
+        .def(py::init<>())
+        .def("set_compression_level", &GzipCompressor::set_compression_level)
+        .def("get_compression_level", &GzipCompressor::get_compression_level);
+
+    // ===== 打包器 File 结构体 =====
+
+    py::class_<File>(m, "File")
+        .def(py::init<>())
+        .def_readwrite("filepath", &File::filepath)
+        .def_readwrite("context", &File::context);
+
+    // ===== 打包器 =====
+
+    py::class_<Archiver>(m, "Archiver")
+        .def_static("pack", &Archiver::pack)
+        .def_static("unpack", &Archiver::unpack);
 }

@@ -21,7 +21,7 @@ struct CompressorResult {
     std::string error_message;
 };
 
-enum class CompressorAlgorithm { Deflate, LZSS, LZMINE };
+enum class CompressorAlgorithm { Deflate, LZSS, LZMINE, LZCRAZY, CRAZYFLATE };
 
 // Compressor interface
 class ICompressor {

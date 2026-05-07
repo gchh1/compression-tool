@@ -2,6 +2,8 @@
 
 #include "Deflate.hpp"
 
+#include <sys/stat.h>
+
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
@@ -19,7 +21,15 @@ namespace compressor::algorithm {
  * @brief Construct a new Deflate:: Deflate object
  *
  */
-Deflate::Deflate() { reset(); }
+Deflate::Deflate(size_t slide_size, size_t min_match, size_t max_chain_length)
+    : SLIDE_SIZE(slide_size),
+      WINDOW_SIZE(2 * slide_size),
+      MIN_MATCH(min_match),
+      MAX_MATCH(258),
+      HASH_SIZE(slide_size),
+      MAX_CHAIN_LENGTH(max_chain_length) {
+    reset();
+}
 
 /**
  * @brief Reset the algorithm to original state
@@ -36,33 +46,26 @@ auto Deflate::reset(void) -> void {
 
     token_buffer_.clear();
     token_flush_idx_ = 0;
-    bfinal_ = false;
-
-    block_profile_.clear();
 
     deflate_state_ = DeflateState::FIND_MATCHES;
 }
 
-auto Deflate::getBlockProfile() -> std::optional<BlockProfile> {
-    if (block_profile_.empty()) return std::nullopt;
-    BlockProfile p;
-    p.blocks = std::move(block_profile_);
-    block_profile_.clear();
-    return p;
-}
-
+/**
+ * @brief
+ *
+ * @param read
+ * @param read_offset
+ */
 auto Deflate::fillWindow(void) -> void {
-    while (reader_.getRemainSize() > 0) {
-        if (cursor_ >= SLIDE_SIZE && cursor_ + lookahead_ >= WINDOW_SIZE) {
-            slideWindow();
-        }
+    if (cursor_ + lookahead_ >= WINDOW_SIZE) {
+        slideWindow();
+    }
 
-        size_t space_left = WINDOW_SIZE - (cursor_ + lookahead_);
-        size_t remain = reader_.getRemainSize();
-        size_t to_copy = std::min(space_left, remain);
+    size_t space_left = WINDOW_SIZE - (cursor_ + lookahead_);
+    size_t remain = reader_.getRemainSize();
+    size_t to_copy = std::min(space_left, remain);
 
-        if (to_copy == 0) break;
-
+    if (to_copy > 0) {
         reader_.readBytes(window_.data() + cursor_ + lookahead_, to_copy);
         lookahead_ += to_copy;
     }
@@ -205,40 +208,8 @@ auto Deflate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk)
     dictionary_ = huffman_tree_->buildDictionary();
     dist_dictionary_ = dist_tree_->buildDictionary();
 
-    // ---- record block profile ----
-    {
-        BlockInfo info;
-        info.block_index = block_profile_.size();
-        info.ll_tree_bits = huffman_tree_->getTreeSize();
-        info.dist_tree_bits = dist_tree_->getTreeSize();
-
-        // Length base table (matching Inflate::kLengthBase)
-        static constexpr uint16_t kLenBase[] = {
-            3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,
-            35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258};
-        for (const auto& t : token_buffer_) {
-            if (t.is_literal) {
-                info.literal_count++;
-                info.output_bytes += 1;
-            } else {
-                info.match_count++;
-                info.output_bytes +=
-                    kLenBase[t.code - 257] + t.length_extra_val;
-            }
-        }
-        info.ll_code_lengths = huffman_tree_->getCodeLengths();
-        info.dist_code_lengths = dist_tree_->getCodeLengths();
-        block_profile_.push_back(std::move(info));
-    }
-
-    bfinal_ = is_last_chunk && (lookahead_ == 0);
-
     if (writer_.ensureSpace(huffman_tree_->getTreeSize() +
-                            dist_tree_->getTreeSize() + 3)) {
-        // Block header: BFINAL (1 bit) + BTYPE = 2 (2 bits)
-        writer_.writeBit(bfinal_ ? 1 : 0);
-        writer_.writeBits(2, 2);
-
+                            dist_tree_->getTreeSize())) {
         huffman_tree_->serializeTree(writer_);
         dist_tree_->serializeTree(writer_);
 
@@ -252,7 +223,7 @@ auto Deflate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk)
 auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
     -> void {
     while (token_flush_idx_ < token_buffer_.size()) {
-        if (!writer_.ensureSpace(48)) {
+        if (!writer_.ensureSpace(6)) {
             status.need_output = true;
             return;
         }
@@ -260,7 +231,9 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
         const auto& token = token_buffer_[token_flush_idx_];
 
         const auto& main_code = dictionary_[token.code];
-        writer_.writeBits(main_code.code, main_code.length);
+        for (int i = main_code.length - 1; i >= 0; i--) {
+            writer_.writeBit((main_code.code >> i) & 1);
+        }
 
         if (!token.is_literal) {
             if (token.length_extra_bits > 0) {
@@ -269,7 +242,9 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
             }
 
             const auto& dist_code = dist_dictionary_[token.dist_code];
-            writer_.writeBits(dist_code.code, dist_code.length);
+            for (int i = dist_code.length - 1; i >= 0; i--) {
+                writer_.writeBit((dist_code.code >> i) & 1);
+            }
 
             if (token.dist_extra_bits > 0) {
                 writer_.writeBits(token.dist_extra_val, token.dist_extra_bits);
@@ -279,19 +254,16 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
         token_flush_idx_++;
     }
 
-    // Write EOF to terminate the block
-    {
-        const auto& eof_code = dictionary_[256];
-        if (!writer_.ensureSpace(eof_code.length)) {
-            status.need_output = true;
-            return;
-        }
-        writer_.writeBits(eof_code.code, eof_code.length);
-    }
     token_buffer_.clear();
 
-    if (bfinal_) {
-        writer_.flush();
+    if (is_last_chunk && lookahead_ == 0) {
+        // 写入 EOF
+        const auto& eof_code = dictionary_[256];
+        for (int i = eof_code.length - 1; i >= 0; i--) {
+            writer_.writeBit((eof_code.code >> i) & 1);
+        }
+
+        writer_.flush();  // 最终扫尾，补齐字节
         status.done = true;
         return;
     }

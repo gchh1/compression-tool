@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <circle cx="400" cy="200" r="80" fill="#e94560" opacity="0.8"/>
+  <text x="400" y="420" text-anchor="middle" fill="#e2e8f0" font-size="32" font-family="sans-serif">Media Gallery</text>
+  <circle cx="704" cy="107" r="5" fill="#e94560" opacity="0.32"/>
+  <circle cx="300" cy="164" r="9" fill="#e94560" opacity="0.32"/>
+  <circle cx="742" cy="429" r="22" fill="#e94560" opacity="0.13"/>
+  <circle cx="482" cy="66" r="5" fill="#e94560" opacity="0.13"/>
+  <circle cx="288" cy="308" r="24" fill="#e94560" opacity="0.11"/>
+  <circle cx="253" cy="416" r="25" fill="#e94560" opacity="0.31"/>
+  <circle cx="479" cy="162" r="19" fill="#e94560" opacity="0.28"/>
+  <circle cx="56" cy="438" r="30" fill="#e94560" opacity="0.15"/>
+  <circle cx="482" cy="224" r="13" fill="#e94560" opacity="0.15"/>
+  <circle cx="394" cy="102" r="7" fill="#e94560" opacity="0.21"/>
+  <circle cx="417" cy="483" r="16" fill="#e94560" opacity="0.28"/>
+  <circle cx="94" cy="423" r="19" fill="#e94560" opacity="0.26"/>
+  <circle cx="437" cy="90" r="22" fill="#e94560" opacity="0.19"/>
+  <circle cx="693" cy="366" r="16" fill="#e94560" opacity="0.27"/>
+  <circle cx="121" cy="73" r="26" fill="#e94560" opacity="0.17"/>
+  <circle cx="346" cy="90" r="12" fill="#e94560" opacity="0.36"/>
+  <circle cx="439" cy="192" r="19" fill="#e94560" opacity="0.29"/>
+  <circle cx="423" cy="133" r="16" fill="#e94560" opacity="0.21"/>
+  <circle cx="736" cy="186" r="27" fill="#e94560" opacity="0.38"/>
+  <circle cx="713" cy="86" r="24" fill="#e94560" opacity="0.29"/>
+</svg>

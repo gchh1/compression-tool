@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Deflate.hpp"
+#include "Inflate.hpp"
 #include "ICompressor.hpp"
 
 namespace compressor {
@@ -17,10 +18,10 @@ auto DeflateCompressor::compress(std::vector<uint8_t> original_data)
 
     auto start_time = std::chrono::high_resolution_clock::now();
 
-    algorithm::Deflate deflate;
+    algorithm::Deflate deflate(slide_size_, min_match_, max_chain_length_);
     deflate.reset();
 
-    size_t out_capacity = original_data.size() + 1024;
+    size_t out_capacity = original_data.size() * 2 + 65536;
     if (out_capacity < 4096) out_capacity = 4096;
 
     std::vector<uint8_t> out(out_capacity);
@@ -50,8 +51,34 @@ auto DeflateCompressor::decompress(std::vector<uint8_t> compressed_data)
     -> CompressorResult {
     CompressorResult result;
     result.compressed_size = compressed_data.size();
-    result.success = false;
-    result.error_message = "Deflate decompress not yet available (Inflate has compile issues)";
+
+    auto start_time = std::chrono::high_resolution_clock::now();
+
+    algorithm::Inflate inflate;
+    inflate.reset();
+
+    size_t out_capacity = compressed_data.size() * 10 + 65536;
+    if (out_capacity < 4096) out_capacity = 4096;
+
+    std::vector<uint8_t> out(out_capacity);
+    auto status = inflate.process(compressed_data, out, true);
+
+    result.data.resize(status.bytes_produced);
+    if (status.bytes_produced > 0) {
+        std::copy_n(out.begin(), status.bytes_produced, result.data.begin());
+    }
+
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> elapsed = end_time - start_time;
+
+    result.original_size = result.data.size();
+    result.time_ms = elapsed.count();
+    result.success = status.done;
+
+    if (!status.done) {
+        result.error_message = "Inflate decompression incomplete";
+    }
+
     return result;
 }
 

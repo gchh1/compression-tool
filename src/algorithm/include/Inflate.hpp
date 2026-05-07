@@ -2,7 +2,6 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <memory>
 #include <vector>
 
 #include "HuffmanTree.hpp"
@@ -11,58 +10,54 @@
 namespace compressor::algorithm {
 
 class Inflate : public AlgorithmBase {
-   public:
+public:
     Inflate();
+
     auto reset(void) -> void override;
 
-   protected:
+protected:
     auto handle(AlgorithmStatus& status, bool is_last_chunk) -> void override;
 
-   private:
-    static constexpr uint16_t DICTIONARY_SIZE = 32768;
-    static constexpr uint16_t DICT_MASK = DICTIONARY_SIZE - 1;
+private:
+    static constexpr size_t DISTANCE_DICTIONARY_SIZE = 30;
+    static constexpr size_t DISTANCE_SYMBOL_BITS = 5;
 
-    // Length code lookup tables (matching Deflate::getLengthCode)
-    static const uint16_t kLengthBase[];
-    static const uint8_t kLengthExtraBits[];
+    std::vector<uint8_t> output_buf_;
 
-    // Distance code lookup tables (matching Deflate::getDistCode)
-    static const uint16_t kDistanceBase[];
-    static const uint8_t kDistanceExtraBits[];
-
-    // LZSS sliding window (32KB circular buffer)
-    std::vector<uint8_t> window_;
-    size_t decode_pos_{0};
-
-    // State machine
-    enum class InflateState {
-        READ_BLOCK_HEADER,
-        READ_LL_TREE,
-        READ_D_TREE,
-        DECODE_TOKEN,
-        DECODE_DISTANCE
-    };
-    InflateState inflate_state_{InflateState::READ_BLOCK_HEADER};
-    bool is_last_block_{false};
-
-    // Huffman trees and traversal cursors
-    std::unique_ptr<HuffmanTree> ll_tree_;
-    std::unique_ptr<HuffmanTree> dist_tree_;
-    node* ll_cursor_{nullptr};
+    node* lit_root_{nullptr};
+    node* dist_root_{nullptr};
+    node* lit_cursor_{nullptr};
     node* dist_cursor_{nullptr};
 
-    // Match copy state
-    uint16_t copy_length_{0};
-    uint16_t copy_distance_{0};
+    enum class DecodeState { READ_TREES, DECODE_TOKENS, COPY_MATCH };
+    DecodeState decode_state_{DecodeState::READ_TREES};
 
-    // Pending output (literal decoded but couldn't write due to full output)
-    uint8_t pending_byte_{0};
-    bool has_pending_{false};
+    uint16_t pending_length_{0};
+    uint16_t pending_dist_{0};
 
-    // Pending extra bits (when reader runs out mid-read)
-    uint8_t pending_extra_{0};
-    uint8_t pending_extra_bits_{0};
-    bool has_pending_extra_{false};
+    auto readHuffmanTree(node*& root, size_t symbol_bits) -> bool;
+
+    void decodeLengthCode(uint16_t symbol, uint16_t& length, uint8_t& extra_bits);
+    void decodeDistCode(uint16_t symbol, uint16_t& dist, uint8_t& extra_bits);
+
+    void destroyTree(node* n);
+
+    static constexpr size_t LENGTH_BASES[29] = {
+        3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,
+        35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258
+    };
+    static constexpr uint8_t LENGTH_EXTRA[29] = {
+        0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2,
+        3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0
+    };
+    static constexpr size_t DIST_BASES[30] = {
+        1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193,
+        257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577
+    };
+    static constexpr uint8_t DIST_EXTRA[30] = {
+        0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6,
+        7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13
+    };
 };
 
 }  // namespace compressor::algorithm

@@ -42,33 +42,34 @@ HuffmanTree::HuffmanTree(const std::vector<uint32_t>& freq_map,
 }
 
 /**
- * @brief Deserialize a Huffman tree from bitstream (preorder format).
+ * @brief Construct a new Huffman Tree:: Huffman Tree object
  *
- * Format: 0 = internal node (recurse left, then right)
- *         1 = leaf node (read symbol_bits_ bits for the symbol)
+ * @param reader
  */
-HuffmanTree::HuffmanTree(utils::BitReader& reader, size_t symbol_bits,
-                         size_t dictionary_size)
-    : dictionary_size_(dictionary_size), symbol_bits_(symbol_bits) {
-    auto deserialize = [&](auto& self) -> node* {
-        if (!reader.ensureBits(1)) return nullptr;
-        uint64_t bit = reader.readBit();
-        if (bit == 0) {
-            node* left = self(self);
-            node* right = self(self);
-            if (!left || !right) return nullptr;
-            return new node(left, right);
-        } else {
-            if (!reader.ensureBits(static_cast<uint8_t>(symbol_bits_)))
-                return nullptr;
-            uint16_t symbol = static_cast<uint16_t>(
-                reader.readBits(static_cast<uint8_t>(symbol_bits_)));
-            return new node(symbol, 0);
-        }
-    };
-    root_ = deserialize(deserialize);
-    tree_size_ = calcSerializedBits(root_);
-}
+// HuffmanTree::HuffmanTree(utils::BitReader& reader) {
+//     auto buildTreeRecursive = [&reader](auto& self) -> node* {
+//         if (reader.isEOF()) {
+//             return nullptr;
+//         }
+
+//         uint8_t bit = reader.readBit();
+//         if (reader.isEOF()) {
+//             return nullptr;
+//         }
+
+//         if (bit == 0) {
+//             node* left = self(self);
+//             node* right = self(self);
+//             return new node(left, right);
+//         } else {
+//             uint16_t symbol =
+//                 static_cast<uint16_t>(reader.readBits(DEFLATE_SYMBOL_BITS));
+//             return new node(symbol, 0);
+//         }
+//     };
+
+//     root_ = buildTreeRecursive(buildTreeRecursive);
+// }
 
 /**
  * @brief Helper function to build Huffman Tree
@@ -86,18 +87,20 @@ auto HuffmanTree::buildTree(const std::vector<uint32_t>& freq_map) -> void {
     }
 
     /* 3. Construct the Huffman Tree */
-    // Handle if size == 1: pair the only node with a dummy
+    // Handle if size == 0
+    if (pq.empty()) {
+        root_ = new node(
+            new node(static_cast<uint16_t>(0), static_cast<uint32_t>(0)),
+            new node(static_cast<uint16_t>(1), static_cast<uint32_t>(0)));
+        tree_size_ = calcSerializedBits(root_);
+        return;
+    }
+    // Handle if size == 1
     if (pq.size() == 1) {
         node* temp = pq.top();
         pq.pop();
-        pq.push(new node(temp,
-                         new node(static_cast<uint16_t>(0),
-                                  static_cast<uint32_t>(0))));
-    }
-
-    // Handle if size == 0 (all zero frequencies)
-    if (pq.empty()) {
-        root_ = new node(static_cast<uint16_t>(0), static_cast<uint32_t>(0));
+        root_ = new node(
+            temp, new node(static_cast<uint16_t>(0), static_cast<uint32_t>(0)));
         tree_size_ = calcSerializedBits(root_);
         return;
     }
@@ -146,11 +149,8 @@ auto HuffmanTree::generateCodes(node* n, uint64_t current_code,
         return;
     }
 
-    // LSB = first edge (root), MSB = last edge (leaf)
-    // Matches LSB-first bit transmission order
-    generateCodes(n->left, current_code, current_length + 1, dict);
-    generateCodes(n->right, current_code | (1ULL << current_length),
-                  current_length + 1, dict);
+    generateCodes(n->left, current_code << 1, current_length + 1, dict);
+    generateCodes(n->right, (current_code << 1) | 1, current_length + 1, dict);
 }
 
 auto HuffmanTree::serializeTree(utils::BitWriter& writer) const -> void {
@@ -171,15 +171,6 @@ auto HuffmanTree::serializeNode(utils::BitWriter& writer, node* n) const
         serializeNode(writer, n->left);
         serializeNode(writer, n->right);
     }
-}
-
-auto HuffmanTree::getCodeLengths() const -> std::vector<uint8_t> {
-    auto dict = buildDictionary();
-    std::vector<uint8_t> lengths(dictionary_size_, 0);
-    for (size_t i = 0; i < dictionary_size_; ++i) {
-        lengths[i] = dict[i].length;
-    }
-    return lengths;
 }
 
 }  // namespace compressor::algorithm

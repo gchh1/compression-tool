@@ -32,11 +32,10 @@ constexpr uint16_t NULL_PTR = 0xffff;
 
 class Deflate : public AlgorithmBase {
    public:
-    Deflate();
+    Deflate(size_t slide_size = 32768, size_t min_match = 3,
+            size_t max_chain_length = 256);
 
     auto reset(void) -> void override;
-
-    auto getBlockProfile() -> std::optional<BlockProfile> override;
 
    protected:
     auto handle(AlgorithmStatus& algorithm_status, bool is_last_chunk)
@@ -62,17 +61,15 @@ class Deflate : public AlgorithmBase {
     // ===================================
     // Deflate parameters
     // ===================================
-    static constexpr size_t SLIDE_SIZE = 32768;            // 32KB slide window
-    static constexpr size_t WINDOW_SIZE = 2 * SLIDE_SIZE;  // 64KB double buffer
-    static constexpr size_t MIN_MATCH = 3;           // Minimum match length
-    static constexpr size_t MAX_MATCH = 258;         // Maximum match length
-    static constexpr size_t HASH_SIZE = 32768;       //
-    static constexpr size_t MAX_CHAIN_LENGTH = 256;  // Prevent deep search
+    size_t SLIDE_SIZE;
+    size_t WINDOW_SIZE;
+    size_t MIN_MATCH;
+    size_t MAX_MATCH;
+    size_t HASH_SIZE;
+    size_t MAX_CHAIN_LENGTH;
     static constexpr size_t DISTANCE_DICTIONARY_SIZE = 30;
     static constexpr size_t DISTANCE_SYMBOL_BITS = 5;
 
-    /** @brief When `tokens` in the `token_buffer_` reach the value, encode and
-     *         flush the `tokens` */
     static constexpr size_t MAX_BLOCK_TOKENS = 16384;
 
     // ===================================
@@ -93,11 +90,6 @@ class Deflate : public AlgorithmBase {
 
     std::vector<HuffmanCode> dictionary_;
     std::vector<HuffmanCode> dist_dictionary_;
-
-    bool bfinal_{false};
-
-    std::vector<BlockInfo> block_profile_;
-
     // ===================================
     // Private methods
     // ===================================
