@@ -8,6 +8,7 @@ from PyQt6.QtWidgets import (
 )
 
 from gui.core.models import ArchiveEntry, FileRecord, formatted_size
+from gui.core.theme import ThemeManager
 
 
 class PropertyPanel(QWidget):
@@ -68,11 +69,11 @@ class PropertyPanel(QWidget):
     def _add_section(self, title: str) -> QVBoxLayout:
         sep = QFrame()
         sep.setFrameShape(QFrame.Shape.HLine)
-        sep.setStyleSheet("color: #ddd;")
+        sep.setStyleSheet(f"color: {ThemeManager.hex('border')};")
         self._form_layout.addWidget(sep)
 
         label = QLabel(title)
-        label.setStyleSheet("font-weight: bold; color: #555; padding: 4px 0; font-size: 11px;")
+        label.setStyleSheet(f"font-weight: bold; color: {ThemeManager.hex('text_secondary')}; padding: 4px 0; font-size: 11px;")
         self._form_layout.addWidget(label)
 
         section = QVBoxLayout()

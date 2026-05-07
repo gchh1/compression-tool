@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>DP 过程可视化 - test.txt</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: "Microsoft YaHei","Consolas","Courier New",monospace; background: #0f172a; color: #e2e8f0; padding: 24px; }
+h1 { font-size: 20px; margin-bottom: 6px; }
+.meta { color: #94a3b8; font-size: 13px; margin-bottom: 16px; }
+.stats { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.stat { background: #1e293b; border-radius: 8px; padding: 12px 14px; min-width: 100px; }
+.stat .num { font-size: 18px; font-weight: 700; color: #38bdf8; }
+.stat .desc { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+
+.legend { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 12px; color: #94a3b8; }
+.legend-bar { width: 180px; height: 10px; border-radius: 5px; background: linear-gradient(to right, #22c55e, #eab308, #ef4444); }
+
+.tabs { display: flex; gap: 0; margin-bottom: 16px; }
+.tab { padding: 8px 20px; cursor: pointer; background: #1e293b; color: #94a3b8; border: 1px solid #334155; font-size: 13px; }
+.tab:first-child { border-radius: 6px 0 0 6px; }
+.tab:last-child { border-radius: 0 6px 6px 0; }
+.tab.active { background: #334155; color: #f1f5f9; font-weight: 600; }
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+.text-view {
+  background: #1e293b; border-radius: 8px; padding: 16px;
+  font-family: "Consolas","Courier New",monospace; font-size: 13px; line-height: 1.6;
+  white-space: pre-wrap; word-break: break-all; overflow-x: auto; max-height: 60vh;
+  border: 1px solid #334155;
+}
+.token { cursor: pointer; padding: 1px 0; border-radius: 2px; transition: background 0.15s; }
+.token:hover { filter: brightness(1.3); outline: 1px solid rgba(255,255,255,0.3); }
+.token.dp-chosen { outline: 2px solid #22c55e; }
+.token.dp-rejected { outline: 2px dashed #ef4444; opacity: 0.7; }
+
+.tooltip {
+  display: none; position: fixed; background: #0f172a; border: 1px solid #475569;
+  border-radius: 8px; padding: 12px 16px; font-size: 12px; z-index: 200;
+  pointer-events: none; box-shadow: 0 8px 24px rgba(0,0,0,0.5); min-width: 240px;
+}
+.tooltip.visible { display: block; }
+.tooltip .tl { color: #94a3b8; }
+.tooltip .tv { color: #f1f5f9; font-weight: 600; font-family: "Consolas",monospace; }
+.tooltip .tg { color: #38bdf8; font-weight: 700; }
+.tooltip .tr { color: #94a3b8; font-size: 11px; margin-top: 6px; padding-top: 6px; border-top: 1px solid #334155; }
+
+.dp-section { margin-top: 24px; }
+.dp-step { background: #1e293b; border-radius: 8px; padding: 12px 16px; margin-bottom: 8px; border: 1px solid #334155; }
+.dp-step-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.dp-pos { color: #38bdf8; font-weight: 700; font-family: Consolas,monospace; }
+.dp-count { color: #94a3b8; font-size: 12px; }
+.dp-candidates { display: flex; flex-direction: column; gap: 4px; }
+.dp-cand { display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-family: Consolas,monospace; }
+.dp-cand.chosen { background: rgba(34,197,94,0.15); border-left: 3px solid #22c55e; }
+.dp-cand.rejected { background: rgba(239,68,68,0.08); border-left: 3px solid #ef4444; opacity: 0.7; }
+.dp-cand .tag { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
+.dp-cand.chosen .tag { background: #22c55e; color: #0f172a; }
+.dp-cand.rejected .tag { background: #ef4444; color: #0f172a; }
+
+.dp-timeline { margin-top: 24px; }
+.dp-bar-container { position: relative; height: 60px; background: #1e293b; border-radius: 8px; overflow: hidden; border: 1px solid #334155; }
+.dp-bar { position: absolute; top: 0; height: 100%; transition: all 0.3s; cursor: pointer; }
+.dp-bar:hover { filter: brightness(1.3); z-index: 10; }
+
+.table-section { margin-top: 24px; }
+table { border-collapse: collapse; width: 100%; font-size: 12px; }
+th { background: #1e293b; color: #94a3b8; padding: 8px 12px; text-align: left; font-weight: 500; }
+td { padding: 6px 12px; border-bottom: 1px solid #1e293b; }
+tr:hover td { background: #1e293b; }
+.type-match { color: #22c55e; font-weight: 600; }
+.type-literal { color: #fbbf24; }
+.type-run { color: #38bdf8; }
+.ratio-good { color: #22c55e; font-weight: 600; }
+.ratio-bad { color: #ef4444; }
+</style>
+</head>
+<body>
+<h1>🔥 LZMine DP 过程可视化</h1>
+<div class="meta">文件: test.txt &nbsp;|&nbsp; 算法: lzmine &nbsp;|&nbsp; DP 优化模式</div>
+
+<div class="stats">
+  <div class="stat"><div class="num">0</div><div class="desc">原始大小</div></div>
+  <div class="stat"><div class="num">5</div><div class="desc">压缩后大小</div></div>
+  <div class="stat"><div class="num">323.5%</div><div class="desc">Token 加权压缩率</div></div>
+  <div class="stat"><div class="num">11</div><div class="desc">Token 总数</div></div>
+  <div class="stat"><div class="num">1</div><div class="desc">匹配 Token</div></div>
+  <div class="stat"><div class="num">10</div><div class="desc">字面量 Token</div></div>
+  <div class="stat"><div class="num">7B / 10B</div><div class="desc">匹配/字面 字节</div></div>
+  <div class="stat"><div class="num">0.0ms</div><div class="desc">压缩耗时</div></div></div>
+
+<div class="tabs">
+  <div class="tab active" data-panel="token-view">Token 热力图</div>
+  <div class="tab" data-panel="dp-view">DP 决策过程</div>
+  <div class="tab" data-panel="table-view">Token 明细表</div>
+</div>
+
+<div class="panel active" id="token-view">
+  <div class="legend">
+    <span>高效压缩</span>
+    <div class="legend-bar"></div>
+    <span>低效/膨胀</span>
+    <span style="margin-left:12px; color:#64748b">| 绿色边框=DP选中 红色虚线=DP未选 | 悬停查看详情</span>
+  </div>
+  <div class="text-view" id="textView"></div>
+</div>
+
+<div class="panel" id="dp-view">
+  <div class="legend" style="margin-bottom:12px">
+    <span style="color:#22c55e">● 选中路径</span>
+    <span style="color:#ef4444; margin-left:12px">● 被淘汰候选</span>
+    <span style="color:#94a3b8; margin-left:12px">每个位置显示 KMP 匹配候选和 DP 最优决策</span>
+  </div>
+  <div id="dpSteps"></div>
+</div>
+
+<div class="panel" id="table-view">
+  <table>
+    <thead><tr><th>#</th><th>类型</th><th>原文范围</th><th>长度</th><th>压缩后</th><th>压缩率</th><th>偏移</th></tr></thead>
+    <tbody id="tokenTable"></tbody>
+  </table>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+const tokens = [{"type": "literal", "start": 0, "length": 0, "byte_start": 0, "byte_length": 1, "comp_size": 5, "comp_str": "5", "ratio": 5.0, "color": "rgb(220,38,38)", "offset": 0}, {"type": "literal", "start": 0, "length": 0, "byte_start": 1, "byte_length": 1, "comp_size": 5, "comp_str": "5", "ratio": 5.0, "color": "rgb(220,38,38)", "offset": 0}, {"type": "literal", "start": 0, "length": 1, "byte_start": 2, "byte_length": 1, "comp_size": 5, "comp_str": "5", "ratio": 5.0, "color": "rgb(220,38,38)", "offset": 0}, {"type": "literal", "start": 1, "length": 0, "byte_start": 3, "byte_length": 1, "comp_size": 5, "comp_str": "5", "ratio": 5.0, "color": "rgb(220,38,38)", "offset": 0}, {"type": "literal", "start": 1, "length": 0, "byte_start": 4, "byte_length": 1, "comp_size": 5, "comp_str": "5", "ratio": 5.0, "color": "rgb(220,38,38)", "offset": 0}, {"type": "literal", "start": 1, "length": 1, "byte_start": 5, "byte_length": 1, "comp_size": 5, "comp_str": "5", "ratio": 5.0, "color": "rgb(220,38,38)", "offset": 0}, {"type": "literal", "start": 2, "length": 0, "byte_start": 6, "byte_length": 1, "comp_size": 5, "comp_str": "5", "ratio": 5.0, "color": "rgb(220,38,38)", "offset": 0}, {"type": "literal", "start": 2, "length": 0, "byte_start": 7, "byte_length": 1, "comp_size": 5, "comp_str": "5", "ratio": 5.0, "color": "rgb(220,38,38)", "offset": 0}, {"type": "literal", "start": 2, "length": 1, "byte_start": 8, "byte_length": 1, "comp_size": 5, "comp_str": "5", "ratio": 5.0, "color": "rgb(220,38,38)", "offset": 0}, {"type": "literal", "start": 3, "length": 0, "byte_start": 9, "byte_length": 1, "comp_size": 5, "comp_str": "5", "ratio": 5.0, "color": "rgb(220,38,38)", "offset": 0}, {"type": "match", "start": 3, "length": 6, "byte_start": 10, "byte_length": 7, "comp_size": 5, "comp_str": "5", "ratio": 0.7143, "color": "rgb(230,55,55)", "offset": 19}];
+const dpSteps = [{"position": 1, "candidates": [{"offset": 0, "length": 0, "next_byte": 0, "is_chosen": true}, {"offset": 0, "length": 0, "next_byte": 0, "is_chosen": false}, {"offset": 0, "length": 0, "next_byte": 0, "is_chosen": false}], "best_token_count": 1}, {"position": 3, "candidates": [{"offset": 0, "length": 0, "next_byte": 0, "is_chosen": true}, {"offset": 0, "length": 0, "next_byte": 0, "is_chosen": false}, {"offset": 0, "length": 0, "next_byte": 0, "is_chosen": false}], "best_token_count": 2}, {"position": 5, "candidates": [{"offset": 0, "length": 0, "next_byte": 0, "is_chosen": true}, {"offset": 0, "length": 0, "next_byte": 0, "is_chosen": false}, {"offset": 0, "length": 0, "next_byte": 0, "is_chosen": false}], "best_token_count": 3}, {"position": 7, "candidates": [{"offset": 0, "length": 0, "next_byte": 0, "is_chosen": true}, {"offset": 0, "length": 0, "next_byte": 0, "is_chosen": false}, {"offset": 0, "length": 0, "next_byte": 0, "is_chosen": false}], "best_token_count": 4}, {"position": 9, "candidates": [{"offset": 0, "length": 0, "next_byte": 0, "is_chosen": true}, {"offset": 0, "length": 0, "next_byte": 0, "is_chosen": false}, {"offset": 0, "length": 0, "next_byte": 0, "is_chosen": false}], "best_token_count": 5}, {"position": 11, "candidates": [{"offset": 0, "length": 0, "next_byte": 0, "is_chosen": true}, {"offset": 0, "length": 0, "next_byte": 0, "is_chosen": false}, {"offset": 0, "length": 0, "next_byte": 0, "is_chosen": false}], "best_token_count": 6}, {"position": 13, "candidates": [{"offset": 0, "length": 0, "next_byte": 0, "is_chosen": true}, {"offset": 0, "length": 0, "next_byte": 0, "is_chosen": false}, {"offset": 0, "length": 0, "next_byte": 0, "is_chosen": false}], "best_token_count": 7}, {"position": 15, "candidates": [{"offset": 0, "length": 0, "next_byte": 0, "is_chosen": true}, {"offset": 0, "length": 0, "next_byte": 0, "is_chosen": false}, {"offset": 0, "length": 0, "next_byte": 0, "is_chosen": false}], "best_token_count": 8}, {"position": 17, "candidates": [{"offset": 0, "length": 0, "next_byte": 0, "is_chosen": true}, {"offset": 0, "length": 0, "next_byte": 0, "is_chosen": false}, {"offset": 0, "length": 0, "next_byte": 0, "is_chosen": false}], "best_token_count": 9}, {"position": 19, "candidates": [{"offset": 19, "length": 6, "next_byte": 0, "is_chosen": true}, {"offset": 19, "length": 5, "next_byte": 189, "is_chosen": true}, {"offset": 19, "length": 4, "next_byte": 165, "is_chosen": true}], "best_token_count": 10}, {"position": 24, "candidates": [{"offset": 23, "length": 0, "next_byte": 189, "is_chosen": false}, {"offset": 20, "length": 0, "next_byte": 189, "is_chosen": false}, {"offset": 15, "length": 0, "next_byte": 189, "is_chosen": false}], "best_token_count": 11}];
+const rawText = JSON.parse("\"\u4f60\u597d\u4e16\u754c hello \u4f60\u597d\"");
+const textView = document.getElementById('textView');
+const tooltip = document.getElementById('tooltip');
+
+const dpPosSet = new Set();
+dpSteps.forEach(s => dpPosSet.add(s.position));
+
+let html = '';
+let pos = 0;
+tokens.forEach((t, idx) => {
+  const chunk = rawText.substring(pos, pos + t.length);
+  let cls = 'token';
+  if (dpPosSet.has(pos)) cls += ' dp-chosen';
+  const span = '<span class="' + cls + '" data-idx="' + idx + '" style="background:' + t.color + '">' + chunk + '</span>';
+  html += span;
+  pos += t.length;
+});
+textView.innerHTML = html;
+
+textView.addEventListener('mouseenter', function(e) {
+  if (!e.target.classList.contains('token')) return;
+  const idx = parseInt(e.target.dataset.idx);
+  const t = tokens[idx];
+  const typeLabel = t.type === 'match' ? 'MATCH' : (t.type === 'literal_run' ? 'LITERAL_RUN' : 'LITERAL');
+  let extra = '';
+  if (t.type === 'match') {
+    extra = '<div class="tr">回退偏移: <span class="tv">' + t.offset + '</span> 字符</div>';
+  }
+  tooltip.innerHTML =
+    '<div><span class="tl">类型:</span> <span class="tg">' + typeLabel + '</span></div>' +
+    '<div><span class="tl">字符位置:</span> <span class="tv">' + t.start + ' ~ ' + (t.start + t.length - 1) + '</span></div>' +
+    '<div><span class="tl">字节位置:</span> <span class="tv">' + t.byte_start + ' ~ ' + (t.byte_start + t.byte_length - 1) + '</span></div>' +
+    '<div><span class="tl">字符/字节长度:</span> <span class="tv">' + t.length + ' / ' + t.byte_length + '</span></div>' +
+    '<div><span class="tl">编码大小:</span> <span class="tv">' + t.comp_str + ' B</span></div>' +
+    '<div><span class="tl">压缩率:</span> <span class="tv" style="color:' + t.color + '">' + (t.ratio * 100).toFixed(1) + '%</span></div>' +
+    extra;
+  tooltip.classList.add('visible');
+}, true);
+
+textView.addEventListener('mousemove', function(e) {
+  if (!e.target.classList.contains('token')) return;
+  tooltip.style.left = Math.min(e.clientX + 14, window.innerWidth - 260) + 'px';
+  tooltip.style.top = Math.min(e.clientY + 14, window.innerHeight - 160) + 'px';
+}, true);
+
+textView.addEventListener('mouseleave', function(e) {
+  if (!e.target.classList.contains('token')) return;
+  tooltip.classList.remove('visible');
+}, true);
+
+const dpContainer = document.getElementById('dpSteps');
+dpSteps.forEach((step, idx) => {
+  const div = document.createElement('div');
+  div.className = 'dp-step';
+  let candHtml = '';
+  step.candidates.forEach(c => {
+    const cls = c.is_chosen ? 'dp-cand chosen' : 'dp-cand rejected';
+    const tag = c.is_chosen ? '<span class="tag">SELECTED</span>' : '<span class="tag">REJECTED</span>';
+    const typeStr = c.offset > 0 ? 'MATCH(off=' + c.offset + ', len=' + (c.length+1) + ')' : 'LITERAL';
+    candHtml += '<div class="' + cls + '">' + tag + ' <span>' + typeStr + '</span> <span style="color:#94a3b8">next=0x' + c.next_byte.toString(16).padStart(2,'0') + '</span></div>';
+  });
+  div.innerHTML =
+    '<div class="dp-step-header"><span class="dp-pos">位置 ' + step.position + '</span><span class="dp-count">最优 token 数: ' + step.best_token_count + ' | 候选: ' + step.candidates.length + '</span></div>' +
+    '<div class="dp-candidates">' + candHtml + '</div>';
+  dpContainer.appendChild(div);
+});
+
+const tbody = document.getElementById('tokenTable');
+tokens.forEach((t, idx) => {
+  const typeClass = t.type === 'match' ? 'type-match' : (t.type === 'literal_run' ? 'type-run' : 'type-literal');
+  const ratioClass = t.ratio <= 0.3 ? 'ratio-good' : 'ratio-bad';
+  const typeLabel = t.type === 'match' ? 'MATCH' : (t.type === 'literal_run' ? 'LITERAL_RUN' : 'LITERAL');
+  const offsetStr = t.type === 'match' ? t.offset : '-';
+  const tr = document.createElement('tr');
+  tr.innerHTML =
+    '<td>' + (idx+1) + '</td>' +
+    '<td class="' + typeClass + '">' + typeLabel + '</td>' +
+    '<td>' + t.start + ' ~ ' + (t.start + t.length - 1) + '</td>' +
+    '<td>' + t.length + '</td>' +
+    '<td>' + t.comp_str + '</td>' +
+    '<td class="' + ratioClass + '">' + (t.ratio * 100).toFixed(2) + '%</td>' +
+    '<td>' + offsetStr + '</td>';
+  tbody.appendChild(tr);
+});
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.panel).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

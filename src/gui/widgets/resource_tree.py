@@ -13,6 +13,7 @@ from PyQt6.QtWidgets import (
 )
 
 from gui.core.models import ArchiveEntry, FileRecord, FolderRecord, formatted_size, _filetype
+from gui.core.theme import ThemeManager
 
 
 class ResourceTree(QWidget):
@@ -51,7 +52,7 @@ class ResourceTree(QWidget):
         layout.addWidget(self._tree)
 
         self._count_label = QLabel("")
-        self._count_label.setStyleSheet("color: #888; font-size: 11px; padding: 2px;")
+        self._count_label.setStyleSheet(f"color: {ThemeManager.hex('text_muted')}; font-size: 11px; padding: 2px;")
         layout.addWidget(self._count_label)
 
     def load_records(self, records: list) -> None:

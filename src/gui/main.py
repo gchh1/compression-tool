@@ -77,9 +77,12 @@ def run_gui():
 
     from PyQt6.QtWidgets import QApplication
     from gui.widgets.main_window import MainWindow
+    from gui.core.app_config import apply_theme
 
     app = QApplication(sys.argv)
     app.setApplicationName("WebCompress")
+
+    apply_theme()
 
     window = MainWindow()
     window.show()

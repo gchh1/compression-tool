@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (
 )
 
 from gui.core.models import FileRecord, FolderRecord, formatted_size
+from gui.core.theme import ThemeManager
 
 
 class _SummaryCard(QFrame):
@@ -18,7 +19,7 @@ class _SummaryCard(QFrame):
         super().__init__(parent)
         self.setFrameShape(QFrame.Shape.StyledPanel)
         self.setStyleSheet(
-            f"background: white; border: 1px solid #e0e0e0; border-radius: 8px; "
+            f"background: {ThemeManager.hex('bg_elevated')}; border: 1px solid {ThemeManager.hex('border')}; border-radius: 8px; "
             f"border-left: 4px solid {color}; padding: 12px;"
         )
         layout = QVBoxLayout(self)
@@ -27,7 +28,7 @@ class _SummaryCard(QFrame):
         val_label.setStyleSheet(f"font-size: 22px; font-weight: bold; color: {color}; border: none;")
         layout.addWidget(val_label)
         title_label = QLabel(title)
-        title_label.setStyleSheet("font-size: 11px; color: #888; border: none;")
+        title_label.setStyleSheet(f"font-size: 11px; color: {ThemeManager.hex('text_muted')}; border: none;")
         layout.addWidget(title_label)
 
 
@@ -191,7 +192,7 @@ class DashboardView(QScrollArea):
         # Pie chart
         pie_container = QFrame()
         pie_container.setFrameShape(QFrame.Shape.StyledPanel)
-        pie_container.setStyleSheet("background: white; border: 1px solid #e0e0e0; border-radius: 8px;")
+        pie_container.setStyleSheet(f"background: {ThemeManager.hex('bg_elevated')}; border: 1px solid {ThemeManager.hex('border')}; border-radius: 8px;")
         pie_layout = QVBoxLayout(pie_container)
         pie_title = QLabel("资源类型分布")
         pie_title.setStyleSheet("font-weight: bold; padding: 8px; border: none; font-size: 13px;")
@@ -203,7 +204,7 @@ class DashboardView(QScrollArea):
         # Bar chart
         bar_container = QFrame()
         bar_container.setFrameShape(QFrame.Shape.StyledPanel)
-        bar_container.setStyleSheet("background: white; border: 1px solid #e0e0e0; border-radius: 8px;")
+        bar_container.setStyleSheet(f"background: {ThemeManager.hex('bg_elevated')}; border: 1px solid {ThemeManager.hex('border')}; border-radius: 8px;")
         bar_layout = QVBoxLayout(bar_container)
         bar_title = QLabel("目录大小分布")
         bar_title.setStyleSheet("font-weight: bold; padding: 8px; border: none; font-size: 13px;")

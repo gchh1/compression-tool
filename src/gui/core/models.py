@@ -41,8 +41,6 @@ class AlgorithmType(Enum):
     HUFFMAN = "huffman"
     LZSS = "lzss"
     LZMINE = "lzmine"
-    LZCRAZY = "lzcrazy"
-    CRAZYFLATE = "crazyflate"
     MYFLATE = "myflate"
     GZIP = "gzip"
     TRANSFORMER = "transformer (beta)"
@@ -66,23 +64,11 @@ ALGORITHM_PARAMS: dict[AlgorithmType, list[AlgorithmParamDef]] = {
         AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 18, 4, 255, 1, ""),
         AlgorithmParamDef("min_match", "最小匹配长度", 3, 2, 15, 1, ""),
     ],
-    AlgorithmType.LZCRAZY: [
-        AlgorithmParamDef("search_size", "搜索窗口大小", 4096, 256, 65536, 256, " B"),
-        AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 18, 4, 258, 1, ""),
-        AlgorithmParamDef("min_match", "最小匹配长度", 3, 1, 6, 1, ""),
-    ],
     AlgorithmType.LZMINE: [
         AlgorithmParamDef("search_size", "搜索窗口大小", 4096, 256, 65536, 256, " B"),
         AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 256, 16, 65536, 16, " B"),
         AlgorithmParamDef("min_match", "最小匹配长度", 3, 2, 15, 1, ""),
         AlgorithmParamDef("dp_depth", "DP优化深度", 3, 1, 32, 1, ""),
-    ],
-    AlgorithmType.CRAZYFLATE: [
-        AlgorithmParamDef("search_size", "搜索窗口大小", 4096, 256, 65536, 256, " B"),
-        AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 258, 16, 258, 1, ""),
-        AlgorithmParamDef("min_match", "最小匹配长度", 3, 1, 6, 1, ""),
-        AlgorithmParamDef("dp_depth", "DP优化深度", 6, 1, 32, 1, ""),
-        AlgorithmParamDef("max_chain_length", "最大搜索链长", 128, 4, 4096, 4, ""),
     ],
     AlgorithmType.MYFLATE: [
         AlgorithmParamDef("search_size", "搜索窗口大小", 4096, 256, 32768, 256, " B"),
@@ -100,6 +86,10 @@ ALGORITHM_PARAMS: dict[AlgorithmType, list[AlgorithmParamDef]] = {
         AlgorithmParamDef("compression_level", "压缩级别", 6, 1, 9, 1, ""),
     ],
 }
+
+STREAMING_THRESHOLD_MB = 10
+STREAMING_CHUNK_SIZE_KB = 1024
+LZMINE_DP_VIZ_MAX_SIZE = 65536
 
 
 def get_default_config() -> dict[AlgorithmType, dict[str, int]]:
@@ -179,6 +169,7 @@ class FileRecord(Record):
 
         self.raw_data: bytes = b""
         self.compressed_data: bytes | None = None
+        self.compressed_path: str | None = None
 
         self.compression_ratio: float = 1.00
         self.compression_time_ms: float = 0.0
@@ -293,3 +284,10 @@ NETWORK_PROFILES: dict[str, NetworkProfile] = {
     "WiFi": NetworkProfile("WiFi", 50_000_000, 20),
     "Ethernet": NetworkProfile("Ethernet", 1_000_000_000, 1),
 }
+
+
+class ArchiveEntry:
+    def __init__(self, name: str, size: int):
+        self.name = name
+        self.size = size
+        self.is_directory = name.endswith("/")

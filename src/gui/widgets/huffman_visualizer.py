@@ -11,6 +11,8 @@ from PyQt6.QtGui import (
 )
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel
 
+from gui.core.theme import ThemeManager
+
 
 def _code_lengths_to_codes(ll_lengths: list[int],
                            dist_lengths: list[int] | None = None
@@ -191,7 +193,7 @@ class HuffmanTreeWidget(QWidget):
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
         # Background
-        painter.fillRect(self.rect(), QColor(250, 250, 250))
+        painter.fillRect(self.rect(), ThemeManager.color('bg_primary'))
 
         if not self._codes:
             painter.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter,
@@ -205,7 +207,7 @@ class HuffmanTreeWidget(QWidget):
         fm = QFontMetrics(font)
 
         # Draw edges
-        edge_pen = QPen(QColor(180, 180, 180), 1)
+        edge_pen = QPen(ThemeManager.color('border'), 1)
         for x1, y1, x2, y2 in self._edges:
             painter.setPen(edge_pen)
             painter.drawLine(int(x1), int(y1 + self.NODE_RADIUS),
@@ -219,10 +221,10 @@ class HuffmanTreeWidget(QWidget):
             highlight = (sym == self._hovered_sym or sym == self._selected_sym)
             r = self.NODE_RADIUS
             if highlight:
-                painter.setBrush(QColor(100, 160, 255))
+                painter.setBrush(ThemeManager.color('accent'))
             else:
-                painter.setBrush(QColor(200, 200, 200))
-            painter.setPen(QPen(QColor(150, 150, 150), 1))
+                painter.setBrush(ThemeManager.color('bg_surface'))
+            painter.setPen(QPen(ThemeManager.color('border_dark'), 1))
             painter.drawEllipse(QRectF(x - r, y - r, r * 2, r * 2))
 
         for x, y, is_leaf, sym, code in self._nodes:
@@ -253,19 +255,19 @@ class HuffmanTreeWidget(QWidget):
                                        leaf_w, leaf_h), 4, 4)
 
             if highlight:
-                painter.setBrush(QColor(255, 220, 100))
-                painter.setPen(QPen(QColor(200, 150, 0), 2))
+                painter.setBrush(ThemeManager.color('warning'))
+                painter.setPen(QPen(_darken_color(ThemeManager.color('warning'), 40), 2))
             else:
                 depth = len(code)
                 v = max(120, 255 - depth * 20)
                 painter.setBrush(QColor(220, v, 220))
-                painter.setPen(QPen(QColor(120, 160, 120), 1))
+                painter.setPen(QPen(ThemeManager.color('success'), 1))
 
             painter.drawPath(path)
 
             # Symbol text
             painter.setFont(bold_font)
-            painter.setPen(QColor(0, 0, 0))
+            painter.setPen(ThemeManager.color('text_primary'))
             painter.drawText(QRectF(x - leaf_w / 2, y - leaf_h / 2 + 1,
                                     leaf_w, leaf_h / 2),
                              Qt.AlignmentFlag.AlignHCenter |
@@ -274,7 +276,7 @@ class HuffmanTreeWidget(QWidget):
 
             # Code text
             painter.setFont(font)
-            painter.setPen(QColor(80, 80, 80))
+            painter.setPen(ThemeManager.color('text_secondary'))
             painter.drawText(QRectF(x - leaf_w / 2, y + 1,
                                     leaf_w, leaf_h / 2),
                              Qt.AlignmentFlag.AlignHCenter |
@@ -284,7 +286,7 @@ class HuffmanTreeWidget(QWidget):
         # Title
         title_font = QFont("Sans", 11, QFont.Weight.Bold)
         painter.setFont(title_font)
-        painter.setPen(QColor(60, 60, 60))
+        painter.setPen(ThemeManager.color('text_primary'))
         painter.drawText(QRectF(0, 4, self.width(), 24),
                          Qt.AlignmentFlag.AlignCenter,
                          self._title)

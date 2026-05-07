@@ -5,11 +5,11 @@
 #include "DeflateCompressor.hpp"
 #include "LZSSCompressor.hpp"
 #include "LZMineCompressor.hpp"
-#include "LZCrazyCompressor.hpp"
-#include "CrazyFlateCompressor.hpp"
 #include "MyFlateCompressor.hpp"
 #include "GzipCompressor.hpp"
 #include "Archiver.hpp"
+#include "api.hpp"
+#include "AlgorithmFactory.hpp"
 
 namespace py = pybind11;
 using namespace compressor::core;
@@ -35,8 +35,6 @@ PYBIND11_MODULE(core_engine, m) {
         .value("DEFLATE", CompressorAlgorithm::Deflate)
         .value("LZSS", CompressorAlgorithm::LZSS)
         .value("LZMINE", CompressorAlgorithm::LZMINE)
-        .value("LZCRAZY", CompressorAlgorithm::LZCRAZY)
-        .value("CRAZYFLATE", CompressorAlgorithm::CRAZYFLATE)
         .export_values();
 
     // ===== 压缩器接口 =====
@@ -79,30 +77,6 @@ PYBIND11_MODULE(core_engine, m) {
         .def("get_dp_range", &LZMineCompressor::get_dp_range)
         .def("get_dp_visualization", &LZMineCompressor::get_dp_visualization,
              py::arg("data"), py::arg("range") = 3);
-
-    py::class_<LZCrazyCompressor, ICompressor,
-               std::shared_ptr<LZCrazyCompressor>>(m, "LZCrazyCompressor")
-        .def(py::init<>())
-        .def("set_search_size", &LZCrazyCompressor::set_search_size)
-        .def("get_search_size", &LZCrazyCompressor::get_search_size)
-        .def("set_lookahead_size", &LZCrazyCompressor::set_lookahead_size)
-        .def("get_lookahead_size", &LZCrazyCompressor::get_lookahead_size)
-        .def("set_min_match", &LZCrazyCompressor::set_min_match)
-        .def("get_min_match", &LZCrazyCompressor::get_min_match);
-
-    py::class_<CrazyFlateCompressor, ICompressor,
-               std::shared_ptr<CrazyFlateCompressor>>(m, "CrazyFlateCompressor")
-        .def(py::init<>())
-        .def("set_search_size", &CrazyFlateCompressor::set_search_size)
-        .def("get_search_size", &CrazyFlateCompressor::get_search_size)
-        .def("set_lookahead_size", &CrazyFlateCompressor::set_lookahead_size)
-        .def("get_lookahead_size", &CrazyFlateCompressor::get_lookahead_size)
-        .def("set_min_match", &CrazyFlateCompressor::set_min_match)
-        .def("get_min_match", &CrazyFlateCompressor::get_min_match)
-        .def("set_dp_depth", &CrazyFlateCompressor::set_dp_depth)
-        .def("get_dp_depth", &CrazyFlateCompressor::get_dp_depth)
-        .def("set_max_chain_length", &CrazyFlateCompressor::set_max_chain_length)
-        .def("get_max_chain_length", &CrazyFlateCompressor::get_max_chain_length);
 
     py::class_<compressor::algorithm::LZMine::Triple>(m, "LZMineTriple")
         .def_readonly("offset", &compressor::algorithm::LZMine::Triple::offset)
@@ -169,4 +143,71 @@ PYBIND11_MODULE(core_engine, m) {
     py::class_<Archiver>(m, "Archiver")
         .def_static("pack", &Archiver::pack)
         .def_static("unpack", &Archiver::unpack);
+
+    // ===== 流式分块 Pipeline API =====
+
+    py::enum_<compressor::core::AlgorithmID>(m, "AlgorithmID")
+        .value("NONE", compressor::core::AlgorithmID::None)
+        .value("DEFLATE", compressor::core::AlgorithmID::Deflate)
+        .value("INFLATE", compressor::core::AlgorithmID::Inflate)
+        .value("DELTA_ENCODE", compressor::core::AlgorithmID::DeltaEncode)
+        .value("DELTA_DECODE", compressor::core::AlgorithmID::DeltaDecode)
+        .value("LZSS", compressor::core::AlgorithmID::LZSS)
+        .value("LZSS_DECOMPRESS", compressor::core::AlgorithmID::LZSSDecompress)
+        .value("LZMINE", compressor::core::AlgorithmID::LZMine)
+        .value("LZMINE_DECOMPRESS", compressor::core::AlgorithmID::LZMineDecompress)
+        .value("MYFLATE", compressor::core::AlgorithmID::MyFlate)
+        .export_values();
+
+    py::class_<compressor::api::CompressResult>(m, "PipelineCompressResult")
+        .def(py::init<>())
+        .def_readwrite("data", &compressor::api::CompressResult::data)
+        .def_readwrite("original_size", &compressor::api::CompressResult::original_size)
+        .def_readwrite("compressed_size", &compressor::api::CompressResult::compressed_size)
+        .def_readwrite("compression_ratio", &compressor::api::CompressResult::compression_ratio)
+        .def_readwrite("time_ms", &compressor::api::CompressResult::time_ms)
+        .def_readwrite("success", &compressor::api::CompressResult::success)
+        .def_readwrite("error_message", &compressor::api::CompressResult::error_message);
+
+    m.def("pipeline_compress",
+          [](const std::vector<uint8_t>& data,
+             const std::vector<compressor::core::AlgorithmID>& chain)
+              -> compressor::api::CompressResult {
+              return compressor::api::compress(data, chain);
+          },
+          py::arg("data"), py::arg("chain"),
+          py::call_guard<py::gil_scoped_release>(),
+          "Compress data using a pipeline of algorithms with streaming chunking");
+
+    m.def("pipeline_decompress",
+          [](const std::vector<uint8_t>& data,
+             const std::vector<compressor::core::AlgorithmID>& chain)
+              -> compressor::api::CompressResult {
+              return compressor::api::decompress(data, chain);
+          },
+          py::arg("data"), py::arg("chain"),
+          py::call_guard<py::gil_scoped_release>(),
+          "Decompress data using a pipeline of algorithms");
+
+    m.def("pipeline_compress_file",
+          [](const std::string& input_path,
+             const std::string& output_path,
+             const std::vector<compressor::core::AlgorithmID>& chain)
+              -> compressor::api::CompressResult {
+              return compressor::api::compressFile(input_path, output_path, chain);
+          },
+          py::arg("input_path"), py::arg("output_path"), py::arg("chain"),
+          py::call_guard<py::gil_scoped_release>(),
+          "Streaming compress a file in chunks");
+
+    m.def("pipeline_decompress_file",
+          [](const std::string& input_path,
+             const std::string& output_path,
+             const std::vector<compressor::core::AlgorithmID>& chain)
+              -> compressor::api::CompressResult {
+              return compressor::api::decompressFile(input_path, output_path, chain);
+          },
+          py::arg("input_path"), py::arg("output_path"), py::arg("chain"),
+          py::call_guard<py::gil_scoped_release>(),
+          "Streaming decompress a file in chunks");
 }

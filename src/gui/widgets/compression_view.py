@@ -8,6 +8,7 @@ from PyQt6.QtWidgets import (
 )
 
 from gui.core.models import FileRecord, FolderRecord, formatted_size
+from gui.core.theme import ThemeManager
 from gui.widgets.resource_tree import ResourceTree
 
 
@@ -37,7 +38,7 @@ class CompressPage(QWidget):
         self._drop_hint = QFrame()
         self._drop_hint.setFrameShape(QFrame.Shape.StyledPanel)
         self._drop_hint.setStyleSheet(
-            "QFrame { background: #f8f9fa; border: 2px dashed #ccc; "
+            f"QFrame {{ background: {ThemeManager.hex('bg_surface')}; border: 2px dashed {ThemeManager.hex('border')}; "
             "border-radius: 12px; padding: 40px; }"
         )
         hint_layout = QVBoxLayout(self._drop_hint)
@@ -47,7 +48,7 @@ class CompressPage(QWidget):
         icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         hint_layout.addWidget(icon_label)
         text_label = QLabel("拖放文件/文件夹到此处，或点击下方按钮添加")
-        text_label.setStyleSheet("font-size: 14px; color: #888; border: none;")
+        text_label.setStyleSheet(f"font-size: 14px; color: {ThemeManager.hex('text_muted')}; border: none;")
         text_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         hint_layout.addWidget(text_label)
         layout.addWidget(self._drop_hint)
@@ -59,31 +60,31 @@ class CompressPage(QWidget):
 
         # Summary label
         self._summary = QLabel("")
-        self._summary.setStyleSheet("color: #888; font-size: 11px; padding: 2px 0;")
+        self._summary.setStyleSheet(f"color: {ThemeManager.hex('text_muted')}; font-size: 11px; padding: 2px 0;")
         layout.addWidget(self._summary)
 
         # Action buttons
         btn_layout = QHBoxLayout()
 
         add_file_btn = QPushButton("+ 添加文件")
-        add_file_btn.setStyleSheet(self._btn_style("#4a90d9"))
+        add_file_btn.setStyleSheet(self._btn_style(ThemeManager.hex('accent')))
         add_file_btn.clicked.connect(self.add_files_requested.emit)
         btn_layout.addWidget(add_file_btn)
 
         add_folder_btn = QPushButton("+ 添加文件夹")
-        add_folder_btn.setStyleSheet(self._btn_style("#4a90d9"))
+        add_folder_btn.setStyleSheet(self._btn_style(ThemeManager.hex('accent')))
         add_folder_btn.clicked.connect(self.add_folder_requested.emit)
         btn_layout.addWidget(add_folder_btn)
 
         btn_layout.addSpacing(16)
 
         self._compress_btn = QPushButton("▶ 压缩")
-        self._compress_btn.setStyleSheet(self._btn_style("#27ae60"))
+        self._compress_btn.setStyleSheet(self._btn_style(ThemeManager.hex('success')))
         self._compress_btn.clicked.connect(self.compress_requested.emit)
         btn_layout.addWidget(self._compress_btn)
 
         clear_btn = QPushButton("清空列表")
-        clear_btn.setStyleSheet(self._btn_style("#e74c3c"))
+        clear_btn.setStyleSheet(self._btn_style(ThemeManager.hex('error')))
         clear_btn.clicked.connect(self.clear_requested.emit)
         btn_layout.addWidget(clear_btn)
 

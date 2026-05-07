@@ -575,6 +575,171 @@ class AlgorithmSelector(QComboBox):
 #  算法配置对话框
 # ============================================================
 
+class ThemeConfigDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("主题配置")
+        self.setMinimumSize(580, 600)
+        self._color_buttons: dict[str, QPushButton] = {}
+        self._setup_ui()
+
+    def _setup_ui(self) -> None:
+        try:
+            from gui.core.theme import ThemeManager, THEME_FIELDS, LABELS_CN
+            from gui.core.app_config import get_theme_config
+
+            layout = QVBoxLayout(self)
+
+            title_label = QLabel("自定义界面主题颜色")
+            title_label.setStyleSheet(f"font-size: 14px; font-weight: bold; color: {ThemeManager.hex('text_primary')}; padding: 8px;")
+            layout.addWidget(title_label)
+
+            desc_label = QLabel(
+                "点击颜色方块可选择自定义颜色，或使用下方预设快速切换。\n"
+                "修改后点击\"应用\"生效，设置会自动保存到配置文件。"
+            )
+            desc_label.setWordWrap(True)
+            desc_label.setStyleSheet(f"font-size: 11px; color: {ThemeManager.hex('text_muted')}; padding: 4px 0 12px;")
+            layout.addWidget(desc_label)
+
+            scroll = QScrollArea()
+            scroll.setWidgetResizable(True)
+            scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+            form_inner = QWidget()
+            form = QFormLayout(form_inner)
+            form.setSpacing(10)
+            form.setContentsMargins(8, 8, 8, 8)
+
+            current_theme = get_theme_config()
+
+            for field_name in THEME_FIELDS:
+                label_cn = LABELS_CN.get(field_name, field_name)
+                row_layout = QHBoxLayout()
+                row_layout.setSpacing(8)
+
+                color_btn = QPushButton()
+                color_btn.setFixedSize(36, 28)
+                color_val = current_theme.get(field_name, ThemeManager.hex(field_name))
+                color_btn.setStyleSheet(
+                    f"background: {color_val}; border: 2px solid {ThemeManager.hex('border')}; border-radius: 4px;"
+                )
+                color_btn.setToolTip(f"点击选择颜色: {label_cn}")
+                color_btn.clicked.connect(lambda checked, f=field_name: self._pick_color(f))
+                self._color_buttons[field_name] = color_btn
+
+                hex_label = QLabel(color_val.upper())
+                hex_label.setMinimumWidth(70)
+                hex_label.setStyleSheet(f"font-family: Consolas, monospace; font-size: 11px; color: {ThemeManager.hex('text_secondary')};")
+                setattr(self, f"_theme_hex_{field_name}", hex_label)
+
+                name_label = QLabel(label_cn)
+                name_label.setStyleSheet(f"color: {ThemeManager.hex('text_primary')};")
+
+                row_layout.addWidget(color_btn)
+                row_layout.addWidget(hex_label)
+                row_layout.addStretch()
+
+                form.addRow(name_label, row_layout)
+
+            scroll.setWidget(form_inner)
+            layout.addWidget(scroll, 1)
+
+            preset_group = QGroupBox("快速预设")
+            preset_group.setStyleSheet(f"QGroupBox {{ font-weight: bold; color: {ThemeManager.hex('text_primary')}; border: 1px solid {ThemeManager.hex('border')}; border-radius: 6px; margin-top: 8px; padding-top: 16px; }} QGroupBox::title {{ subcontrol-origin: margin; left: 12px; padding: 0 6px; }}")
+            preset_layout = QHBoxLayout(preset_group)
+
+            dark_btn = QPushButton("🌙 暗色模式")
+            dark_btn.setToolTip("一键切换到暗色主题预设")
+            dark_btn.clicked.connect(self._on_switch_dark)
+            preset_layout.addWidget(dark_btn)
+
+            light_btn = QPushButton("☀️ 亮色模式")
+            light_btn.setToolTip("恢复到亮色主题默认值")
+            light_btn.clicked.connect(self._on_switch_light)
+            preset_layout.addWidget(light_btn)
+
+            reset_btn = QPushButton("↩️ 恢复默认")
+            reset_btn.setToolTip("重置所有颜色为程序默认值")
+            reset_btn.clicked.connect(self._on_reset_all)
+            preset_layout.addWidget(reset_btn)
+
+            preset_layout.addStretch()
+            layout.addWidget(preset_group)
+
+            btn_layout = QHBoxLayout()
+            btn_layout.addStretch()
+
+            cancel_btn = QPushButton("取消")
+            cancel_btn.clicked.connect(self.reject)
+            btn_layout.addWidget(cancel_btn)
+
+            apply_btn = QPushButton("应用")
+            apply_btn.setDefault(True)
+            apply_btn.clicked.connect(self._on_apply)
+            btn_layout.addWidget(apply_btn)
+
+            layout.addLayout(btn_layout)
+
+        except Exception as e:
+            logger.error("[ThemeConfigDialog] _setup_ui failed: %s", e, exc_info=True)
+            error_label = QLabel(f"初始化主题配置对话框失败:\n{e}")
+            error_label.setStyleSheet("color: red; padding: 20px;")
+            layout = QVBoxLayout(self)
+            layout.addWidget(error_label)
+
+    def _pick_color(self, field_name: str) -> None:
+        from gui.core.theme import ThemeManager, LABELS_CN
+        current_hex = ThemeManager.hex(field_name)
+        color = QColorDialog.getColor(QColor(current_hex), self, f"选择颜色: {LABELS_CN.get(field_name, field_name)}")
+        if color.isValid():
+            hex_val = color.name()
+            self._update_color_button(field_name, hex_val)
+
+    def _update_color_button(self, field_name: str, hex_val: str) -> None:
+        from gui.core.theme import ThemeManager
+        btn = self._color_buttons.get(field_name)
+        if btn:
+            btn.setStyleSheet(
+                f"background: {hex_val}; border: 2px solid {ThemeManager.hex('border')}; border-radius: 4px;"
+            )
+        hex_label = getattr(self, f"_theme_hex_{field_name}", None)
+        if hex_label:
+            hex_label.setText(hex_val.upper())
+
+    def _on_switch_dark(self) -> None:
+        from gui.core.theme import ThemeManager as TM, THEME_FIELDS
+        TM.set_dark()
+        for fname in THEME_FIELDS:
+            self._update_color_button(fname, TM.hex(fname))
+
+    def _on_switch_light(self) -> None:
+        from gui.core.theme import ThemeManager as TM, DEFAULT_THEME, THEME_FIELDS
+        TM.reset_to_default()
+        for fname in THEME_FIELDS:
+            self._update_color_button(fname, TM.hex(fname))
+
+    def _on_reset_all(self) -> None:
+        from gui.core.theme import ThemeManager as TM, DEFAULT_THEME, THEME_FIELDS
+        TM.reset_to_default()
+        for fname in THEME_FIELDS:
+            self._update_color_button(fname, TM.hex(fname))
+
+    def _on_apply(self) -> None:
+        from gui.core.app_config import save_theme
+        from gui.core.theme import ThemeManager
+
+        theme_dict = {}
+        for fname, btn in self._color_buttons.items():
+            hex_label = getattr(self, f"_theme_hex_{fname}", None)
+            if hex_label:
+                theme_dict[fname] = hex_label.text().lstrip("#")
+        theme_obj = ThemeManager.from_dict(theme_dict)
+        ThemeManager.apply(theme_obj)
+        save_theme(theme_dict)
+
+        self.accept()
+
+
 class AlgorithmConfigDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -583,7 +748,6 @@ class AlgorithmConfigDialog(QDialog):
         self._spinboxes: dict[AlgorithmType, dict[str, QSpinBox]] = {}
         self._streaming_threshold_spin: QSpinBox | None = None
         self._streaming_chunk_spin: QSpinBox | None = None
-        self._color_buttons: dict[str, QPushButton] = {}
         self._setup_ui()
 
     def _setup_ui(self) -> None:
@@ -592,8 +756,7 @@ class AlgorithmConfigDialog(QDialog):
             from gui.core.models import (
                 STREAMING_THRESHOLD_MB, STREAMING_CHUNK_SIZE_KB,
             )
-            from gui.core.theme import ThemeManager, THEME_FIELDS, LABELS_CN
-            from gui.core.app_config import get_theme_config
+            from gui.core.theme import ThemeManager
 
             layout = QVBoxLayout(self)
             current_config = CompressionEngine.get_config()
@@ -674,65 +837,6 @@ class AlgorithmConfigDialog(QDialog):
 
             tabs.addTab(stream_tab, "流式设置")
 
-            theme_tab = QWidget()
-            theme_layout = QVBoxLayout(theme_tab)
-            theme_layout.setContentsMargins(12, 12, 12, 12)
-
-            current_theme = get_theme_config()
-
-            scroll = QScrollArea()
-            scroll.setWidgetResizable(True)
-            scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-            form_inner = QWidget()
-            form = QFormLayout(form_inner)
-            form.setSpacing(8)
-
-            for field_name in THEME_FIELDS:
-                label_cn = LABELS_CN.get(field_name, field_name)
-                row_layout = QHBoxLayout()
-                row_layout.setSpacing(8)
-
-                color_btn = QPushButton()
-                color_btn.setFixedSize(36, 28)
-                color_val = current_theme.get(field_name, ThemeManager.hex(field_name))
-                color_btn.setStyleSheet(
-                    f"background: {color_val}; border: 2px solid {ThemeManager.hex('border')}; border-radius: 4px;"
-                )
-                color_btn.setToolTip(f"点击选择颜色: {label_cn}")
-                color_btn.clicked.connect(lambda checked, f=field_name: self._pick_color(f))
-                self._color_buttons[field_name] = color_btn
-
-                hex_label = QLabel(color_val.upper())
-                hex_label.setMinimumWidth(70)
-                hex_label.setStyleSheet(f"font-family: Consolas, monospace; font-size: 11px; color: {ThemeManager.hex('text_secondary')};")
-                setattr(self, f"_theme_hex_{field_name}", hex_label)
-
-                name_label = QLabel(label_cn)
-                name_label.setStyleSheet(f"color: {ThemeManager.hex('text_primary')};")
-
-                row_layout.addWidget(color_btn)
-                row_layout.addWidget(hex_label)
-                row_layout.addStretch()
-
-                form.addRow(name_label, row_layout)
-
-            scroll.setWidget(form_inner)
-            theme_layout.addWidget(scroll, 1)
-
-            preset_row = QHBoxLayout()
-            dark_btn = QPushButton("🌙 切换暗色模式")
-            dark_btn.setToolTip("一键切换到暗色主题预设")
-            dark_btn.clicked.connect(self._on_switch_dark)
-            light_btn = QPushButton("☀️ 恢复亮色默认")
-            light_btn.setToolTip("恢复到亮色主题默认值")
-            light_btn.clicked.connect(self._on_switch_light)
-            preset_row.addWidget(dark_btn)
-            preset_row.addWidget(light_btn)
-            preset_row.addStretch()
-            theme_layout.addLayout(preset_row)
-
-            tabs.addTab(theme_tab, "主题颜色")
-
             layout.addWidget(tabs)
 
             btn_layout = QHBoxLayout()
@@ -762,7 +866,6 @@ class AlgorithmConfigDialog(QDialog):
     def _on_reset(self) -> None:
         from gui.core.models import STREAMING_THRESHOLD_MB, STREAMING_CHUNK_SIZE_KB
         from gui.core.engine import CompressionEngine
-        from gui.core.theme import ThemeManager, DEFAULT_THEME, THEME_FIELDS
 
         CompressionEngine.reset_to_defaults()
         defaults = CompressionEngine.get_config()
@@ -774,14 +877,9 @@ class AlgorithmConfigDialog(QDialog):
             self._streaming_threshold_spin.setValue(int(CompressionEngine.get_streaming_threshold()))
         if self._streaming_chunk_spin:
             self._streaming_chunk_spin.setValue(STREAMING_CHUNK_SIZE_KB)
-        ThemeManager.reset_to_default()
-        for fname in THEME_FIELDS:
-            self._update_color_button(fname, ThemeManager.hex(fname))
 
     def _on_apply(self) -> None:
         from gui.core.engine import CompressionEngine
-        from gui.core.app_config import save_theme
-        from gui.core.theme import ThemeManager
 
         config: dict[AlgorithmType, dict[str, int]] = {}
         for algo, spins in self._spinboxes.items():
@@ -794,47 +892,7 @@ class AlgorithmConfigDialog(QDialog):
                 float(self._streaming_threshold_spin.value())
             )
 
-        theme_dict = {}
-        for fname, btn in self._color_buttons.items():
-            hex_label = getattr(self, f"_theme_hex_{fname}", None)
-            if hex_label:
-                theme_dict[fname] = hex_label.text().lstrip("#")
-        theme_obj = ThemeManager.from_dict(theme_dict)
-        ThemeManager.apply(theme_obj)
-        save_theme(theme_dict)
-
         self.accept()
-
-    def _pick_color(self, field_name: str) -> None:
-        from gui.core.theme import ThemeManager
-        current_hex = ThemeManager.hex(field_name)
-        color = QColorDialog.getColor(QColor(current_hex), self, f"选择颜色: {LABELS_CN.get(field_name, field_name)}")
-        if color.isValid():
-            hex_val = color.name()
-            self._update_color_button(field_name, hex_val)
-
-    def _update_color_button(self, field_name: str, hex_val: str) -> None:
-        from gui.core.theme import ThemeManager
-        btn = self._color_buttons.get(field_name)
-        if btn:
-            btn.setStyleSheet(
-                f"background: {hex_val}; border: 2px solid {ThemeManager.hex('border')}; border-radius: 4px;"
-            )
-        hex_label = getattr(self, f"_theme_hex_{field_name}", None)
-        if hex_label:
-            hex_label.setText(hex_val.upper())
-
-    def _on_switch_dark(self) -> None:
-        from gui.core.theme import ThemeManager as TM, THEME_FIELDS
-        TM.set_dark()
-        for fname in THEME_FIELDS:
-            self._update_color_button(fname, TM.hex(fname))
-
-    def _on_switch_light(self) -> None:
-        from gui.core.theme import ThemeManager as TM, DEFAULT_THEME, THEME_FIELDS
-        TM.reset_to_default()
-        for fname in THEME_FIELDS:
-            self._update_color_button(fname, TM.hex(fname))
 
 
 class CompressDemoDialog(QDialog):
@@ -941,6 +999,12 @@ class MainWindow(QMainWindow):
         algo_config_action.setShortcut("Ctrl+Shift+C")
         algo_config_action.triggered.connect(self._on_algo_config)
         adv_menu.addAction(algo_config_action)
+
+        theme_config_action = QAction("主题配置 (&T)", self)
+        theme_config_action.setShortcut("Ctrl+Shift+T")
+        theme_config_action.setToolTip("自定义界面主题颜色和外观设置")
+        theme_config_action.triggered.connect(self._on_theme_config)
+        adv_menu.addAction(theme_config_action)
 
     # ========== 工具栏设置 ==========
     def _setup_toolbar(self) -> None:
@@ -1480,6 +1544,12 @@ class MainWindow(QMainWindow):
     def _on_algo_config(self) -> None:
         dlg = AlgorithmConfigDialog(self)
         dlg.exec()
+
+    def _on_theme_config(self) -> None:
+        logger.info("[main_window] opening ThemeConfigDialog")
+        dlg = ThemeConfigDialog(self)
+        dlg.exec()
+        logger.info("[main_window] ThemeConfigDialog closed")
 
     # ========== 视图：网页可视化 ==========
 

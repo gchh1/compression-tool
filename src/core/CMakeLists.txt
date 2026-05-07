@@ -5,8 +5,6 @@ add_library(
     LZSSCompressor.cpp
     DeflateCompressor.cpp
     LZMineCompressor.cpp
-    LZCrazyCompressor.cpp
-    CrazyFlateCompressor.cpp
     MyFlateCompressor.cpp
     GzipCompressor.cpp
 )

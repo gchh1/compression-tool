@@ -179,6 +179,13 @@ class BitReader {
         return (read_.size() - byte_pos_) * 8 + buffer_idx_;
     }
 
+    auto alignToByte(void) -> void {
+        uint8_t skip = total_bits_consumed_ % 8;
+        if (skip > 0) {
+            consumeBits(8 - skip);
+        }
+    }
+
     struct Position {
         size_t byte_pos;
         uint64_t buffer;

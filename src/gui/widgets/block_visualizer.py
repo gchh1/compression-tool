@@ -6,6 +6,8 @@ from PyQt6.QtCore import Qt, QRectF, pyqtSignal
 from PyQt6.QtGui import QColor, QPainter, QPen, QFont, QFontMetrics
 from PyQt6.QtWidgets import QWidget, QScrollArea, QVBoxLayout, QLabel
 
+from gui.core.theme import ThemeManager
+
 
 class BlockProfilerWidget(QWidget):
     """Horizontal bar chart showing per-block compression ratio.
@@ -68,10 +70,10 @@ class BlockProfilerWidget(QWidget):
             return
 
         # Background
-        painter.fillRect(self.rect(), QColor(245, 245, 245))
+        painter.fillRect(self.rect(), ThemeManager.color('bg_surface'))
 
         # Axes
-        axis_pen = QPen(QColor(180, 180, 180), 1)
+        axis_pen = QPen(ThemeManager.color('border'), 1)
         painter.setPen(axis_pen)
         baseline = h - self.BOTTOM_MARGIN
         painter.drawLine(int(self.LEFT_MARGIN), int(baseline),
@@ -84,11 +86,11 @@ class BlockProfilerWidget(QWidget):
 
         # 1.0 line
         y1 = baseline - (1.0 / self._max_value) * chart_h
-        dash_pen = QPen(QColor(200, 200, 200), 1, Qt.PenStyle.DashLine)
+        dash_pen = QPen(ThemeManager.color('border_dark'), 1, Qt.PenStyle.DashLine)
         painter.setPen(dash_pen)
         painter.drawLine(int(self.LEFT_MARGIN), int(y1),
                          int(w - self.RIGHT_MARGIN), int(y1))
-        painter.setPen(QColor(120, 120, 120))
+        painter.setPen(ThemeManager.color('text_secondary'))
         painter.drawText(int(self.LEFT_MARGIN - 4), int(y1 + fm.ascent() / 2),
                          "1.0")
 
@@ -98,7 +100,7 @@ class BlockProfilerWidget(QWidget):
             painter.setPen(dash_pen)
             painter.drawLine(int(self.LEFT_MARGIN), int(y05),
                              int(w - self.RIGHT_MARGIN), int(y05))
-            painter.setPen(QColor(120, 120, 120))
+            painter.setPen(ThemeManager.color('text_secondary'))
             painter.drawText(int(self.LEFT_MARGIN - 4), int(y05 + fm.ascent() / 2),
                              "0.5")
 
@@ -137,7 +139,7 @@ class BlockProfilerWidget(QWidget):
 
             # If few blocks, draw index labels
             if len(self._blocks) <= 50:
-                painter.setPen(QColor(100, 100, 100))
+                painter.setPen(ThemeManager.color('text_muted'))
                 painter.drawText(
                     QRectF(x - 4, baseline + 2, self.BAR_WIDTH + 8, 14),
                     Qt.AlignmentFlag.AlignCenter,

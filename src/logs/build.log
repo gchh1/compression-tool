@@ -1,0 +1,297 @@
+PS D:\AAA_C\compression-tool> ./run 
+Building WebCompress...
+168 INFO: PyInstaller: 6.20.0, contrib hooks: 2026.4
+168 INFO: Python: 3.12.4
+216 INFO: Platform: Windows-11-10.0.26200-SP0
+216 INFO: Python environment: D:\Python
+217 INFO: wrote build\WebCompress.spec
+235 INFO: UPX is available and will be used if enabled on build targets.
+236 INFO: Module search paths (PYTHONPATH):
+['D:\\Python\\Scripts\\pyinstaller.exe',
+ 'd:\\AAA_C\\compression-tool\\src',
+ 'D:\\Python\\python312.zip',
+ 'D:\\Python\\DLLs',
+ 'D:\\Python\\Lib',
+ 'D:\\Python',
+ 'D:\\Python\\Lib\\site-packages',
+ 'D:\\Python\\Lib\\site-packages\\win32',
+ 'D:\\Python\\Lib\\site-packages\\win32\\lib',
+ 'D:\\Python\\Lib\\site-packages\\Pythonwin',
+ 'd:\\AAA_C\\compression-tool\\src']
+pygame 2.6.1 (SDL 2.28.4, Python 3.12.4)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+647 INFO: checking Analysis
+647 INFO: Building Analysis because Analysis-00.toc is non existent
+647 INFO: Looking for Python shared library...
+647 INFO: Using Python shared library: D:\Python\python312.dll
+647 INFO: Running Analysis Analysis-00.toc
+648 INFO: Target bytecode optimization level: 0
+648 INFO: Initializing module dependency graph...
+649 INFO: Initializing module graph hook caches...
+659 INFO: Analyzing modules for base_library.zip ...
+1622 INFO: Processing standard module hook 'hook-encodings.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+2717 INFO: Processing standard module hook 'hook-pickle.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+3393 INFO: Processing standard module hook 'hook-heapq.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+3708 INFO: Caching module dependency graph...
+3754 INFO: Analyzing d:\AAA_C\compression-tool\src\gui\main.py
+3812 INFO: Processing standard module hook 'hook-torch.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+2026-05-06 23:48:41.766367: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+1600 WARNING: Failed to collect submodules for 'torch.utils.tensorboard' because importing 'torch.utils.tensorboard' raised: RecursionError: maximum recursion depth exceeded
+W0506 23:48:43.417000 33356 site-packages\torch\distributed\elastic\multiprocessing\redirects.py:29] NOTE: Redirects are currently not supported in Windows or MacOs.
+D:\Python\Lib\site-packages\PyInstaller\utils\hooks\__init__.py:665: DeprecationWarning: `torch.distributed._sharding_spec` will be deprecated, use `torch.distributed._shard.sharding_spec` instead
+  __import__(name)
+D:\Python\Lib\site-packages\PyInstaller\utils\hooks\__init__.py:665: DeprecationWarning: `torch.distributed._sharded_tensor` will be deprecated, use `torch.distributed._shard.sharded_tensor` instead
+  __import__(name)
+D:\Python\Lib\site-packages\PyInstaller\utils\hooks\__init__.py:665: DeprecationWarning: `torch.distributed._shard.checkpoint` will be deprecated, use `torch.distributed.checkpoint` instead
+  __import__(name)
+13697 INFO: hook-torch: this torch build does not depend on MKL...
+13712 INFO: Processing standard module hook 'hook-_ctypes.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+13738 INFO: Processing standard module hook 'hook-platform.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+13742 INFO: Processing pre-safe-import-module hook 'hook-typing_extensions.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+13742 INFO: SetuptoolsInfo: initializing cached setuptools info...
+14151 INFO: Processing standard module hook 'hook-multiprocessing.util.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+14232 INFO: Processing standard module hook 'hook-xml.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+14774 INFO: Processing standard module hook 'hook-numpy.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+15091 INFO: Processing standard module hook 'hook-difflib.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+15200 INFO: Processing standard module hook 'hook-sysconfig.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+15507 INFO: Processing standard module hook 'hook-psutil.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+16655 INFO: Processing standard module hook 'hook-matplotlib.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+16882 INFO: Processing pre-safe-import-module hook 'hook-packaging.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+16927 INFO: Processing pre-safe-import-module hook 'hook-gi.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+17119 INFO: Processing standard module hook 'hook-matplotlib.backend_bases.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+17220 INFO: Processing standard module hook 'hook-PIL.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+17318 INFO: Processing standard module hook 'hook-PIL.Image.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+17542 INFO: Processing standard module hook 'hook-xml.etree.cElementTree.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+17582 INFO: Processing standard module hook 'hook-xml.dom.domreg.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+17758 INFO: Processing standard module hook 'hook-PIL.ImageFilter.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+18118 INFO: Processing standard module hook 'hook-jinja2.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+18405 INFO: Processing standard module hook 'hook-matplotlib.backends.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+18452 INFO: Processing standard module hook 'hook-matplotlib.pyplot.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+19031 INFO: Processing standard module hook 'hook-dateutil.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+19082 INFO: Processing pre-safe-import-module hook 'hook-six.moves.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+20237 INFO: Processing standard module hook 'hook-certifi.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+24395 INFO: Processing standard module hook 'hook-scipy.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+24467 INFO: Processing standard module hook 'hook-pycparser.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+24664 INFO: Processing standard module hook 'hook-setuptools.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+24668 INFO: Processing pre-safe-import-module hook 'hook-distutils.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+24813 INFO: Processing pre-safe-import-module hook 'hook-importlib_metadata.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+25331 INFO: Processing standard module hook 'hook-pkg_resources.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+26282 INFO: Processing standard module hook 'hook-scipy.linalg.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+27370 INFO: Processing standard module hook 'hook-scipy.special._ufuncs.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+27689 INFO: Processing standard module hook 'hook-scipy.special._ellip_harm_2.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+28466 INFO: Processing standard module hook 'hook-scipy.spatial._ckdtree.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+28845 INFO: Processing standard module hook 'hook-scipy.spatial.transform.rotation.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+29319 INFO: Processing standard module hook 'hook-scipy.stats._stats.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+29773 INFO: Processing standard module hook 'hook-scipy.sparse.csgraph.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+31254 INFO: Processing standard module hook 'hook-IPython.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+32379 INFO: Processing standard module hook 'hook-pygments.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+34101 INFO: Processing standard module hook 'hook-wcwidth.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+34144 INFO: Processing pre-safe-import-module hook 'hook-backports.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+34661 INFO: Processing standard module hook 'hook-jedi.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+35793 INFO: Processing standard module hook 'hook-parso.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+36420 INFO: Processing standard module hook 'hook-sqlite3.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+36634 INFO: Processing standard module hook 'hook-nbformat.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+36739 INFO: Processing standard module hook 'hook-jsonschema.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+36961 INFO: Processing standard module hook 'hook-jsonschema_specifications.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+36987 INFO: Processing pre-safe-import-module hook 'hook-importlib_resources.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+37011 INFO: Processing standard module hook 'hook-urllib3.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+37151 INFO: Processing standard module hook 'hook-charset_normalizer.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+37551 INFO: Processing standard module hook 'hook-zmq.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+37967 INFO: Processing pre-safe-import-module hook 'hook-platformdirs.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+37972 INFO: Processing standard module hook 'hook-platformdirs.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+38162 INFO: Processing pre-find-module-path hook 'hook-tkinter.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\pre_find_module_path'
+38163 INFO: TclTkInfo: initializing cached Tcl/Tk info...
+38886 INFO: Processing standard module hook 'hook-_tkinter.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+38901 INFO: Processing standard module hook 'hook-PyQt6.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+39241 INFO: Processing standard module hook 'hook-shelve.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+40122 INFO: Processing pre-safe-import-module hook 'hook-tensorflow.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\pre_safe_import_module'
+40131 INFO: Processing standard module hook 'hook-tensorflow.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+40133 INFO: hook-tensorflow: tensorflow dist name: tensorflow
+40134 INFO: hook-tensorflow: tensorflow version: 2.19.0
+2026-05-06 23:49:11.356091: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+250 WARNING: Failed to collect submodules for 'tensorflow' because importing 'tensorflow' raised: RecursionError: maximum recursion depth exceeded
+2026-05-06 23:49:21.418733: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+289 WARNING: Failed to collect submodules for 'keras' because importing 'keras' raised: RecursionError: maximum recursion depth exceeded
+50550 WARNING: collect_dynamic_libs - skipping library collection for module 'tensorflow-plugins' as it is not a package.
+56802 INFO: Processing standard module hook 'hook-pandas.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+57994 INFO: Processing standard module hook 'hook-pytz.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+58773 INFO: Processing standard module hook 'hook-pyarrow.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+59440 INFO: Processing standard module hook 'hook-fsspec.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+59918 INFO: Processing standard module hook 'hook-pandas.io.formats.style.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+62146 INFO: Processing standard module hook 'hook-pandas.io.clipboard.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+62186 INFO: Processing standard module hook 'hook-pandas.plotting.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+63298 INFO: Processing standard module hook 'hook-torchvision.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+64838 INFO: Processing pre-safe-import-module hook 'hook-win32com.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\pre_safe_import_module'
+64898 INFO: Processing standard module hook 'hook-win32com.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+64900 INFO: Processing standard module hook 'hook-pythoncom.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+64954 INFO: Processing standard module hook 'hook-pywintypes.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+72537 INFO: Processing standard module hook 'hook-rich.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+78282 INFO: Processing standard module hook 'hook-torchvision.io.image.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+79222 INFO: Processing standard module hook 'hook-scipy.io.matlab.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+79428 INFO: Processing standard module hook 'hook-h5py.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+82059 INFO: Processing standard module hook 'hook-pydantic.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+82548 INFO: Processing standard module hook 'hook-zoneinfo.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+84040 INFO: Processing standard module hook 'hook-anyio.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+84763 INFO: Processing standard module hook 'hook-orjson.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+86084 INFO: Processing standard module hook 'hook-uvicorn.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+D:\Python\Lib\site-packages\pydub\utils.py:300: SyntaxWarning: invalid escape sequence '\('
+  m = re.match('([su]([0-9]{1,2})p?) \(([0-9]{1,2}) bit\)$', token)
+D:\Python\Lib\site-packages\pydub\utils.py:301: SyntaxWarning: invalid escape sequence '\('
+  m2 = re.match('([su]([0-9]{1,2})p?)( \(default\))?$', token)
+D:\Python\Lib\site-packages\pydub\utils.py:310: SyntaxWarning: invalid escape sequence '\('
+  elif re.match('(flt)p?( \(default\))?$', token):
+D:\Python\Lib\site-packages\pydub\utils.py:314: SyntaxWarning: invalid escape sequence '\('
+  elif re.match('(dbl)p?( \(default\))?$', token):
+87102 INFO: Processing standard module hook 'hook-transformers.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+D:\Python\Lib\site-packages\transformers\utils\generic.py:441: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(
+90276 INFO: Processing standard module hook 'hook-datasets.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+91144 INFO: Processing standard module hook 'hook-regex.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+92860 INFO: Processing standard module hook 'hook-sklearn.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+93643 INFO: Processing standard module hook 'hook-sklearn.utils.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+93720 INFO: Processing standard module hook 'hook-sklearn.externals.array_api_compat.numpy.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+93742 INFO: Processing standard module hook 'hook-sklearn.externals.array_api_compat.cupy.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+93752 INFO: Processing standard module hook 'hook-sklearn.externals.array_api_compat.torch.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+93773 INFO: Processing standard module hook 'hook-sklearn.externals.array_api_compat.dask.array.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+93868 INFO: Processing standard module hook 'hook-sklearn.metrics.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+94484 INFO: Processing standard module hook 'hook-sklearn.metrics.cluster.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+94575 INFO: Processing standard module hook 'hook-sklearn.cluster.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+94609 INFO: Processing standard module hook 'hook-sklearn.metrics.pairwise.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+94752 INFO: Processing standard module hook 'hook-sklearn.neighbors.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+94808 INFO: Processing standard module hook 'hook-sklearn.linear_model.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+96579 INFO: Processing standard module hook 'hook-sacremoses.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+107226 INFO: Processing standard module hook 'hook-altair.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+107312 INFO: Processing standard module hook 'hook-narwhals.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+113477 INFO: Processing standard module hook 'hook-grpc.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+117591 INFO: Processing standard module hook 'hook-PyQt6.QtWidgets.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+125681 INFO: Processing standard module hook 'hook-PyQt6.QtCore.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+135421 INFO: Processing standard module hook 'hook-PyQt6.QtGui.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+177478 INFO: Processing module hooks (post-graph stage)...
+177903 INFO: Processing pre-safe-import-module hook 'hook-tomli.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+177950 INFO: Processing standard module hook 'hook-sklearn.tree.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+182917 INFO: Processing standard module hook 'hook-matplotlib.backends.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+182918 INFO: Matplotlib backend selection method: automatic discovery of used backends
+182933 INFO: Discovered Matplotlib backend(s) via `matplotlib.use()` call in module 'sympy.testing.runtests': ['Agg', 'Agg']
+182945 INFO: Discovered Matplotlib backend(s) via `matplotlib.use()` call in module 'gradio.utils': ['agg']
+182946 INFO: The following Matplotlib backends were discovered by scanning for `matplotlib.use()` calls: ['Agg', 'agg']. If your backend of choice is not in this list, either add a `matplotlib.use()` call to your code, or configure the backend collection via hook options (see: https://pyinstaller.org/en/stable/hooks-config.html#matplotlib-hooks).
+182946 INFO: Selected matplotlib backends: ['Agg', 'agg']
+183348 INFO: Processing standard module hook 'hook-PIL.SpiderImagePlugin.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+184684 WARNING: Hidden import "scipy.special._cdflib" not found!
+184808 INFO: Processing standard module hook 'hook-setuptools._vendor.importlib_metadata.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+184868 INFO: Processing standard module hook 'hook-setuptools._vendor.jaraco.text.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+184954 INFO: Processing standard module hook 'hook-_tkinter.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+184955 INFO: Processing standard module hook 'hook-tzdata.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+185522 INFO: Performing binary vs. data reclassification (5618 entries)
+186770 INFO: Looking for ctypes DLLs
+186953 WARNING: Ignoring /usr/lib64/libgomp.so.1 imported from D:\Python\Lib\site-packages\torch\_inductor\codecache.py - only basenames are supported with ctypes imports!
+187247 INFO: Analyzing run-time hooks ...
+187284 INFO: Including run-time hook 'pyi_rth_inspect.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+187287 INFO: Including run-time hook 'pyi_rth_pyqt6.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+187289 INFO: Processing pre-find-module-path hook 'hook-_pyi_rth_utils.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\pre_find_module_path'
+187290 INFO: Processing standard module hook 'hook-_pyi_rth_utils.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+187293 INFO: Including run-time hook 'pyi_rth_pkgutil.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+187294 INFO: Including run-time hook 'pyi_rth_multiprocessing.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+187296 INFO: Including run-time hook 'pyi_rth_mplconfig.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+187302 INFO: Including run-time hook 'pyi_rth_pkgres.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+187304 INFO: Including run-time hook 'pyi_rth_setuptools.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+187306 INFO: Including run-time hook 'pyi_rth_traitlets.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\rthooks'
+187307 INFO: Including run-time hook 'pyi_rth__tkinter.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+187308 INFO: Including run-time hook 'pyi_rth_tensorflow.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\rthooks'
+187309 INFO: Including run-time hook 'pyi_rth_pywintypes.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\rthooks'
+187310 INFO: Including run-time hook 'pyi_rth_pythoncom.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\rthooks'
+187669 INFO: Creating base_library.zip...
+187690 INFO: Looking for dynamic libraries
+D:\Python\Lib\site-packages\PyInstaller\building\build_main.py:227: UserWarning: The numpy.array_api submodule is still experimental. See NEP 47.
+  __import__(package)
+2026-05-06 23:51:40.824704: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+D:\Python\Lib\site-packages\cupy\_environment.py:215: UserWarning: CUDA path could not be detected. Set CUDA_PATH environment variable if CuPy fails to load.
+  warnings.warn(
+D:\Python\Lib\site-packages\cupy\_environment.py:215: UserWarning: CUDA path could not be detected. Set CUDA_PATH environment variable if CuPy fails to load.
+  warnings.warn(
+D:\Python\Lib\site-packages\PyInstaller\building\build_main.py:227: FutureWarning: The 'optree.integration' module is deprecated and will be removed in version 0.18.0. Please use 'optree.integrations' instead.
+  __import__(package)
+W0506 23:51:47.660000 15072 site-packages\torch\distributed\elastic\multiprocessing\redirects.py:29] NOTE: Redirects are currently not supported in Windows or MacOs.
+D:\Python\Lib\site-packages\transformers\utils\generic.py:441: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(
+D:\Python\Lib\site-packages\PyInstaller\building\build_main.py:227: DeprecationWarning: `torch.distributed._sharding_spec` will be deprecated, use `torch.distributed._shard.sharding_spec` instead
+  __import__(package)
+D:\Python\Lib\site-packages\PyInstaller\building\build_main.py:227: DeprecationWarning: `torch.distributed._sharded_tensor` will be deprecated, use `torch.distributed._shard.sharded_tensor` instead
+  __import__(package)
+D:\Python\Lib\site-packages\PyInstaller\building\build_main.py:227: DeprecationWarning: `torch.distributed._shard.checkpoint` will be deprecated, use `torch.distributed.checkpoint` instead
+  __import__(package)
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+211511 INFO: Extra DLL search directories (AddDllDirectory): ['D:\\Python\\Lib\\site-packages\\PyQt6\\Qt6\\bin', 'D:\\Python\\Lib\\site-packages\\torch\\lib', 'D:\\Python\\Lib\\site-packages\\numpy.libs', 'D:\\Python\\Lib\\site-packages\\pyarrow.libs', 'D:\\Python\\Lib\\site-packages\\pandas.libs', 'D:\\Python\\Lib\\site-packages\\scipy.libs', 'D:\\Python\\Lib\\site-packages\\torchvision', 'D:\\Python\\Lib\\site-packages\\torchvision', 'D:\\Python\\Lib\\site-packages\\torchvision', 'D:\\Python\\Lib\\site-packages\\torchvision']
+211511 INFO: Extra DLL search directories (PATH): ['D:\\Python\\Lib\\site-packages\\PyQt6\\Qt6\\bin']
+217306 WARNING: Library not found: could not resolve 'cufft64_11.dll', dependency of 'D:\\Python\\Lib\\site-packages\\cupy\\cuda\\cufft.cp312-win_amd64.pyd'.
+217306 WARNING: Library not found: could not resolve 'cublas64_12.dll', dependency of 'D:\\Python\\Lib\\site-packages\\cupy_backends\\cuda\\libs\\cublas.cp312-win_amd64.pyd'.
+217307 WARNING: Library not found: could not resolve 'cusolver64_11.dll', dependency of 'D:\\Python\\Lib\\site-packages\\cupy_backends\\cuda\\libs\\cusolver.cp312-win_amd64.pyd'.
+217307 WARNING: Library not found: could not resolve 'cusolver64_11.dll', dependency of 'D:\\Python\\Lib\\site-packages\\cupyx\\cusolver.cp312-win_amd64.pyd'.
+217308 WARNING: Library not found: could not resolve 'cuTENSOR.dll', dependency of 'D:\\Python\\Lib\\site-packages\\cupy_backends\\cuda\\libs\\cutensor.cp312-win_amd64.pyd'.
+217308 WARNING: Library not found: could not resolve 'nvrtc64_120_0.dll', dependency of 'D:\\Python\\Lib\\site-packages\\cupy\\cuda\\jitify.cp312-win_amd64.pyd'.
+217309 WARNING: Library not found: could not resolve 'cudnn64_8.dll', dependency of 'D:\\Python\\Lib\\site-packages\\cupy_backends\\cuda\\libs\\cudnn.cp312-win_amd64.pyd'.
+217753 INFO: Warnings written to d:\AAA_C\compression-tool\build\PyInstaller\WebCompress\warn-WebCompress.txt
+218481 INFO: Graph cross-reference written to d:\AAA_C\compression-tool\build\PyInstaller\WebCompress\xref-WebCompress.html
+218699 INFO: checking PYZ
+218699 INFO: Building PYZ because PYZ-00.toc is non existent
+218699 INFO: Building PYZ (ZlibArchive) d:\AAA_C\compression-tool\build\PyInstaller\WebCompress\PYZ-00.pyz
+224827 INFO: Building PYZ (ZlibArchive) d:\AAA_C\compression-tool\build\PyInstaller\WebCompress\PYZ-00.pyz completed successfully.
+225204 INFO: checking PKG
+225204 INFO: Building PKG because PKG-00.toc is non existent
+225204 INFO: Building PKG (CArchive) WebCompress.pkg
+225216 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\pyarrow\arrow_python_parquet_encryption.dll
+225325 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\pyarrow\arrow_flight.dll
+229072 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\pyarrow\parquet.dll
+230587 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\pyarrow\arrow_compute.dll
+232518 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\pyarrow\arrow.dll
+237670 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\pyarrow\arrow_python.dll
+237908 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\pyarrow\arrow_python_flight.dll
+237980 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\pyarrow\arrow_dataset.dll
+238255 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\pyarrow\arrow_substrait.dll
+238881 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\pyarrow\arrow_acero.dll
+low\compiler\tf2xla\ops\_xla_ops.so
+241448 INFO: Disabling UPX for D:\Python\Lib\site-packages\sklearn\.libs\msvcp140.dll due to CFG!
+241450 INFO: Disabling UPX for D:\Python\Lib\site-packages\sklearn\.libs\vcomp140.dll due to CFG!
+241451 INFO: Disabling UPX for D:\Python\Lib\site-packages\torch\lib\cudnn_graph64_9.dll due to CFG!
+low\compiler\tf2xla\ops\_xla_ops.so
+241448 INFO: Disabling UPX for D:\Python\Lib\site-packages\sklearn\.libs\msvcp140.dll due to CFG!
+241450 INFO: Disabling UPX for D:\Python\Lib\site-packages\sklearn\.libs\vcomp140.dll due to CFG!
+241451 INFO: Disabling UPX for D:\Python\Lib\site-packages\torch\lib\cudnn_graph64_9.dll due to CFG!
+241454 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\torch\lib\zlibwapi.dll
+241670 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\torch\lib\cusolverMg64_12.dll
+269866 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\torch\lib\c10_cuda.dll
+270217 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\torch\lib\nvrtc64_130_0.dll
+297039 INFO: Disabling UPX for D:\Python\Lib\site-packages\torch\lib\cudnn64_9.dll due to CFG!
+297760 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\torch\lib\torch_cuda.dll
+415085 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\torch\lib\torch.dll
+415105 WARNING: Failed to upx strip on 'C:\\Users\\Lam Tim\\AppData\\Local\\pyinstaller\\bincache01py31264bit\\torch\\lib\\torch.dll'!
+Traceback (most recent call last):
+  File "D:\Python\Lib\site-packages\PyInstaller\building\utils.py", line 296, in process_collected_binary
+    p = subprocess.run(
+        ^^^^^^^^^^^^^^^
+  File "D:\Python\Lib\subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['upx', '--compress-icons=0', '--lzma', '-q', '--strip-loadconf', 'C:\\Users\\Lam Tim\\AppData\\Local\\pyinstaller\\bincache01py31264bit\\torch\\lib\\torch.dll']' returned non-zero exit status 1.
+415107 WARNING: Output from upx command:
+                       Ultimate Packer for eXecutables
+                          Copyright (C) 1996 - 2025
+UPX 5.0.1       Markus Oberhumer, Laszlo Molnar & John Reiser    May 6th 2025
+
+        File size         Ratio      Format      Name
+   --------------------   ------   -----------   -----------
+upx: C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\torch\lib\torch.dll: NotCompressibleException
+
+Packed 1 file: 0 ok, 1 error.
+
+415115 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\torch\lib\cupti64_2025.3.0.dll
+415533 INFO: Disabling UPX for D:\Python\Lib\site-packages\torch\lib\cudnn_engines_precompiled64_9.dll due to CFG!
+415537 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\torch\lib\uv.dll
+415676 INFO: Disabling UPX for D:\Python\Lib\site-packages\torch\lib\cudnn_adv64_9.dll due to CFG!
+415728 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\torch\lib\nvperf_host.dll
+424616 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\torch\lib\cublas64_13.dll
+441074 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\torch\lib\libiomp5md.dll
+441420 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\torch\lib\libiompstubs5md.dll
+441467 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\torch\bin\protoc.exe
+442120 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\torch\lib\shm.dll
+442144 INFO: Disabling UPX for D:\Python\Lib\site-packages\torch\lib\cudnn_heuristic64_9.dll due to CFG!
+442658 INFO: Executing: upx --compress-icons=0 --lzma -q --strip-loadconf C:\Users\Lam Tim\AppData\Local\pyinstaller\bincache01py31264bit\torch\lib\cufft64_12.dll
+

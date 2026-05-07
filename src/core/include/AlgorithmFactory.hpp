@@ -1,14 +1,3 @@
-/**
- * @file AlgorithmFactory.hpp
- * @author yhc
- * @brief
- * @version 0.1
- * @date 2026-04-27
- *
- * @copyright Copyright (c) 2026
- *
- */
-
 #pragma once
 
 #include <memory>
@@ -18,15 +7,29 @@
 
 namespace compressor::core {
 
-enum class AlgorithmID { None, Deflate, Inflate, DeltaEncode, DeltaDecode };
+enum class AlgorithmID {
+    None,
+    Deflate,
+    Inflate,
+    DeltaEncode,
+    DeltaDecode,
+    LZSS,
+    LZSSDecompress,
+    LZMine,
+    LZMineDecompress,
+    MyFlate,
+};
 
 auto createAlgorithm(AlgorithmID id) -> std::unique_ptr<algorithm::IAlgorithm>;
 
 inline AlgorithmID getDecompressorID(AlgorithmID comp) {
     static const std::unordered_map<AlgorithmID, AlgorithmID> map = {
         {AlgorithmID::Deflate, AlgorithmID::Inflate},
+        {AlgorithmID::LZSS, AlgorithmID::LZSSDecompress},
+        {AlgorithmID::LZMine, AlgorithmID::LZMineDecompress},
     };
-    return map.at(comp);
+    auto it = map.find(comp);
+    return it != map.end() ? it->second : AlgorithmID::None;
 }
 
 inline AlgorithmID getPostpressorID(AlgorithmID pre) {
@@ -34,7 +37,8 @@ inline AlgorithmID getPostpressorID(AlgorithmID pre) {
         {AlgorithmID::None, AlgorithmID::None},
         {AlgorithmID::DeltaEncode, AlgorithmID::DeltaDecode},
     };
-    return map.at(pre);
+    auto it = map.find(pre);
+    return it != map.end() ? it->second : AlgorithmID::None;
 }
 
-}  // namespace compressor::core
+}

@@ -29,11 +29,12 @@ private:
     node* lit_cursor_{nullptr};
     node* dist_cursor_{nullptr};
 
-    enum class DecodeState { READ_TREES, DECODE_TOKENS, COPY_MATCH };
+    enum class DecodeState { READ_TREES, READ_BLOCK_HEADER, DECODE_TOKENS, COPY_MATCH, STORED_COPY };
     DecodeState decode_state_{DecodeState::READ_TREES};
 
     uint16_t pending_length_{0};
     uint16_t pending_dist_{0};
+    size_t stored_bytes_remaining_{0};
 
     auto readHuffmanTree(node*& root, size_t symbol_bits) -> bool;
 

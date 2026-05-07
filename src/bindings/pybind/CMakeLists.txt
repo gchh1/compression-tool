@@ -1,5 +1,3 @@
-# ========================== Pybind Bindings ==========================
-
 find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 
 execute_process(
@@ -13,7 +11,12 @@ find_package(pybind11 REQUIRED)
 pybind11_add_module(core_engine pybind_module.cpp)
 
 target_include_directories(core_engine PRIVATE
-    ${CMAKE_SOURCE_DIR}/src/preprocessor/include
+    ${CMAKE_SOURCE_DIR}/src/core/include
+    ${CMAKE_SOURCE_DIR}/src/algorithm/include
+    ${CMAKE_SOURCE_DIR}/src/archiver/include
+    ${CMAKE_SOURCE_DIR}/src/api/include
+    ${CMAKE_SOURCE_DIR}/src/processor/include
+    ${CMAKE_SOURCE_DIR}/src/memory/include
 )
 
-target_link_libraries(core_engine PRIVATE core algorithm preprocessor archiver)
+target_link_libraries(core_engine PRIVATE core algorithm archiver api processor)

@@ -10,13 +10,14 @@ from PyQt6.QtWidgets import (
 )
 
 from gui.core.models import NETWORK_PROFILES, NetworkProfile, formatted_size, FileRecord, FolderRecord
+from gui.core.theme import ThemeManager
 
 
 class _TransferBarChart(QWidget):
     """Before/after bar chart for transfer time comparison."""
 
-    COLORS_BEFORE = QColor("#d0021b")
-    COLORS_AFTER = QColor("#7ed321")
+    COLORS_BEFORE = ThemeManager.color('error')
+    COLORS_AFTER = ThemeManager.color('success')
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -93,7 +94,7 @@ class NetworkView(QWidget):
         layout.addWidget(title)
 
         desc = QLabel("模拟不同网络环境下，压缩对传输时间的提升效果")
-        desc.setStyleSheet("color: #888; padding-bottom: 12px;")
+        desc.setStyleSheet(f"color: {ThemeManager.hex('text_muted')}; padding-bottom: 12px;")
         layout.addWidget(desc)
 
         # Results table

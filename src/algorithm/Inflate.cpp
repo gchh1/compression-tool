@@ -23,6 +23,7 @@ auto Inflate::reset(void) -> void {
     decode_state_ = DecodeState::READ_TREES;
     pending_length_ = 0;
     pending_dist_ = 0;
+    stored_bytes_remaining_ = 0;
 }
 
 void Inflate::destroyTree(node* n) {
@@ -71,6 +72,36 @@ void Inflate::decodeDistCode(uint16_t symbol, uint16_t& dist, uint8_t& extra_bit
 
 auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
     while (true) {
+
+        if (decode_state_ == DecodeState::READ_BLOCK_HEADER) {
+            if (!reader_.ensureBits(3)) {
+                status.done = true;
+                status.need_input = true;
+                return;
+            }
+            bool bfinal = reader_.readBit();
+            uint8_t btype = reader_.readBits(2);
+
+            if (btype == 0) {
+                reader_.alignToByte();
+                if (!reader_.ensureBits(32)) {
+                    status.need_input = true;
+                    return;
+                }
+                uint16_t len = reader_.readBits(16);
+                uint16_t nlen = reader_.readBits(16);
+                (void)nlen;
+                stored_bytes_remaining_ = len;
+                decode_state_ = DecodeState::STORED_COPY;
+            } else if (btype == 1 || btype == 2) {
+                decode_state_ = DecodeState::READ_TREES;
+            } else {
+                status.done = true;
+                return;
+            }
+            continue;
+        }
+
         if (decode_state_ == DecodeState::READ_TREES) {
             destroyTree(lit_root_);
             destroyTree(dist_root_);
@@ -90,6 +121,27 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
             lit_cursor_ = lit_root_;
             dist_cursor_ = dist_root_;
             decode_state_ = DecodeState::DECODE_TOKENS;
+            continue;
+        }
+
+        if (decode_state_ == DecodeState::STORED_COPY) {
+            while (stored_bytes_remaining_ > 0) {
+                if (!reader_.ensureBits(8)) {
+                    status.need_input = true;
+                    return;
+                }
+                output_buf_.push_back(static_cast<uint8_t>(reader_.readBits(8)));
+                stored_bytes_remaining_--;
+            }
+            for (size_t i = 0; i < output_buf_.size(); i++) {
+                if (!writer_.ensureSpace(1)) {
+                    status.need_output = true;
+                    return;
+                }
+                writer_.writeBits(output_buf_[i], 8);
+            }
+            output_buf_.clear();
+            decode_state_ = DecodeState::READ_TREES;
             continue;
         }
 
@@ -121,8 +173,8 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
                     writer_.writeBits(output_buf_[i], 8);
                 }
                 output_buf_.clear();
-                status.done = true;
-                return;
+                decode_state_ = DecodeState::READ_TREES;
+                continue;
             }
 
             uint16_t base_len = 0;

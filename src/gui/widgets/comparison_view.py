@@ -14,6 +14,7 @@ from PyQt6.QtWidgets import (
 )
 
 from gui.core.models import formatted_size
+from gui.core.theme import ThemeManager
 
 
 class ComparisonWorker(QThread):
@@ -104,7 +105,7 @@ class ComparisonView(QWidget):
         layout.addWidget(title)
 
         desc = QLabel("选择已压缩的文件，与 gzip / ZIP / brotli 进行压缩率和耗时对比")
-        desc.setStyleSheet("color: #888; padding-bottom: 12px;")
+        desc.setStyleSheet(f"color: {ThemeManager.hex('text_muted')}; padding-bottom: 12px;")
         layout.addWidget(desc)
 
         # Tool selection
@@ -122,9 +123,9 @@ class ComparisonView(QWidget):
 
         self._run_btn = QPushButton("▶ 运行对比测试")
         self._run_btn.setStyleSheet(
-            "QPushButton { background: #f5a623; color: white; font-weight: bold; "
+            f"QPushButton {{ background: {ThemeManager.hex('warning')}; color: white; font-weight: bold; "
             "padding: 8px 20px; border-radius: 6px; }"
-            "QPushButton:hover { background: #d4891a; }"
+            f"QPushButton:hover {{ background: {ThemeManager.hex('accent_hover')}; }}"
         )
         self._run_btn.clicked.connect(self._run_comparison)
         tools_layout.addWidget(self._run_btn)
@@ -144,7 +145,7 @@ class ComparisonView(QWidget):
         layout.addWidget(self._table)
 
         self._status = QLabel("")
-        self._status.setStyleSheet("color: #888; font-size: 11px;")
+        self._status.setStyleSheet(f"color: {ThemeManager.hex('text_muted')}; font-size: 11px;")
         layout.addWidget(self._status)
 
     def set_file(self, file_path: str, our_result: dict | None = None) -> None:

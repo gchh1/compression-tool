@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Token 热力图 - test.js</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: "Microsoft YaHei","Consolas","Courier New",monospace; background: #0f172a; color: #e2e8f0; padding: 24px; }
+h1 { font-size: 20px; margin-bottom: 6px; }
+.meta { color: #94a3b8; font-size: 13px; margin-bottom: 16px; }
+.stats { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.stat { background: #1e293b; border-radius: 8px; padding: 12px 14px; min-width: 100px; }
+.stat .num { font-size: 18px; font-weight: 700; color: #38bdf8; }
+.stat .desc { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+
+.legend { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 12px; color: #94a3b8; }
+.legend-bar { width: 180px; height: 10px; border-radius: 5px; background: linear-gradient(to right, #22c55e, #eab308, #ef4444); }
+
+.text-view { 
+  background: #1e293b; border-radius: 8px; padding: 16px; 
+  font-family: "Consolas","Courier New",monospace; font-size: 13px; line-height: 1.6;
+  white-space: pre-wrap; word-break: break-all; overflow-x: auto; max-height: 60vh;
+  border: 1px solid #334155;
+}
+.token { cursor: pointer; padding: 1px 0; border-radius: 2px; transition: background 0.15s; }
+.token:hover { filter: brightness(1.3); outline: 1px solid rgba(255,255,255,0.3); }
+
+.tooltip {
+  display: none; position: fixed; background: #0f172a; border: 1px solid #475569;
+  border-radius: 8px; padding: 12px 16px; font-size: 12px; z-index: 200;
+  pointer-events: none; box-shadow: 0 8px 24px rgba(0,0,0,0.5); min-width: 220px;
+}
+.tooltip.visible { display: block; }
+.tooltip .tl { color: #94a3b8; }
+.tooltip .tv { color: #f1f5f9; font-weight: 600; font-family: "Consolas",monospace; }
+.tooltip .tg { color: #38bdf8; font-weight: 700; }
+.tooltip .tr { color: #94a3b8; font-size: 11px; margin-top: 6px; padding-top: 6px; border-top: 1px solid #334155; }
+
+.table-section { margin-top: 24px; }
+table { border-collapse: collapse; width: 100%; font-size: 12px; }
+th { background: #1e293b; color: #94a3b8; padding: 8px 12px; text-align: left; font-weight: 500; }
+td { padding: 6px 12px; border-bottom: 1px solid #1e293b; }
+tr:hover td { background: #1e293b; }
+.type-match { color: #22c55e; font-weight: 600; }
+.type-literal { color: #fbbf24; }
+.type-run { color: #38bdf8; }
+.ratio-good { color: #22c55e; font-weight: 600; }
+.ratio-bad { color: #ef4444; }
+</style>
+</head>
+<body>
+<h1>🔥 Token 级别压缩热力图</h1>
+<div class="meta">文件: test.js &nbsp;|&nbsp; 算法: myflate &nbsp;|&nbsp; 模式: 文本高亮</div>
+
+<div class="stats">
+  <div class="stat"><div class="num">0</div><div class="desc">原始大小</div></div>
+  <div class="stat"><div class="num">76</div><div class="desc">压缩后大小</div></div>
+  <div class="stat"><div class="num">0.9%</div><div class="desc">Token 加权压缩率</div></div>
+  <div class="stat"><div class="num">57</div><div class="desc">Token 总数</div></div>
+  <div class="stat"><div class="num">16</div><div class="desc">匹配 Token</div></div>
+  <div class="stat"><div class="num">41</div><div class="desc">字面量 Token</div></div>
+  <div class="stat"><div class="num">4,059B / 41B</div><div class="desc">匹配/字面 字节</div></div>
+  <div class="stat"><div class="num">0.0ms</div><div class="desc">压缩耗时</div></div></div>
+
+<div class="legend">
+  <span>高效压缩</span>
+  <div class="legend-bar"></div>
+  <span>低效/膨胀</span>
+  <span style="margin-left:12px; color:#64748b">| 悬停查看 Token 详情</span>
+</div>
+
+<div class="text-view" id="textView"></div>
+<div class="tooltip" id="tooltip"></div>
+
+<div class="table-section">
+  <h2 style="font-size:16px;margin-bottom:12px">📋 Token 明细表</h2>
+  <table>
+    <thead><tr><th>#</th><th>类型</th><th>原文范围</th><th>长度</th><th>压缩后</th><th>压缩率</th><th>偏移</th></tr></thead>
+    <tbody id="tokenTable"></tbody>
+  </table>
+</div>
+
+<script>
+const tokens = [{"type": "literal", "start": 0, "length": 1, "comp_size": 0.75, "comp_str": "0.75", "ratio": 0.75, "color": "rgb(229,53,53)", "offset": 0}, {"type": "literal", "start": 1, "length": 1, "comp_size": 0.625, "comp_str": "0.62", "ratio": 0.625, "color": "rgb(234,60,60)", "offset": 0}, {"type": "literal", "start": 2, "length": 1, "comp_size": 0.5, "comp_str": "0.50", "ratio": 0.5, "color": "rgb(239,68,68)", "offset": 0}, {"type": "literal", "start": 3, "length": 1, "comp_size": 0.625, "comp_str": "0.62", "ratio": 0.625, "color": "rgb(234,60,60)", "offset": 0}, {"type": "literal", "start": 4, "length": 1, "comp_size": 0.5, "comp_str": "0.50", "ratio": 0.5, "color": "rgb(239,68,68)", "offset": 0}, {"type": "literal", "start": 5, "length": 1, "comp_size": 0.75, "comp_str": "0.75", "ratio": 0.75, "color": "rgb(229,53,53)", "offset": 0}, {"type": "literal", "start": 6, "length": 1, "comp_size": 0.75, "comp_str": "0.75", "ratio": 0.75, "color": "rgb(229,53,53)", "offset": 0}, {"type": "literal", "start": 7, "length": 1, "comp_size": 0.5, "comp_str": "0.50", "ratio": 0.5, "color": "rgb(239,68,68)", "offset": 0}, {"type": "literal", "start": 8, "length": 1, "comp_size": 0.375, "comp_str": "0.38", "ratio": 0.375, "color": "rgb(236,114,43)", "offset": 0}, {"type": "literal", "start": 9, "length": 1, "comp_size": 0.5, "comp_str": "0.50", "ratio": 0.5, "color": "rgb(239,68,68)", "offset": 0}, {"type": "literal", "start": 10, "length": 1, "comp_size": 0.625, "comp_str": "0.62", "ratio": 0.625, "color": "rgb(234,60,60)", "offset": 0}, {"type": "literal", "start": 11, "length": 1, "comp_size": 0.75, "comp_str": "0.75", "ratio": 0.75, "color": "rgb(229,53,53)", "offset": 0}, {"type": "literal", "start": 12, "length": 1, "comp_size": 0.5, "comp_str": "0.50", "ratio": 0.5, "color": "rgb(239,68,68)", "offset": 0}, {"type": "literal", "start": 13, "length": 1, "comp_size": 0.75, "comp_str": "0.75", "ratio": 0.75, "color": "rgb(229,53,53)", "offset": 0}, {"type": "literal", "start": 14, "length": 1, "comp_size": 0.75, "comp_str": "0.75", "ratio": 0.75, "color": "rgb(229,53,53)", "offset": 0}, {"type": "literal", "start": 15, "length": 1, "comp_size": 0.375, "comp_str": "0.38", "ratio": 0.375, "color": "rgb(236,114,43)", "offset": 0}, {"type": "literal", "start": 16, "length": 1, "comp_size": 0.75, "comp_str": "0.75", "ratio": 0.75, "color": "rgb(229,53,53)", "offset": 0}, {"type": "literal", "start": 17, "length": 1, "comp_size": 0.375, "comp_str": "0.38", "ratio": 0.375, "color": "rgb(236,114,43)", "offset": 0}, {"type": "literal", "start": 18, "length": 1, "comp_size": 0.75, "comp_str": "0.75", "ratio": 0.75, "color": "rgb(229,53,53)", "offset": 0}, {"type": "literal", "start": 19, "length": 1, "comp_size": 0.625, "comp_str": "0.62", "ratio": 0.625, "color": "rgb(234,60,60)", "offset": 0}, {"type": "literal", "start": 20, "length": 1, "comp_size": 0.5, "comp_str": "0.50", "ratio": 0.5, "color": "rgb(239,68,68)", "offset": 0}, {"type": "literal", "start": 21, "length": 1, "comp_size": 0.375, "comp_str": "0.38", "ratio": 0.375, "color": "rgb(236,114,43)", "offset": 0}, {"type": "literal", "start": 22, "length": 1, "comp_size": 0.625, "comp_str": "0.62", "ratio": 0.625, "color": "rgb(234,60,60)", "offset": 0}, {"type": "literal", "start": 23, "length": 1, "comp_size": 0.375, "comp_str": "0.38", "ratio": 0.375, "color": "rgb(236,114,43)", "offset": 0}, {"type": "literal", "start": 24, "length": 1, "comp_size": 0.75, "comp_str": "0.75", "ratio": 0.75, "color": "rgb(229,53,53)", "offset": 0}, {"type": "literal", "start": 25, "length": 1, "comp_size": 0.375, "comp_str": "0.38", "ratio": 0.375, "color": "rgb(236,114,43)", "offset": 0}, {"type": "literal", "start": 26, "length": 1, "comp_size": 0.75, "comp_str": "0.75", "ratio": 0.75, "color": "rgb(229,53,53)", "offset": 0}, {"type": "literal", "start": 27, "length": 1, "comp_size": 0.625, "comp_str": "0.62", "ratio": 0.625, "color": "rgb(234,60,60)", "offset": 0}, {"type": "literal", "start": 28, "length": 1, "comp_size": 0.375, "comp_str": "0.38", "ratio": 0.375, "color": "rgb(236,114,43)", "offset": 0}, {"type": "literal", "start": 29, "length": 1, "comp_size": 0.5, "comp_str": "0.50", "ratio": 0.5, "color": "rgb(239,68,68)", "offset": 0}, {"type": "literal", "start": 30, "length": 1, "comp_size": 0.625, "comp_str": "0.62", "ratio": 0.625, "color": "rgb(234,60,60)", "offset": 0}, {"type": "literal", "start": 31, "length": 1, "comp_size": 0.5, "comp_str": "0.50", "ratio": 0.5, "color": "rgb(239,68,68)", "offset": 0}, {"type": "literal", "start": 32, "length": 1, "comp_size": 0.625, "comp_str": "0.62", "ratio": 0.625, "color": "rgb(234,60,60)", "offset": 0}, {"type": "literal", "start": 33, "length": 1, "comp_size": 0.5, "comp_str": "0.50", "ratio": 0.5, "color": "rgb(239,68,68)", "offset": 0}, {"type": "literal", "start": 34, "length": 1, "comp_size": 0.5, "comp_str": "0.50", "ratio": 0.5, "color": "rgb(239,68,68)", "offset": 0}, {"type": "literal", "start": 35, "length": 1, "comp_size": 0.375, "comp_str": "0.38", "ratio": 0.375, "color": "rgb(236,114,43)", "offset": 0}, {"type": "literal", "start": 36, "length": 1, "comp_size": 0.625, "comp_str": "0.62", "ratio": 0.625, "color": "rgb(234,60,60)", "offset": 0}, {"type": "literal", "start": 37, "length": 1, "comp_size": 0.625, "comp_str": "0.62", "ratio": 0.625, "color": "rgb(234,60,60)", "offset": 0}, {"type": "literal", "start": 38, "length": 1, "comp_size": 0.375, "comp_str": "0.38", "ratio": 0.375, "color": "rgb(236,114,43)", "offset": 0}, {"type": "literal", "start": 39, "length": 1, "comp_size": 0.625, "comp_str": "0.62", "ratio": 0.625, "color": "rgb(234,60,60)", "offset": 0}, {"type": "literal", "start": 40, "length": 1, "comp_size": 0.75, "comp_str": "0.75", "ratio": 0.75, "color": "rgb(229,53,53)", "offset": 0}, {"type": "match", "start": 41, "length": 258, "comp_size": 0.875, "comp_str": "0.88", "ratio": 0.0034, "color": "#22c55e", "offset": 41}, {"type": "match", "start": 299, "length": 258, "comp_size": 0.875, "comp_str": "0.88", "ratio": 0.0034, "color": "#22c55e", "offset": 41}, {"type": "match", "start": 557, "length": 258, "comp_size": 0.875, "comp_str": "0.88", "ratio": 0.0034, "color": "#22c55e", "offset": 41}, {"type": "match", "start": 815, "length": 258, "comp_size": 0.875, "comp_str": "0.88", "ratio": 0.0034, "color": "#22c55e", "offset": 41}, {"type": "match", "start": 1073, "length": 258, "comp_size": 0.875, "comp_str": "0.88", "ratio": 0.0034, "color": "#22c55e", "offset": 41}, {"type": "match", "start": 1331, "length": 258, "comp_size": 0.875, "comp_str": "0.88", "ratio": 0.0034, "color": "#22c55e", "offset": 41}, {"type": "match", "start": 1589, "length": 258, "comp_size": 0.875, "comp_str": "0.88", "ratio": 0.0034, "color": "#22c55e", "offset": 41}, {"type": "match", "start": 1847, "length": 258, "comp_size": 0.875, "comp_str": "0.88", "ratio": 0.0034, "color": "#22c55e", "offset": 41}, {"type": "match", "start": 2105, "length": 258, "comp_size": 0.875, "comp_str": "0.88", "ratio": 0.0034, "color": "#22c55e", "offset": 41}, {"type": "match", "start": 2363, "length": 258, "comp_size": 0.875, "comp_str": "0.88", "ratio": 0.0034, "color": "#22c55e", "offset": 41}, {"type": "match", "start": 2621, "length": 258, "comp_size": 0.875, "comp_str": "0.88", "ratio": 0.0034, "color": "#22c55e", "offset": 41}, {"type": "match", "start": 2879, "length": 258, "comp_size": 0.875, "comp_str": "0.88", "ratio": 0.0034, "color": "#22c55e", "offset": 41}, {"type": "match", "start": 3137, "length": 258, "comp_size": 0.875, "comp_str": "0.88", "ratio": 0.0034, "color": "#22c55e", "offset": 41}, {"type": "match", "start": 3395, "length": 258, "comp_size": 0.875, "comp_str": "0.88", "ratio": 0.0034, "color": "#22c55e", "offset": 41}, {"type": "match", "start": 3653, "length": 258, "comp_size": 0.875, "comp_str": "0.88", "ratio": 0.0034, "color": "#22c55e", "offset": 41}, {"type": "match", "start": 3911, "length": 189, "comp_size": 2.0, "comp_str": "2", "ratio": 0.0106, "color": "#22c55e", "offset": 41}];
+const rawText = JSON.parse("\"function test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\nfunction test() { var x = 1; return x; }\\n\"");
+const textView = document.getElementById('textView');
+const tooltip = document.getElementById('tooltip');
+const tbody = document.getElementById('tokenTable');
+
+let html = '';
+let pos = 0;
+
+tokens.forEach((t, idx) => {
+  const chunk = rawText.substring(pos, pos + t.length);
+  const span = '<span class="token" data-idx="' + idx + '" style="background:' + t.color + '">' + chunk + '</span>';
+  html += span;
+  pos += t.length;
+});
+textView.innerHTML = html;
+
+textView.addEventListener('mouseenter', function(e) {
+  if (!e.target.classList.contains('token')) return;
+  const idx = parseInt(e.target.dataset.idx);
+  const t = tokens[idx];
+  const typeLabel = t.type === 'match' ? 'MATCH' : (t.type === 'literal_run' ? 'LITERAL_RUN' : 'LITERAL');
+  let extra = '';
+  if (t.type === 'match') {
+    extra = '<div class="tr">回退偏移: <span class="tv">' + t.offset + '</span> 字符</div>';
+  }
+  tooltip.innerHTML =
+    '<div><span class="tl">类型:</span> <span class="tg">' + typeLabel + '</span></div>' +
+    '<div><span class="tl">原文位置:</span> <span class="tv">' + t.start + ' ~ ' + (t.start + t.length - 1) + '</span></div>' +
+    '<div><span class="tl">原文长度:</span> <span class="tv">' + t.length + ' B</span></div>' +
+    '<div><span class="tl">编码大小:</span> <span class="tv">' + t.comp_str + ' B</span></div>' +
+    '<div><span class="tl">压缩率:</span> <span class="tv" style="color:' + t.color + '">' + (t.ratio * 100).toFixed(1) + '%</span></div>' +
+    extra;
+  tooltip.classList.add('visible');
+}, true);
+
+textView.addEventListener('mousemove', function(e) {
+  if (!e.target.classList.contains('token')) return;
+  tooltip.style.left = Math.min(e.clientX + 14, window.innerWidth - 260) + 'px';
+  tooltip.style.top = Math.min(e.clientY + 14, window.innerHeight - 160) + 'px';
+}, true);
+
+textView.addEventListener('mouseleave', function(e) {
+  if (!e.target.classList.contains('token')) return;
+  tooltip.classList.remove('visible');
+}, true);
+
+tokens.forEach((t, idx) => {
+  const typeClass = t.type === 'match' ? 'type-match' : (t.type === 'literal_run' ? 'type-run' : 'type-literal');
+  const ratioClass = t.ratio <= 0.3 ? 'ratio-good' : 'ratio-bad';
+  const typeLabel = t.type === 'match' ? 'MATCH' : (t.type === 'literal_run' ? 'LITERAL_RUN' : 'LITERAL');
+  const offsetStr = t.type === 'match' ? t.offset : '-';
+  const tr = document.createElement('tr');
+  tr.innerHTML =
+    '<td>' + (idx+1) + '</td>' +
+    '<td class="' + typeClass + '">' + typeLabel + '</td>' +
+    '<td>' + t.start + ' ~ ' + (t.start + t.length - 1) + '</td>' +
+    '<td>' + t.length + '</td>' +
+    '<td>' + t.comp_str + '</td>' +
+    '<td class="' + ratioClass + '">' + (t.ratio * 100).toFixed(2) + '%</td>' +
+    '<td>' + offsetStr + '</td>';
+  tbody.appendChild(tr);
+});
+</script>
+</body>
+</html>
