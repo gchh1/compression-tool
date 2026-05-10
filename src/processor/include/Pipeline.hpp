@@ -17,23 +17,26 @@ using algorithm::IAlgorithm;
 
 class Pipeline {
    public:
+    /** @brief Construct with `algorithm chain` and `memory pool` */
     Pipeline(std::vector<std::unique_ptr<IAlgorithm>> algorithms,
              std::shared_ptr<memory::MemoryPool> pool = nullptr);
 
-    /// Zero-copy push into the first stage.
+    /** @brief Push raw data to process. The data have been wrapper as a chunk
+     */
     auto push(memory::DataChunk chunk, bool is_last = false) -> void;
 
-    /// Convenience: wraps span in an owned DataChunk.
+    /** @brief Push raw data to process. The data is byte stream */
     auto push(std::span<const uint8_t> data, bool is_last = false) -> void;
 
-    /// Pull processed data from the last stage.
-    auto pull() -> memory::DataChunk;
+    /** @brief Pull a chunk of handled data */
+    auto pull(void) -> memory::DataChunk;
 
+    /** @brief  */
     auto consume(size_t n) -> void;
 
     auto finish() -> void;
 
-    auto isFinished() const -> bool;
+    auto isFinished() const -> bool { return finished_; };
 
     // Collect block-level profiling data from the compression algorithm.
     auto getBlockProfile() -> std::optional<algorithm::BlockProfile>;

@@ -385,8 +385,12 @@ class DeflateTokenParser(TokenParser):
         cursor = 0
         huffman_trees: list[HuffmanTreeData] = []
 
+        MAX_TOKENS = len(raw_data) * 2 + 1024 if raw_data else 1_000_000
+        max_tree_blocks = 64
+        tree_blocks = 0
         try:
-            while True:
+            while tree_blocks < max_tree_blocks:
+                tree_blocks += 1
                 tree_start = reader.bit_position()
 
                 if not reader.ensure(1):
@@ -424,8 +428,13 @@ class DeflateTokenParser(TokenParser):
                     total_bits=tree_bits - tree_bits // 2,
                 ))
 
-                while True:
+                prev_bit_pos = -1
+                while len(tokens) < MAX_TOKENS:
                     bit_start = reader.bit_position()
+                    if bit_start == prev_bit_pos:
+                        logger.warning("[DeflateTokenParser] reader stuck, breaking")
+                        break
+                    prev_bit_pos = bit_start
                     symbol = self._decode_symbol(reader, lit_root)
                     if symbol is None:
                         break

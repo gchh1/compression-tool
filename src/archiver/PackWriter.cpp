@@ -15,11 +15,19 @@
 
 namespace compressor::archiver {
 
+/**
+ * @brief Initialize the members of the `PackWriter` object. Sepecifically the
+ *        `entry_header_`, `pipeline_`.
+ *
+ * @param filepath
+ * @param chain
+ */
 auto PackWriter::beginFile(const std::string& filepath,
                            std::span<const AlgorithmID> chain) -> void {
     if (finished_) return;
     if (file_open_) closeCurrentFile();
 
+    // Initialize the `entry_header_`
     entry_header_.filepath = filepath;
     entry_header_.algo_chain.assign(chain.begin(), chain.end());
     entry_header_.original_size = 0;
@@ -34,15 +42,24 @@ auto PackWriter::beginFile(const std::string& filepath,
     chunk_idx_ = 0;
     current_compressed_size_ = 0;
 
+    // Map the algorithmID to algorithm pointer and construct `pipeline_`
     std::vector<std::unique_ptr<algorithm::IAlgorithm>> algos;
     for (auto id : chain) {
-        if (auto a = core::createAlgorithm(id)) algos.push_back(std::move(a));
+        if (auto a = core::createAlgorithm(id)) {
+            algos.push_back(std::move(a));
+        }
     }
     pipeline_ = std::make_unique<processor::Pipeline>(std::move(algos), pool_);
 
     file_open_ = true;
 }
 
+/**
+ * @brief Given a chunk of data, call `pipeline_->push` to handle the file data
+ *        and place the handled chunks to `output_chunks_`
+ *
+ * @param chunk
+ */
 auto PackWriter::pushFileData(memory::DataChunk chunk) -> void {
     if (!file_open_) return;
 
@@ -51,6 +68,11 @@ auto PackWriter::pushFileData(memory::DataChunk chunk) -> void {
     drainOutput();
 }
 
+/**
+ * @brief Wrapper the byte stream data to `DataChunk` and handle
+ *
+ * @param data
+ */
 auto PackWriter::pushFileData(std::span<const uint8_t> data) -> void {
     if (!file_open_ || data.empty()) return;
 
@@ -59,7 +81,12 @@ auto PackWriter::pushFileData(std::span<const uint8_t> data) -> void {
     pushFileData(memory::DataChunk::adopt(std::move(v), size));
 }
 
-auto PackWriter::pullOutput() -> std::span<const uint8_t> {
+/**
+ * @brief Return a `chunk` of data from `output_chunks`
+ *
+ * @return std::span<const uint8_t>
+ */
+auto PackWriter::pullOutput(void) -> std::span<const uint8_t> {
     // Serve header first
     if (header_pos_ < header_buffer_.size())
         return {header_buffer_.data() + header_pos_,
@@ -74,6 +101,11 @@ auto PackWriter::pullOutput() -> std::span<const uint8_t> {
     return {};
 }
 
+/**
+ * @brief
+ *
+ * @param n
+ */
 auto PackWriter::consumeOutput(size_t n) -> void {
     // Consume from header
     if (header_pos_ < header_buffer_.size()) {
@@ -103,7 +135,12 @@ auto PackWriter::consumeOutput(size_t n) -> void {
     }
 }
 
-auto PackWriter::endFile() -> void {
+/**
+ * @brief Clean the `pipeline_` and write back the `entry_header_` for
+ *        [original_size] and [compressed_sizse]
+ *
+ */
+auto PackWriter::endFile(void) -> void {
     if (!file_open_) return;
 
     pipeline_->finish();
@@ -119,13 +156,21 @@ auto PackWriter::endFile() -> void {
     file_open_ = false;
 }
 
-auto PackWriter::finish() -> void {
+/**
+ * @brief
+ *
+ */
+auto PackWriter::finish(void) -> void {
     if (finished_) return;
     if (file_open_) closeCurrentFile();
     finished_ = true;
 }
 
-auto PackWriter::drainOutput() -> void {
+/**
+ * @brief Pull data from `pipeline_` to `output_chunks_`
+ *
+ */
+auto PackWriter::drainOutput(void) -> void {
     while (true) {
         auto chunk = pipeline_->pull();
         if (chunk.empty()) break;
@@ -134,7 +179,11 @@ auto PackWriter::drainOutput() -> void {
     }
 }
 
-auto PackWriter::closeCurrentFile() -> void {
+/**
+ * @brief Reset the `pipeline_` and close file
+ *
+ */
+auto PackWriter::closeCurrentFile(void) -> void {
     if (pipeline_) {
         pipeline_->finish();
         pipeline_.reset();

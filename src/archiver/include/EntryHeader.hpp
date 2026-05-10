@@ -11,6 +11,10 @@
 namespace compressor::archiver {
 using core::AlgorithmID;
 
+/**
+ * @brief [`filepath`] [algorithmID_chain] [original_size] [compressed_size]
+ *
+ */
 struct EntryHeader {
     std::string filepath;
     std::vector<AlgorithmID> algo_chain;
@@ -18,6 +22,7 @@ struct EntryHeader {
     uint64_t compressed_size;
     uint64_t data_offset;  // computed at parse time, not serialized
 
+    /** @brief Serialze the EntryHeader to byte stream */
     auto serialize(void) -> std::vector<uint8_t> const {
         std::vector<uint8_t> buffer;
 
@@ -27,8 +32,7 @@ struct EntryHeader {
             buffer.push_back((v >> 8) & 0xFF);
         };
         auto push_u64 = [&](uint64_t v) {
-            for (int i = 0; i < 8; ++i)
-                buffer.push_back((v >> (i * 8)) & 0xFF);
+            for (int i = 0; i < 8; ++i) buffer.push_back((v >> (i * 8)) & 0xFF);
         };
 
         push_u16(static_cast<uint16_t>(filepath.size()));
@@ -42,6 +46,7 @@ struct EntryHeader {
         return buffer;
     }
 
+    /** @brief Deserialize byte stream to EntryHeader */
     static auto deserialize(std::span<const uint8_t> data)
         -> std::optional<std::pair<EntryHeader, size_t>> {
         EntryHeader meta;

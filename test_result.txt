@@ -1,2 +1,0 @@
-﻿data=1400000
-LZSS: ok=True r=0.118 c=0.3s d=0.0s

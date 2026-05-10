@@ -7,6 +7,12 @@
 
 namespace compressor::processor {
 
+/**
+ * @brief Construct a new Pipeline:: Pipeline object
+ *
+ * @param algorithms
+ * @param pool
+ */
 Pipeline::Pipeline(std::vector<std::unique_ptr<IAlgorithm>> algorithms,
                    std::shared_ptr<memory::MemoryPool> pool) {
     for (auto& algo : algorithms) {
@@ -17,23 +23,45 @@ Pipeline::Pipeline(std::vector<std::unique_ptr<IAlgorithm>> algorithms,
     }
 }
 
+/**
+ * @brief Process the data via the algorithm pipeline.
+ *
+ * @param chunk
+ * @param is_last
+ */
 auto Pipeline::push(memory::DataChunk chunk, bool is_last) -> void {
     if (finished_ || stages_.empty()) return;
     stages_.front()->push(std::move(chunk), is_last);
     drainAll();
 }
 
+/**
+ * @brief Process the data via the algorithm pipeline.
+ *
+ * @param data
+ * @param is_last
+ */
 auto Pipeline::push(std::span<const uint8_t> data, bool is_last) -> void {
     if (finished_ || stages_.empty()) return;
     stages_.front()->push(data, is_last);
     drainAll();
 }
 
+/**
+ * @brief Pull processed data, which is the data from the end of algorithm chain
+ *
+ * @return memory::DataChunk
+ */
 auto Pipeline::pull() -> memory::DataChunk {
     if (stages_.empty()) return {};
     return stages_.back()->pull();
 }
 
+/**
+ * @brief
+ *
+ * @param n
+ */
 auto Pipeline::consume(size_t n) -> void {
     if (!stages_.empty()) stages_.back()->consume(n);
 }
@@ -50,9 +78,12 @@ auto Pipeline::finish() -> void {
     finished_ = true;
 }
 
-auto Pipeline::isFinished() const -> bool { return finished_; }
-
-auto Pipeline::getBlockProfile() -> std::optional<algorithm::BlockProfile> {
+/**
+ * @brief
+ *
+ * @return std::optional<algorithm::BlockProfile>
+ */
+auto Pipeline::getBlockProfile(void) -> std::optional<algorithm::BlockProfile> {
     for (auto& stage : stages_) {
         auto p = stage->getBlockProfile();
         if (p) return p;
@@ -60,6 +91,10 @@ auto Pipeline::getBlockProfile() -> std::optional<algorithm::BlockProfile> {
     return std::nullopt;
 }
 
+/**
+ * @brief chunk-level pipeline
+ *
+ */
 auto Pipeline::drainAll() -> void {
     for (size_t i = 0; i + 1 < stages_.size(); ++i) {
         drain(*stages_[i], *stages_[i + 1]);

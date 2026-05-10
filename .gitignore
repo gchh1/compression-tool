@@ -18,3 +18,24 @@ ignore/
 
 .aider*
 .claude*
+
+# Scratch/temporary files
+scratch/
+
+# Runtime outputs
+logs/
+src/logs/
+webcompress_settings.json
+
+# Package output
+Package/
+!Package/README.md
+
+# Legacy build output
+bin/
+
+# WASM build artifacts
+*.wasm
+
+# Test data output
+tests/data/
