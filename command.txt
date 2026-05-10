@@ -1,2 +1,3 @@
 cd d:\AAA_C\compression-tool; $env:PYTHONPATH="src"; pyinstaller --noconfirm --onefile --windowed --name "WebCompress" --distpath "dist" --workpath "build\PyInstaller" --specpath "build" "src\gui\main.py"
 cd d:\AAA_C\compression-tool; Copy-Item "dist\WebCompress.exe" "Package\bin\" -Force; Write-Host "Copied WebCompress.exe to Package\bin"
+cd d:\AAA_C\compression-tool; if (!(Test-Path "Package\bin\ade")) { New-Item -ItemType Directory -Path "Package\bin\ade" -Force }; Copy-Item "src\ade\data\default_model.bin" "Package\bin\ade\default_model.bin" -Force; Write-Host "Copied ADE model to Package\bin\ade"

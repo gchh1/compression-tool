@@ -8,10 +8,16 @@
 - 压缩效果柱状图
 - 决策引擎，决策树etc
 - 上下文模型强化huffman编码，提高压缩效率
-- 图片有损压缩
+- 图片音频等资源有无损压缩、
+- 部分算法可视化还没做
+- 大文件压缩的时候，压缩进度条按照流式分块更新
+- 语言包
+- 更新打包README.md
+- 网页资源文件字典
 
 
 
+context:
 压缩热力图：对于可以直接文本展示的文件，如Script，txt等，根据算法的压缩结构，比如一段文字压缩后的长度，根据这个计算“压缩热力”，对于图片文件等其他类型，你应该思考怎样表示，要么就暂时搁置；压缩算法演示，比如lz算法，应该演示token是怎么来的，逐步演示，对于huffman，应该演示怎么处理得到编码（涉及到huffman树的展示？对于deflate这种融合两个算法，是不是应该把演示过程划分为两个阶段，进度条也要进行一定标注？
 
 
@@ -44,3 +50,44 @@
 6. 最后，你会将本次讨论形成的所有关键决策记录到 docs/decisions.md，并根据最终共识输出一份详细的模块开发规格（功能列表、数据模型、API 端点、交互流程、待定事项）。
 
 请现在开始向我提问。
+
+
+
+### *to-do list*:
+
+
+打包文件架构不规范
+
+
+
+右键点击行还是两个”移除“选项，这是错的；
+无法导出压缩结果；
+过去对话中我提出很多验证功能的时候的bug，请你总结一下我的验证流程输出到 docs，方便规范以及防止遗漏，而且每当我提出新的bug都更新验证规范；
+修复lzdp和dpflate的压缩演示
+
+lzdp压缩演示还是打不开，dp的压缩演示函数是否修改了？？？
+文件 index.html.wcx 解压失败:
+Offset in LZDP decompression out of range
+使用log   debug lzdp的解压和之前一样的报错；
+
+dpflate压缩率比lzdp还要低，其实直接在lzdp结果上套一层huffman编码这么简单的事情，你都没有做好实现；
+很明显这就是一个愚蠢的设计，每个token都多一位flag编码，我的编码理念如下：
+最小匹配长度是根据token实际长度计算的：min_match_len=sizeof(token)/8+1，只有大于这个才形成”match_token"，否则是"literal token"
+而literal token 的特点就是offset ==0
+literal run
+for token in tokens
+if offset==0
+buffer.push(token)
+else
+buffer.flush()
+write(token)
+
+对flush()说明
+write(token(0,literal_len));
+for token in buffer:
+write token.byte（也就是字符）
+比如lookaheadwindow（可能有其他别名）是511，那literal_len限于位长只能是512，那么如果buffer还有未处理，再write(token(...))
+
+你可能会担心，token.byte对于match_token也要吗，我的回答是不用，只是方便literalrun获取单字符而不是和literaltoken也写byte
+
+我的写法可能不规范，但是这个设计请你跟我展开大讨论：

@@ -4,6 +4,10 @@ import math
 from collections import Counter
 from enum import Enum
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from gui.core.decision import DecisionResult
 
 
 def formatted_size(size_bytes: int) -> str:
@@ -40,15 +44,17 @@ class AlgorithmType(Enum):
     DEFLATE = "deflate"
     HUFFMAN = "huffman"
     LZSS = "lzss"
-    LZMINE = "lzmine"
-    MYFLATE = "myflate"
+    LZDP = "lzdp"
+    DPFLATE = "dpflate"
     GZIP = "gzip"
+    BROTLI = "brotli"
+    ZSTD = "zstd"
     TRANSFORMER = "transformer (beta)"
     NONE = "none"
 
 
 class AlgorithmParamDef:
-    def __init__(self, key: str, label: str, default, min_val, max_val, step=1, suffix: str = ""):
+    def __init__(self, key: str, label: str, default, min_val=0, max_val=0, step=1, suffix: str = "", choices: dict[int, str] | None = None):
         self.key = key
         self.label = label
         self.default = default
@@ -56,40 +62,54 @@ class AlgorithmParamDef:
         self.max_val = max_val
         self.step = step
         self.suffix = suffix
+        self.choices = choices
 
 
 ALGORITHM_PARAMS: dict[AlgorithmType, list[AlgorithmParamDef]] = {
     AlgorithmType.LZSS: [
         AlgorithmParamDef("search_size", "搜索窗口大小", 4095, 255, 65535, 256, ""),
         AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 18, 4, 255, 1, ""),
-        AlgorithmParamDef("min_match", "最小匹配长度", 3, 2, 15, 1, ""),
+        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 50, 1, ""),
+        AlgorithmParamDef("use_flag_encoding", "编码方案", 1, choices={0: "Offset=0 兜底模式 (长纯文本占优)", 1: "1-Bit Flag 模式 (碎片化文件占优)"}),
     ],
-    AlgorithmType.LZMINE: [
+    AlgorithmType.LZDP: [
         AlgorithmParamDef("search_size", "搜索窗口大小", 4096, 256, 65536, 256, " B"),
         AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 256, 16, 65536, 16, " B"),
-        AlgorithmParamDef("min_match", "最小匹配长度", 3, 2, 15, 1, ""),
-        AlgorithmParamDef("dp_depth", "DP优化深度", 3, 1, 32, 1, ""),
+        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 50, 1, ""),
+        AlgorithmParamDef("dp_depth", "DP 每步保留的匹配候选数", 3, 1, 32, 1, ""),
+        AlgorithmParamDef("match_engine", "匹配引擎选择", 0, choices={0: "KMP 引擎 (支持重叠匹配, 慢)", 1: "HashChain 引擎 (支持重叠匹配, 快)"}),
+        AlgorithmParamDef("use_flag_encoding", "编码方案", 0, choices={0: "Offset=0 兜底模式 (长纯文本占优)", 1: "1-Bit Flag 模式 (碎片化文件占优)"}),
     ],
-    AlgorithmType.MYFLATE: [
+    AlgorithmType.DPFLATE: [
         AlgorithmParamDef("search_size", "搜索窗口大小", 4096, 256, 32768, 256, " B"),
         AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 256, 16, 4096, 16, " B"),
-        AlgorithmParamDef("min_match", "最小匹配长度", 4, 2, 6, 1, ""),
-        AlgorithmParamDef("dp_depth", "DP优化深度", 6, 1, 32, 1, ""),
+        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 50, 1, ""),
+        AlgorithmParamDef("dp_depth", "DP 每步保留的匹配候选数", 6, 1, 32, 1, ""),
         AlgorithmParamDef("max_chain_length", "最大搜索链长", 256, 4, 4096, 4, ""),
+        AlgorithmParamDef("match_engine", "匹配引擎选择", 1, choices={0: "KMP 引擎 (支持重叠匹配, 慢)", 1: "HashChain 引擎 (支持重叠匹配, 快)"}),
+        AlgorithmParamDef("use_flag_encoding", "编码方案", 1, choices={0: "Offset=0 兜底模式 (长纯文本占优)", 1: "1-Bit Flag 模式 (碎片化文件占优)"}),
     ],
     AlgorithmType.DEFLATE: [
         AlgorithmParamDef("search_size", "搜索窗口大小", 32768, 1024, 65536, 1024, " B"),
-        AlgorithmParamDef("min_match", "最小匹配长度", 3, 2, 6, 1, ""),
+        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 50, 1, ""),
         AlgorithmParamDef("max_chain_length", "最大搜索链长", 256, 4, 4096, 4, ""),
     ],
     AlgorithmType.GZIP: [
         AlgorithmParamDef("compression_level", "压缩级别", 6, 1, 9, 1, ""),
     ],
+    AlgorithmType.BROTLI: [
+        AlgorithmParamDef("window_size", "窗口大小", 65536, 4096, 65536, 4096, " B"),
+        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 50, 1, ""),
+        AlgorithmParamDef("max_chain_length", "最大搜索链长", 256, 4, 4096, 4, ""),
+    ],
+    AlgorithmType.ZSTD: [
+        AlgorithmParamDef("compression_level", "压缩级别", 3, 1, 19, 1, ""),
+    ],
 }
 
 STREAMING_THRESHOLD_MB = 10
 STREAMING_CHUNK_SIZE_KB = 1024
-LZMINE_DP_VIZ_MAX_SIZE = 65536
+LZDP_DP_VIZ_MAX_SIZE = 65536
 
 
 def get_default_config() -> dict[AlgorithmType, dict[str, int]]:
@@ -180,33 +200,51 @@ class FileRecord(Record):
         #=====features============
         self.content_entropy: float = 0.0
         self.repetition_ratio: float = 0.0
+        #=====ADE Decision (持久化保存)============
+        self.decision_result: DecisionResult | None = None
+        # 本次成功压缩时使用的算法参数字典（与全局配置解耦，供演示/解析复现）
+        self.compression_config_snapshot: dict[str, int] | None = None
+        #=====ADE Feature Vector (v3.0 - 20-dim Base Segment)============
+        from typing import TYPE_CHECKING
+        if TYPE_CHECKING:
+            from gui.core.feature_extractor import BaseFeatures, FileType
+        self.base_features = None  
+        self.detected_file_type = None
     def load_raw_data(self) -> None:
         self.raw_data = (Path(self.path).read_bytes()) if Path(self.path).exists() else b""
 
     def extract_features(self) -> None:
         """
-        pass,待修改
+        Extract ADE Base Segment features (20 dimensions)
+        
+        Uses single-pass O(n) algorithm with ~130KB working memory.
+        Populates:
+          - self.base_features: BaseFeatures object (20-dim vector)
+          - self.detected_file_type: FileType enum from magic bytes
+          - self.content_entropy: Shannon entropy (backward compat)
+          - self.repetition_ratio: Unique byte ratio (backward compat)
         """
-        pass
-        # data = self.raw_data
-        # size = len(data)
-
-        # if size == 0:
-        #     self.content_entropy = 0.0
-        #     self.repetition_ratio = 0.0
-        #     return
-
-        # byte_counts = Counter(data)
-        # entropy = 0.0
-        # for count in byte_counts.values():
-        #     prob = count / size
-        #     if prob > 0:
-        #         entropy -= prob * math.log2(prob)
-
-        # most_common_count = byte_counts.most_common(1)[0][1]
-
-        # self.content_entropy = entropy
-        # self.repetition_ratio = most_common_count / size
+        if not self.raw_data:
+            self.load_raw_data()
+            
+        if not self.raw_data or len(self.raw_data) == 0:
+            self.content_entropy = 0.0
+            self.repetition_ratio = 0.0
+            return
+            
+        try:
+            from gui.core.feature_extractor import extract_base_features_fast
+            
+            self.base_features, self.detected_file_type = extract_base_features_fast(self.raw_data)
+            
+            # Backward compatibility: update old fields
+            self.content_entropy = self.base_features.shannon_entropy
+            self.repetition_ratio = 1.0 - self.base_features.unique_byte_ratio
+            
+        except Exception as e:
+            logger.warning("[FileRecord] feature extraction failed for %s: %s", self.name, e)
+            self.base_features = None
+            self.detected_file_type = None
 
 def get_folder_size(path: str) -> int:
     p = Path(path)

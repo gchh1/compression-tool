@@ -4,9 +4,11 @@ add_library(
     AlgorithmFactory.cpp
     LZSSCompressor.cpp
     DeflateCompressor.cpp
-    LZMineCompressor.cpp
-    MyFlateCompressor.cpp
+    LZDPCompressor.cpp
+    DPFlateCompressor.cpp
     GzipCompressor.cpp
+    BrotliCompressor.cpp
+    ZstdCompressor.cpp
 )
 
 target_include_directories(

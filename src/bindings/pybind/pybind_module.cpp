@@ -1,18 +1,24 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <pybind11/functional.h>
 
 #include "ICompressor.hpp"
 #include "DeflateCompressor.hpp"
 #include "LZSSCompressor.hpp"
-#include "LZMineCompressor.hpp"
-#include "MyFlateCompressor.hpp"
+#include "LZDPCompressor.hpp"
+#include "DPFlateCompressor.hpp"
 #include "GzipCompressor.hpp"
+#include "BrotliCompressor.hpp"
+#include "ZstdCompressor.hpp"
 #include "Archiver.hpp"
 #include "api.hpp"
 #include "AlgorithmFactory.hpp"
 
 namespace py = pybind11;
 using namespace compressor::core;
+
+void init_ade(py::module_& m);
+void init_ea(py::module_& m);
 
 PYBIND11_MODULE(core_engine, m) {
     m.doc() = "Web Compressor C++ Core Engine";
@@ -34,7 +40,7 @@ PYBIND11_MODULE(core_engine, m) {
     py::enum_<CompressorAlgorithm>(m, "CompressorAlgorithm")
         .value("DEFLATE", CompressorAlgorithm::Deflate)
         .value("LZSS", CompressorAlgorithm::LZSS)
-        .value("LZMINE", CompressorAlgorithm::LZMINE)
+        .value("LZDP", CompressorAlgorithm::LZMINE)
         .export_values();
 
     // ===== 压缩器接口 =====
@@ -64,72 +70,97 @@ PYBIND11_MODULE(core_engine, m) {
         .def("set_lookahead_size", &LZSSCompressor::set_lookahead_size)
         .def("get_lookahead_size", &LZSSCompressor::get_lookahead_size);
 
-    py::class_<LZMineCompressor, ICompressor,
-               std::shared_ptr<LZMineCompressor>>(m, "LZMineCompressor")
+    py::class_<LZDPCompressor, ICompressor,
+               std::shared_ptr<LZDPCompressor>>(m, "LZDPCompressor")
         .def(py::init<>())
-        .def("set_search_size", &LZMineCompressor::set_search_size)
-        .def("get_search_size", &LZMineCompressor::get_search_size)
-        .def("set_lookahead_size", &LZMineCompressor::set_lookahead_size)
-        .def("get_lookahead_size", &LZMineCompressor::get_lookahead_size)
-        .def("set_dp_depth", &LZMineCompressor::set_dp_depth)
-        .def("get_dp_depth", &LZMineCompressor::get_dp_depth)
-        .def("set_dp_range", &LZMineCompressor::set_dp_range)
-        .def("get_dp_range", &LZMineCompressor::get_dp_range)
-        .def("get_dp_visualization", &LZMineCompressor::get_dp_visualization,
-             py::arg("data"), py::arg("range") = 3);
+        .def("set_search_size", &LZDPCompressor::set_search_size)
+        .def("get_search_size", &LZDPCompressor::get_search_size)
+        .def("set_lookahead_size", &LZDPCompressor::set_lookahead_size)
+        .def("get_lookahead_size", &LZDPCompressor::get_lookahead_size)
+        .def("set_min_match", &LZDPCompressor::set_min_match)
+        .def("get_min_match", &LZDPCompressor::get_min_match)
+        .def("set_dp_depth", &LZDPCompressor::set_dp_depth)
+        .def("get_dp_depth", &LZDPCompressor::get_dp_depth)
+        .def("set_dp_range", &LZDPCompressor::set_dp_range)
+        .def("get_dp_range", &LZDPCompressor::get_dp_range)
+        .def("set_use_flag_encoding", &LZDPCompressor::set_use_flag_encoding)
+        .def("get_use_flag_encoding", &LZDPCompressor::get_use_flag_encoding)
+        .def("set_match_engine", &LZDPCompressor::set_match_engine)
+        .def("get_match_engine", &LZDPCompressor::get_match_engine)
+        // range==0 uses compressor's dp_range_ (same knob as GUI「DP优化深度」)
+        .def("get_dp_visualization", &LZDPCompressor::get_dp_visualization,
+             py::arg("data"), py::arg("range") = 0);
 
-    py::class_<compressor::algorithm::LZMine::Triple>(m, "LZMineTriple")
-        .def_readonly("offset", &compressor::algorithm::LZMine::Triple::offset)
-        .def_readonly("length", &compressor::algorithm::LZMine::Triple::length)
-        .def_readonly("next_byte", &compressor::algorithm::LZMine::Triple::next_byte);
+    py::class_<compressor::algorithm::LZDP::Triple>(m, "LZDPTriple")
+        .def_readonly("offset", &compressor::algorithm::LZDP::Triple::offset)
+        .def_readonly("length", &compressor::algorithm::LZDP::Triple::length)
+        .def_readonly("literal", &compressor::algorithm::LZDP::Triple::literal);
 
-    py::class_<compressor::algorithm::LZMine::DPCandidate>(m, "LZMineDPCandidate")
-        .def_readonly("offset", &compressor::algorithm::LZMine::DPCandidate::offset)
-        .def_readonly("length", &compressor::algorithm::LZMine::DPCandidate::length)
-        .def_readonly("next_byte", &compressor::algorithm::LZMine::DPCandidate::next_byte)
-        .def_readonly("is_chosen", &compressor::algorithm::LZMine::DPCandidate::is_chosen);
+    py::class_<compressor::algorithm::LZDP::DPCandidate>(m, "LZDPDPCandidate")
+        .def_readonly("offset", &compressor::algorithm::LZDP::DPCandidate::offset)
+        .def_readonly("length", &compressor::algorithm::LZDP::DPCandidate::length)
+        .def_readonly("literal", &compressor::algorithm::LZDP::DPCandidate::literal)
+        .def_readonly("is_chosen", &compressor::algorithm::LZDP::DPCandidate::is_chosen);
 
-    py::class_<compressor::algorithm::LZMine::DPState>(m, "LZMineDPState")
-        .def_readonly("position", &compressor::algorithm::LZMine::DPState::position)
-        .def_readonly("reachable", &compressor::algorithm::LZMine::DPState::reachable)
-        .def_readonly("token_count", &compressor::algorithm::LZMine::DPState::token_count)
-        .def_readonly("predecessor", &compressor::algorithm::LZMine::DPState::predecessor)
-        .def_readonly("choice", &compressor::algorithm::LZMine::DPState::choice);
+    py::class_<compressor::algorithm::LZDP::DPState>(m, "LZDPDPState")
+        .def_readonly("position", &compressor::algorithm::LZDP::DPState::position)
+        .def_readonly("reachable", &compressor::algorithm::LZDP::DPState::reachable)
+        .def_readonly("token_count", &compressor::algorithm::LZDP::DPState::token_count)
+        .def_readonly("predecessor", &compressor::algorithm::LZDP::DPState::predecessor)
+        .def_readonly("choice", &compressor::algorithm::LZDP::DPState::choice);
 
-    py::class_<compressor::algorithm::LZMine::DPStep>(m, "LZMineDPStep")
-        .def_readonly("position", &compressor::algorithm::LZMine::DPStep::position)
-        .def_readonly("candidates", &compressor::algorithm::LZMine::DPStep::candidates)
-        .def_readonly("best_token_count", &compressor::algorithm::LZMine::DPStep::best_token_count);
+    py::class_<compressor::algorithm::LZDP::DPStep>(m, "LZDPDPStep")
+        .def_readonly("position", &compressor::algorithm::LZDP::DPStep::position)
+        .def_readonly("candidates", &compressor::algorithm::LZDP::DPStep::candidates)
+        .def_readonly("best_token_count", &compressor::algorithm::LZDP::DPStep::best_token_count);
 
-    py::class_<compressor::algorithm::LZMine::DPVisualization>(m, "LZMineDPVisualization")
-        .def_readonly("steps", &compressor::algorithm::LZMine::DPVisualization::steps)
-        .def_readonly("dp_array", &compressor::algorithm::LZMine::DPVisualization::dp_array)
-        .def_readonly("optimal_path", &compressor::algorithm::LZMine::DPVisualization::optimal_path)
-        .def_readonly("input_length", &compressor::algorithm::LZMine::DPVisualization::input_length)
-        .def_readonly("search_size", &compressor::algorithm::LZMine::DPVisualization::search_size)
-        .def_readonly("lookahead_size", &compressor::algorithm::LZMine::DPVisualization::lookahead_size);
+    py::class_<compressor::algorithm::LZDP::DPVisualization>(m, "LZDPDPVisualization")
+        .def_readonly("steps", &compressor::algorithm::LZDP::DPVisualization::steps)
+        .def_readonly("dp_array", &compressor::algorithm::LZDP::DPVisualization::dp_array)
+        .def_readonly("optimal_path", &compressor::algorithm::LZDP::DPVisualization::optimal_path)
+        .def_readonly("input_length", &compressor::algorithm::LZDP::DPVisualization::input_length)
+        .def_readonly("search_size", &compressor::algorithm::LZDP::DPVisualization::search_size)
+        .def_readonly("lookahead_size", &compressor::algorithm::LZDP::DPVisualization::lookahead_size);
 
-    py::class_<MyFlateCompressor, ICompressor,
-               std::shared_ptr<MyFlateCompressor>>(m, "MyFlateCompressor")
+    py::class_<DPFlateCompressor, ICompressor,
+               std::shared_ptr<DPFlateCompressor>>(m, "DPFlateCompressor")
         .def(py::init<>())
-        .def("set_search_size", &MyFlateCompressor::set_search_size)
-        .def("get_search_size", &MyFlateCompressor::get_search_size)
-        .def("set_lookahead_size", &MyFlateCompressor::set_lookahead_size)
-        .def("get_lookahead_size", &MyFlateCompressor::get_lookahead_size)
-        .def("set_min_match", &MyFlateCompressor::set_min_match)
-        .def("get_min_match", &MyFlateCompressor::get_min_match)
-        .def("set_max_chain_length", &MyFlateCompressor::set_max_chain_length)
-        .def("get_max_chain_length", &MyFlateCompressor::get_max_chain_length)
-        .def("set_dp_depth", &MyFlateCompressor::set_dp_depth)
-        .def("get_dp_depth", &MyFlateCompressor::get_dp_depth)
-        .def("set_dp_sub_match_max", &MyFlateCompressor::set_dp_sub_match_max)
-        .def("get_dp_sub_match_max", &MyFlateCompressor::get_dp_sub_match_max);
+        .def("set_search_size", &DPFlateCompressor::set_search_size)
+        .def("get_search_size", &DPFlateCompressor::get_search_size)
+        .def("set_lookahead_size", &DPFlateCompressor::set_lookahead_size)
+        .def("get_lookahead_size", &DPFlateCompressor::get_lookahead_size)
+        .def("set_min_match", &DPFlateCompressor::set_min_match)
+        .def("get_min_match", &DPFlateCompressor::get_min_match)
+        .def("set_max_chain_length", &DPFlateCompressor::set_max_chain_length)
+        .def("get_max_chain_length", &DPFlateCompressor::get_max_chain_length)
+        .def("set_dp_depth", &DPFlateCompressor::set_dp_depth)
+        .def("get_dp_depth", &DPFlateCompressor::get_dp_depth)
+        .def("set_dp_sub_match_max", &DPFlateCompressor::set_dp_sub_match_max)
+        .def("get_dp_sub_match_max", &DPFlateCompressor::get_dp_sub_match_max)
+        .def("set_match_engine", &DPFlateCompressor::set_match_engine)
+        .def("get_match_engine", &DPFlateCompressor::get_match_engine);
 
     py::class_<GzipCompressor, ICompressor,
                std::shared_ptr<GzipCompressor>>(m, "GzipCompressor")
         .def(py::init<>())
         .def("set_compression_level", &GzipCompressor::set_compression_level)
         .def("get_compression_level", &GzipCompressor::get_compression_level);
+
+    py::class_<BrotliCompressor, ICompressor,
+               std::shared_ptr<BrotliCompressor>>(m, "BrotliCompressor")
+        .def(py::init<>())
+        .def("set_window_size", &BrotliCompressor::set_window_size)
+        .def("get_window_size", &BrotliCompressor::get_window_size)
+        .def("set_min_match", &BrotliCompressor::set_min_match)
+        .def("get_min_match", &BrotliCompressor::get_min_match)
+        .def("set_max_chain_length", &BrotliCompressor::set_max_chain_length)
+        .def("get_max_chain_length", &BrotliCompressor::get_max_chain_length);
+
+    py::class_<ZstdCompressor, ICompressor,
+               std::shared_ptr<ZstdCompressor>>(m, "ZstdCompressor")
+        .def(py::init<>())
+        .def("set_compression_level", &ZstdCompressor::set_compression_level)
+        .def("get_compression_level", &ZstdCompressor::get_compression_level);
 
     // ===== 打包器 File 结构体 =====
 
@@ -154,9 +185,13 @@ PYBIND11_MODULE(core_engine, m) {
         .value("DELTA_DECODE", compressor::core::AlgorithmID::DeltaDecode)
         .value("LZSS", compressor::core::AlgorithmID::LZSS)
         .value("LZSS_DECOMPRESS", compressor::core::AlgorithmID::LZSSDecompress)
-        .value("LZMINE", compressor::core::AlgorithmID::LZMine)
-        .value("LZMINE_DECOMPRESS", compressor::core::AlgorithmID::LZMineDecompress)
-        .value("MYFLATE", compressor::core::AlgorithmID::MyFlate)
+        .value("LZMINE", compressor::core::AlgorithmID::LZDP)
+        .value("LZMINE_DECOMPRESS", compressor::core::AlgorithmID::LZDPDecompress)
+        .value("DPFLATE", compressor::core::AlgorithmID::DPFlate)
+        .value("BROTLI", compressor::core::AlgorithmID::Brotli)
+        .value("BROTLI_DECOMPRESS", compressor::core::AlgorithmID::BrotliDecompress)
+        .value("ZSTD", compressor::core::AlgorithmID::Zstd)
+        .value("ZSTD_DECOMPRESS", compressor::core::AlgorithmID::ZstdDecompress)
         .export_values();
 
     py::class_<compressor::api::CompressResult>(m, "PipelineCompressResult")
@@ -210,4 +245,10 @@ PYBIND11_MODULE(core_engine, m) {
           py::arg("input_path"), py::arg("output_path"), py::arg("chain"),
           py::call_guard<py::gil_scoped_release>(),
           "Streaming decompress a file in chunks");
+
+    // ===== ADE (Algorithm Decision Engine) =====
+    init_ade(m);
+
+    // ===== EA (Evolutionary Algorithms) - Parameter Optimizer =====
+    init_ea(m);
 }

@@ -1,32 +1,34 @@
-#include "MyFlateCompressor.hpp"
+#include "DPFlateCompressor.hpp"
 
 #include <chrono>
 #include <cstdint>
 #include <vector>
 
 #include "Inflate.hpp"
-#include "MyFlate.hpp"
+#include "DPFlate.hpp"
 #include "ICompressor.hpp"
 
 namespace compressor {
 namespace core {
 
-auto MyFlateCompressor::compress(std::vector<uint8_t> original_data)
+auto DPFlateCompressor::compress(std::vector<uint8_t> original_data)
     -> CompressorResult {
     CompressorResult result;
     result.original_size = original_data.size();
 
     auto start_time = std::chrono::high_resolution_clock::now();
 
-    algorithm::MyFlate myflate(search_size_, lookahead_size_, min_match_,
+    algorithm::DPFlate dpflate(search_size_, lookahead_size_,
+                               min_match_ == 0 ? 4 : min_match_,
                                max_chain_length_, dp_sub_match_max_);
-    myflate.reset();
+    dpflate.set_match_engine(match_engine_);
+    dpflate.reset();
 
     size_t out_capacity = original_data.size() * 2 + 65536;
     if (out_capacity < 4096) out_capacity = 4096;
 
     std::vector<uint8_t> out(out_capacity);
-    auto status = myflate.process(original_data, out, true);
+    auto status = dpflate.process(original_data, out, true);
 
     result.data.resize(status.bytes_produced);
     if (status.bytes_produced > 0) {
@@ -48,14 +50,14 @@ auto MyFlateCompressor::compress(std::vector<uint8_t> original_data)
     return result;
 }
 
-auto MyFlateCompressor::decompress(std::vector<uint8_t> compressed_data)
+auto DPFlateCompressor::decompress(std::vector<uint8_t> compressed_data)
     -> CompressorResult {
     CompressorResult result;
     result.compressed_size = compressed_data.size();
 
     auto start_time = std::chrono::high_resolution_clock::now();
 
-    algorithm::Inflate inflate;
+    algorithm::DPFlateDecompress inflate;
     inflate.reset();
 
     size_t out_capacity = compressed_data.size() * 10 + 65536;

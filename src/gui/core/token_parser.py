@@ -5,7 +5,7 @@ import math
 from dataclasses import dataclass, field
 from enum import Enum
 
-from gui.core.models import AlgorithmType, LZMINE_DP_VIZ_MAX_SIZE
+from gui.core.models import AlgorithmType, LZDP_DP_VIZ_MAX_SIZE
 
 logger = logging.getLogger(__name__)
 
@@ -83,7 +83,12 @@ class TokenParser:
 
     SUPPORTED_ALGORITHMS: frozenset[AlgorithmType] = frozenset()
 
-    def parse(self, compressed_data: bytes, raw_data: bytes | None = None) -> ParseResult:
+    def parse(
+        self,
+        compressed_data: bytes,
+        raw_data: bytes | None = None,
+        compression_params: dict[str, int] | None = None,
+    ) -> ParseResult:
         raise NotImplementedError
 
 
@@ -93,7 +98,12 @@ class LZSSTokenParser(TokenParser):
 
     SUPPORTED_ALGORITHMS = frozenset({AlgorithmType.LZSS})
 
-    def parse(self, compressed_data: bytes, raw_data: bytes | None = None) -> ParseResult:
+    def parse(
+        self,
+        compressed_data: bytes,
+        raw_data: bytes | None = None,
+        compression_params: dict[str, int] | None = None,
+    ) -> ParseResult:
         if len(compressed_data) < 4:
             return ParseResult(algorithm="lzss")
 
@@ -151,33 +161,55 @@ class LZSSTokenParser(TokenParser):
         )
 
 
-class LZMineTokenParser(TokenParser):
+class LZDPTokenParser(TokenParser):
 
     SEARCH_BYTELENGTH = 2
     LOOKAHEAD_BYTELENGTH = 2
 
-    SUPPORTED_ALGORITHMS = frozenset({AlgorithmType.LZMINE})
+    SUPPORTED_ALGORITHMS = frozenset({AlgorithmType.LZDP})
 
-    def parse(self, compressed_data: bytes, raw_data: bytes | None = None) -> ParseResult:
+    def parse(
+        self,
+        compressed_data: bytes,
+        raw_data: bytes | None = None,
+        compression_params: dict[str, int] | None = None,
+    ) -> ParseResult:
         if raw_data is not None:
-            dp_result = self._parse_via_dp(raw_data)
+            dp_result = self._parse_via_dp(raw_data, compression_params)
             if dp_result is not None:
                 return dp_result
         return self._parse_reverse(compressed_data)
 
-    def _parse_via_dp(self, raw_data: bytes) -> ParseResult | None:
+    def _parse_via_dp(
+        self,
+        raw_data: bytes,
+        compression_params: dict[str, int] | None = None,
+    ) -> ParseResult | None:
         try:
             import core_engine
         except ImportError:
             return None
 
-        if len(raw_data) > LZMINE_DP_VIZ_MAX_SIZE:
-            logger.info("[LZMineTokenParser] raw_data too large (%d) for DP viz, skipping", len(raw_data))
+        if len(raw_data) > LZDP_DP_VIZ_MAX_SIZE:
+            logger.info("[LZDPTokenParser] raw_data too large (%d) for DP viz, skipping", len(raw_data))
             return None
 
         try:
-            comp = core_engine.LZMineCompressor()
-            viz = comp.get_dp_visualization(list(raw_data))
+            from gui.core.engine import CompressionEngine
+            eng = CompressionEngine()
+            if eng.available:
+                comp = eng.create_compressor_for_visualization(
+                    AlgorithmType.LZDP, compression_params
+                )
+            else:
+                comp = core_engine.LZDPCompressor()
+                if compression_params:
+                    for key, val in compression_params.items():
+                        setter = getattr(comp, f"set_{key}", None)
+                        if setter:
+                            setter(int(val))
+            # 0 => C++ 使用压缩器上的 dp_range_（与算法配置里「DP优化深度」一致）
+            viz = comp.get_dp_visualization(list(raw_data), 0)
 
             tokens: list[Token] = []
             cursor = 0
@@ -213,11 +245,11 @@ class LZMineTokenParser(TokenParser):
                 tokens=tokens,
                 original_size=cursor,
                 compressed_payload_size=len(raw_data),
-                algorithm="lzmine",
+                algorithm="lzdp",
                 dp_steps=self._extract_dp_steps(viz),
             )
         except Exception as e:
-            logger.warning("[LZMineTokenParser] DP parse failed: %s", e, exc_info=True)
+            logger.warning("[LZDPTokenParser] DP parse failed: %s", e, exc_info=True)
             return None
 
     def _extract_dp_steps(self, viz) -> list[dict]:
@@ -228,7 +260,7 @@ class LZMineTokenParser(TokenParser):
                 candidates.append({
                     "offset": c.offset,
                     "length": c.length,
-                    "next_byte": c.next_byte,
+                    "literal": c.literal,
                     "is_chosen": c.is_chosen,
                 })
             steps.append({
@@ -306,7 +338,7 @@ class LZMineTokenParser(TokenParser):
             tokens=tokens,
             original_size=cursor,
             compressed_payload_size=len(compressed_data),
-            algorithm="lzmine",
+            algorithm="lzdp",
         )
 
 
@@ -377,9 +409,14 @@ class DeflateTokenParser(TokenParser):
         7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13,
     ]
 
-    SUPPORTED_ALGORITHMS = frozenset({AlgorithmType.DEFLATE, AlgorithmType.MYFLATE})
+    SUPPORTED_ALGORITHMS = frozenset({AlgorithmType.DEFLATE, AlgorithmType.DPFLATE})
 
-    def parse(self, compressed_data: bytes, raw_data: bytes | None = None) -> ParseResult:
+    def parse(
+        self,
+        compressed_data: bytes,
+        raw_data: bytes | None = None,
+        compression_params: dict[str, int] | None = None,
+    ) -> ParseResult:
         reader = _LSBBitReader(compressed_data)
         tokens: list[Token] = []
         cursor = 0
@@ -492,7 +529,7 @@ class DeflateTokenParser(TokenParser):
         except Exception as e:
             logger.warning("[DeflateTokenParser] parse error: %s", e, exc_info=True)
 
-        algo_name = "deflate/myflate"
+        algo_name = "deflate/dpflate"
         return ParseResult(
             tokens=tokens,
             original_size=cursor,
@@ -580,9 +617,9 @@ class DeflateTokenParser(TokenParser):
 
 _PARSER_MAP: dict[AlgorithmType, type[TokenParser]] = {
     AlgorithmType.LZSS: LZSSTokenParser,
-    AlgorithmType.LZMINE: LZMineTokenParser,
+    AlgorithmType.LZDP: LZDPTokenParser,
     AlgorithmType.DEFLATE: DeflateTokenParser,
-    AlgorithmType.MYFLATE: DeflateTokenParser,
+    AlgorithmType.DPFLATE: DeflateTokenParser,
 }
 
 

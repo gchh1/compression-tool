@@ -7,6 +7,7 @@
 #include <span>
 #include <vector>
 
+#include "BitReader.hpp"
 #include "BitWriter.hpp"
 
 namespace compressor::algorithm {
@@ -41,35 +42,41 @@ HuffmanTree::HuffmanTree(const std::vector<uint32_t>& freq_map,
     buildTree(freq_map);
 }
 
+HuffmanTree::HuffmanTree(node* root, size_t dictionary_size, size_t symbol_bits)
+    : root_(root), dictionary_size_(dictionary_size), symbol_bits_(symbol_bits) {
+    tree_size_ = calcSerializedBits(root_);
+}
+
 /**
  * @brief Construct a new Huffman Tree:: Huffman Tree object
  *
  * @param reader
  */
-// HuffmanTree::HuffmanTree(utils::BitReader& reader) {
-//     auto buildTreeRecursive = [&reader](auto& self) -> node* {
-//         if (reader.isEOF()) {
-//             return nullptr;
-//         }
+HuffmanTree::HuffmanTree(utils::BitReader& reader, size_t dictionary_size,
+                         size_t symbol_bits)
+    : dictionary_size_(dictionary_size), symbol_bits_(symbol_bits) {
+    auto buildTreeRecursive = [&reader, symbol_bits](auto& self) -> node* {
+        if (reader.getRemainingBits() == 0) {
+            return nullptr;
+        }
+        uint8_t bit = reader.readBit();
+        if (reader.getRemainingBits() == 0) {
+            return nullptr;
+        }
+        if (bit == 0) {
+            node* left = self(self);
+            node* right = self(self);
+            return new node(left, right);
+        } else {
+            uint16_t symbol =
+                static_cast<uint16_t>(reader.readBits(symbol_bits));
+            return new node(symbol, 0);
+        }
+    };
 
-//         uint8_t bit = reader.readBit();
-//         if (reader.isEOF()) {
-//             return nullptr;
-//         }
-
-//         if (bit == 0) {
-//             node* left = self(self);
-//             node* right = self(self);
-//             return new node(left, right);
-//         } else {
-//             uint16_t symbol =
-//                 static_cast<uint16_t>(reader.readBits(DEFLATE_SYMBOL_BITS));
-//             return new node(symbol, 0);
-//         }
-//     };
-
-//     root_ = buildTreeRecursive(buildTreeRecursive);
-// }
+    root_ = buildTreeRecursive(buildTreeRecursive);
+    tree_size_ = calcSerializedBits(root_);
+}
 
 /**
  * @brief Helper function to build Huffman Tree

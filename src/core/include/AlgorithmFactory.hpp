@@ -15,9 +15,13 @@ enum class AlgorithmID {
     DeltaDecode,
     LZSS,
     LZSSDecompress,
-    LZMine,
-    LZMineDecompress,
-    MyFlate,
+    LZDP,
+    LZDPDecompress,
+    DPFlate,
+    Brotli,
+    BrotliDecompress,
+    Zstd,
+    ZstdDecompress,
 };
 
 auto createAlgorithm(AlgorithmID id) -> std::unique_ptr<algorithm::IAlgorithm>;
@@ -26,7 +30,9 @@ inline AlgorithmID getDecompressorID(AlgorithmID comp) {
     static const std::unordered_map<AlgorithmID, AlgorithmID> map = {
         {AlgorithmID::Deflate, AlgorithmID::Inflate},
         {AlgorithmID::LZSS, AlgorithmID::LZSSDecompress},
-        {AlgorithmID::LZMine, AlgorithmID::LZMineDecompress},
+        {AlgorithmID::LZDP, AlgorithmID::LZDPDecompress},
+        {AlgorithmID::Brotli, AlgorithmID::BrotliDecompress},
+        {AlgorithmID::Zstd, AlgorithmID::ZstdDecompress},
     };
     auto it = map.find(comp);
     return it != map.end() ? it->second : AlgorithmID::None;

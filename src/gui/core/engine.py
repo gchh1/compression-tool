@@ -34,8 +34,8 @@ def _get_engine():
     _base = Path(__file__).resolve().parent.parent.parent.parent
     _candidates = [
         _base / "build" / "src" / "bindings" / "pybind",
-        _base / "build" / "src" / "bindings",
         _base / "build_pybind" / "src" / "bindings" / "pybind",
+        _base / "build" / "src" / "bindings",
         _base / "build_pybind" / "src" / "bindings",
         _base / "src",
     ]
@@ -45,8 +45,9 @@ def _get_engine():
         _candidates.insert(0, Path(_meipass) / "core_engine")
 
     for _p in _candidates:
-        if _p.is_dir():
+        if _p.is_dir() and (_p / "core_engine.cp312-win_amd64.pyd").exists():
             sys.path.insert(0, str(_p))
+            break
 
     try:
         import core_engine
@@ -88,6 +89,26 @@ class CompressionEngine:
         return cls._config
 
     @classmethod
+    def snapshot_for_algorithm(cls, algorithm: AlgorithmType) -> dict[str, int]:
+        """Copy of engine config for ``algorithm`` at call time (for per-record demos)."""
+        cfg = cls.get_config().get(algorithm, {})
+        return {str(k): int(v) for k, v in cfg.items()}
+
+    def create_compressor_for_visualization(
+        self,
+        algorithm: AlgorithmType,
+        params: dict[str, int] | None = None,
+    ):
+        """Build compressor with global config, then overlay ``params`` if provided."""
+        compressor = self._create_compressor(algorithm)
+        if params:
+            for key, val in params.items():
+                setter = getattr(compressor, f"set_{key}", None)
+                if setter:
+                    setter(int(val))
+        return compressor
+
+    @classmethod
     def set_streaming_threshold(cls, mb: float, save: bool = True):
         cls._streaming_threshold_mb = mb
         if save:
@@ -97,13 +118,16 @@ class CompressionEngine:
     def get_streaming_threshold(cls) -> float:
         return cls._streaming_threshold_mb
 
+    @property
+    def available(self) -> bool:
+        return self._engine is not None
+
     @classmethod
     def _save_to_file(cls):
         try:
             from gui.core.app_config import (
                 load_config as _load_full,
                 save_config as _save_full,
-                STREAMING_CHUNK_SIZE_KB,
             )
             full = _load_full()
             algo_dict = {}
@@ -124,21 +148,21 @@ class CompressionEngine:
         cls._streaming_threshold_mb = STREAMING_THRESHOLD_MB
         cls._save_to_file()
 
-    @property
-    def available(self) -> bool:
-        return self._engine is not None
-
     def _create_compressor(self, algorithm: AlgorithmType):
         if algorithm == AlgorithmType.LZSS:
             comp = self._engine.LZSSCompressor()
-        elif algorithm == AlgorithmType.LZMINE:
-            comp = self._engine.LZMineCompressor()
+        elif algorithm == AlgorithmType.LZDP:
+            comp = self._engine.LZDPCompressor()
         elif algorithm == AlgorithmType.DEFLATE:
             comp = self._engine.DeflateCompressor()
-        elif algorithm == AlgorithmType.MYFLATE:
-            comp = self._engine.MyFlateCompressor()
+        elif algorithm == AlgorithmType.DPFLATE:
+            comp = self._engine.DPFlateCompressor()
         elif algorithm == AlgorithmType.GZIP:
             comp = self._engine.GzipCompressor()
+        elif algorithm == AlgorithmType.BROTLI:
+            comp = self._engine.BrotliCompressor()
+        elif algorithm == AlgorithmType.ZSTD:
+            comp = self._engine.ZstdCompressor()
         else:
             raise ValueError(f"Unsupported algorithm: {algorithm.value}")
 
@@ -300,8 +324,10 @@ class CompressionEngine:
             CompressionEngine._ALGO_TO_PIPELINE_ID = {
                 AlgorithmType.DEFLATE: eng.AlgorithmID.DEFLATE,
                 AlgorithmType.LZSS: eng.AlgorithmID.LZSS,
-                AlgorithmType.LZMINE: eng.AlgorithmID.LZMINE,
-                AlgorithmType.MYFLATE: eng.AlgorithmID.MYFLATE,
+                AlgorithmType.LZDP: eng.AlgorithmID.LZMINE,
+                AlgorithmType.DPFLATE: eng.AlgorithmID.DPFLATE,
+                AlgorithmType.BROTLI: eng.AlgorithmID.BROTLI,
+                AlgorithmType.ZSTD: eng.AlgorithmID.ZSTD,
             }
         return CompressionEngine._ALGO_TO_PIPELINE_ID.get(algorithm)
 
@@ -309,7 +335,9 @@ class CompressionEngine:
         mapping = {
             AlgorithmType.DEFLATE: self._engine.AlgorithmID.INFLATE,
             AlgorithmType.LZSS: self._engine.AlgorithmID.LZSS_DECOMPRESS,
-            AlgorithmType.LZMINE: self._engine.AlgorithmID.LZMINE_DECOMPRESS,
+            AlgorithmType.LZDP: self._engine.AlgorithmID.LZMINE_DECOMPRESS,
+            AlgorithmType.BROTLI: self._engine.AlgorithmID.BROTLI_DECOMPRESS,
+            AlgorithmType.ZSTD: self._engine.AlgorithmID.ZSTD_DECOMPRESS,
         }
         return mapping.get(algorithm)
 

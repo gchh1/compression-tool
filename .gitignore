@@ -18,3 +18,8 @@ ignore/
 
 .aider*
 .claude*
+.exe*
+.bin*
+.wcx*
+.restored*
+.trae/

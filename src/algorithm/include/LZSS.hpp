@@ -15,8 +15,8 @@ namespace algorithm {
  */
 class LZSS {
    public:
-    static std::vector<uint8_t> compress(const std::vector<uint8_t>& input);
-    static std::vector<uint8_t> decompress(const std::vector<uint8_t>& input);
+    static std::vector<uint8_t> compress(const std::vector<uint8_t>& input, size_t dictionary_buffer_size = 4095, size_t min_match_length = 3);
+    static std::vector<uint8_t> decompress(const std::vector<uint8_t>& input, size_t min_match_length = 3);
 
    private:
     static constexpr uint16_t DICTIONARY_BUFFER_SIZE_ = 4095;  // 12 bits

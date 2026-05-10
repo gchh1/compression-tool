@@ -91,10 +91,11 @@ h1 {{ font-size: 20px; margin-bottom: 8px; }}
 .heatmap {{ display: flex; flex-wrap: wrap; gap: 2px; max-width: 900px; }}
 .block {{ width: 20px; height: 20px; border-radius: 2px; cursor: pointer; transition: transform 0.1s; position: relative; }}
 .block:hover {{ transform: scale(1.8); z-index: 10; box-shadow: 0 0 8px rgba(255,255,255,0.3); }}
-.tooltip {{ display: none; position: fixed; background: #1e293b; border: 1px solid #475569; border-radius: 6px; padding: 10px 14px; font-size: 12px; z-index: 100; pointer-events: none; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }}
+.tooltip {{ display: none; position: fixed; background: #1e293b; border: 1px solid #475569; border-radius: 6px; padding: 10px 14px; font-size: 12px; z-index: 100; pointer-events: none; box-shadow: 0 4px 12px rgba(0,0,0,0.4); min-width: 180px; }}
 .tooltip.visible {{ display: block; }}
+.tooltip > div {{ display: flex; justify-content: space-between; gap: 12px; line-height: 1.8; }}
 .tooltip .label {{ color: #94a3b8; }}
-.tooltip .value {{ color: #f1f5f9; font-weight: 600; }}
+.tooltip .value {{ color: #f1f5f9; font-weight: 600; white-space: nowrap; }}
 .stats {{ margin-top: 24px; display: flex; gap: 24px; }}
 .stat {{ background: #1e293b; border-radius: 8px; padding: 16px 20px; }}
 .stat .num {{ font-size: 24px; font-weight: 700; color: #38bdf8; }}

@@ -9,11 +9,12 @@ add_library(
     # Huffman.cpp (pre-existing compile errors)
     HuffmanTree.cpp
 
-    LZMine.cpp
+    LZDP.cpp
     LZSS.cpp
-    MyFlate.cpp
+    DPFlate.cpp
     Inflate.cpp
     StreamingAdapter.cpp
+    Zstd.cpp
 
     # LZ77.cpp
 )

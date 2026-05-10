@@ -436,7 +436,7 @@ h1 {{ font-size: 20px; margin-bottom: 6px; }}
 </style>
 </head>
 <body>
-<h1>🔥 LZMine DP 过程可视化</h1>
+<h1>🔥 LZDP DP 过程可视化</h1>
 <div class="meta">文件: {filename} &nbsp;|&nbsp; 算法: {algorithm} &nbsp;|&nbsp; DP 优化模式</div>
 
 <div class="stats">{stats_html}</div>
@@ -634,7 +634,7 @@ h1 {{ font-size: 20px; margin-bottom: 6px; }}
 </style>
 </head>
 <body>
-<h1>🔥 LZMine DP 过程可视化</h1>
+<h1>🔥 LZDP DP 过程可视化</h1>
 <div class="meta">文件: {filename} &nbsp;|&nbsp; 算法: {algorithm} &nbsp;|&nbsp; DP 优化模式（二进制/非文本）</div>
 
 <div class="stats">{stats_html}</div>
@@ -1066,7 +1066,7 @@ def generate_token_heatmap(
 
     if text_content is not None:
         logger.info("[token_heatmap] using text highlight mode for %s", filename)
-        _LZ_ALGOS = {AlgorithmType.LZSS, AlgorithmType.LZMINE}
+        _LZ_ALGOS = {AlgorithmType.LZSS, AlgorithmType.LZDP}
         if algorithm in _LZ_ALGOS and len(pr.tokens) > 0:
             logger.info("[token_heatmap] using LZ slider view for %s (%d tokens)", filename, len(pr.tokens))
             return _lz_slider_view_html(

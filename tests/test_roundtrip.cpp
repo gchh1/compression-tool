@@ -7,7 +7,8 @@
 
 #include "Deflate.hpp"
 #include "Inflate.hpp"
-#include "MyFlate.hpp"
+#include "DPFlate.hpp"
+#include "LZDP.hpp"
 
 using namespace compressor::algorithm;
 
@@ -76,15 +77,50 @@ int main() {
     }
 
     {
-        MyFlate myf;
-        Inflate inf;
-        all_pass &= roundtrip_test(myf, inf, text_data, "MyFlate/text");
+        LZDP lzdp_comp;
+        LZDP lzdp_decomp; // LZDP implements compress/decompress but they are not IAlgorithm, let's just test it manually
+        
+        auto enc = lzdp_comp.compress_dp(text_data, 32768, 258, 4);
+        try {
+            auto dec = lzdp_decomp.decompress(enc);
+            if (dec.size() != text_data.size()) {
+                std::cerr << "LZDP raw SIZE MISMATCH: " << dec.size() << " vs " << text_data.size() << std::endl;
+                all_pass = false;
+            } else {
+                std::cout << "LZDP raw PASS, size=" << enc.size() << std::endl;
+            }
+        } catch(const std::exception& e) {
+            std::cerr << "LZDP raw failed: " << e.what() << std::endl;
+            all_pass = false;
+        }
+
+        lzdp_comp.set_use_flag_encoding(true);
+        lzdp_decomp.set_use_flag_encoding(true);
+        auto enc_flag = lzdp_comp.compress_dp(text_data, 32768, 258, 4);
+        try {
+            auto dec = lzdp_decomp.decompress(enc_flag);
+            if (dec.size() != text_data.size()) {
+                std::cerr << "LZDP flag raw SIZE MISMATCH: " << dec.size() << " vs " << text_data.size() << std::endl;
+                all_pass = false;
+            } else {
+                std::cout << "LZDP flag raw PASS, size=" << enc_flag.size() << std::endl;
+            }
+        } catch(const std::exception& e) {
+            std::cerr << "LZDP flag raw failed: " << e.what() << std::endl;
+            all_pass = false;
+        }
     }
 
     {
-        MyFlate myf;
-        Inflate inf;
-        all_pass &= roundtrip_test(myf, inf, random_data, "MyFlate/random");
+        DPFlate myf;
+        DPFlateDecompress inf;
+        all_pass &= roundtrip_test(myf, inf, text_data, "DPFlate/text");
+    }
+
+    {
+        DPFlate myf;
+        DPFlateDecompress inf;
+        all_pass &= roundtrip_test(myf, inf, random_data, "DPFlate/random");
     }
 
     std::cout << "\n" << (all_pass ? "ALL TESTS PASSED" : "SOME TESTS FAILED") << std::endl;

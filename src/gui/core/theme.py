@@ -256,6 +256,69 @@ class ThemeManager:
             f"background: {t.bg_elevated}; border: 1px solid {t.border}; border-radius: 8px;"
         )
 
+    @classmethod
+    def main_window_sheet(cls) -> str:
+        t = cls._theme
+        return (
+            f"QMainWindow {{ background: {t.bg_primary}; }}\n"
+            f"QWidget {{ background: {t.bg_primary}; }}\n"
+            f"QMenuBar {{ background: {t.bg_elevated}; color: {t.text_primary}; "
+            f"border-bottom: 1px solid {t.border}; padding: 2px; }}\n"
+            f"QMenuBar::item:selected {{ background: {t.bg_selection}; border-radius: 4px; }}\n"
+            f"QMenu {{ background: {t.bg_elevated}; color: {t.text_primary}; "
+            f"border: 1px solid {t.border}; border-radius: 6px; padding: 4px; }}\n"
+            f"QMenu::item:selected {{ background: {t.bg_selection}; border-radius: 4px; }}\n"
+            f"QToolBar {{ background: {t.bg_surface}; border: none; "
+            f"border-bottom: 1px solid {t.border}; padding: 4px; spacing: 4px; }}\n"
+            f"QToolBar QToolButton {{ background: transparent; color: {t.text_primary}; "
+            f"padding: 6px 12px; border-radius: 4px; border: none; }}\n"
+            f"QToolBar QToolButton:hover {{ background: {t.bg_hover}; }}\n"
+            f"QStatusBar {{ background: {t.bg_surface}; color: {t.text_secondary}; "
+            f"border-top: 1px solid {t.border}; font-size: 12px; }}\n"
+            f"QStatusBar QLabel {{ color: {t.text_secondary}; }}\n"
+            f"QComboBox {{ background: {t.bg_elevated}; color: {t.text_primary}; "
+            f"border: 1px solid {t.border}; border-radius: 4px; padding: 4px 8px; }}\n"
+            f"QComboBox::drop-down {{ border: none; width: 20px; }}\n"
+            f"QComboBox QAbstractItemView {{ background: {t.bg_elevated}; "
+            f"color: {t.text_primary}; selection-background-color: {t.bg_selection}; }}\n"
+            f"QToolTip {{ background: {t.bg_elevated}; color: {t.text_primary}; "
+            f"border: 1px solid {t.border}; border-radius: 4px; padding: 6px; }}\n"
+            f"QScrollBar:vertical {{ background: {t.bg_surface}; width: 10px; margin: 0; }}\n"
+            f"QScrollBar::handle:vertical {{ background: {t.border_dark}; border-radius: 5px; min-height: 30px; }}\n"
+            f"QScrollBar::handle:vertical:hover {{ background: {t.text_muted}; }}\n"
+            f"QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{ height: 0; }}\n"
+            f"QProgressBar {{ background: {t.bg_surface}; border: 1px solid {t.border}; border-radius: 4px; text-align: center; }}\n"
+            f"QProgressBar::chunk {{ background: {t.accent}; border-radius: 3px; }}\n"
+            f"QSplitter::handle {{ background: {t.border}; }}\n"
+        )
+
+    @classmethod
+    def html_base_css(cls) -> str:
+        t = cls._theme
+        return (
+            f"* {{ margin: 0; padding: 0; box-sizing: border-box; }}\n"
+            f"body {{ font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif; "
+            f"background: {t.bg_primary}; color: {t.text_primary}; padding: 24px; }}\n"
+            f"h1 {{ font-size: 20px; margin-bottom: 8px; color: {t.text_primary}; }}\n"
+            f".meta {{ color: {t.text_secondary}; font-size: 13px; margin-bottom: 20px; }}\n"
+            f".legend {{ display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-size: 12px; color: {t.text_secondary}; }}\n"
+            f".stat {{ background: {t.bg_surface}; border-radius: 8px; padding: 14px 18px; min-width: 120px; }}\n"
+            f".stat .num {{ font-size: 22px; font-weight: 700; color: {t.accent}; }}\n"
+            f".stat .desc {{ font-size: 12px; color: {t.text_secondary}; margin-top: 4px; }}\n"
+            f".tooltip {{ display: none; position: fixed; background: {t.bg_elevated}; "
+            f"border: 1px solid {t.border_dark}; border-radius: 6px; padding: 10px 14px; "
+            f"font-size: 12px; z-index: 100; pointer-events: none; "
+            f"box-shadow: 0 4px 12px rgba(0,0,0,0.3); }}\n"
+            f".tooltip.visible {{ display: block; }}\n"
+            f".tooltip .label {{ color: {t.text_secondary}; }}\n"
+            f".tooltip .value {{ color: {t.text_primary}; font-weight: 600; }}\n"
+            f"th {{ background: {t.bg_elevated}; color: {t.text_secondary}; padding: 10px 12px; text-align: left; "
+            f"border-bottom: 1px solid {t.border}; }}\n"
+            f"td {{ padding: 10px 12px; border-bottom: 1px solid {t.border}; color: {t.text_primary}; }}\n"
+            f"tr:hover td {{ background: {t.bg_hover}; }}\n"
+            f".highlight {{ color: {t.accent}; font-weight: 600; }}\n"
+        )
+
 
 def _darken(hex_color: str, amount: int = 15) -> str:
     c = QColor(hex_color)

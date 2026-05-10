@@ -81,7 +81,7 @@ def main():
 
     algos = [
         (core_engine.AlgorithmID.LZSS, core_engine.AlgorithmID.LZSS_DECOMPRESS, "LZSS"),
-        (core_engine.AlgorithmID.LZMINE, core_engine.AlgorithmID.LZMINE_DECOMPRESS, "LZMine"),
+        (core_engine.AlgorithmID.LZMINE, core_engine.AlgorithmID.LZMINE_DECOMPRESS, "LZDP"),
         (core_engine.AlgorithmID.LZCRAZY, core_engine.AlgorithmID.LZCRAZY_DECOMPRESS, "LZCrazy"),
         (core_engine.AlgorithmID.CRAZYFLATE, core_engine.AlgorithmID.CRAZYFLATE_DECOMPRESS, "CrazyFlate"),
         (core_engine.AlgorithmID.DEFLATE, core_engine.AlgorithmID.INFLATE, "Deflate"),

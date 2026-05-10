@@ -591,6 +591,8 @@ class DPArrayBar(QWidget):
         self._hover_pos: int = -1
         self._cell_width = 44
         self._cell_height = 56
+        self._tc_min: int = 0
+        self._tc_max: int = 1
         self.setMouseTracking(True)
         self.setMinimumHeight(80)
         self.setMaximumHeight(130)
@@ -599,6 +601,13 @@ class DPArrayBar(QWidget):
         self._dp_array = dp_array
         self._optimal_positions = optimal_positions
         self._current_pos = current_pos
+        reachable_tc = [s.token_count for s in dp_array if getattr(s, "reachable", False)]
+        if reachable_tc:
+            self._tc_max = max(reachable_tc)
+            self._tc_min = min(reachable_tc)
+        else:
+            self._tc_max = 1
+            self._tc_min = 0
         self.update()
 
     def sizeHint(self):
@@ -651,8 +660,8 @@ class DPArrayBar(QWidget):
         if start >= end:
             return
 
-        max_tc = max((s.token_count for s in self._dp_array if s.reachable), default=1)
-        min_tc = min((s.token_count for s in self._dp_array if s.reachable), default=0)
+        max_tc = self._tc_max
+        min_tc = self._tc_min
 
         start_x = 40
         bar_y = 8
@@ -720,7 +729,7 @@ class DPArrayBar(QWidget):
             painter.setPen(border)
             painter.drawRect(cx, cy, cw, ch)
 
-            tc_color = QColor("#fffff") if t > 0.5 else ThemeManager.color('text_primary')
+            tc_color = QColor("#ffffff") if t > 0.5 else ThemeManager.color('text_primary')
             painter.setPen(tc_color)
             f = QFont("Consolas", 10, QFont.Weight.Bold if is_optimal or is_current else QFont.Weight.Normal)
             painter.setFont(f)
@@ -738,11 +747,11 @@ class DPArrayBar(QWidget):
                 f3 = QFont("Consolas", 8)
                 painter.setFont(f3)
                 painter.drawText(QRect(cx + 2, cy + 36, cw - 4, 16), Qt.AlignmentFlag.AlignCenter, f"({off},{ln})")
-        else:
+            else:
                 painter.setPen(ThemeManager.color('text_secondary'))
                 f3 = QFont("Consolas", 8)
                 painter.setFont(f3)
-                nb = st.choice.next_byte
+                nb = st.choice.literal
                 ch_repr = chr(nb) if 32 <= nb < 127 else f"{nb:02x}"
                 painter.drawText(QRect(cx + 2, cy + 36, cw - 4, 16), Qt.AlignmentFlag.AlignCenter, f"'{ch_repr}'")
 
@@ -767,12 +776,12 @@ class DPArrayBar(QWidget):
         painter.drawText(legend_x + 310, legend_y, f"token数 {min_tc}(绿) → {max_tc}(红)")
 
 
-class LZMineDPSliderWidget(QWidget):
+class LZDPDPSliderWidget(QWidget):
     def __init__(self, text: str, tokens: list[Token], byte_to_char: list[int],
                  dp_viz, algorithm: str, parent=None, grayscale: bool = False):
         super().__init__(parent)
         self._grayscale = grayscale
-        logger.info("[LZMineDP] __init__ text=%d tokens=%d dp_viz=%s", len(text), len(tokens), type(dp_viz).__name__ if dp_viz else "None")
+        logger.info("[LZDPDP] __init__ text=%d tokens=%d dp_viz=%s", len(text), len(tokens), type(dp_viz).__name__ if dp_viz else "None")
         self._text = text
         self._tokens = tokens
         self._byte_to_char = byte_to_char
@@ -810,7 +819,9 @@ class LZMineDPSliderWidget(QWidget):
 
         self._slider = QSlider(Qt.Orientation.Horizontal)
         self._slider.setMinimum(0)
-        self._slider.setMaximum(max(len(self._tokens) - 1, 0))
+        
+        max_steps = len(self._dp_viz.steps) - 1 if (self._dp_viz and hasattr(self._dp_viz, 'steps') and self._dp_viz.steps) else max(len(self._tokens) - 1, 0)
+        self._slider.setMaximum(max(max_steps, 0))
         self._slider.setValue(0)
         self._slider.valueChanged.connect(self._on_slider)
         ctrl.addWidget(self._slider, stretch=1)
@@ -868,6 +879,7 @@ class LZMineDPSliderWidget(QWidget):
 
         dp_splitter.setSizes([600, 300])
         dp_layout.addWidget(dp_splitter)
+        self._dp_splitter = dp_splitter
 
         main_splitter.addWidget(dp_group)
         main_splitter.setSizes([400, 400])
@@ -904,30 +916,40 @@ class LZMineDPSliderWidget(QWidget):
     def _render_step(self) -> None:
         try:
             step = self._current_step
-            n = len(self._tokens)
-            logger.info("[LZMineDP] _render_step step=%d/%d", step, n)
+            has_steps = self._dp_viz and hasattr(self._dp_viz, 'steps') and self._dp_viz.steps
+            n = len(self._dp_viz.steps) if has_steps else len(self._tokens)
+            
             self._step_label.setText(f"{step + 1} / {n}")
 
-            logger.debug("[LZMineDP] getting prev_end and char range for step=%d", step)
-            prev_end = self._get_prev_end(step)
-            cs, ce = self._get_token_char_range(step)
-            logger.debug("[LZMineDP] prev_end=%d cs=%d ce=%d text_len=%d", prev_end, cs, ce, len(self._text))
+            if has_steps:
+                ds = self._dp_viz.steps[step]
+                cs = self._byte_to_char[ds.position] if ds.position < len(self._byte_to_char) else len(self._text)
+                
+                best_cand = None
+                for c in ds.candidates:
+                    if c.is_chosen:
+                        best_cand = c
+                        break
+                
+                match_len = best_cand.length if best_cand else 1
+                be = min(ds.position + match_len, len(self._byte_to_char))
+                ce = self._byte_to_char[be] if be < len(self._byte_to_char) else len(self._text)
+                prev_end = cs
+            else:
+                prev_end = self._get_prev_end(step)
+                cs, ce = self._get_token_char_range(step)
 
-            logger.debug("[LZMineDP] clearing text display")
             self._text_display.clear()
             cursor = self._text_display.textCursor()
 
             if prev_end > 0:
-                logger.debug("[LZMineDP] inserting gray text: %d chars", prev_end)
                 fmt_gray = QTextCharFormat()
                 fmt_gray.setForeground(ThemeManager.color('border_dark'))
                 cursor.insertText(self._text[:prev_end], fmt_gray)
 
             if ce > cs:
-                logger.debug("[LZMineDP] inserting highlighted text: [%d:%d]", cs, ce)
                 fmt_hl = QTextCharFormat()
-                color = _ratio_to_qcolor(self._tokens[step].compression_ratio)
-                bg = QColor(color)
+                bg = QColor(ThemeManager.hex('brand_primary'))
                 bg.setAlpha(140)
                 fmt_hl.setBackground(QBrush(bg))
                 fmt_hl.setForeground(ThemeManager.color('bg_surface'))
@@ -935,42 +957,50 @@ class LZMineDPSliderWidget(QWidget):
                 cursor.insertText(self._text[cs:ce], fmt_hl)
 
             if ce < len(self._text):
-                logger.debug("[LZMineDP] inserting pending text: from %d to end", ce)
                 fmt_pending = QTextCharFormat()
                 fmt_pending.setForeground(ThemeManager.color('text_muted'))
                 cursor.insertText(self._text[ce:], fmt_pending)
 
-            logger.debug("[LZMineDP] setting cursor position to %d", cs)
             highlight_cursor = self._text_display.textCursor()
             highlight_cursor.setPosition(cs)
             self._text_display.setTextCursor(highlight_cursor)
             self._text_display.ensureCursorVisible()
 
-            logger.debug("[LZMineDP] rendering DP panel for step=%d", step)
             self._render_dp_panel(step)
 
-            logger.debug("[LZMineDP] building detail label for token at step=%d", step)
-            t = self._tokens[step]
-            type_label = {TokenType.LITERAL: "LITERAL", TokenType.MATCH: "MATCH",
-                          TokenType.LITERAL_RUN: "LITERAL_RUN"}.get(t.type, t.type.value)
-            color = _ratio_to_qcolor(t.compression_ratio)
-            color_name = color.name()
-            detail = (
-                f"Token #{step}   "
-                f"{type_label}\n"
-                f"位置: byte {t.original_start}~{t.original_start + t.original_length - 1} | "
-                f"长度: {t.original_length}B | 编码: {t.compressed_size:.2f}B | "
-                f"压缩率: {t.compression_ratio * 100:.1f}%"
-            )
-            if t.type == TokenType.MATCH:
-                detail += f"\n        回退偏移: {t.match_offset} 字符"
-            logger.debug("[LZMineDP] setting detail label text")
-            self._detail_label.setText(detail)
-
-            logger.info("[LZMineDP] _render_step completed successfully for step=%d", step)
+            if has_steps:
+                ds = self._dp_viz.steps[step]
+                detail = (
+                    f"DP Step #{step}   "
+                    f"位置: byte {ds.position} | "
+                    f"当前最优Token数: {ds.best_token_count}\n"
+                )
+                if best_cand:
+                    detail += f"-> 最佳转移: MATCH (offset={best_cand.offset}, length={best_cand.length})\n"
+                else:
+                    detail += f"-> 最佳转移: LITERAL\n"
+                    
+                detail += f"候选项数: {len(ds.candidates)}"
+                self._detail_label.setText(detail)
+            else:
+                t = self._tokens[step]
+                type_label = {TokenType.LITERAL: "LITERAL", TokenType.MATCH: "MATCH",
+                              TokenType.LITERAL_RUN: "LITERAL_RUN"}.get(t.type, t.type.value)
+                color = _ratio_to_qcolor(t.compression_ratio)
+                color_name = color.name()
+                detail = (
+                    f"Token #{step}   "
+                    f"{type_label}\n"
+                    f"位置: byte {t.original_start}~{t.original_start + t.original_length - 1} | "
+                    f"长度: {t.original_length}B | 编码: {t.compressed_size:.2f}B | "
+                    f"压缩率: {t.compression_ratio * 100:.1f}%"
+                )
+                if t.type == TokenType.MATCH:
+                    detail += f"\n        回退偏移: {t.match_offset} 字符"
+                self._detail_label.setText(detail)
 
         except Exception as e:
-            logger.error("[LZMineDP] _render_step failed at step=%d: %s", self._current_step, e, exc_info=True)
+            logger.error("[LZDPDP] _render_step failed at step=%d: %s", self._current_step, e, exc_info=True)
             try:
                 self._detail_label.setText(f"渲染错误 (step={self._current_step}):\n{str(e)}")
             except:
@@ -979,13 +1009,15 @@ class LZMineDPSliderWidget(QWidget):
     def _render_dp_panel(self, step: int) -> None:
         from PyQt6.QtCore import Qt
         from PyQt6.QtWidgets import QTableWidgetItem
+        
+        has_steps = self._dp_viz and hasattr(self._dp_viz, 'steps') and self._dp_viz.steps
 
         if self._dp_viz and hasattr(self._dp_viz, 'dp_array') and self._dp_viz.dp_array:
             dp_arr = self._dp_viz.dp_array
-            current_dp_pos = self._tokens[step].original_start if step < len(self._tokens) else -1
+            current_dp_pos = self._dp_viz.steps[step].position if has_steps else (self._tokens[step].original_start if step < len(self._tokens) else -1)
             self._dp_array_bar.set_data(dp_arr, self._optimal_positions, current_dp_pos)
 
-        dp_step = self._dp_step_index.get(
+        dp_step = self._dp_viz.steps[step] if has_steps else self._dp_step_index.get(
             self._tokens[step].original_start if step < len(self._tokens) else -1)
 
         if dp_step is None:
@@ -1000,16 +1032,14 @@ class LZMineDPSliderWidget(QWidget):
             if cur_state is not None:
                 from gui.widgets.info_panel import create_dp_literal_info
                 new_panel = create_dp_literal_info(cur_pos, cur_state)
-                old_panel = self._dp_info
-                self._dp_info = new_panel
-                old_panel.deleteLater()
-                # 需要重新添加到布局中，这里简化处理：更新内容
-                self._dp_info.clear()
-                self._dp_info = create_dp_literal_info(cur_pos, cur_state)
             else:
                 from gui.widgets.info_panel import create_dp_empty_info
-                self._dp_info.clear()
-                self._dp_info = create_dp_empty_info()
+                new_panel = create_dp_empty_info()
+            idx = self._dp_splitter.indexOf(self._dp_info)
+            if idx >= 0:
+                self._dp_splitter.replaceWidget(idx, new_panel)
+                self._dp_info.deleteLater()
+                self._dp_info = new_panel
             return
 
         candidates = dp_step.candidates
@@ -1027,7 +1057,7 @@ class LZMineDPSliderWidget(QWidget):
             len_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             self._candidate_table.setItem(i, 2, len_item)
 
-            nb = cand.next_byte
+            nb = cand.literal
             byte_str = chr(nb) if 32 <= nb < 127 else f"0x{nb:02x}"
             nb_item = QTableWidgetItem(byte_str)
             nb_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -1052,7 +1082,7 @@ class LZMineDPSliderWidget(QWidget):
             self._candidate_table.setItem(i, 4, status_item)
 
         best_tc = dp_step.best_token_count
-        cur_pos = self._tokens[step].original_start if step < len(self._tokens) else -1
+        cur_pos = dp_step.position
         cur_state = None
         if self._dp_viz and hasattr(self._dp_viz, 'dp_array') and self._dp_viz.dp_array:
             for s in self._dp_viz.dp_array:
@@ -1060,25 +1090,35 @@ class LZMineDPSliderWidget(QWidget):
                     cur_state = s
                     break
         from gui.widgets.info_panel import create_dp_step_info
-        self._dp_info.clear()
-        self._dp_info = create_dp_step_info(dp_step, candidates, best_tc, cur_state)
+        new_panel = create_dp_step_info(dp_step, candidates, best_tc, cur_state)
+        idx = self._dp_splitter.indexOf(self._dp_info)
+        if idx >= 0:
+            self._dp_splitter.replaceWidget(idx, new_panel)
+            self._dp_info.deleteLater()
+            self._dp_info = new_panel
 
     def _on_slider(self, val) -> None:
         self._current_step = val
         self._render_step()
 
+    def _max_step_index(self) -> int:
+        if self._dp_viz and hasattr(self._dp_viz, "steps") and self._dp_viz.steps:
+            return max(len(self._dp_viz.steps) - 1, 0)
+        return max(len(self._tokens) - 1, 0)
+
     def _step_prev(self) -> None:
-        logger.debug("[LZMineDP] _step_prev called, current_step=%d, total=%d", self._current_step, len(self._tokens))
+        logger.debug("[LZDPDP] _step_prev called, current_step=%d", self._current_step)
         if self._current_step > 0:
             self._current_step -= 1
-            logger.info("[LZMineDP] _step_prev: moving to step=%d", self._current_step)
+            logger.info("[LZDPDP] _step_prev: moving to step=%d", self._current_step)
             self._slider.setValue(self._current_step)
 
     def _step_next(self) -> None:
-        logger.debug("[LZMineDP] _step_next called, current_step=%d, total=%d", self._current_step, len(self._tokens))
-        if self._current_step < len(self._tokens) - 1:
+        mx = self._max_step_index()
+        logger.debug("[LZDPDP] _step_next called, current_step=%d, max=%d", self._current_step, mx)
+        if self._current_step < mx:
             self._current_step += 1
-            logger.info("[LZMineDP] _step_next: moving to step=%d", self._current_step)
+            logger.info("[LZDPDP] _step_next: moving to step=%d", self._current_step)
             self._slider.setValue(self._current_step)
 
     def _toggle_play(self) -> None:
@@ -1096,7 +1136,7 @@ class LZMineDPSliderWidget(QWidget):
                 self._timer.stop()
 
     def _auto_step(self) -> None:
-        if self._current_step < len(self._tokens) - 1:
+        if self._current_step < self._max_step_index():
             self._current_step += 1
             self._slider.setValue(self._current_step)
         else:
@@ -1106,18 +1146,18 @@ class LZMineDPSliderWidget(QWidget):
                 self._timer.stop()
 
 
-class LZMineDPDialog(QDialog):
+class LZDPDPDialog(QDialog):
     def __init__(self, text: str, tokens: list[Token], byte_to_char: list[int],
                  dp_viz, filename: str, algorithm: str, parent=None):
         super().__init__(parent)
-        self.setWindowTitle(f"LZMine DP 算法演示 - {filename}")
+        self.setWindowTitle(f"LZDP DP 算法演示 - {filename}")
         self.resize(1200, 900)
         layout = QVBoxLayout(self)
         dp_arr_len = len(dp_viz.dp_array) if (dp_viz and hasattr(dp_viz, 'dp_array') and dp_viz.dp_array) else 0
         reachable_count = sum(1 for s in dp_viz.dp_array if s.reachable) if (dp_viz and hasattr(dp_viz, 'dp_array') and dp_viz.dp_array) else 0
         final_tc = dp_viz.dp_array[dp_viz.input_length].token_count if (dp_viz and hasattr(dp_viz, 'dp_array') and dp_viz.dp_array and dp_viz.input_length < len(dp_viz.dp_array) and dp_viz.dp_array[dp_viz.input_length].reachable) else 0
         header = QLabel(
-            f"🧠 LZMine DP 算法演示"
+            f"🧠 LZDP DP 算法演示"
             f"文件: {filename} | 算法: {algorithm} | "
             f"DP数组: {reachable_count}/{dp_arr_len} 可达 | "
             f"最优Token数: {final_tc} | "
@@ -1125,7 +1165,7 @@ class LZMineDPDialog(QDialog):
         )
         header.setTextFormat(Qt.TextFormat.RichText)
         layout.addWidget(header)
-        self._slider_widget = LZMineDPSliderWidget(text, tokens, byte_to_char, dp_viz, algorithm)
+        self._slider_widget = LZDPDPSliderWidget(text, tokens, byte_to_char, dp_viz, algorithm)
         layout.addWidget(self._slider_widget, stretch=1)
         btn_layout = QHBoxLayout()
         btn_layout.addStretch()
@@ -1134,6 +1174,363 @@ class LZMineDPDialog(QDialog):
         close_btn.clicked.connect(self.accept)
         btn_layout.addWidget(close_btn)
         layout.addLayout(btn_layout)
+
+
+class BlockHeatmapCanvas(QWidget):
+    _block_hovered = pyqtSignal(int)
+
+    def __init__(self, blocks: list[dict], parent=None):
+        super().__init__(parent)
+        self._blocks = blocks
+        self._hover_idx = -1
+        self._cell_size = 20
+        self._gap = 2
+        self.setMouseTracking(True)
+        self.setMinimumSize(400, 300)
+        t = ThemeManager.get()
+        self._bg = QColor(t.bg_primary)
+        self._tooltip_bg = QColor(t.bg_elevated)
+        self._tooltip_border = QColor(t.border_dark)
+        self._tooltip_text = QColor(t.text_primary)
+        self._tooltip_label = QColor(t.text_secondary)
+
+    def sizeHint(self) -> QSize:
+        cols = max(1, int((self.width() - 40) / (self._cell_size + self._gap)))
+        rows = (len(self._blocks) + cols - 1) // cols if cols > 0 else len(self._blocks)
+        return QSize(600, max(300, rows * (self._cell_size + self._gap) + 60))
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        w = self.width() - 40
+        cols = max(1, int(w / (self._cell_size + self._gap)))
+        cw = self._cell_size + self._gap
+
+        for i, b in enumerate(self._blocks):
+            col = i % cols
+            row = i // cols
+            x = 20 + col * cw
+            y = 30 + row * cw
+            color = QColor(b["color"])
+            if i == self._hover_idx:
+                rect = QRectF(x - 2, y - 2, self._cell_size + 4, self._cell_size + 4)
+                painter.setBrush(QBrush(color))
+                pen = QPen(QColor(255, 255, 255, 180), 2)
+                painter.setPen(pen)
+                painter.drawRoundedRect(rect, 4, 4)
+            else:
+                rect = QRectF(x, y, self._cell_size, self._cell_size)
+                painter.setBrush(QBrush(color))
+                painter.setPen(Qt.PenStyle.NoPen)
+                painter.drawRoundedRect(rect, 3, 3)
+
+        if self._hover_idx >= 0 and self._hover_idx < len(self._blocks):
+            b = self._blocks[self._hover_idx]
+            mx = self.mapFromGlobal(self.cursor().pos()).x() + 16
+            my = self.mapFromGlobal(self.cursor().pos()).y() + 16
+            lines = [
+                f"偏移: 0x{b['offset']:X}",
+                f"块大小: {b['size']} B",
+                f"压缩后: {b['compressed_size']} B",
+                f"压缩率: {b['ratio'] * 100:.1f}%",
+            ]
+            tw = max(painter.fontMetrics().horizontalAdvance(l) for l in lines) + 28
+            th = len(lines) * 18 + 16
+            mx = min(mx, self.width() - tw - 8)
+            my = min(my, self.height() - th - 8)
+            tip_rect = QRectF(mx, my, tw, th)
+            painter.setBrush(QBrush(self._tooltip_bg))
+            painter.setPen(QPen(self._tooltip_border, 1))
+            painter.drawRoundedRect(tip_rect, 6, 6)
+            painter.setPen(self._tooltip_label)
+            for j, line in enumerate(lines):
+                painter.drawText(int(mx + 14), int(my + 16 + j * 18), line)
+
+        painter.end()
+
+    def mouseMoveEvent(self, event):
+        pos = event.position().toPoint()
+        w = self.width() - 40
+        cols = max(1, int(w / (self._cell_size + self._gap)))
+        cw = self._cell_size + self._gap
+        col = max(0, min(cols - 1, int((pos.x() - 20) / cw)))
+        row = max(0, int((pos.y() - 30) / cw))
+        idx = row * cols + col
+        if idx != self._hover_idx and 0 <= idx < len(self._blocks):
+            self._hover_idx = idx
+            self.update()
+        elif idx >= len(self._blocks):
+            if self._hover_idx != -1:
+                self._hover_idx = -1
+                self.update()
+
+    def leaveEvent(self, event):
+        self._hover_idx = -1
+        self.update()
+
+
+class BlockHeatmapDialog(QDialog):
+    def __init__(self, raw_data: bytes, compressed_data: bytes,
+                 filename: str, algorithm: str,
+                 original_size: int, compressed_size: int,
+                 time_ms: float, block_size: int = 256, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(f"压缩热力图 - {filename}")
+        self.setMinimumSize(750, 550)
+        t = ThemeManager.get()
+        self.setStyleSheet(
+            f"QDialog {{ background: {t.bg_primary}; }}\n"
+            f"QLabel {{ color: {t.text_primary}; background: transparent; }}\n"
+            f"QGroupBox {{ color: {t.text_primary}; font-weight: 600; border: 1px solid {t.border}; "
+            f"border-radius: 8px; margin-top: 8px; padding-top: 8px; }}\n"
+            f"QGroupBox::title {{ subcontrol-origin: margin; left: 10px; padding: 0 4px; }}\n"
+            f"QPushButton {{ background: {t.bg_elevated}; color: {t.text_primary}; "
+            f"border: 1px solid {t.border}; border-radius: 6px; padding: 6px 20px; }}\n"
+            f"QPushButton:hover {{ background: {t.bg_hover}; }}\n"
+        )
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 16, 20, 16)
+        layout.setSpacing(12)
+
+        header = QLabel(f"\U0001f4ca 压缩热力图")
+        header.setStyleSheet(f"font-size: 18px; font-weight: 700; color: {t.text_primary}; background: transparent;")
+        layout.addWidget(header)
+
+        meta = QLabel(
+            f"文件: {filename}  |  算法: {algorithm}  |  "
+            f"原始: {original_size:,} B  |  压缩后: {compressed_size:,} B  |  耗时: {time_ms:.1f} ms"
+        )
+        meta.setStyleSheet(f"font-size: 12px; color: {t.text_secondary}; background: transparent;")
+        layout.addWidget(meta)
+
+        from gui.core.engine import CompressionEngine
+        algo_map = {e.value: e for e in AlgorithmType}
+        algo = algo_map.get(algorithm, AlgorithmType.DEFLATE)
+        engine = CompressionEngine()
+        n_blocks = max(1, (len(raw_data) + block_size - 1) // block_size)
+        blocks = []
+        for i in range(n_blocks):
+            start = i * block_size
+            end = min(start + block_size, len(raw_data))
+            block_raw = raw_data[start:end]
+            r = engine.compress(block_raw, algo)
+            ratio = r.compressed_size / len(block_raw) if len(block_raw) > 0 else 1.0
+            blocks.append({
+                "index": i, "offset": start, "size": end - start,
+                "compressed_size": r.compressed_size, "ratio": round(ratio, 4),
+                "color": _ratio_to_qcolor(ratio).name(),
+            })
+
+        legend_layout = QHBoxLayout()
+        legend_layout.addWidget(QLabel("高压缩"))
+        grad_w = QWidget()
+        grad_w.setFixedWidth(200)
+        grad_w.setFixedHeight(12)
+        grad_w.setStyleSheet("background: qlineargradient(x1:0,y1:0,x2:1,y2:0,stop:0 #22c55e,stop:0.5 #eab308,stop:1 #ef4444); border-radius: 6px;")
+        legend_layout.addWidget(grad_w)
+        legend_layout.addWidget(QLabel("低压缩"))
+        legend_layout.addWidget(QLabel(f"  |  块大小: {block_size} B"))
+        legend_layout.addStretch()
+        layout.addLayout(legend_layout)
+
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        scroll.setStyleSheet(f"QScrollArea {{ border: none; background: transparent; }} "
+                           f"QScrollArea > QWidget > QWidget {{ background: {t.bg_primary}; }}")
+        canvas = BlockHeatmapCanvas(blocks)
+        scroll.setWidget(canvas)
+        layout.addWidget(scroll, stretch=1)
+
+        stats_group = QGroupBox("统计")
+        stats_layout = QHBoxLayout(stats_group)
+        ratio_pct = f"{compressed_size / original_size * 100:.1f}" if original_size else "0"
+        for label_text, value in [("原始大小", f"{original_size:,} B"),
+                                   ("压缩后", f"{compressed_size:,} B"),
+                                   ("压缩率", f"{ratio_pct}%"),
+                                   ("耗时", f"{time_ms:.1f} ms")]:
+            card = QWidget()
+            card_l = QVBoxLayout(card)
+            card_l.setContentsMargins(12, 10, 12, 10)
+            val_lbl = QLabel(value)
+            val_lbl.setStyleSheet(f"font-size: 22px; font-weight: 700; color: {t.accent}; background: transparent;")
+            desc_lbl = QLabel(label_text)
+            desc_lbl.setStyleSheet(f"font-size: 11px; color: {t.text_secondary}; background: transparent;")
+            card_l.addWidget(val_lbl)
+            card_l.addWidget(desc_lbl)
+            stats_layout.addWidget(card)
+        layout.addWidget(stats_group)
+
+        btn_layout = QHBoxLayout()
+        btn_layout.addStretch()
+        close_btn = QPushButton("关闭")
+        close_btn.clicked.connect(self.accept)
+        btn_layout.addWidget(close_btn)
+        layout.addLayout(btn_layout)
+
+
+class NetworkSimDialog(QDialog):
+    def __init__(self, original_size: int, compressed_size: int,
+                 compression_time_ms: float, filename: str,
+                 algorithm: str, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(f"网络传输模拟 - {filename}")
+        self.setMinimumSize(720, 580)
+        t = ThemeManager.get()
+        self.setStyleSheet(
+            f"QDialog {{ background: {t.bg_primary}; }}\n"
+            f"QLabel {{ color: {t.text_primary}; background: transparent; }}\n"
+            f"QGroupBox {{ color: {t.text_primary}; font-weight: 600; border: 1px solid {t.border}; "
+            f"border-radius: 8px; margin-top: 8px; padding-top: 8px; }}\n"
+            f"QGroupBox::title {{ subcontrol-origin: margin; left: 10px; padding: 0 4px; }}\n"
+            f"QPushButton {{ background: {t.bg_elevated}; color: {t.text_primary}; "
+            f"border: 1px solid {t.border}; border-radius: 6px; padding: 6px 20px; }}\n"
+            f"QPushButton:hover {{ background: {t.bg_hover}; }}\n"
+            f"QProgressBar {{ border: 1px solid {t.border_dark}; border-radius: 4px; "
+            f"background: {t.bg_surface}; text-align: center; color: {t.bg_primary}; "
+            f"font-weight: 600; font-size: 11px; min-height: 22px; }}\n"
+            f"QProgressBar::chunk {{ border-radius: 3px; }}\n"
+        )
+        from gui.core.models import NETWORK_PROFILES
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 16, 20, 16)
+        layout.setSpacing(12)
+
+        header = QLabel("\U0001f310 网络传输模拟")
+        header.setStyleSheet(f"font-size: 18px; font-weight: 700; color: {t.text_primary}; background: transparent;")
+        layout.addWidget(header)
+
+        meta = QLabel(
+            f"文件: {filename}  |  算法: {algorithm}  |  "
+            f"原始: {original_size:,} B  |  压缩后: {compressed_size:,} B  |  压缩耗时: {compression_time_ms:.1f} ms"
+        )
+        meta.setStyleSheet(f"font-size: 12px; color: {t.text_secondary}; background: transparent;")
+        layout.addWidget(meta)
+
+        cards_scroll = QScrollArea()
+        cards_scroll.setWidgetResizable(True)
+        cards_scroll.setStyleSheet(f"QScrollArea {{ border: none; background: transparent; }}")
+        cards_container = QWidget()
+        cards_layout = QVBoxLayout(cards_container)
+        cards_layout.setSpacing(12)
+
+        profiles_data = []
+        worth_count = 0
+        max_t_raw = 0.001
+        for name, profile in NETWORK_PROFILES.items():
+            t_raw = profile.transfer_time(original_size)
+            t_comp = profile.transfer_time(compressed_size)
+            saving = t_raw - t_comp
+            net_saving = saving - compression_time_ms / 1000
+            worth_it = net_saving > 0
+            if worth_it:
+                worth_count += 1
+            max_t_raw = max(max_t_raw, t_raw)
+            profiles_data.append({
+                "name": name, "bandwidth_mbps": profile.bandwidth_bps / 1_000_000,
+                "latency_ms": profile.latency_ms, "t_raw": t_raw, "t_comp": t_comp,
+                "saving": saving, "net_saving": net_saving, "worth_it": worth_it,
+            })
+
+        for p in profiles_data:
+            card = QGroupBox()
+            card.setStyleSheet(f"QGroupBox {{ background: {t.bg_surface}; }}")
+            cl = QVBoxLayout(card)
+            cl.setSpacing(8)
+            hdr = QHBoxLayout()
+            title_lbl = QLabel(p["name"])
+            title_lbl.setStyleSheet(f"font-size: 15px; font-weight: 700; color: {t.text_primary}; background: transparent;")
+            hdr.addWidget(title_lbl)
+            hdr.addStretch()
+            badge = QLabel("\u2705 值得压缩" if p["worth_it"] else "\u2717 不值得")
+            badge_color = "#166534" if p["worth_it"] else "#7f1d1d"
+            badge_fg = "#86efac" if p["worth_it"] else "#fca5a5"
+            badge.setStyleSheet(
+                f"font-size: 11px; padding: 3px 10px; border-radius: 12px; font-weight: 600; "
+                f"background: {badge_color}; color: {badge_fg};"
+            )
+            hdr.addWidget(badge)
+            cl.addLayout(hdr)
+
+            bw_lbl = QLabel(f"\u2193 {p['bandwidth_mbps']:.1f} Mbps  |  延迟 {p['latency_ms']:.0f} ms")
+            bw_lbl.setStyleSheet(f"font-size: 11px; color: {t.text_muted}; background: transparent;")
+            cl.addWidget(bw_lbl)
+
+            raw_pct = int(min(100, (p["t_raw"] / max_t_raw) * 100))
+            comp_pct = int(min(100, (p["t_comp"] / max_t_raw) * 100))
+
+            for label_text, pct, is_comp in [("原始传输", raw_pct, False),
+                                              ("压缩后传输", comp_pct, True)]:
+                lbl = QLabel(label_text)
+                lbl.setStyleSheet(f"font-size: 11px; color: {t.text_secondary}; background: transparent;")
+                cl.addWidget(lbl)
+                bar = QProgressBar()
+                bar.setMaximum(100)
+                bar.setValue(pct)
+                bar.setTextVisible(True)
+                bar.setFormat(_format_time_ns(p["t_raw"] if not is_comp else p["t_comp"]))
+                c = "#ef4444" if not is_comp else "#22c55e"
+                bar.setStyleSheet(bar.styleSheet() +
+                    f"QProgressBar::chunk {{ background: {c}; border-radius: 3px; }}")
+                cl.addWidget(bar)
+
+            saving_val = p["saving"]
+            net_val = p["net_saving"]
+            saving_row = QHBoxLayout()
+            saving_row.addWidget(QLabel("传输节省"))
+            saving_row.addStretch()
+            sv = QLabel(f"+{_format_time_ns(saving_val)} ({saving_val/max_t_raw*100:.1f}%)")
+            sv.setStyleSheet(f"font-size: 13px; font-weight: 700; color: #22c55e; background: transparent;")
+            saving_row.addWidget(sv)
+            cl.addLayout(saving_row)
+
+            net_row = QHBoxLayout()
+            net_row.addWidget(QLabel("净节省（扣除压缩耗时）"))
+            net_row.addStretch()
+            nv = QLabel(f"{'+' if net_val > 0 else '-'}{_format_time_ns(abs(net_val))}")
+            nv_css = f"font-size: 13px; font-weight: 700; color: {'#22c55e' if net_val > 0 else '#ef4444'}; background: transparent;"
+            nv.setStyleSheet(nv_css)
+            net_row.addWidget(nv)
+            cl.addLayout(net_row)
+
+            cards_layout.addWidget(card)
+
+        cards_scroll.setWidget(cards_container)
+        layout.addWidget(cards_scroll, stretch=1)
+
+        analysis_group = QGroupBox("\U0001f4a1 分析")
+        al = QVBoxLayout(analysis_group)
+        ratio_str = f"{compressed_size / original_size * 100:.1f}" if original_size else "0"
+        saving_bytes = original_size - compressed_size
+        analysis_text = (
+            f"使用 {algorithm} 压缩后，文件从 {original_size:,} B 缩小到 {compressed_size:,} B"
+            f"（压缩率 {ratio_str}%），节省 {saving_bytes:,} B。\n"
+            f"在 {len(profiles_data)} 种网络环境中，有 {worth_count} 种值得压缩（传输节省 > 压缩耗时）。"
+        )
+        if worth_count < len(profiles_data):
+            analysis_text += "\n在高速网络（如 Ethernet）下，小文件的压缩耗时可能超过传输节省，此时直接传输更优。"
+        else:
+            analysis_text += "\n所有网络环境下压缩均有收益。"
+        analysis_lbl = QLabel(analysis_text)
+        analysis_lbl.setStyleSheet(f"font-size: 13px; color: {t.text_secondary}; background: transparent; line-height: 1.6;")
+        analysis_lbl.setWordWrap(True)
+        al.addWidget(analysis_lbl)
+        layout.addWidget(analysis_group)
+
+        btn_layout = QHBoxLayout()
+        btn_layout.addStretch()
+        close_btn = QPushButton("关闭")
+        close_btn.clicked.connect(self.accept)
+        btn_layout.addWidget(close_btn)
+        layout.addLayout(btn_layout)
+
+
+def _format_time_ns(seconds: float) -> str:
+    if seconds < 0.001:
+        return f"{seconds * 1_000_000:.0f} \u03bcs"
+    if seconds < 1:
+        return f"{seconds * 1000:.1f} ms"
+    return f"{seconds:.2f} s"
 
 
 class LZSliderWidget(QWidget):
@@ -1343,7 +1740,7 @@ class LZSliderWidget(QWidget):
 
 class LZSliderDialog(QDialog):
     def __init__(self, text: str, tokens: list[Token], byte_to_char: list[int],
-                 filename: str, algorithm: str, parent=None):
+                 filename: str, algorithm: str, dp_viz=None, parent=None):
         super().__init__(parent)
         self.setWindowTitle(f"LZ 算法步骤演示 - {filename}")
         self.resize(1200, 800)
@@ -1351,7 +1748,12 @@ class LZSliderDialog(QDialog):
         header = QLabel(f"🎚️ LZ 算法步骤演示文件: {filename} | 算法: {algorithm}")
         header.setTextFormat(Qt.TextFormat.RichText)
         layout.addWidget(header)
-        self._slider_widget = LZSliderWidget(text, tokens, byte_to_char, algorithm)
+        
+        if algorithm.lower() in ('lzdp', 'dpflate') and dp_viz is not None:
+            self._slider_widget = LZDPDPSliderWidget(text, tokens, byte_to_char, dp_viz, algorithm)
+        else:
+            self._slider_widget = LZSliderWidget(text, tokens, byte_to_char, algorithm)
+            
         layout.addWidget(self._slider_widget, stretch=1)
         btn_layout = QHBoxLayout()
         btn_layout.addStretch()
@@ -1364,12 +1766,13 @@ class LZSliderDialog(QDialog):
 
 class FlateDemoDialog(QDialog):
     def __init__(self, text: str, tokens: list[Token], byte_to_char: list[int],
-                 filename: str, algorithm: str, huffman_trees: list, parent=None):
+                 filename: str, algorithm: str, huffman_trees: list, dp_viz=None, parent=None):
         super().__init__(parent)
         self._text = text
         self._tokens = tokens
         self._byte_to_char = byte_to_char
         self._huffman_trees = huffman_trees or []
+        self._dp_viz = dp_viz
         self.setWindowTitle(f"Flate 算法演示 - {filename}")
         self.resize(1300, 850)
         self._setup_ui(filename, algorithm)
@@ -1418,16 +1821,30 @@ class FlateDemoDialog(QDialog):
         lay = QVBoxLayout(w)
         lay.setContentsMargins(0, 0, 0, 0)
 
-        desc = QLabel(
-            f""
-            "Flate 算法第 1 层：将原始数据通过 LZ77/LZMine 算法压缩为 (literal, match) token 序列。"
-            "拖动滑块逐步查看每个 token 如何覆盖原文。"
-        )
-        desc.setWordWrap(True)
-        desc.setTextFormat(Qt.TextFormat.RichText)
-        lay.addWidget(desc)
+        if algorithm.lower() == 'dpflate':
+            desc = QLabel(
+                f"Flate 算法第 1 层：将原始数据通过 DP 动态规划解析为 (literal, match) token 序列。\n"
+                "拖动滑块逐步查看每个 token 如何通过最优路径覆盖原文。"
+            )
+            desc.setWordWrap(True)
+            desc.setTextFormat(Qt.TextFormat.RichText)
+            lay.addWidget(desc)
 
-        self._lz_slider = LZSliderWidget(self._text, self._tokens, self._byte_to_char, algorithm)
+            if self._dp_viz:
+                self._lz_slider = LZDPDPSliderWidget(self._text, self._tokens, self._byte_to_char, self._dp_viz, algorithm)
+            else:
+                self._lz_slider = LZSliderWidget(self._text, self._tokens, self._byte_to_char, algorithm)
+        else:
+            desc = QLabel(
+                f"Flate 算法第 1 层：将原始数据通过 LZ77 (贪心匹配) 算法压缩为 (literal, match) token 序列。\n"
+                "拖动滑块逐步查看每个 token 如何覆盖原文。"
+            )
+            desc.setWordWrap(True)
+            desc.setTextFormat(Qt.TextFormat.RichText)
+            lay.addWidget(desc)
+
+            self._lz_slider = LZSliderWidget(self._text, self._tokens, self._byte_to_char, algorithm)
+
         lay.addWidget(self._lz_slider, stretch=1)
         return w
 

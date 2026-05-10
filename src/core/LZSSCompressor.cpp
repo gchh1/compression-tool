@@ -13,7 +13,11 @@ auto LZSSCompressor::compress(std::vector<uint8_t> data) -> CompressorResult {
     CompressorResult result;
 
     auto start_time = std::chrono::high_resolution_clock::now();
-    result.data = algorithm::LZSS::compress(data);
+    size_t actual_min_match = min_match_length_;
+    if (actual_min_match == 0) {
+        actual_min_match = 3;
+    }
+    result.data = algorithm::LZSS::compress(data, dictionary_buffer_size_, actual_min_match);
     auto end_time = std::chrono::high_resolution_clock::now();
     result.original_size = data.size();
     result.compressed_size = result.data.size();
@@ -29,7 +33,11 @@ auto LZSSCompressor::decompress(std::vector<uint8_t> data) -> CompressorResult {
     CompressorResult result;
 
     auto start_time = std::chrono::high_resolution_clock::now();
-    result.data = algorithm::LZSS::decompress(data);
+    size_t actual_min_match = min_match_length_;
+    if (actual_min_match == 0) {
+        actual_min_match = 3;
+    }
+    result.data = algorithm::LZSS::decompress(data, actual_min_match);
     auto end_time = std::chrono::high_resolution_clock::now();
     result.original_size = data.size();
     result.compressed_size = result.data.size();

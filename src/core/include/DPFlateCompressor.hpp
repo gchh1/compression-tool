@@ -8,9 +8,9 @@
 namespace compressor {
 namespace core {
 
-class MyFlateCompressor : public ICompressor {
+class DPFlateCompressor : public ICompressor {
 public:
-    MyFlateCompressor()
+    DPFlateCompressor()
         : search_size_(4096),
           lookahead_size_(256),
           min_match_(4),
@@ -24,7 +24,7 @@ public:
         -> CompressorResult override;
 
     inline std::string get_algorithm_name(void) override {
-        return "MyFlate (LZMine KMP + Huffman)";
+        return "DPFlate (HashChain DP + Huffman)";
     }
 
     void set_search_size(size_t v) { search_size_ = v; }
@@ -45,12 +45,16 @@ public:
     void set_dp_sub_match_max(size_t v) { dp_sub_match_max_ = v; }
     size_t get_dp_sub_match_max() const { return dp_sub_match_max_; }
 
+    void set_match_engine(int v) { match_engine_ = v; }
+    int get_match_engine() const { return match_engine_; }
+
 private:
     size_t search_size_;
     size_t lookahead_size_;
     size_t min_match_;
     size_t max_chain_length_;
     size_t dp_sub_match_max_;
+    int match_engine_{1};
 };
 
 }  // namespace core

@@ -14,7 +14,7 @@ namespace algorithm {
  * @param input
  * @return std::vector<uint8_t>
  */
-std::vector<uint8_t> LZSS::compress(const std::vector<uint8_t> &input) {
+std::vector<uint8_t> LZSS::compress(const std::vector<uint8_t> &input, size_t dictionary_buffer_size, size_t min_match_length) {
     // Result vector that contains compressed data
     std::vector<uint8_t> result;
 
@@ -51,15 +51,15 @@ std::vector<uint8_t> LZSS::compress(const std::vector<uint8_t> &input) {
         uint8_t length = 0;
 
         // Set the search start position
-        size_t search_start = (cursor > DICTIONARY_BUFFER_SIZE_)
-                                  ? (cursor - DICTIONARY_BUFFER_SIZE_)
+        size_t search_start = (cursor > dictionary_buffer_size)
+                                  ? (cursor - dictionary_buffer_size)
                                   : 0;
 
         // Search for the longest match
         for (size_t i = search_start; i < cursor; ++i) {
             uint8_t cur_len = 0;
 
-            while (cur_len < MAX_MATCH_LENGTH_ &&
+            while (cur_len < (min_match_length + 15) &&
                    cursor + cur_len < input.size() &&
                    input[i + cur_len] == input[cursor + cur_len]) {
                 cur_len++;
@@ -71,7 +71,7 @@ std::vector<uint8_t> LZSS::compress(const std::vector<uint8_t> &input) {
         }
 
         // If length < MIN_MATCH_LENGTH_, output (1, char)
-        if (length < MIN_MATCH_LENGTH_) {
+        if (length < min_match_length) {
             flag_byte |= (1 << flag_byte_idx);
             token_buffer.push_back(input[cursor]);
             cursor++;
@@ -79,7 +79,7 @@ std::vector<uint8_t> LZSS::compress(const std::vector<uint8_t> &input) {
         // Else, output (0, position, length)
         else {
             // Conbine position and length as a 16 bits token
-            uint16_t token = (position << 4) | (length - MIN_MATCH_LENGTH_);
+            uint16_t token = (position << 4) | (length - min_match_length);
 
             token_buffer.push_back(token >> 8);
             token_buffer.push_back(token & 0xFF);
@@ -109,7 +109,7 @@ std::vector<uint8_t> LZSS::compress(const std::vector<uint8_t> &input) {
  * @param input
  * @return std::vector<uint8_t>
  */
-std::vector<uint8_t> LZSS::decompress(const std::vector<uint8_t> &input) {
+std::vector<uint8_t> LZSS::decompress(const std::vector<uint8_t> &input, size_t min_match_length) {
     std::vector<uint8_t> result;
     // Return if the size of input < 4
     if (input.size() < 4) {
@@ -149,7 +149,7 @@ std::vector<uint8_t> LZSS::decompress(const std::vector<uint8_t> &input) {
                 uint16_t token =
                     (static_cast<uint16_t>(input[i]) << 8) | input[i + 1];
                 uint16_t position = token >> 4;
-                uint8_t length = (token & 0x0F) + MIN_MATCH_LENGTH_;
+                uint8_t length = (token & 0x0F) + min_match_length;
                 i += 2;
 
                 // Append the reapted character

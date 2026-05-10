@@ -19,9 +19,9 @@ ALGO_CODE_MAP: dict[AlgorithmType, int] = {
     AlgorithmType.NONE: ALGO_CODE_STORED,
     AlgorithmType.DEFLATE: 1,
     AlgorithmType.LZSS: 2,
-    AlgorithmType.LZMINE: 3,
+    AlgorithmType.LZDP: 3,
     AlgorithmType.HUFFMAN: 4,
-    AlgorithmType.MYFLATE: 5,
+    AlgorithmType.DPFLATE: 5,
     AlgorithmType.GZIP: 6,
 }
 

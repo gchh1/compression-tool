@@ -18,7 +18,7 @@ auto DeflateCompressor::compress(std::vector<uint8_t> original_data)
 
     auto start_time = std::chrono::high_resolution_clock::now();
 
-    algorithm::Deflate deflate(slide_size_, min_match_, max_chain_length_);
+    algorithm::Deflate deflate(slide_size_, min_match_ == 0 ? 3 : min_match_, max_chain_length_);
     deflate.reset();
 
     size_t out_capacity = original_data.size() * 2 + 65536;

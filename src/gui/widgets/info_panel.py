@@ -87,7 +87,7 @@ def create_dp_literal_info(cur_pos, cur_state) -> InfoPanel:
     panel.add_info_row("token 数:", str(cur_state.token_count))
     panel.add_info_row("前驱:", pred_str, ThemeManager.hex("chart_5"))
     
-    byte_val = cur_state.choice.next_byte
+    byte_val = cur_state.choice.literal
     char_repr = chr(byte_val) if 32 <= byte_val < 127 else ""
     byte_str = f"0x{byte_val:02x}" + (f" ('{char_repr}')" if char_repr else " (非打印字符)")
     panel.add_info_row("字节:", byte_str)

@@ -10,7 +10,7 @@ from gui.core.models import (
     ALGORITHM_PARAMS,
     STREAMING_THRESHOLD_MB,
     STREAMING_CHUNK_SIZE_KB,
-    LZMINE_DP_VIZ_MAX_SIZE,
+    LZDP_DP_VIZ_MAX_SIZE,
 )
 from gui.core.theme import ThemeManager, DEFAULT_THEME, THEME_FIELDS, CHART_FIELDS
 
@@ -26,7 +26,7 @@ DEFAULTS = {
         "chunk_size_kb": STREAMING_CHUNK_SIZE_KB,
     },
     "visualization": {
-        "lzmine_dp_viz_max_size": LZMINE_DP_VIZ_MAX_SIZE,
+        "lzdp_dp_viz_max_size": LZDP_DP_VIZ_MAX_SIZE,
     },
     "theme": DEFAULT_THEME.to_dict(),
 }
@@ -37,9 +37,10 @@ for algo, params in ALGORITHM_PARAMS.items():
 
 def _get_config_path() -> Path:
     if getattr(sys, 'frozen', False):
-        base = Path(sys.executable).parent
+        base = Path(sys.executable).parent.parent / "config"
     else:
         base = Path(__file__).resolve().parent.parent.parent.parent
+    base.mkdir(parents=True, exist_ok=True)
     return base / CONFIG_FILENAME
 
 

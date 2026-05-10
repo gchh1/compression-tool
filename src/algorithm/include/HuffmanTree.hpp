@@ -66,9 +66,11 @@ class HuffmanTree {
                 size_t symbol_bits);
 
     explicit HuffmanTree(std::span<const uint8_t> symbols);
+    HuffmanTree(node* root, size_t dictionary_size, size_t symbol_bits);
 
-    /** @brief Build the Huffman Tree with preorder tree code */
-    // explicit HuffmanTree(utils::BitReader& reader);
+    /** @brief Deserialize Huffman tree from BitReader */
+    HuffmanTree(utils::BitReader& reader, size_t dictionary_size,
+                size_t symbol_bits);
 
     /** @brief Obey RAII (Resources Acqusition is Initialization) */
     ~HuffmanTree() {

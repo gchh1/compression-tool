@@ -48,6 +48,6 @@ test(lz, "LZMine(Greedy)", "s=4096 la=17 dp=1")
 df = core_engine.DeflateCompressor()
 test(df, "Deflate", "default")
 
-# MyFlate
-mf = core_engine.MyFlateCompressor()
-test(mf, "MyFlate", "default")
+# DPFlate
+mf = core_engine.DPFlateCompressor()
+test(mf, "DPFlate", "default")

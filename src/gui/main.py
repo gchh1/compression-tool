@@ -6,9 +6,17 @@ import logging
 from pathlib import Path
 
 
+def _get_log_dir() -> Path:
+    if getattr(sys, 'frozen', False):
+        base = Path(sys.executable).parent.parent / "logs"
+    else:
+        base = Path(__file__).resolve().parent.parent.parent / "logs"
+    base.mkdir(parents=True, exist_ok=True)
+    return base
+
+
 def setup_logging(level: int = logging.INFO):
-    log_dir = Path("logs")
-    log_dir.mkdir(exist_ok=True)
+    log_dir = _get_log_dir()
     log_file = log_dir / "gui.log"
 
     root_logger = logging.getLogger()
@@ -38,7 +46,7 @@ def run_cli():
 
     from gui.core.engine import CompressionEngine
     from gui.core.file_helper import scan_directory, load_batch
-    from gui.core.strategy import StrategyDispatcher
+    from gui.core.decision import StrategyDispatcher
 
     if len(sys.argv) < 2:
         print("Usage: python -m gui <directory>")
@@ -72,15 +80,40 @@ def run_cli():
         print(f"{r.name:<30} {r.type.value:<8} {r.size:>10} {comp_size:>10} {status:>8} {r.compression_time_ms:.1f}ms")
 
 
+def _resolve_icon_path() -> Path | None:
+    candidates: list[Path] = []
+    if getattr(sys, 'frozen', False):
+        base = Path(sys.executable).parent
+        candidates = [
+            base / "WebCompressor.ico",
+            base.parent / "resources" / "icon" / "WebCompressor.ico",
+        ]
+    else:
+        base = Path(__file__).resolve().parent.parent.parent.parent
+        candidates = [
+            base / "resources" / "icon" / "WebCompressor.ico",
+        ]
+    for c in candidates:
+        if c.exists():
+            return c
+    return None
+
+
 def run_gui():
     setup_logging()
 
     from PyQt6.QtWidgets import QApplication
+    from PyQt6.QtGui import QIcon
     from gui.widgets.main_window import MainWindow
     from gui.core.app_config import apply_theme
 
     app = QApplication(sys.argv)
     app.setApplicationName("WebCompress")
+    app.setApplicationDisplayName("WebCompress")
+
+    _icon_path = _resolve_icon_path()
+    if _icon_path and _icon_path.exists():
+        app.setWindowIcon(QIcon(str(_icon_path)))
 
     apply_theme()
 
