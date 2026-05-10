@@ -1,0 +1,96 @@
+================================================================================
+  Compression Algorithm Performance Test
+================================================================================
+
+[OK] Engine initialized successfully
+
+[DATA] Generated 5 test datasets:
+  - repetitive_text: 130,000 bytes (127.0 KB)
+  - random_binary: 100,000 bytes (97.7 KB)
+  - english_text: 195,500 bytes (190.9 KB)
+  - json_data: 49,039 bytes (47.9 KB)
+  - code_data: 64,200 bytes (62.7 KB)
+
+================================================================================
+Testing: DEFLATE
+================================================================================
+  repetitive_text     :  130,000 ->      279 (ratio: 0.0021, saved: +99.8%, time: 10.2ms)
+  random_binary       :  100,000 ->  102,556 (ratio: 1.0256, saved: -2.6%, time: 22.6ms)
+  english_text        :  195,500 ->    1,160 (ratio: 0.0059, saved: +99.4%, time: 14.6ms)
+  json_data           :   49,039 ->    7,067 (ratio: 0.1441, saved: +85.6%, time: 13.7ms)
+  code_data           :   64,200 ->      508 (ratio: 0.0079, saved: +99.2%, time: 5.1ms)
+
+================================================================================
+Testing: LZSS
+================================================================================
+  repetitive_text     :  130,000 ->   15,366 (ratio: 0.1182, saved: +88.2%, time: 231.7ms)
+  random_binary       :  100,000 ->  112,472 (ratio: 1.1247, saved: -12.5%, time: 973.0ms)
+  english_text        :  195,500 ->   23,387 (ratio: 0.1196, saved: +88.0%, time: 163.9ms)
+  json_data           :   49,039 ->   10,055 (ratio: 0.2050, saved: +79.5%, time: 66.4ms)
+  code_data           :   64,200 ->    7,747 (ratio: 0.1207, saved: +87.9%, time: 64.9ms)
+
+================================================================================
+Testing: LZMine
+================================================================================
+  repetitive_text     :  130,000 ->    2,641 (ratio: 0.0203, saved: +98.0%, time: 13920.1ms)
+  random_binary       :  100,000 ->  112,519 (ratio: 1.1252, saved: -12.5%, time: 2264.6ms)
+  english_text        :  195,500 ->    4,340 (ratio: 0.0222, saved: +97.8%, time: 647.5ms)
+  json_data           :   49,039 ->   15,870 (ratio: 0.3236, saved: +67.6%, time: 249.9ms)
+  code_data           :   64,200 ->    1,555 (ratio: 0.0242, saved: +97.6%, time: 399.1ms)
+
+================================================================================
+Testing: MyFlate
+================================================================================
+  repetitive_text     :  130,000 ->      279 (ratio: 0.0021, saved: +99.8%, time: 106.4ms)
+  random_binary       :  100,000 ->  100,399 (ratio: 1.0040, saved: -0.4%, time: 31.6ms)
+  english_text        :  195,500 ->    1,153 (ratio: 0.0059, saved: +99.4%, time: 169.7ms)
+  json_data           :   49,039 ->    6,336 (ratio: 0.1292, saved: +87.1%, time: 120.3ms)
+  code_data           :   64,200 ->      505 (ratio: 0.0079, saved: +99.2%, time: 73.8ms)
+
+================================================================================
+Testing: Brotli
+================================================================================
+  repetitive_text     :  130,000 ->      343 (ratio: 0.0026, saved: +99.7%, time: 13.0ms)
+  random_binary       :  100,000 ->  101,023 (ratio: 1.0102, saved: -1.0%, time: 30.1ms)
+  english_text        :  195,500 ->    1,252 (ratio: 0.0064, saved: +99.4%, time: 23.1ms)
+  json_data           :   49,039 ->    7,346 (ratio: 0.1498, saved: +85.0%, time: 18.1ms)
+  code_data           :   64,200 ->      529 (ratio: 0.0082, saved: +99.2%, time: 6.0ms)
+
+================================================================================
+Testing: Zstd
+================================================================================
+  repetitive_text     :  130,000 ->    1,033 (ratio: 0.0079, saved: +99.2%, time: 12.5ms)
+  random_binary       :  100,000 ->  109,403 (ratio: 1.0940, saved: -9.4%, time: 22.6ms)
+  english_text        :  195,500 ->    3,470 (ratio: 0.0177, saved: +98.2%, time: 19.0ms)
+  json_data           :   49,039 ->   10,024 (ratio: 0.2044, saved: +79.6%, time: 8.7ms)
+  code_data           :   64,200 ->    1,451 (ratio: 0.0226, saved: +97.7%, time: 6.5ms)
+
+================================================================================
+  COMPRESSION RATIO SUMMARY (lower is better)
+================================================================================
+Algorithm   repetitive_text  random_binary   english_text      json_data      code_data
+---------------------------------------------------------------------------------------
+DEFLATE             0.0021         1.0256         0.0059         0.1441         0.0079 
+LZSS                0.1182         1.1247         0.1196         0.2050         0.1207 
+LZMine              0.0203         1.1252         0.0222         0.3236         0.0242 
+MyFlate             0.0021         1.0040         0.0059         0.1292         0.0079 
+Brotli              0.0026         1.0102         0.0064         0.1498         0.0082 
+Zstd                0.0079         1.0940         0.0177         0.2044         0.0226 
+
+================================================================================
+  PROBLEM ANALYSIS
+================================================================================
+
+[ANALYSIS] Brotli:
+  [OK] repetitive_text: Brotli performance acceptable
+  [OK] random_binary: Brotli performance acceptable
+  [OK] english_text: Brotli performance acceptable
+  [OK] json_data: Brotli performance acceptable
+  [OK] code_data: Brotli performance acceptable
+
+[ANALYSIS] Zstd:
+  [OK] repetitive_text: Zstd performance acceptable
+  [CAUTION] random_binary: Zstd (1.0940) is slightly worse than DEFLATE (1.0256)
+  [OK] english_text: Zstd performance acceptable
+  [CAUTION] json_data: Zstd (0.2044) is slightly worse than DEFLATE (0.1441)
+  [OK] code_data: Zstd performance acceptable

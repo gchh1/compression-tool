@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "algorithms": {
+    "lzss": {
+      "search_size": 4095,
+      "lookahead_size": 18,
+      "min_match": 0,
+      "use_flag_encoding": 1
+    },
+    "lzdp": {
+      "search_size": 4096,
+      "lookahead_size": 64,
+      "min_match": 0,
+      "dp_depth": 6,
+      "match_engine": 1,
+      "use_flag_encoding": 1
+    },
+    "dpflate": {
+      "search_size": 32512,
+      "lookahead_size": 128,
+      "min_match": 0,
+      "dp_depth": 6,
+      "max_chain_length": 256,
+      "match_engine": 1,
+      "use_flag_encoding": 1
+    },
+    "deflate": {
+      "search_size": 32768,
+      "min_match": 0,
+      "max_chain_length": 256
+    },
+    "gzip": {
+      "compression_level": 6
+    },
+    "brotli": {
+      "window_size": 65536,
+      "min_match": 0,
+      "max_chain_length": 256
+    },
+    "zstd": {
+      "compression_level": 3
+    }
+  },
+  "streaming": {
+    "threshold_mb": 10.0,
+    "chunk_size_kb": 1024
+  },
+  "visualization": {
+    "lzdp_dp_viz_max_size": 65536,
+    "lzmine_dp_viz_max_size": 65536
+  },
+  "theme": {
+    "bg_primary": "#0F172A",
+    "bg_surface": "#1E293B",
+    "bg_elevated": "#1E293B",
+    "bg_hover": "#334155",
+    "bg_selection": "#1E3A5F",
+    "text_primary": "#E2E8F0",
+    "text_secondary": "#94A3B8",
+    "text_muted": "#64748B",
+    "border": "#334155",
+    "border_dark": "#475569",
+    "accent": "#38BDF8",
+    "accent_hover": "#0EA5E9",
+    "accent_text": "#FFFFFF",
+    "success": "#22C55E",
+    "warning": "#EAB308",
+    "error": "#EF4444"
+  }
+}

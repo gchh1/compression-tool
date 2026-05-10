@@ -1,0 +1,13 @@
+{
+  "total_samples": 1,
+  "valid_samples": 1,
+  "invalid_samples": 0,
+  "last_save_time": 1778338505.0066106,
+  "data_version": "3.0",
+  "algorithm_distribution": {
+    "brotli": 1
+  },
+  "type_distribution": {
+    "UNKNOWN": 1
+  }
+}

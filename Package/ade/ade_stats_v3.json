@@ -1,0 +1,20 @@
+{
+  "total_samples": 103,
+  "valid_samples": 103,
+  "invalid_samples": 0,
+  "last_save_time": 1778413822.4338768,
+  "data_version": "3.0",
+  "algorithm_distribution": {
+    "myflate": 6,
+    "lzmine": 5,
+    "lzss": 2,
+    "lzdp": 48,
+    "dpflate": 33,
+    "deflate": 6,
+    "gzip": 2,
+    "none": 1
+  },
+  "type_distribution": {
+    "UNKNOWN": 103
+  }
+}
