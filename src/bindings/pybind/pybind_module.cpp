@@ -211,6 +211,45 @@ PYBIND11_MODULE(core_engine, m) {
         .def_readwrite("success", &compressor::api::CompressResult::success)
         .def_readwrite("error_message", &compressor::api::CompressResult::error_message);
 
+    py::class_<compressor::api::WCXUnpackResult>(m, "WCXUnpackResult")
+        .def(py::init<>())
+        .def_readwrite("success", &compressor::api::WCXUnpackResult::success)
+        .def_readwrite("algo_code", &compressor::api::WCXUnpackResult::algo_code)
+        .def_readwrite("original_size", &compressor::api::WCXUnpackResult::original_size)
+        .def_readwrite("compressed_size", &compressor::api::WCXUnpackResult::compressed_size)
+        .def_readwrite("is_folder", &compressor::api::WCXUnpackResult::is_folder)
+        .def_readwrite("original_filename", &compressor::api::WCXUnpackResult::original_filename)
+        .def_readwrite("payload", &compressor::api::WCXUnpackResult::payload)
+        .def_readwrite("error_message", &compressor::api::WCXUnpackResult::error_message);
+
+    m.def("pack_wcx",
+          [](const std::vector<uint8_t>& compressed_data,
+             compressor::core::AlgorithmID algorithm,
+             size_t original_size,
+             const std::string& original_filename,
+             bool is_folder) -> std::vector<uint8_t> {
+              return compressor::api::pack_wcx(compressed_data, algorithm,
+                                              original_size,
+                                              original_filename,
+                                              is_folder);
+          },
+          py::arg("compressed_data"),
+          py::arg("algorithm"),
+          py::arg("original_size"),
+          py::arg("original_filename") = "",
+          py::arg("is_folder") = false,
+          py::call_guard<py::gil_scoped_release>(),
+          "Pack WCX header + payload");
+
+    m.def("unpack_wcx",
+          [](const std::vector<uint8_t>& data)
+              -> compressor::api::WCXUnpackResult {
+              return compressor::api::unpack_wcx(data);
+          },
+          py::arg("data"),
+          py::call_guard<py::gil_scoped_release>(),
+          "Unpack WCX header and payload");
+
     m.def("pipeline_compress",
           [](const std::vector<uint8_t>& data,
              const std::vector<compressor::core::AlgorithmID>& chain)

@@ -4,7 +4,9 @@
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
+#include <iostream>
 #include <memory>
 #include <span>
 #include <vector>
@@ -14,11 +16,13 @@
 #include "PackReader.hpp"
 #include "PackWriter.hpp"
 #include "Pipeline.hpp"
+#include "WCXProtocol.hpp"
 
 #ifndef __EMSCRIPTEN__
 #include <filesystem>
 #include <fstream>
 #include "FileReader.hpp"
+#include "wcx_decompress_input.hpp"
 
 namespace fs = std::filesystem;
 #endif
@@ -196,6 +200,46 @@ auto decompressAndUnpack(const std::vector<uint8_t>& data)
     return result;
 }
 
+auto pack_wcx(const std::vector<uint8_t>& compressed_data,
+              AlgorithmID algorithm,
+              size_t original_size,
+              const std::string& original_filename,
+              bool is_folder) -> std::vector<uint8_t> {
+    uint8_t code = wcx::toAlgoCode(algorithm);
+    auto orig_u32 = static_cast<uint32_t>(std::min<size_t>(original_size, UINT32_MAX));
+    auto comp_u32 = static_cast<uint32_t>(std::min<size_t>(compressed_data.size(), UINT32_MAX));
+    auto out = wcx::buildHeaderBytes(code, orig_u32, comp_u32, original_filename);
+    if (is_folder && out.size() >= 15) {
+        out[14] = static_cast<uint8_t>(1);  // FLAG_FOLDER
+    }
+    out.insert(out.end(), compressed_data.begin(), compressed_data.end());
+    return out;
+}
+
+auto unpack_wcx(const std::vector<uint8_t>& data) -> WCXUnpackResult {
+    WCXUnpackResult result;
+    wcx::HeaderView header{};
+    if (!wcx::tryParseHeader(std::span<const uint8_t>(data.data(), data.size()),
+                             header) ||
+        !header.valid) {
+        result.error_message = "Invalid WCX header";
+        return result;
+    }
+    result.algo_code = header.algo_code;
+    result.original_size = header.original_size;
+    result.compressed_size = header.compressed_size;
+    result.original_filename = header.original_filename;
+    result.is_folder = (header.flags & 0x01) != 0;
+    if (header.total_size > data.size()) {
+        result.error_message = "WCX payload offset out of range";
+        return result;
+    }
+    result.payload.assign(data.begin() + static_cast<std::ptrdiff_t>(header.total_size),
+                          data.end());
+    result.success = true;
+    return result;
+}
+
 #ifndef __EMSCRIPTEN__
 
 // ---- streaming file API ----
@@ -236,6 +280,15 @@ auto compressFile(const std::string& input_path,
                          std::ios::binary | std::ios::trunc);
     if (!output) {
         result.error_message = "Cannot open output file";
+        return result;
+    }
+
+    std::string original_filename = fs::path(input_path).filename().string();
+    uint8_t algo_code = chain.empty() ? 0 : wcx::toAlgoCode(chain.front());
+    auto header_orig_u32 =
+        static_cast<uint32_t>(std::min<uint64_t>(result.original_size, UINT32_MAX));
+    if (!wcx::writeHeader(output, algo_code, header_orig_u32, 0, original_filename)) {
+        result.error_message = "Cannot write WCX header";
         return result;
     }
 
@@ -281,6 +334,11 @@ auto compressFile(const std::string& input_path,
 
     result.block_profile = pipeline.getBlockProfile();
 
+    // Patch compressed_size in WCX header at byte offset 10.
+    auto comp_u32 = static_cast<uint32_t>(std::min<uint64_t>(total_written, UINT32_MAX));
+    wcx::patchCompressedSize(output, comp_u32);
+    output.flush();
+
     auto t1 = std::chrono::high_resolution_clock::now();
     result.time_ms =
         std::chrono::duration<double, std::milli>(t1 - t0).count();
@@ -325,6 +383,14 @@ auto decompressFile(const std::string& input_path,
         return result;
     }
 
+    const uint64_t file_on_disk = result.original_size;
+    auto payload_size_opt =
+        resolve_wcx_file_stream_payload_length(input_path, input, file_on_disk, result);
+    if (!payload_size_opt) {
+        return result;
+    }
+    uint64_t payload_size = *payload_size_opt;
+
     std::ofstream output(output_path,
                          std::ios::binary | std::ios::trunc);
     if (!output) {
@@ -336,16 +402,16 @@ auto decompressFile(const std::string& input_path,
     uint64_t bytes_read = 0;
     uint64_t total_written = 0;
 
-    while (bytes_read < result.original_size) {
+    while (bytes_read < payload_size) {
         size_t to_read = std::min(STREAMING_CHUNK_SIZE,
-                                  static_cast<size_t>(result.original_size -
+                                  static_cast<size_t>(payload_size -
                                                       bytes_read));
         input.read(reinterpret_cast<char*>(buf.data()),
                    static_cast<std::streamsize>(to_read));
         size_t actual = static_cast<size_t>(input.gcount());
         if (actual == 0) break;
 
-        bool is_last = (bytes_read + actual >= result.original_size);
+        bool is_last = (bytes_read + actual >= payload_size);
         pipeline.push(std::span<const uint8_t>(buf.data(), actual), is_last);
         bytes_read += actual;
 
@@ -395,8 +461,14 @@ auto compressDirectory(const std::string& dir_path,
         return result;
     }
 
-    // Collect files
-    std::vector<std::pair<fs::path, fs::path>> files;  // abs, rel
+    // Collect files with known original sizes so WCX header can record total size.
+    struct SourceFile {
+        fs::path abs_path;
+        fs::path rel_path;
+        uint64_t file_size{0};
+    };
+    std::vector<SourceFile> files;
+    uint64_t total_original = 0;
     for (auto it = fs::recursive_directory_iterator(dir_path, ec);
          it != fs::recursive_directory_iterator(); ++it) {
         if (ec) { ec.clear(); continue; }
@@ -407,7 +479,16 @@ auto compressDirectory(const std::string& dir_path,
             rel = abs.filename();
             ec.clear();
         }
-        files.emplace_back(std::move(abs), std::move(rel));
+        std::error_code fec;
+        auto file_size = fs::file_size(abs, fec);
+        if (fec) continue;
+
+        files.push_back(SourceFile{
+            std::move(abs),
+            std::move(rel),
+            static_cast<uint64_t>(file_size),
+        });
+        total_original += static_cast<uint64_t>(file_size);
     }
 
     if (files.empty()) {
@@ -425,25 +506,32 @@ auto compressDirectory(const std::string& dir_path,
     auto pool = std::make_shared<memory::MemoryPool>(8, STREAMING_CHUNK_SIZE);
     archiver::PackWriter writer(pool);
 
-    uint64_t total_original = 0;
+    const std::string original_filename = fs::path(dir_path).filename().string();
+    uint8_t algo_code = chain.empty() ? 0 : wcx::toAlgoCode(chain.front());
+    auto header_orig_u32 =
+        static_cast<uint32_t>(std::min<uint64_t>(total_original, UINT32_MAX));
+    if (!wcx::writeHeader(output, algo_code, header_orig_u32, 0, original_filename)) {
+        result.error_message = "Cannot write WCX header";
+        return result;
+    }
+    output.seekp(14, std::ios::beg);
+    output.put(static_cast<char>(0x01));  // FLAG_FOLDER
+    output.seekp(0, std::ios::end);
+
     uint64_t total_written = 0;
     std::vector<uint8_t> buf(STREAMING_CHUNK_SIZE);
 
-    for (const auto& [abs_path, rel_path] : files) {
-        std::error_code fec;
-        auto file_size = fs::file_size(abs_path, fec);
-        if (fec) continue;
+    for (const auto& file : files) {
+        writer.beginFile(file.rel_path.string(), chain);
 
-        writer.beginFile(rel_path.string(), chain);
-
-        std::ifstream input(abs_path, std::ios::binary);
+        std::ifstream input(file.abs_path, std::ios::binary);
         if (!input) continue;
 
         uint64_t bytes_read = 0;
-        while (bytes_read < file_size) {
+        while (bytes_read < file.file_size) {
             size_t to_read =
                 std::min(STREAMING_CHUNK_SIZE,
-                         static_cast<size_t>(file_size - bytes_read));
+                         static_cast<size_t>(file.file_size - bytes_read));
             input.read(reinterpret_cast<char*>(buf.data()),
                        static_cast<std::streamsize>(to_read));
             size_t actual = static_cast<size_t>(input.gcount());
@@ -453,7 +541,6 @@ auto compressDirectory(const std::string& dir_path,
         }
 
         writer.endFile();
-        total_original += file_size;
 
         // Drain writer output
         while (true) {
@@ -477,6 +564,9 @@ auto compressDirectory(const std::string& dir_path,
         total_written += out.size();
         writer.consumeOutput(out.size());
     }
+    auto comp_u32 = static_cast<uint32_t>(std::min<uint64_t>(total_written, UINT32_MAX));
+    wcx::patchCompressedSize(output, comp_u32);
+    output.flush();
 
     auto t1 = std::chrono::high_resolution_clock::now();
     result.time_ms =
@@ -497,12 +587,30 @@ auto decompressAndUnpackToDisk(const std::string& input_path,
 
     auto t0 = std::chrono::high_resolution_clock::now();
 
-    auto reader = std::make_unique<archiver::FileReader>(input_path);
-    if (reader->size() == 0) {
+    auto file_reader = std::make_unique<archiver::FileReader>(input_path);
+    if (file_reader->size() == 0) {
         result.error_message = "Cannot open archive: " + input_path;
         return result;
     }
 
+    std::vector<uint8_t> archive_data(file_reader->size());
+    if (!archive_data.empty()) {
+        auto read_n =
+            file_reader->read(0, std::span<uint8_t>(archive_data.data(), archive_data.size()));
+        if (read_n != archive_data.size()) {
+            result.error_message = "Failed to read archive payload";
+            return result;
+        }
+    }
+
+    auto pack_payload_opt =
+        resolve_wcx_directory_archive_inner_pack(input_path, archive_data, result);
+    if (!pack_payload_opt) {
+        return result;
+    }
+    std::vector<uint8_t> pack_payload = std::move(*pack_payload_opt);
+
+    auto reader = std::make_unique<VectorReader>(pack_payload);
     archiver::PackReader pack_reader(std::move(reader));
     const auto& entries = pack_reader.getEntries();
 

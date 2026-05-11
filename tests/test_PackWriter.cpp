@@ -9,6 +9,7 @@
 #include "DataChunk.hpp"
 #include "MemoryPool.hpp"
 #include "PackWriter.hpp"
+#include "Pipeline.hpp"
 
 using namespace compressor::archiver;
 using namespace compressor::memory;

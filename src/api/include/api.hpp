@@ -32,6 +32,17 @@ struct WebFile {
     std::vector<uint8_t> content;
 };
 
+struct WCXUnpackResult {
+    bool success{false};
+    uint8_t algo_code{0};
+    size_t original_size{0};
+    size_t compressed_size{0};
+    bool is_folder{false};
+    std::string original_filename;
+    std::vector<uint8_t> payload;
+    std::string error_message;
+};
+
 /// Compress a single buffer with the given algorithm chain.
 auto compress(const std::vector<uint8_t>& data,
               std::span<const AlgorithmID> chain) -> CompressResult;
@@ -48,6 +59,14 @@ auto packAndCompress(const std::vector<WebFile>& files,
 /// Unpack a compressed archive back into individual files.
 auto decompressAndUnpack(const std::vector<uint8_t>& data)
     -> std::vector<WebFile>;
+
+auto pack_wcx(const std::vector<uint8_t>& compressed_data,
+              AlgorithmID algorithm,
+              size_t original_size,
+              const std::string& original_filename = "",
+              bool is_folder = false) -> std::vector<uint8_t>;
+
+auto unpack_wcx(const std::vector<uint8_t>& data) -> WCXUnpackResult;
 
 #ifndef __EMSCRIPTEN__
 

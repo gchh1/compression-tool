@@ -78,7 +78,7 @@ ALGORITHM_PARAMS: dict[AlgorithmType, list[AlgorithmParamDef]] = {
     ],
     AlgorithmType.LZDP: [
         AlgorithmParamDef("search_size", "搜索窗口大小", 4096, 256, 65536, 256, " B"),
-        AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 256, 16, 65536, 16, " B"),
+        AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 256, 2, 65536, 1, " B"),
         AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 50, 1, ""),
         AlgorithmParamDef("dp_top", "DP 每步保留的匹配候选数", 3, 1, 32, 1, ""),
         AlgorithmParamDef("match_engine", "匹配引擎选择", 0, choices={0: "KMP 引擎 (支持重叠匹配, 慢)", 1: "HashChain 引擎 (支持重叠匹配, 快)"}),

@@ -91,3 +91,5 @@ write token.byte（也就是字符）
 你可能会担心，token.byte对于match_token也要吗，我的回答是不用，只是方便literalrun获取单字符而不是和literaltoken也写byte
 
 我的写法可能不规范，但是这个设计请你跟我展开大讨论：
+
+gui的框选选择之后框还是中空的

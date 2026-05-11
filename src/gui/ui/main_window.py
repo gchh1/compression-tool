@@ -17,6 +17,7 @@ from PyQt6.QtWidgets import (
 logger = logging.getLogger("gui.main_window")
 
 from gui.models import Record, FileRecord, FolderRecord, CompressionStatus, AlgorithmType, ResourceType, formatted_size, ALGORITHM_PARAMS, get_default_config, LZDP_DP_VIZ_MAX_SIZE, STREAMING_CHUNK_SIZE_KB
+from gui.config.settings import load_config, get_streaming_chunk_size
 from gui.config.theme import ThemeManager
 from gui.ui.table import FileTableWidget
 from gui.ui.worker import CompressionWorker, ComparisonWorker, COMPARISON_ALGORITHMS
@@ -754,9 +755,6 @@ class AlgorithmConfigDialog(QDialog):
         layout = QVBoxLayout(body)
         try:
             from gui.engine.compressor import CompressionEngine
-            from gui.models import (
-                STREAMING_THRESHOLD_MB, STREAMING_CHUNK_SIZE_KB,
-            )
             from gui.config.theme import ThemeManager
 
             current_config = CompressionEngine.get_config()
@@ -844,7 +842,11 @@ class AlgorithmConfigDialog(QDialog):
             stream_form.setContentsMargins(12, 12, 12, 12)
 
             from gui.engine.compressor import CompressionEngine as _CE
+            from gui.config.settings import load_config, get_streaming_chunk_size
+
             cur_threshold = _CE.get_streaming_threshold()
+            _file_cfg = load_config()
+            _chunk_kb = get_streaming_chunk_size(_file_cfg)
 
             self._streaming_threshold_spin = QSpinBox()
             self._streaming_threshold_spin.setMinimum(1)
@@ -862,7 +864,7 @@ class AlgorithmConfigDialog(QDialog):
             self._streaming_chunk_spin.setMinimum(64)
             self._streaming_chunk_spin.setMaximum(64 * 1024)
             self._streaming_chunk_spin.setSingleStep(64)
-            self._streaming_chunk_spin.setValue(STREAMING_CHUNK_SIZE_KB)
+            self._streaming_chunk_spin.setValue(_chunk_kb)
             self._streaming_chunk_spin.setSuffix(" KB")
             self._streaming_chunk_spin.setToolTip(
                 "流式模式下每个数据块的大小\n"
@@ -1028,6 +1030,15 @@ class AlgorithmConfigDialog(QDialog):
             CompressionEngine.set_streaming_threshold(
                 float(self._streaming_threshold_spin.value())
             )
+
+        from gui.config.settings import load_config, save_config
+
+        full = load_config()
+        if "streaming" not in full:
+            full["streaming"] = {}
+        if self._streaming_chunk_spin:
+            full["streaming"]["chunk_size_kb"] = int(self._streaming_chunk_spin.value())
+        save_config(full)
 
         self.accept()
 
@@ -1936,7 +1947,7 @@ class MainWindow(QMainWindow):
 
         from PyQt6.QtWidgets import QProgressDialog
 
-        chunk_size_kb = STREAMING_CHUNK_SIZE_KB
+        chunk_size_kb = get_streaming_chunk_size(load_config())
         progress = QProgressDialog("准备算法对比...", "取消", 0, 100, self)
         progress.setWindowTitle(title)
         progress.setWindowModality(Qt.WindowModality.WindowModal)

@@ -6,6 +6,7 @@ import io
 from pathlib import Path
 
 from gui.models import AlgorithmType
+from gui.engine.bridge import get_core_engine
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +24,8 @@ ALGO_CODE_MAP: dict[AlgorithmType, int] = {
     AlgorithmType.HUFFMAN: 4,
     AlgorithmType.DPFLATE: 5,
     AlgorithmType.GZIP: 6,
+    AlgorithmType.BROTLI: 7,
+    AlgorithmType.ZSTD: 8,
 }
 
 CODE_TO_ALGO: dict[int, AlgorithmType] = {v: k for k, v in ALGO_CODE_MAP.items()}
@@ -120,36 +123,55 @@ def pack_compressed_file(
     original_filename: str = "",
     is_folder: bool = False,
 ) -> bytes:
-    header = CompressedFileHeader(
-        algorithm=algorithm,
-        original_size=original_size,
-        compressed_size=len(compressed_data),
-        original_filename=original_filename,
-        is_folder=is_folder,
+    engine = get_core_engine()
+    if engine is None or not hasattr(engine, "pack_wcx"):
+        raise RuntimeError("WCX container write requires core_engine.pack_wcx")
+    algo_map = {
+        AlgorithmType.NONE: engine.AlgorithmID.NONE,
+        AlgorithmType.DEFLATE: engine.AlgorithmID.DEFLATE,
+        AlgorithmType.LZSS: engine.AlgorithmID.LZSS,
+        AlgorithmType.LZDP: engine.AlgorithmID.LZDP,
+        AlgorithmType.DPFLATE: engine.AlgorithmID.DPFLATE,
+        AlgorithmType.BROTLI: engine.AlgorithmID.BROTLI,
+        AlgorithmType.ZSTD: engine.AlgorithmID.ZSTD,
+    }
+    algo_id = algo_map.get(algorithm)
+    if algo_id is None:
+        raise RuntimeError(f"WCX pack: algorithm not supported by core_engine: {algorithm}")
+    packed = engine.pack_wcx(
+        list(compressed_data),
+        algo_id,
+        int(original_size),
+        original_filename,
+        bool(is_folder),
     )
-    return header.to_bytes() + compressed_data
+    return bytes(packed)
 
 
 def unpack_compressed_file(data: bytes) -> tuple[CompressedFileHeader, bytes]:
-    header = CompressedFileHeader.from_bytes(data)
-    payload_start = header.header_total_size()
-    if len(data) < payload_start:
-        raise ValueError(f"Data too short: {len(data)} < header size {payload_start}")
-    payload = data[payload_start:]
-    if len(payload) != header.compressed_size:
-        logger.warning(
-            "Size mismatch: header says %d, actual %d",
-            header.compressed_size,
-            len(payload),
-        )
-    return header, payload
+    engine = get_core_engine()
+    if engine is None or not hasattr(engine, "unpack_wcx"):
+        raise RuntimeError("WCX container read requires core_engine.unpack_wcx")
+    unpacked = engine.unpack_wcx(list(data))
+    if not unpacked.success:
+        msg = getattr(unpacked, "error_message", "") or "unpack_wcx failed"
+        raise ValueError(msg)
+    algo = CODE_TO_ALGO.get(int(unpacked.algo_code), AlgorithmType.NONE)
+    header = CompressedFileHeader(
+        algorithm=algo,
+        original_size=int(unpacked.original_size),
+        compressed_size=int(unpacked.compressed_size),
+        original_filename=unpacked.original_filename,
+        is_folder=bool(unpacked.is_folder),
+    )
+    return header, bytes(unpacked.payload)
 
 
 def detect_algorithm_from_file(path: str | Path) -> AlgorithmType | None:
     p = Path(path)
     try:
         data = p.read_bytes()
-        header = CompressedFileHeader.from_bytes(data)
+        header, _ = unpack_compressed_file(data)
         return header.algorithm
     except Exception as e:
         logger.warning("[detect] failed to read header from %s: %s", path, e)
