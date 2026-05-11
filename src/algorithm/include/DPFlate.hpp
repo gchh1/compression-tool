@@ -48,8 +48,11 @@ private:
 public:
     void set_match_engine(int v) { match_engine_ = v; }
     int get_match_engine() const { return match_engine_; }
-private:
+    void set_use_flag_encoding(bool v) { use_flag_encoding_ = v; }
+    bool get_use_flag_encoding() const { return use_flag_encoding_; }
 
+private:
+    bool use_flag_encoding_{false};
     std::vector<uint8_t> input_buffer_;
 
     std::vector<Token> token_buffer_;

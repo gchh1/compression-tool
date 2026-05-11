@@ -22,6 +22,7 @@ auto DPFlateCompressor::compress(std::vector<uint8_t> original_data)
                                min_match_ == 0 ? 4 : min_match_,
                                max_chain_length_, dp_sub_match_max_);
     dpflate.set_match_engine(match_engine_);
+    dpflate.set_use_flag_encoding(use_flag_encoding_);
     dpflate.reset();
 
     size_t out_capacity = original_data.size() * 2 + 65536;

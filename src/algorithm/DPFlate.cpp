@@ -72,12 +72,37 @@ auto DPFlate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk)
     std::vector<size_t> head(SEARCH_SIZE, SIZE_MAX);
     std::vector<size_t> prev(in_len, SIZE_MAX);
 
+    auto calc_bit_width = [](size_t v) -> int {
+        int bits = 0;
+        if (v == 0) return 1;
+        v--;
+        while (v > 0) {
+            bits++;
+            v >>= 1;
+        }
+        return bits == 0 ? 1 : bits;
+    };
+
+    uint32_t lit_cost = 1;
+    uint32_t match_cost = 1;
+    if (use_flag_encoding_) {
+        int ob = calc_bit_width(SEARCH_SIZE);
+        int lb = calc_bit_width(LOOKAHEAD_SIZE);
+        lit_cost = 9;
+        match_cost = 1 + ob + lb;
+    } else {
+        int ob = calc_bit_width(SEARCH_SIZE);
+        int lb = calc_bit_width(LOOKAHEAD_SIZE);
+        lit_cost = 8;
+        match_cost = ob + lb;
+    }
+
     for (size_t pos = 0; pos < in_len; pos++) {
         if (dp[pos].token_count == LzStyleDpCell::kUnreachable) continue;
 
-        // Literal transition (cost 1 token)
-        if (dp[pos].token_count + 1 < dp[pos + 1].token_count) {
-            dp[pos + 1].token_count = dp[pos].token_count + 1;
+        // Literal transition
+        if (dp[pos].token_count + lit_cost < dp[pos + 1].token_count) {
+            dp[pos + 1].token_count = dp[pos].token_count + lit_cost;
             dp[pos + 1].match_offset = 0;
             dp[pos + 1].match_length = 0;
             dp[pos + 1].predecessor = pos;
@@ -126,8 +151,8 @@ auto DPFlate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk)
             }
 
             for (auto& mr : match_results) {
-                if (dp[pos].token_count + 1 < dp[pos + mr.length].token_count) {
-                    dp[pos + mr.length].token_count = dp[pos].token_count + 1;
+                if (dp[pos].token_count + match_cost < dp[pos + mr.length].token_count) {
+                    dp[pos + mr.length].token_count = dp[pos].token_count + match_cost;
                     dp[pos + mr.length].match_offset = mr.offset;
                     dp[pos + mr.length].match_length = mr.length;
                     dp[pos + mr.length].predecessor = pos;
