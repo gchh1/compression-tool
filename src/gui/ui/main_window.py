@@ -960,12 +960,14 @@ class AlgorithmConfigDialog(QDialog):
                     self._read_algo_widget_int(algo, "search_size", 4096),
                     self._read_algo_widget_int(algo, "lookahead_size", 256),
                     self._read_algo_widget_int(algo, "min_match", 0),
+                    self._read_algo_flag_encoding(algo, False),
                 ))
             elif algo == AlgorithmType.LZSS:
                 lbl.setText(format_lzss_preview(
                     self._read_algo_widget_int(algo, "search_size", 4095),
                     self._read_algo_widget_int(algo, "lookahead_size", 18),
                     self._read_algo_widget_int(algo, "min_match", 0),
+                    self._read_algo_flag_encoding(algo, False),
                 ))
         except Exception as e:
             lbl.setText(f"预览更新失败: {e}")

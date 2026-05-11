@@ -117,16 +117,27 @@ def format_lzdp_preview(
     return "\n".join(lines)
 
 
-def format_lzss_preview(search_size: int, lookahead_size: int, min_match_param: int) -> str:
+def format_lzss_preview(search_size: int, lookahead_size: int, min_match_param: int, use_flag_encoding: bool) -> str:
     eff_mm = 3 if min_match_param == 0 else min_match_param
     max_run = eff_mm + 15
     lines = [
         "现行 core LZSS：每最多 8 个符号写入 1 字节 flag，再跟符号数据。",
-        f"  · 字面量: 1 bit（flag=1）+ 8 bit 数据 = 9 bit",
-        f"  · 匹配: 1 bit（flag=0）+ 16 bit（offset 12 bit | length- min_match 4 bit）= 17 bit",
         f"字典窗口 search_size = {search_size}；前瞻上限 max_match_length = {lookahead_size}；",
         f"单次匹配长度在代码中上限为 min_match+15 = {max_run}（min_match 生效值 {eff_mm}）。",
+        "",
     ]
+    if use_flag_encoding:
+        lines += [
+            "当前：1-Bit Flag 模式",
+            f"  · 字面量: 1 bit（flag=1）+ 8 bit 数据 = 9 bit",
+            f"  · 匹配: 1 bit（flag=0）+ 16 bit（offset 12 bit | length- min_match 4 bit）= 17 bit",
+        ]
+    else:
+        lines += [
+            "当前：Offset=0 兜底模式",
+            f"  · 引用匹配（offset>0）: 16 bit（offset 12 bit | length- min_match 4 bit）= 16 bit",
+            f"  · 连续字面量: 每段 16 bit 头 + 8×chunk bit",
+        ]
     return "\n".join(lines)
 
 
@@ -134,6 +145,7 @@ def format_dpflate_lz_reference_preview(
     search_size: int,
     lookahead_size: int,
     min_match_param: int,
+    use_flag_encoding: bool,
 ) -> str:
     ob = calc_bit_width(search_size)
     lb = calc_bit_width(lookahead_size)
@@ -144,5 +156,21 @@ def format_dpflate_lz_reference_preview(
         f"  · offset 字段若按窗口计 = {ob} bit（search_size={search_size}）",
         f"  · length 字段若按窗口计 = {lb} bit（lookahead_size={lookahead_size}）",
         f"  · 核心 min_match：参数为 0 时引擎内固定为 4，否则为 {min_match_param}（当前生效 {eff_mm}）",
+        "",
     ]
+    if use_flag_encoding:
+        lit_bits = 1 + 8
+        mat_bits = 1 + ob + lb
+        lines += [
+            "当前：1-Bit Flag 模式",
+            f"  · 字面量: 1 + 8 = {lit_bits} bit",
+            f"  · 引用匹配: 1 + {ob} + {lb} = {mat_bits} bit",
+        ]
+    else:
+        max_chunk = (1 << lb) - 1
+        lines += [
+            "当前：Offset=0 兜底模式",
+            f"  · 引用匹配（offset>0）: {ob} + {lb} = {ob + lb} bit",
+            f"  · 连续字面量: 每段 {ob}+{lb}+8×chunk bit，单段最多 {max_chunk} 字节字面量",
+        ]
     return "\n".join(lines)
