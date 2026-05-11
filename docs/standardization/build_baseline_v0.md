@@ -53,3 +53,8 @@ cmake --build build --parallel
 - `Package/`、`bin/` 与仓库追踪关系不清晰，易造成“产物混入源码提交”。
 - 缺少标准化的“干净环境一键构建”文档与 CI 对齐命令。
 
+## 6. 构建验证记录
+
+| 日期 | 命令 | 结果 |
+|------|------|------|
+| 2026-05-11 | `cmake --build build --parallel 8`（既有 `build/` 配置，MinGW） | 成功，含 `ade`、`core_engine`、`test_*`、`train_ade_model`、`generate_ade_dataset` 等目标 |
