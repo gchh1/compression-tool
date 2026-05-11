@@ -80,7 +80,7 @@ CHART_FIELDS = ["chart_1", "chart_2", "chart_3", "chart_4", "chart_5", "chart_6"
 LABELS_CN = {
     "bg_primary": "主背景色",
     "bg_surface": "面板/卡片背景",
-    "bg_elevated": "表头/标签页选中",
+    "bg_elevated": "表头/标签页",
     "bg_hover": "悬停高亮",
     "bg_selection": "行选中背景",
     "text_primary": "主文字颜色",

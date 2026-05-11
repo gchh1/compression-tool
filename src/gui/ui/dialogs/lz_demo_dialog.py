@@ -18,10 +18,44 @@ from PyQt6.QtWidgets import (
 
 logger = logging.getLogger(__name__)
 
-from gui.engine.token_parser import Token, TokenType
+from gui.engine.token_parser import Token, TokenType, LZDPTokenParser
 from gui.models import AlgorithmType
 from gui.config.theme import ThemeManager
 from gui.ui.views.visualizers.token_heatmap import ratio_to_qcolor as _ratio_to_qcolor
+
+# 与热力图相同：颜色由 token_heatmap.ratio_to_qcolor(ratio) 决定；改渐变请编辑该函数。
+# 仅调整演示里「匹配段」背景不透明度时改下面常量即可。
+LZ_DEMO_MATCH_HIGHLIGHT_ALPHA = 130
+
+
+def _lzdp_candidate_compression_ratio(c: dict) -> float:
+    """与 LZDPTokenParser 构造 Token 时的 compressed/original 口径一致。"""
+    sb = LZDPTokenParser.SEARCH_BYTELENGTH
+    lb = LZDPTokenParser.LOOKAHEAD_BYTELENGTH
+    o = int(c.get("offset", 0) or 0)
+    ln = int(c.get("length", 0) or 0)
+    if o == 0 and ln == 0:
+        orig = 1.0
+        comp = float(sb + lb + 1)
+    elif o == 0:
+        orig = float(max(ln, 1))
+        comp = float(sb + lb + orig)
+    else:
+        orig = float(max(ln + 1, 1))
+        comp = float(sb + lb + 1)
+    return comp / orig
+
+
+def _char_format_for_token_ratio(ratio: float) -> QTextCharFormat:
+    c = _ratio_to_qcolor(ratio)
+    bg = QColor(c)
+    bg.setAlpha(LZ_DEMO_MATCH_HIGHLIGHT_ALPHA)
+    fmt = QTextCharFormat()
+    fmt.setBackground(QBrush(bg))
+    lum = (0.299 * c.red() + 0.587 * c.green() + 0.114 * c.blue()) / 255.0
+    fmt.setForeground(QColor(15, 23, 42) if lum > 0.62 else QColor(248, 250, 252))
+    fmt.setFontWeight(700)
+    return fmt
 
 
 class DPArrayBar(QWidget):
@@ -393,12 +427,13 @@ class LZDPDPSliderWidget(QWidget):
                 cursor.insertText(self._text[:prev_end], fmt_gray)
 
             if ce > cs:
-                fmt_hl = QTextCharFormat()
-                bg = QColor(ThemeManager.hex('brand_primary'))
-                bg.setAlpha(140)
-                fmt_hl.setBackground(QBrush(bg))
-                fmt_hl.setForeground(ThemeManager.color('bg_surface'))
-                fmt_hl.setFontWeight(700)
+                if has_steps and best_cand:
+                    r_hl = _lzdp_candidate_compression_ratio(best_cand)
+                elif not has_steps and step < len(self._tokens):
+                    r_hl = self._tokens[step].compression_ratio
+                else:
+                    r_hl = 1.0
+                fmt_hl = _char_format_for_token_ratio(r_hl)
                 cursor.insertText(self._text[cs:ce], fmt_hl)
 
             if ce < len(self._text):
@@ -732,13 +767,7 @@ class LZSliderWidget(QWidget):
 
             if ce > cs:
                 logger.debug("[LZSlider] inserting highlighted text: [%d:%d]", cs, ce)
-                fmt_hl = QTextCharFormat()
-                color = _ratio_to_qcolor(self._tokens[step].compression_ratio)
-                bg = QColor(color)
-                bg.setAlpha(140)
-                fmt_hl.setBackground(QBrush(bg))
-                fmt_hl.setForeground(ThemeManager.color('bg_surface'))
-                fmt_hl.setFontWeight(700)
+                fmt_hl = _char_format_for_token_ratio(self._tokens[step].compression_ratio)
                 cursor.insertText(self._text[cs:ce], fmt_hl)
 
             if ce < len(self._text):

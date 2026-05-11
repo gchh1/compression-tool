@@ -13,6 +13,7 @@ from gui.engine.token_parser import Token, TokenType
 
 
 def ratio_to_qcolor(ratio: float) -> QColor:
+    """压缩率(压缩字节/原始字节) → 色相：好(低)偏绿，差(高)偏红。LZ 演示/热力图/算法对比条共用。"""
     r = max(0.0, min(ratio, 1.5))
     hue = max(0.0, 120.0 * (1.0 - r / 1.5))
     sat = 0.85 - 0.15 * (r / 1.5)

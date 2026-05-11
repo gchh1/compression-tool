@@ -20,7 +20,7 @@ add_library(
     ade
     STATIC
     features/FeatureExtractorV3.cpp
-    features/FeatureVectorV3.cpp
+    features/FeatureVector.cpp
     features/MagicBytesDetector.cpp
     models/EvolutionaryAlgorithms.cpp
     models/RandomForest.cpp

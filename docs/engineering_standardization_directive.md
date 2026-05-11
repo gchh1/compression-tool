@@ -95,6 +95,8 @@
 | 7 | `README.md` 中的《项目规约》章节 | 或 `CONTRIBUTING.md` + README 链接 —— **须在阶段 0 与需求方约定形式** |
 | 8 | CI Lint 配置 | 含本地运行方式；从「仅警告」到「门禁」须有分步说明 |
 
+> **与仓库文件对应**：上表中文名与 `docs/standardization/` 下 Markdown 一一对应，**总索引见 [standardization/README.md](standardization/README.md)**（含文件名与用途表）。
+
 ---
 
 ## 7. 执行计划（分阶段 — 动手改代码前须获确认）
@@ -102,7 +104,7 @@
 ### 阶段 0 — 基线与只读审计
 
 - **行为**：不改变业务路径语义；允许新增文档、脚本只读扫描结果。
-- **产出**：《技术债审计报告》v0；当前 CMake / PyInstaller / Python 入口的《构建基线》一页；《风险决策表》v0。
+- **产出**：《技术债审计报告》（`technical-debt-audit.md`）；《构建基线》（`build-baseline.md`）；《风险决策表》（`risk-decisions.md`）。版本迭代可在 Git 历史中追溯，文件名不再带 `v0` 后缀。
 - **验收**：仓库行为与整改前一致；仅增加审计类文件（路径在阶段 0 末与需求方确认）。
 
 ### 阶段 1 — 规约与词典冻结

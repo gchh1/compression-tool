@@ -16,10 +16,10 @@ from PyQt6.QtWidgets import (
 
 logger = logging.getLogger("gui.main_window")
 
-from gui.models import Record, FileRecord, FolderRecord, CompressionStatus, AlgorithmType, ResourceType, formatted_size, ALGORITHM_PARAMS, get_default_config, LZDP_DP_VIZ_MAX_SIZE
+from gui.models import Record, FileRecord, FolderRecord, CompressionStatus, AlgorithmType, ResourceType, formatted_size, ALGORITHM_PARAMS, get_default_config, LZDP_DP_VIZ_MAX_SIZE, STREAMING_CHUNK_SIZE_KB
 from gui.config.theme import ThemeManager
 from gui.ui.table import FileTableWidget
-from gui.ui.worker import CompressionWorker
+from gui.ui.worker import CompressionWorker, ComparisonWorker, COMPARISON_ALGORITHMS
 
 
 def _compressed_size(record: Record) -> int:
@@ -1088,6 +1088,8 @@ class MainWindow(QMainWindow):
 
         self.setAcceptDrops(True)
         self._worker: CompressionWorker | None = None
+        self._comparison_worker: ComparisonWorker | None = None
+        self._comparison_progress = None
 
         self._table = FileTableWidget()
         self._statusbar = StatusBarWidget()
@@ -1911,116 +1913,100 @@ class MainWindow(QMainWindow):
 
     def _on_view_comparison(self) -> None:
         logger.info("[view] comparison from menu")
-        record = self._get_selected_done_record()
-        if record:
-            self._run_comparison(record)
+        rows = self._table.selected_rows
+        if not rows:
+            QMessageBox.information(self, "提示", "请先勾选一个已压缩的文件（点击行左侧的☐）")
+            return
+        record = self._table.get_record(rows[0])
+        if isinstance(record, FolderRecord):
+            self._run_folder_comparison(record)
+            return
+        if not isinstance(record, FileRecord):
+            QMessageBox.information(self, "提示", "请选中一个文件或文件夹")
+            return
+        if record.status != CompressionStatus.DONE:
+            QMessageBox.information(self, "提示", f"该文件状态为 {record.status.value}，请先压缩")
+            return
+        self._run_comparison(record)
+
+    def _start_comparison_worker(self, record: Record, title: str) -> None:
+        if self._comparison_worker and self._comparison_worker.isRunning():
+            QMessageBox.information(self, "提示", "已有算法对比任务正在运行")
+            return
+
+        from PyQt6.QtWidgets import QProgressDialog
+
+        chunk_size_kb = STREAMING_CHUNK_SIZE_KB
+        progress = QProgressDialog("准备算法对比...", "取消", 0, 100, self)
+        progress.setWindowTitle(title)
+        progress.setWindowModality(Qt.WindowModality.WindowModal)
+        progress.setMinimumDuration(0)
+        progress.setAutoClose(False)
+        progress.setAutoReset(False)
+        progress.setValue(0)
+
+        self._comparison_progress = progress
+        self._comparison_worker = ComparisonWorker(record, COMPARISON_ALGORITHMS, chunk_size_kb, self)
+        self._comparison_worker.progress.connect(self._on_comparison_progress)
+        self._comparison_worker.comparison_finished.connect(self._on_comparison_finished)
+        self._comparison_worker.failed.connect(self._on_comparison_failed)
+        self._comparison_worker.finished.connect(self._on_comparison_thread_finished)
+        progress.canceled.connect(self._comparison_worker.cancel)
+
+        self._statusbar.set_status_text("正在生成算法压缩对比...")
+        self._statusbar.set_progress_value(0)
+        self._comparison_worker.start()
 
     def _run_comparison(self, record: FileRecord) -> None:
         logger.info("[view] running comparison for %s (%d bytes)", record.name, record.size)
-        try:
-            from gui.engine.compressor import CompressionEngine
-            engine = CompressionEngine()
-
-            results = []
-            for algo in [AlgorithmType.LZSS, AlgorithmType.LZDP,
-                         AlgorithmType.DPFLATE,
-                         AlgorithmType.DEFLATE, AlgorithmType.GZIP,
-                         AlgorithmType.BROTLI, AlgorithmType.ZSTD]:
-                try:
-                    r = engine.smart_compress(record.raw_data, algo)
-                    results.append({
-                        "name": algo.value,
-                        "compressed_size": r.compressed_size,
-                        "ratio": r.compression_ratio,
-                        "time_ms": r.time_ms,
-                    })
-                    logger.info("[view] %s: %d -> %d (%.1f%%) %.1fms",
-                                 algo.value, record.size, r.compressed_size,
-                                 r.compression_ratio * 100, r.time_ms)
-                except Exception as e:
-                    logger.warning("[view] %s compress failed: %s", algo.value, e)
-
-            if not results:
-                QMessageBox.warning(self, "错误", "所有算法压缩均失败")
-                return
-
-            from gui.ui.dialogs.comparison_dialog import ComparisonDialog
-            dlg = ComparisonDialog(results, record.name, record.size, parent=self)
-            logger.info("[view] comparison dialog created, calling exec")
-            dlg.exec()
-            logger.info("[view] comparison dialog closed")
-        except Exception as e:
-            logger.error("[view] comparison failed: %s", e, exc_info=True)
-            QMessageBox.warning(self, "对比错误", f"生成算法对比失败:\n{e}")
+        self._start_comparison_worker(record, "算法压缩对比")
 
     def _run_folder_comparison(self, record: FolderRecord) -> None:
         logger.info("[view] running folder comparison for %s (%d files)", record.name, record.filenum)
+        files = [f for f in record.files if f.size > 0]
+        if not files:
+            QMessageBox.information(self, "提示", "文件夹中没有可压缩的文件")
+            return
+        self._start_comparison_worker(record, "文件夹算法对比")
+
+    def _on_comparison_progress(self, value: int, text: str) -> None:
+        if self._comparison_progress:
+            self._comparison_progress.setValue(value)
+            self._comparison_progress.setLabelText(text)
+        self._statusbar.set_progress_value(value)
+        self._statusbar.set_status_text(text)
+
+    def _on_comparison_finished(self, results: object, name: str, original_size: int) -> None:
         try:
-            from gui.engine.compressor import CompressionEngine
-            from PyQt6.QtWidgets import QProgressDialog
-
-            files = [f for f in record.files if f.size > 0]
-            if not files:
-                QMessageBox.information(self, "提示", "文件夹中没有可压缩的文件")
-                return
-
-            algos = [AlgorithmType.LZSS, AlgorithmType.LZDP,
-                     AlgorithmType.DPFLATE,
-                     AlgorithmType.DEFLATE, AlgorithmType.GZIP,
-                     AlgorithmType.BROTLI, AlgorithmType.ZSTD]
-
-            progress = QProgressDialog("正在对比文件夹...", "取消", 0, len(algos) * len(files), self)
-            progress.setWindowTitle("文件夹算法对比")
-            progress.setWindowModality(Qt.WindowModality.WindowModal)
-            progress.setMinimumDuration(0)
-            progress.setValue(0)
-
-            algo_totals: dict[str, dict] = {a.value: {"compressed": 0, "time_ms": 0.0, "count": 0} for a in algos}
-            step = 0
-
-            engine = CompressionEngine()
-            for algo in algos:
-                for f in files:
-                    if progress.wasCanceled():
-                        return
-                    progress.setValue(step)
-                    progress.setLabelText(f"{algo.value}: {f.name}")
-                    try:
-                        if not f.raw_data:
-                            f.load_raw_data()
-                        r = engine.smart_compress(f.raw_data, algo)
-                        algo_totals[algo.value]["compressed"] += r.compressed_size
-                        algo_totals[algo.value]["time_ms"] += r.time_ms
-                        algo_totals[algo.value]["count"] += 1
-                    except Exception as e:
-                        logger.warning("[view] folder comparison %s/%s failed: %s", algo.value, f.name, e)
-                    step += 1
-
-            progress.setValue(step)
-
-            total_original = sum(f.size for f in files)
-            results = []
-            for algo in algos:
-                t = algo_totals[algo.value]
-                if t["count"] > 0:
-                    ratio = t["compressed"] / total_original if total_original > 0 else 1.0
-                    results.append({
-                        "name": algo.value,
-                        "compressed_size": t["compressed"],
-                        "ratio": ratio,
-                        "time_ms": t["time_ms"],
-                    })
-
-            if not results:
-                QMessageBox.warning(self, "错误", "所有算法压缩均失败")
-                return
-
             from gui.ui.dialogs.comparison_dialog import ComparisonDialog
-            dlg = ComparisonDialog(results, record.name, total_original, parent=self)
+            if self._comparison_progress:
+                self._comparison_progress.setValue(100)
+                self._comparison_progress.close()
+                self._comparison_progress = None
+            self._statusbar.set_progress_value(100)
+            self._statusbar.set_status_text("算法对比完成")
+            dlg = ComparisonDialog(list(results), name, original_size, parent=self)
             dlg.exec()
         except Exception as e:
-            logger.error("[view] folder comparison failed: %s", e, exc_info=True)
-            QMessageBox.warning(self, "对比错误", f"文件夹算法对比失败:\n{e}")
+            logger.error("[view] comparison result handling failed: %s", e, exc_info=True)
+            QMessageBox.warning(self, "对比错误", f"显示算法对比失败:\n{e}")
+
+    def _on_comparison_failed(self, message: str) -> None:
+        if self._comparison_progress:
+            self._comparison_progress.close()
+            self._comparison_progress = None
+        self._statusbar.set_status_text("算法对比失败")
+        self._statusbar.set_progress_value(0)
+        QMessageBox.warning(self, "对比错误", f"生成算法对比失败:\n{message}")
+
+    def _on_comparison_thread_finished(self) -> None:
+        if self._comparison_worker and self._comparison_worker._is_cancelled:
+            if self._comparison_progress:
+                self._comparison_progress.close()
+                self._comparison_progress = None
+            self._statusbar.set_status_text("算法对比已取消")
+            self._statusbar.set_progress_value(0)
+        self._comparison_worker = None
 
     def _on_view_network(self) -> None:
         logger.info("[view] network sim from menu")

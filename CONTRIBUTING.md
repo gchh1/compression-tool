@@ -34,20 +34,20 @@ This repository follows the governance defined in `docs/engineering_standardizat
 
 ## 4) Build and packaging baseline
 
-- Build commands: see `docs/standardization/build_baseline_v0.md`.
+- Build commands: see `docs/standardization/build-baseline.md` (index: `docs/standardization/README.md`).
 - Build outputs should remain in build tree (`build/...`) or package output directories, not source dirs.
 
 ## 5) Artifacts and generated files
 
 - Do not commit runtime logs, temporary outputs, generated compression samples, or local binaries.
 - If a generated file must be versioned for reproducibility, document why in the PR.
-- Follow file ownership rules in `docs/standardization/file_ownership_policy.md`.
+- Follow file ownership rules in `docs/standardization/file-ownership-by-layer.md`.
 - Do not place temporary scripts/results in repository root.
 
 ## 6) Governance gates
 
 - Before high-risk changes (path moves, API semantic changes, uncertain deletions), update and get approval on:
-  - `docs/standardization/risk_decision_table_v0.md`
+  - `docs/standardization/risk-decisions.md`
 - Keep stage artifacts updated:
   - technical debt report
   - path mapping table

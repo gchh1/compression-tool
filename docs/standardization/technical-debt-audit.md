@@ -1,4 +1,4 @@
-# 技术债审计报告 v0
+# 技术债审计报告
 
 > 依据：`docs/engineering_standardization_directive.md`  
 > 范围：阶段 0（只读审计 + 可确认安全项）  

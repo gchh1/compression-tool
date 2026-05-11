@@ -66,10 +66,8 @@ const originalSize = {original_size};
 const chart = document.getElementById('chart');
 const tbody = document.getElementById('tbody');
 
-const maxRatio = Math.max(...results.map(r => r.ratio), 0.01);
-
 results.forEach(r => {{
-  const pct = (r.ratio / maxRatio) * 100;
+  const pct = Math.min(100, Math.max(0, r.ratio * 100));
   let color = '#22c55e';
   if (r.ratio > 0.3) color = '#ef4444';
   else if (r.ratio > 0.05) color = '#eab308';
@@ -99,7 +97,14 @@ results.forEach(r => {{
 
 
 def open_comparison_html(html: str) -> None:
-    tmp = Path(tempfile.mktemp(suffix=".html"))
-    tmp.write_text(html, encoding="utf-8")
+    with tempfile.NamedTemporaryFile(
+        mode="w",
+        suffix=".html",
+        delete=False,
+        encoding="utf-8",
+    ) as tmp_f:
+        tmp_f.write(html)
+        tmp_path = tmp_f.name
+    tmp = Path(tmp_path)
     logger.info("[comparison] wrote HTML to %s, opening in browser", tmp)
     webbrowser.open(tmp.as_uri())

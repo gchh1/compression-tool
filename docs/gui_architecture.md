@@ -513,7 +513,7 @@ ui/
 | `widgets/views/dashboard_view.py` | `ui/views/dashboard_view.py` | ~200 | `DashboardView` | 概览仪表盘 |
 | `widgets/views/compression_view.py` | `ui/views/compression_view.py` | 140 | `CompressPage` | 压缩页面 |
 | `widgets/views/analysis_view.py` | `ui/views/analysis_view.py` | 180 | `AnalysisView` | 压缩分析 |
-| `widgets/views/comparison_view.py` | `ui/views/comparison_view.py` | ~200 | `ComparisonView`, `ComparisonWorker` | 工具对比 |
+| `widgets/views/comparison_view.py` | `ui/views/comparison_view.py` | ~200 | `ComparisonView`, `ExternalToolBenchmarkWorker` | 工具对比 |
 | `widgets/views/network_view.py` | `ui/views/network_view.py` | 149 | `NetworkView` | 网络模拟 |
 | `widgets/panels/resource_tree.py` | `ui/panels/resource_tree.py` | ~200 | `ResourceTree` | 资源树 |
 | `widgets/panels/property_panel.py` | `ui/panels/property_panel.py` | 155 | `PropertyPanel` | 属性面板 |

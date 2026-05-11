@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import logging
 import os
+import math
+import time
 from pathlib import Path
 
 from PyQt6.QtCore import QThread, pyqtSignal
@@ -16,6 +18,17 @@ from gui.models import (
 )
 
 logger = logging.getLogger('gui.worker')
+
+
+COMPARISON_ALGORITHMS = (
+    AlgorithmType.LZSS,
+    AlgorithmType.LZDP,
+    AlgorithmType.DPFLATE,
+    AlgorithmType.DEFLATE,
+    AlgorithmType.GZIP,
+    AlgorithmType.BROTLI,
+    AlgorithmType.ZSTD,
+)
 
 def _heuristic_params_for_record(record: FileRecord, algo) -> dict[str, int] | None:
     from gui.models import ALGORITHM_PARAMS
@@ -345,3 +358,193 @@ class CompressionWorker(QThread):
                 self.single_compress(row_idx, record)
 
         self._flush_training_data()
+
+
+class ComparisonWorker(QThread):
+    """Run algorithm comparison away from the UI thread.
+
+    Large files are compared in streaming-like chunks so the progress dialog can
+    refresh after each completed chunk instead of waiting for the whole file.
+    """
+
+    progress = pyqtSignal(int, str)
+    comparison_finished = pyqtSignal(object, str, int)
+    failed = pyqtSignal(str)
+
+    def __init__(
+        self,
+        record: Record,
+        algorithms: tuple[AlgorithmType, ...] = COMPARISON_ALGORITHMS,
+        chunk_size_kb: int = 1024,
+        parent=None,
+    ):
+        super().__init__(parent)
+        self.record = record
+        self.algorithms = algorithms
+        self.chunk_size = max(64 * 1024, int(chunk_size_kb) * 1024)
+        self._is_cancelled = False
+        self._total_units = 1
+        self._done_units = 0
+
+    def cancel(self) -> None:
+        self._is_cancelled = True
+
+    def _check_cancelled(self) -> None:
+        if self._is_cancelled:
+            raise RuntimeError("已取消")
+
+    def _is_streaming_file(self, record: FileRecord) -> bool:
+        return bool(getattr(record, "path", None)) and record.size > self.chunk_size
+
+    def _units_for_file(self, record: FileRecord) -> int:
+        if self._is_streaming_file(record):
+            return max(1, math.ceil(record.size / self.chunk_size))
+        return 1
+
+    def _emit_step(self, text: str, units: int = 1) -> None:
+        self._done_units += units
+        percent = int(min(99, self._done_units / max(1, self._total_units) * 100))
+        self.progress.emit(percent, text)
+
+    def _read_file_data(self, record: FileRecord) -> bytes:
+        if getattr(record, "raw_data", None):
+            return record.raw_data
+        if getattr(record, "path", None):
+            return Path(record.path).read_bytes()
+        return b""
+
+    def _compress_data(self, engine, data: bytes, algo: AlgorithmType):
+        return engine.smart_compress(data, algo)
+
+    def _compress_streaming_file(self, engine, record: FileRecord, algo: AlgorithmType) -> dict:
+        compressed_size = 4  # stream terminator
+        start = time.perf_counter()
+        processed = 0
+
+        with open(record.path, "rb") as fh:
+            while True:
+                self._check_cancelled()
+                chunk = fh.read(self.chunk_size)
+                if not chunk:
+                    break
+                result = engine.compress(chunk, algo)
+                if getattr(result, "error_message", ""):
+                    raise RuntimeError(result.error_message)
+                compressed_size += int(result.compressed_size) + 4
+                processed += len(chunk)
+                self._emit_step(
+                    f"{algo.value}: {record.name} ({processed / max(1, record.size):.0%})"
+                )
+
+        elapsed_ms = (time.perf_counter() - start) * 1000.0
+        return {
+            "name": algo.value,
+            "compressed_size": compressed_size,
+            "ratio": compressed_size / record.size if record.size > 0 else 1.0,
+            "time_ms": elapsed_ms,
+        }
+
+    def _compare_file(self, engine, record: FileRecord, algo: AlgorithmType) -> dict:
+        self._check_cancelled()
+        if self._is_streaming_file(record):
+            return self._compress_streaming_file(engine, record, algo)
+
+        data = self._read_file_data(record)
+        result = self._compress_data(engine, data, algo)
+        if getattr(result, "error_message", ""):
+            raise RuntimeError(result.error_message)
+        self._emit_step(f"{algo.value}: {record.name}")
+        return {
+            "name": algo.value,
+            "compressed_size": result.compressed_size,
+            "ratio": result.compression_ratio,
+            "time_ms": result.time_ms,
+        }
+
+    def _run_file_comparison(self, engine, record: FileRecord) -> tuple[list[dict], str, int]:
+        self._total_units = sum(self._units_for_file(record) for _ in self.algorithms)
+        results = []
+        for algo in self.algorithms:
+            try:
+                results.append(self._compare_file(engine, record, algo))
+                logger.info("[comparison] %s/%s done", record.name, algo.value)
+            except RuntimeError as e:
+                if str(e) == "已取消":
+                    raise
+                logger.warning("[comparison] %s compress failed: %s", algo.value, e)
+            except Exception as e:
+                logger.warning("[comparison] %s compress failed: %s", algo.value, e)
+        return results, record.name, record.size
+
+    def _run_folder_comparison(self, engine, record: FolderRecord) -> tuple[list[dict], str, int]:
+        files = [f for f in record.files if f.size > 0]
+        if not files:
+            return [], record.name, 0
+
+        self._total_units = sum(
+            self._units_for_file(f)
+            for _algo in self.algorithms
+            for f in files
+        )
+        totals: dict[str, dict] = {
+            algo.value: {"compressed": 0, "time_ms": 0.0, "count": 0}
+            for algo in self.algorithms
+        }
+
+        for algo in self.algorithms:
+            for file_record in files:
+                try:
+                    result = self._compare_file(engine, file_record, algo)
+                    totals[algo.value]["compressed"] += result["compressed_size"]
+                    totals[algo.value]["time_ms"] += result["time_ms"]
+                    totals[algo.value]["count"] += 1
+                except RuntimeError as e:
+                    if str(e) == "已取消":
+                        raise
+                    logger.warning("[comparison] folder %s/%s failed: %s", algo.value, file_record.name, e)
+                except Exception as e:
+                    logger.warning("[comparison] folder %s/%s failed: %s", algo.value, file_record.name, e)
+
+        total_original = sum(f.size for f in files)
+        results = []
+        for algo in self.algorithms:
+            item = totals[algo.value]
+            if item["count"] > 0:
+                results.append({
+                    "name": algo.value,
+                    "compressed_size": item["compressed"],
+                    "ratio": item["compressed"] / total_original if total_original > 0 else 1.0,
+                    "time_ms": item["time_ms"],
+                })
+        return results, record.name, total_original
+
+    def run(self) -> None:
+        try:
+            from gui.engine.compressor import CompressionEngine
+
+            engine = CompressionEngine()
+            if not engine.available:
+                raise RuntimeError("C++ core_engine not available")
+
+            if isinstance(self.record, FolderRecord):
+                results, name, original_size = self._run_folder_comparison(engine, self.record)
+            elif isinstance(self.record, FileRecord):
+                results, name, original_size = self._run_file_comparison(engine, self.record)
+            else:
+                raise RuntimeError("不支持的记录类型")
+
+            self._check_cancelled()
+            if not results:
+                raise RuntimeError("所有算法压缩均失败")
+
+            self.progress.emit(100, "算法对比完成")
+            self.comparison_finished.emit(results, name, original_size)
+        except RuntimeError as e:
+            if str(e) == "已取消":
+                self.progress.emit(0, "算法对比已取消")
+                return
+            logger.error("[comparison] failed: %s", e, exc_info=True)
+            self.failed.emit(str(e))
+        except Exception as e:
+            logger.error("[comparison] crashed: %s", e, exc_info=True)
+            self.failed.emit(str(e))

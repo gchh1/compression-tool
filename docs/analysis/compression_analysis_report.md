@@ -27,7 +27,7 @@ The `DecisionDetailDialog` class was **incorrectly defined inside the `MainWindo
 - Created automated script [`fix_structure.py`](../fix_structure.py) to reorganize code structure
 - Moved `DecisionDetailDialog` to end of file (line 2274)
 - Restored all `_on_*` methods to proper `MainWindow` class scope (lines 1952-2270)
-- Backup created at historical path `src/gui/widgets/main_window.py.backup` (later archived under `src/gui/ui/legacy/`; see `docs/standardization/path_mapping_table_v0.md`)
+- Backup created at historical path `src/gui/widgets/main_window.py.backup` (later archived under `src/gui/ui/legacy/`; see `docs/standardization/path-migration-mapping.md`)
 
 **Verification**:
 ```python
@@ -462,7 +462,7 @@ The low compression rates in **Brotli** and **Zstem** are **not bugs but archite
 - **Zstd Implementation**: [`src/algorithm/Zstd.cpp`](../src/algorithm/Zstd.cpp)
 - **GUI Fix Script**: [`fix_structure.py`](../fix_structure.py)
 - **Main Window**: [`src/gui/ui/main_window.py`](../src/gui/ui/main_window.py)
-- **Backup File**: historical `main_window.py.backup` → see `src/gui/ui/legacy/`（映射见 `docs/standardization/path_mapping_table_v0.md`）
+- **Backup File**: historical `main_window.py.backup` → see `src/gui/ui/legacy/`（映射见 `docs/standardization/path-migration-mapping.md`）
 
 ## Appendix B: External Resources
 

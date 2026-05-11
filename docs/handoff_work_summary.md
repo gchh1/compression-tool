@@ -45,7 +45,7 @@
 ### 5. 文档与仓库卫生
 
 - `docs/gui_architecture.md`：与现行 `src/gui/` 结构对齐说明。
-- `docs/standardization/build_baseline_v0.md`：含 CMake 构建验证记录（若存在该节）。
+- `docs/standardization/build-baseline.md`：含 CMake 构建验证记录（若存在该节）；总索引见 `docs/standardization/README.md`。
 - 已清理空目录、备份 CMakeLists、临时脚本等（历史 commit 中可见）。
 
 ---
@@ -97,7 +97,8 @@ src/gui/
 | `README.md` | 仓库入口、布局、构建与运行入口 |
 | `docs/gui_architecture.md` | GUI 模块边界与目录权威说明 |
 | `docs/engineering_standardization_directive.md` | 工程规范总纲（若与本地流程冲突以仓库为准） |
-| `docs/standardization/build_baseline_v0.md` | 可复现构建基线 |
+| `docs/standardization/README.md` | 标准化文档索引 |
+| `docs/standardization/build-baseline.md` | 可复现构建基线 |
 | `src/README.md` | `src/` 下各子系统说明 |
 
 ---

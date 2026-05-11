@@ -17,9 +17,9 @@
 2. 构建路径基线梳理（CMake、Pybind、PyInstaller、启动脚本）。
 3. 风险项分级（A/B 方案、推荐项、影响面）。
 4. 产出三份文档：
-   - `technical_debt_audit_v0.md`
-   - `build_baseline_v0.md`
-   - `risk_decision_table_v0.md`
+   - `technical-debt-audit.md`
+   - `build-baseline.md`
+   - `risk-decisions.md`
 
 ## 阶段闸门（进入阶段 1 前）
 

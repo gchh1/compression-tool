@@ -1,24 +1,32 @@
-"""Comparison view — benchmark against gzip, ZIP, brotli."""
+"""Comparison view — benchmark against gzip, ZIP, brotli (external CLI tools)."""
 
 from __future__ import annotations
 
+import os
 import subprocess
 import tempfile
-import os
 import time
 
-from PyQt6.QtCore import Qt, QThread, pyqtSignal
+from PyQt6.QtCore import QThread, pyqtSignal
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QCheckBox,
-    QTableWidget, QTableWidgetItem, QHeaderView, QFrame, QMessageBox,
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QCheckBox,
+    QTableWidget,
+    QTableWidgetItem,
+    QHeaderView,
+    QMessageBox,
 )
 
-from gui.models import formatted_size
 from gui.config.theme import ThemeManager
+from gui.models import formatted_size
 
 
-class ComparisonWorker(QThread):
-    """Run gzip/ZIP/brotli benchmarks in background."""
+class ExternalToolBenchmarkWorker(QThread):
+    """Run gzip / zip / brotli benchmarks in a background thread (not core_engine)."""
 
     progress = pyqtSignal(str)
     finished = pyqtSignal(dict)
@@ -29,71 +37,107 @@ class ComparisonWorker(QThread):
         self._tools = tools
 
     def run(self) -> None:
-        results = {}
+        results: dict[str, dict] = {}
         original_size = os.path.getsize(self._file_path)
 
         for tool in self._tools:
             self.progress.emit(f"正在运行 {tool} ...")
-            tmp_out = tempfile.mktemp(suffix=f'.{tool}')
+            suffix = ".gz" if tool == "gzip" else ".zip" if tool == "zip" else ".br"
+            tmp = tempfile.NamedTemporaryFile(prefix="wc_cmp_", suffix=suffix, delete=False)
+            tmp_path = tmp.name
+            tmp.close()
             try:
-                t0 = time.time()
+                t0 = time.perf_counter()
                 if tool == "gzip":
-                    subprocess.run(["gzip", "-k", "-c", self._file_path],
-                                   stdout=open(tmp_out, 'wb'), stderr=subprocess.DEVNULL,
-                                   check=True)
+                    with open(tmp_path, "wb") as out_f:
+                        subprocess.run(
+                            ["gzip", "-k", "-c", self._file_path],
+                            stdout=out_f,
+                            stderr=subprocess.DEVNULL,
+                            check=True,
+                        )
                 elif tool == "zip":
-                    subprocess.run(["zip", "-q", tmp_out, self._file_path],
-                                   check=True)
+                    subprocess.run(
+                        ["zip", "-q", tmp_path, self._file_path],
+                        check=True,
+                    )
                 elif tool == "brotli":
-                    subprocess.run(["brotli", "-c", self._file_path],
-                                   stdout=open(tmp_out, 'wb'), stderr=subprocess.DEVNULL,
-                                   check=True)
+                    with open(tmp_path, "wb") as out_f:
+                        subprocess.run(
+                            ["brotli", "-c", self._file_path],
+                            stdout=out_f,
+                            stderr=subprocess.DEVNULL,
+                            check=True,
+                        )
                 else:
                     continue
-                t1 = time.time()
-                compressed_size = os.path.getsize(tmp_out)
-                ratio = compressed_size / original_size if original_size > 0 else 1
+                t1 = time.perf_counter()
+                compressed_size = os.path.getsize(tmp_path)
+                ratio = compressed_size / original_size if original_size > 0 else 1.0
 
-                # Decompress timing
-                t2 = time.time()
+                t2 = time.perf_counter()
                 if tool == "gzip":
-                    subprocess.run(["gzip", "-d", "-c", tmp_out],
-                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                                   check=True)
+                    subprocess.run(
+                        ["gzip", "-d", "-c", tmp_path],
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                        check=True,
+                    )
                 elif tool == "zip":
-                    subprocess.run(["unzip", "-p", tmp_out],
-                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                                   check=True)
+                    subprocess.run(
+                        ["unzip", "-p", tmp_path],
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                        check=True,
+                    )
                 elif tool == "brotli":
-                    subprocess.run(["brotli", "-d", "-c", tmp_out],
-                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                                   check=True)
-                t3 = time.time()
+                    subprocess.run(
+                        ["brotli", "-d", "-c", tmp_path],
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                        check=True,
+                    )
+                t3 = time.perf_counter()
 
                 results[tool] = {
                     "compressed_size": compressed_size,
                     "ratio": ratio,
-                    "compress_time_ms": (t1 - t0) * 1000,
-                    "decompress_time_ms": (t3 - t2) * 1000,
+                    "compress_time_ms": (t1 - t0) * 1000.0,
+                    "decompress_time_ms": (t3 - t2) * 1000.0,
                 }
             except FileNotFoundError:
-                results[tool] = {"error": f"{tool} 未安装"}
+                results[tool] = {"error": f"{tool} 未安装或不在 PATH"}
             except subprocess.CalledProcessError as e:
                 results[tool] = {"error": str(e)}
             finally:
-                if os.path.exists(tmp_out):
-                    os.unlink(tmp_out)
+                if os.path.exists(tmp_path):
+                    try:
+                        os.unlink(tmp_path)
+                    except OSError:
+                        pass
 
         self.finished.emit(results)
 
 
+def _apply_tool_comparison_table_columns(table: QTableWidget) -> None:
+    hdr = table.horizontalHeader()
+    hdr.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+    for col in (1, 2, 3, 4):
+        hdr.setSectionResizeMode(col, QHeaderView.ResizeMode.Fixed)
+    table.setColumnWidth(1, 120)
+    table.setColumnWidth(2, 88)
+    table.setColumnWidth(3, 100)
+    table.setColumnWidth(4, 100)
+
+
 class ComparisonView(QWidget):
-    """View 4: Benchmark against general-purpose compression tools."""
+    """Tab view: compare with gzip / ZIP / brotli when those CLIs are available."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self._file_path: str = ""
         self._our_result: dict | None = None
+        self._worker: ExternalToolBenchmarkWorker | None = None
         self._setup_ui()
 
     def _setup_ui(self) -> None:
@@ -104,11 +148,15 @@ class ComparisonView(QWidget):
         title.setStyleSheet("font-size: 18px; font-weight: bold; padding: 0 0 8px 0;")
         layout.addWidget(title)
 
-        desc = QLabel("选择已压缩的文件，与 gzip / ZIP / brotli 进行压缩率和耗时对比")
-        desc.setStyleSheet(f"color: {ThemeManager.hex('text_muted')}; padding-bottom: 12px;")
+        desc = QLabel(
+            "对已选中的原始文件，与系统已安装的 gzip / ZIP / brotli 命令行工具做压缩率与耗时对比（Windows 需自行安装并加入 PATH）。"
+        )
+        desc.setWordWrap(True)
+        desc.setStyleSheet(
+            f"color: {ThemeManager.hex('text_muted')}; padding-bottom: 12px;"
+        )
         layout.addWidget(desc)
 
-        # Tool selection
         tools_layout = QHBoxLayout()
         tools_layout.addWidget(QLabel("对比工具:"))
         self._gzip_cb = QCheckBox("gzip")
@@ -121,7 +169,7 @@ class ComparisonView(QWidget):
         tools_layout.addWidget(self._brotli_cb)
         tools_layout.addStretch()
 
-        self._run_btn = QPushButton("▶ 运行对比测试")
+        self._run_btn = QPushButton("运行对比测试")
         self._run_btn.setStyleSheet(
             f"QPushButton {{ background: {ThemeManager.hex('warning')}; color: white; font-weight: bold; "
             "padding: 8px 20px; border-radius: 6px; }"
@@ -131,34 +179,34 @@ class ComparisonView(QWidget):
         tools_layout.addWidget(self._run_btn)
         layout.addLayout(tools_layout)
 
-        # Results table
         self._table = QTableWidget()
         self._table.setColumnCount(5)
         self._table.setHorizontalHeaderLabels(
-            ["工具", "压缩后大小", "压缩率", "压缩耗时", "解压耗时"])
-        self._table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
-        self._table.setColumnWidth(1, 120)
-        self._table.setColumnWidth(2, 180)
-        self._table.setColumnWidth(3, 180)
-        self._table.setColumnWidth(4, 180)
+            ["工具", "压缩后大小", "压缩率", "压缩耗时", "解压耗时"]
+        )
+        _apply_tool_comparison_table_columns(self._table)
         self._table.setAlternatingRowColors(True)
         layout.addWidget(self._table)
 
         self._status = QLabel("")
-        self._status.setStyleSheet(f"color: {ThemeManager.hex('text_muted')}; font-size: 11px;")
+        self._status.setStyleSheet(
+            f"color: {ThemeManager.hex('text_muted')}; font-size: 11px;"
+        )
         layout.addWidget(self._status)
 
     def set_file(self, file_path: str, our_result: dict | None = None) -> None:
         self._file_path = file_path
         self._our_result = our_result
-        self._status.setText(f"已选择: {os.path.basename(file_path)} — 点击运行对比测试")
+        self._status.setText(
+            f"已选择: {os.path.basename(file_path)} — 点击运行对比测试"
+        )
 
     def _run_comparison(self) -> None:
         if not self._file_path or not os.path.exists(self._file_path):
-            QMessageBox.warning(self, "提示", "请先在压缩视图完成压缩")
+            QMessageBox.warning(self, "提示", "请先在压缩视图完成压缩并选中文件")
             return
 
-        tools = []
+        tools: list[str] = []
         if self._gzip_cb.isChecked():
             tools.append("gzip")
         if self._zip_cb.isChecked():
@@ -173,8 +221,8 @@ class ComparisonView(QWidget):
         self._run_btn.setEnabled(False)
         self._status.setText("运行中...")
 
-        self._worker = ComparisonWorker(self._file_path, tools)
-        self._worker.progress.connect(lambda msg: self._status.setText(msg))
+        self._worker = ExternalToolBenchmarkWorker(self._file_path, tools)
+        self._worker.progress.connect(self._status.setText)
         self._worker.finished.connect(self._on_results)
         self._worker.start()
 
@@ -182,39 +230,61 @@ class ComparisonView(QWidget):
         self._run_btn.setEnabled(True)
         self._status.setText("对比完成")
 
-        rows = 0
-        if self._our_result:
-            rows += 1
-        rows += len([r for r in results.values() if "error" not in r])
-
+        rows = (1 if self._our_result else 0) + len(
+            [r for r in results.values() if "error" not in r]
+        )
         self._table.setRowCount(rows)
         row = 0
 
-        # Our system first
         if self._our_result:
-            self._add_row(row, "本系统",
-                         self._our_result.get('compressed_size', 0),
-                         self._our_result.get('compression_ratio', 1),
-                         self._our_result.get('time_ms', 0),
-                         None)
+            self._add_row(
+                row,
+                "本系统",
+                self._our_result.get("compressed_size", 0),
+                self._our_result.get("compression_ratio", 1.0),
+                self._our_result.get("time_ms", 0.0),
+                None,
+            )
             row += 1
 
         for tool, data in results.items():
             if "error" in data:
                 continue
-            self._add_row(row, tool,
-                         data["compressed_size"],
-                         data["ratio"],
-                         data["compress_time_ms"],
-                         data["decompress_time_ms"])
+            self._add_row(
+                row,
+                tool,
+                data["compressed_size"],
+                data["ratio"],
+                data["compress_time_ms"],
+                data["decompress_time_ms"],
+            )
             row += 1
 
-    def _add_row(self, row: int, name: str, size: int, ratio: float,
-                 comp_time: float | None, decomp_time: float | None) -> None:
+        _apply_tool_comparison_table_columns(self._table)
+
+    def _add_row(
+        self,
+        row: int,
+        name: str,
+        size: int,
+        ratio: float,
+        comp_time: float | None,
+        decomp_time: float | None,
+    ) -> None:
         self._table.setItem(row, 0, QTableWidgetItem(name))
         self._table.setItem(row, 1, QTableWidgetItem(formatted_size(size)))
         self._table.setItem(row, 2, QTableWidgetItem(f"{ratio * 100:.1f}%"))
-        self._table.setItem(row, 3, QTableWidgetItem(
-            f"{comp_time:.0f} ms" if comp_time is not None else "—"))
-        self._table.setItem(row, 4, QTableWidgetItem(
-            f"{decomp_time:.0f} ms" if decomp_time is not None else "—"))
+        self._table.setItem(
+            row,
+            3,
+            QTableWidgetItem(
+                f"{comp_time:.0f} ms" if comp_time is not None else "—"
+            ),
+        )
+        self._table.setItem(
+            row,
+            4,
+            QTableWidgetItem(
+                f"{decomp_time:.0f} ms" if decomp_time is not None else "—"
+            ),
+        )
