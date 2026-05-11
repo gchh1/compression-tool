@@ -126,8 +126,6 @@ def format_lzss_preview(search_size: int, lookahead_size: int, min_match_param: 
         f"  · 匹配: 1 bit（flag=0）+ 16 bit（offset 12 bit | length- min_match 4 bit）= 17 bit",
         f"字典窗口 search_size = {search_size}；前瞻上限 max_match_length = {lookahead_size}；",
         f"单次匹配长度在代码中上限为 min_match+15 = {max_run}（min_match 生效值 {eff_mm}）。",
-        "",
-        "说明：配置里的「编码方案」下拉项尚未接入 LZSS 核心，压缩格式固定为上述打包。",
     ]
     return "\n".join(lines)
 
@@ -146,7 +144,5 @@ def format_dpflate_lz_reference_preview(
         f"  · offset 字段若按窗口计 = {ob} bit（search_size={search_size}）",
         f"  · length 字段若按窗口计 = {lb} bit（lookahead_size={lookahead_size}）",
         f"  · 核心 min_match：参数为 0 时引擎内固定为 4，否则为 {min_match_param}（当前生效 {eff_mm}）",
-        "",
-        "说明：配置中的「编码方案」未接入当前 DPFlateCompressor；仅 LZDP 使用该项。",
     ]
     return "\n".join(lines)

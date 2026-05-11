@@ -61,7 +61,9 @@ PYBIND11_MODULE(core_engine, m) {
         .def("set_min_match", &LZSSCompressor::set_min_match)
         .def("get_min_match", &LZSSCompressor::get_min_match)
         .def("set_lookahead_size", &LZSSCompressor::set_lookahead_size)
-        .def("get_lookahead_size", &LZSSCompressor::get_lookahead_size);
+        .def("get_lookahead_size", &LZSSCompressor::get_lookahead_size)
+        .def("set_use_flag_encoding", &LZSSCompressor::set_use_flag_encoding)
+        .def("get_use_flag_encoding", &LZSSCompressor::get_use_flag_encoding);
 
     py::class_<LZDPCompressor, ICompressor,
                std::shared_ptr<LZDPCompressor>>(m, "LZDPCompressor")
@@ -139,7 +141,9 @@ PYBIND11_MODULE(core_engine, m) {
         .def("set_dp_sub_match_max", &DPFlateCompressor::set_dp_sub_match_max)
         .def("get_dp_sub_match_max", &DPFlateCompressor::get_dp_sub_match_max)
         .def("set_match_engine", &DPFlateCompressor::set_match_engine)
-        .def("get_match_engine", &DPFlateCompressor::get_match_engine);
+        .def("get_match_engine", &DPFlateCompressor::get_match_engine)
+        .def("set_use_flag_encoding", &DPFlateCompressor::set_use_flag_encoding)
+        .def("get_use_flag_encoding", &DPFlateCompressor::get_use_flag_encoding);
 
     py::class_<GzipCompressor, ICompressor,
                std::shared_ptr<GzipCompressor>>(m, "GzipCompressor")

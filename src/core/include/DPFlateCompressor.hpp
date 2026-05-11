@@ -48,6 +48,9 @@ public:
     void set_match_engine(int v) { match_engine_ = v; }
     int get_match_engine() const { return match_engine_; }
 
+    void set_use_flag_encoding(bool v) { use_flag_encoding_ = v; }
+    bool get_use_flag_encoding() const { return use_flag_encoding_; }
+
 private:
     size_t search_size_;
     size_t lookahead_size_;
@@ -55,6 +58,7 @@ private:
     size_t max_chain_length_;
     size_t dp_sub_match_max_;
     int match_engine_{1};
+    bool use_flag_encoding_{false};
 };
 
 }  // namespace core
