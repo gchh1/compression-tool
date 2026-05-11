@@ -135,7 +135,7 @@
 ## 8. 需求方须提前拍板的典型风险（阶段 0 须展开）
 
 - README 规约章节 vs 独立 `CONTRIBUTING.md` 及与外部链接的关系。
-- `src/core/entities/` 与 Python `gui.core.models`、C++ `ICompressor` 等的边界，避免双世界循环依赖。
+- `src/core/entities/` 与 Python `gui.models`（历史 `gui.domain.models`）、C++ `ICompressor` 等的边界，避免双世界循环依赖。
 - 是否允许「单 MR 超大格式化」及与可审性的权衡。
 - 死文件删除标准（日志、二进制、用户生成物是否纳入版本库）。
 - PyInstaller / CI 缓存策略与「每次清缓存」对构建时间的影响。
@@ -156,3 +156,7 @@
 ---
 
 *文档性质：指示型任务书 · 与具体实现解耦 · 可作为 Issue/PR 模板附件或独立 `docs` 条目。*
+
+---
+
+**修订记录**：2026-05-11 — §8 风险说明与《风险决策表》R3 中 Python 领域模型路径更新为现行 `gui.models`（并标注历史 `gui.domain.models`）；与 `src/README.md` 中 `gui/` 树描述一致。

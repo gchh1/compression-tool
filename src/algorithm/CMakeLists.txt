@@ -13,7 +13,6 @@ add_library(
     LZSS.cpp
     DPFlate.cpp
     Inflate.cpp
-    StreamingAdapter.cpp
     Zstd.cpp
 
     # LZ77.cpp

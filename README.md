@@ -8,7 +8,7 @@
 ├── tests/                    # 测试  
 ├── third_party/              # 放 pybind11 等第三方库源码
 ├── src/
-│   ├── bindings/             # pybind / wasm 胶水代码
+│   ├── bindings/             # pybind 胶水代码
 │   ├── algorithm/            # lz77, humman 等基础算法
 │   ├── core/                 # 压缩算法
 │   │   ├── include/      
@@ -19,17 +19,11 @@
 └── README.md
 ```
 
+## Python GUI (`src/gui/`)
+
+布局与依赖以仓库内 **`src/README.md`**（§ Core Modules）为准；界面拆分与对话框落位见 **`docs/gui_architecture.md`**（§3.4.2）。
+
 ## started
-### Build by wasm
-```
-mkdir build_wasm && cd build_wasm
-```
-
-```
-emcmake cmake -DBUILD_WASM=ON ..
-make
-```
-
 ### Build by python
 ```
 mkdir build_pybind && cd build_pybind
@@ -43,7 +37,7 @@ make
 ### 4.12
 目前完成了基本的Deflate压缩算法，在core中提供了```CompressorResult Compress(const std::vector<uint8_t>&)```的压缩 API 以及 ```CompressorResult Decompress(const std::vector<uint8_t>&)``` 的解压缩 API 
 
-并且在```build_wasm/src/bindings```中构建了 html 前端
+并且曾在早期版本中尝试过浏览器端前端绑定（当前仓库已移除）
 
 
 ## API

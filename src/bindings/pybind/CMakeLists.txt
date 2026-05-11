@@ -16,7 +16,7 @@ target_include_directories(core_engine PRIVATE
     ${CMAKE_SOURCE_DIR}/src/archiver/include
     ${CMAKE_SOURCE_DIR}/src/api/include
     ${CMAKE_SOURCE_DIR}/src/processor/include
-    ${CMAKE_SOURCE_DIR}/src/memory/include
+    ${CMAKE_SOURCE_DIR}/src/utils/include
     ${CMAKE_SOURCE_DIR}/src/ade/include
 )
 

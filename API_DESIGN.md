@@ -577,7 +577,7 @@ for f in restored:
 3. **实现批量接口**：在 `ICompressor` 基类中提供默认实现
 4. **实现一键接口**：在 `Archiver` 中添加 `pack_and_compress` / `decompress_and_unpack`
 5. **更新 pybind**：按本规范重写 `pybind_module.cpp`
-6. **更新 Python 封装层**：同步修改 `gui/core/engine.py` 中的调用代码
+6. **更新 Python 封装层**：同步修改 `gui/engine/compressor.py`（及 `bridge.py`）中的调用代码
 
 ---
 

@@ -6,7 +6,10 @@
 
 #include "EntryHeader.hpp"
 #include "IDataReader.hpp"
-#include "Pipeline.hpp"
+
+namespace compressor::processor {
+class Pipeline;
+}
 
 namespace compressor::archiver {
 class PackReader {

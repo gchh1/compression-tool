@@ -33,11 +33,13 @@ public:
     void set_min_match(size_t v) { min_match_ = v; }
     size_t get_min_match() const { return min_match_; }
 
-    void set_dp_depth(size_t v) { dp_range_ = v; }
-    size_t get_dp_depth() const { return dp_range_; }
+    [[deprecated("use set_dp_top instead")]] void set_dp_depth(size_t v) { dp_range_ = v; }
+    [[deprecated("use set_dp_top instead")]] size_t get_dp_depth() const { return dp_range_; }
+    void set_dp_top(size_t v) { dp_range_ = v; }
+    size_t get_dp_top() const { return dp_range_; }
 
-    void set_dp_range(size_t v) { dp_range_ = v; }
-    size_t get_dp_range() const { return dp_range_; }
+    [[deprecated("use set_dp_top instead")]] void set_dp_range(size_t v) { dp_range_ = v; }
+    [[deprecated("use set_dp_top instead")]] size_t get_dp_range() const { return dp_range_; }
 
     void set_use_flag_encoding(bool v) { use_flag_encoding_ = v; }
     bool get_use_flag_encoding() const { return use_flag_encoding_; }

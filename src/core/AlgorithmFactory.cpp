@@ -9,14 +9,14 @@
 #include "LZDP.hpp"
 #include "LZSS.hpp"
 #include "DPFlate.hpp"
-#include "StreamingAdapter.hpp"
+#include "ChunkedStreamAdapter.hpp"
 #include "Zstd.hpp"
 
 namespace compressor::core {
 
 auto createAlgorithm(AlgorithmID id) -> std::unique_ptr<algorithm::IAlgorithm> {
-    using algorithm::StreamingCompressAdapter;
-    using algorithm::StreamingDecompressAdapter;
+    using processor::StreamingCompressAdapter;
+    using processor::StreamingDecompressAdapter;
 
     switch (id) {
         case AlgorithmID::None:

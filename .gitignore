@@ -23,3 +23,24 @@ ignore/
 .wcx*
 .restored*
 .trae/
+
+# Runtime/package outputs (standardized as non-source artifacts)
+artifacts/
+Package/bin/logs/
+Package/logs/
+Package/compressed/
+Package/decompressed/
+logs/
+src/logs/
+src/*.dll
+bin/
+build/PyInstaller/
+
+# Local backups and temp outputs
+*.backup
+*_output.txt
+tmp*.txt
+*.lnk
+*.wcx
+*.restored
+resources/level5_large/test_1gb.bin

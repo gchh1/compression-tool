@@ -12,7 +12,10 @@
 #include "DataChunk.hpp"
 #include "EntryHeader.hpp"
 #include "MemoryPool.hpp"
-#include "Pipeline.hpp"
+
+namespace compressor::processor {
+class Pipeline;
+}
 
 namespace compressor::archiver {
 

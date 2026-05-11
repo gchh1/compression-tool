@@ -5,10 +5,15 @@ set "PROJECT_DIR=%~dp0"
 if "%PROJECT_DIR:~-1%"=="\" set "PROJECT_DIR=%PROJECT_DIR:~0,-1%"
 cd /d "%PROJECT_DIR%"
 set "PYTHONPATH=src"
+set "PKG_DIR=%PROJECT_DIR%\Package\bin"
+set "PYI_WORK=%PROJECT_DIR%\build\PyInstaller"
+set "PYI_SPEC=%PROJECT_DIR%\build"
+
+if not exist "%PKG_DIR%" mkdir "%PKG_DIR%"
 
 echo Cleaning PyInstaller work cache (prevents stale packaged GUI)...
-if exist "%PROJECT_DIR%\build\PyInstaller" (
-  rmdir /s /q "%PROJECT_DIR%\build\PyInstaller" 2>nul
+if exist "%PYI_WORK%" (
+  rmdir /s /q "%PYI_WORK%" 2>nul
 )
 
 echo Building core_engine (skips if no CMake build dir)...
@@ -23,10 +28,12 @@ if exist "%PROJECT_DIR%\build\CMakeCache.txt" (
 )
 
 echo Building WebCompress...
-pyinstaller --noconfirm --onefile --windowed --name "WebCompress" --icon "%PROJECT_DIR%\resources\icon\WebCompressor.ico" --distpath "%PROJECT_DIR%\Package\bin" --workpath "%PROJECT_DIR%\build\PyInstaller" --specpath "%PROJECT_DIR%\build" ^
+pyinstaller --noconfirm --onefile --windowed --name "WebCompress" --icon "%PROJECT_DIR%\resources\icon\WebCompressor.ico" --distpath "%PKG_DIR%" --workpath "%PYI_WORK%" --specpath "%PYI_SPEC%" ^
   --exclude-module PySide6 ^
   --exclude-module torch ^
   --exclude-module tensorflow ^
+  --add-data "%PROJECT_DIR%\assets\ade\default_model.bin;ade" ^
+  --add-data "%PROJECT_DIR%\assets\ade\training_data_v3.json;ade" ^
   --add-data "%PROJECT_DIR%\build\src\bindings\pybind\core_engine.cp312-win_amd64.pyd;core_engine" ^
   --add-data "%PROJECT_DIR%\build\src\bindings\pybind\libgcc_s_seh-1.dll;core_engine" ^
   --add-data "%PROJECT_DIR%\build\src\bindings\pybind\libstdc++-6.dll;core_engine" ^
@@ -38,5 +45,5 @@ if %errorlevel% neq 0 (
     pause
     exit /b %errorlevel%
 )
-start "" "%PROJECT_DIR%\Package\bin\WebCompress.exe"
+start "" "%PKG_DIR%\WebCompress.exe"
 exit /b 0

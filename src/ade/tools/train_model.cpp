@@ -136,7 +136,7 @@ static auto print_class_distribution(const std::vector<TrainingSample>& samples)
               << "Percentage\n";
     std::cout << "  " << std::string(40, '-') << "\n";
 
-    const char* names[] = {"NONE",    "DEFLATE", "LZSS",    "LZMINE", "DPFLATE",
+    const char* names[] = {"NONE",    "DEFLATE", "LZSS",    "LZDP", "DPFLATE",
                            "GZIP",    "DELTA",   "BROTLI",  "ZSTD",   "SKIP"};
 
     for (size_t i = 0; i < counts.size(); ++i) {
@@ -153,8 +153,8 @@ static auto print_class_distribution(const std::vector<TrainingSample>& samples)
 }
 
 auto main(int argc, char* argv[]) -> int {
-    std::string data_path = "src/ade/data/training_data_v3.json";
-    std::string output_path = "src/ade/data/default_model.bin";
+    std::string data_path = "assets/ade/training_data_v3.json";
+    std::string output_path = "assets/ade/default_model.bin";
 
     if (argc > 1) data_path = argv[1];
     if (argc > 2) output_path = argv[2];

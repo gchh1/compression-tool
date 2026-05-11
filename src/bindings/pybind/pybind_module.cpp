@@ -35,13 +35,6 @@ PYBIND11_MODULE(core_engine, m) {
         .def_readwrite("success", &CompressorResult::success)
         .def_readwrite("error_message", &CompressorResult::error_message);
 
-    // ===== 算法枚举 =====
-
-    py::enum_<CompressorAlgorithm>(m, "CompressorAlgorithm")
-        .value("DEFLATE", CompressorAlgorithm::Deflate)
-        .value("LZSS", CompressorAlgorithm::LZSS)
-        .value("LZDP", CompressorAlgorithm::LZMINE)
-        .export_values();
 
     // ===== 压缩器接口 =====
 
@@ -79,10 +72,16 @@ PYBIND11_MODULE(core_engine, m) {
         .def("get_lookahead_size", &LZDPCompressor::get_lookahead_size)
         .def("set_min_match", &LZDPCompressor::set_min_match)
         .def("get_min_match", &LZDPCompressor::get_min_match)
-        .def("set_dp_depth", &LZDPCompressor::set_dp_depth)
-        .def("get_dp_depth", &LZDPCompressor::get_dp_depth)
-        .def("set_dp_range", &LZDPCompressor::set_dp_range)
-        .def("get_dp_range", &LZDPCompressor::get_dp_range)
+        .def("set_dp_top", &LZDPCompressor::set_dp_top)
+        .def("get_dp_top", &LZDPCompressor::get_dp_top)
+        .def("set_dp_depth",
+             [](LZDPCompressor& self, size_t v) { self.set_dp_top(v); })
+        .def("get_dp_depth",
+             [](LZDPCompressor& self) { return self.get_dp_top(); })
+        .def("set_dp_range",
+             [](LZDPCompressor& self, size_t v) { self.set_dp_top(v); })
+        .def("get_dp_range",
+             [](LZDPCompressor& self) { return self.get_dp_top(); })
         .def("set_use_flag_encoding", &LZDPCompressor::set_use_flag_encoding)
         .def("get_use_flag_encoding", &LZDPCompressor::get_use_flag_encoding)
         .def("set_match_engine", &LZDPCompressor::set_match_engine)
@@ -133,8 +132,10 @@ PYBIND11_MODULE(core_engine, m) {
         .def("get_min_match", &DPFlateCompressor::get_min_match)
         .def("set_max_chain_length", &DPFlateCompressor::set_max_chain_length)
         .def("get_max_chain_length", &DPFlateCompressor::get_max_chain_length)
-        .def("set_dp_depth", &DPFlateCompressor::set_dp_depth)
-        .def("get_dp_depth", &DPFlateCompressor::get_dp_depth)
+        .def("set_dp_depth",
+             [](DPFlateCompressor& self, size_t v) { self.set_dp_sub_match_max(v); })
+        .def("get_dp_depth",
+             [](DPFlateCompressor& self) { return self.get_dp_sub_match_max(); })
         .def("set_dp_sub_match_max", &DPFlateCompressor::set_dp_sub_match_max)
         .def("get_dp_sub_match_max", &DPFlateCompressor::get_dp_sub_match_max)
         .def("set_match_engine", &DPFlateCompressor::set_match_engine)
@@ -185,8 +186,10 @@ PYBIND11_MODULE(core_engine, m) {
         .value("DELTA_DECODE", compressor::core::AlgorithmID::DeltaDecode)
         .value("LZSS", compressor::core::AlgorithmID::LZSS)
         .value("LZSS_DECOMPRESS", compressor::core::AlgorithmID::LZSSDecompress)
-        .value("LZMINE", compressor::core::AlgorithmID::LZDP)
-        .value("LZMINE_DECOMPRESS", compressor::core::AlgorithmID::LZDPDecompress)
+        .value("LZDP", compressor::core::AlgorithmID::LZDP)
+        .value("LZDP_DECOMPRESS", compressor::core::AlgorithmID::LZDPDecompress)
+        .value("LZMINE", compressor::core::AlgorithmID::LZDP) // Deprecated alias
+        .value("LZMINE_DECOMPRESS", compressor::core::AlgorithmID::LZDPDecompress) // Deprecated alias
         .value("DPFLATE", compressor::core::AlgorithmID::DPFlate)
         .value("BROTLI", compressor::core::AlgorithmID::Brotli)
         .value("BROTLI_DECOMPRESS", compressor::core::AlgorithmID::BrotliDecompress)

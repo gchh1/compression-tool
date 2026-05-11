@@ -16,5 +16,5 @@ target_link_libraries(
     archiver
     processor
     core
-    memory
+    utils
 )

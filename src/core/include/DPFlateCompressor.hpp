@@ -39,8 +39,8 @@ public:
     void set_max_chain_length(size_t v) { max_chain_length_ = v; }
     size_t get_max_chain_length() const { return max_chain_length_; }
 
-    void set_dp_depth(size_t v) { dp_sub_match_max_ = v; }
-    size_t get_dp_depth() const { return dp_sub_match_max_; }
+    [[deprecated("use set_dp_sub_match_max instead")]] void set_dp_depth(size_t v) { dp_sub_match_max_ = v; }
+    [[deprecated("use set_dp_sub_match_max instead")]] size_t get_dp_depth() const { return dp_sub_match_max_; }
 
     void set_dp_sub_match_max(size_t v) { dp_sub_match_max_ = v; }
     size_t get_dp_sub_match_max() const { return dp_sub_match_max_; }

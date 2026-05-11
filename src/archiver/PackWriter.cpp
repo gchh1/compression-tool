@@ -9,9 +9,9 @@
 #include <utility>
 #include <vector>
 
-#include "AlgorithmFactory.hpp"
 #include "DataChunk.hpp"
 #include "Pipeline.hpp"
+#include "PipelineBuilder.hpp"
 
 namespace compressor::archiver {
 
@@ -34,11 +34,7 @@ auto PackWriter::beginFile(const std::string& filepath,
     chunk_idx_ = 0;
     current_compressed_size_ = 0;
 
-    std::vector<std::unique_ptr<algorithm::IAlgorithm>> algos;
-    for (auto id : chain) {
-        if (auto a = core::createAlgorithm(id)) algos.push_back(std::move(a));
-    }
-    pipeline_ = std::make_unique<processor::Pipeline>(std::move(algos), pool_);
+    pipeline_ = processor::buildCompressionPipeline(entry_header_.algo_chain, pool_);
 
     file_open_ = true;
 }

@@ -8,36 +8,39 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Compiler flags for optimization and warnings
 if(MSVC)
     add_compile_options(/W4 /O2)
 else()
     add_compile_options(-Wall -Wextra -Wpedantic -O2)
 endif()
 
-# ========================================================================
-# ADE LIBRARY TARGET (Header-Only Library)
-# ========================================================================
+set(ADE_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-add_library(ade INTERFACE)
+add_library(
+    ade
+    STATIC
+    features/FeatureExtractorV3.cpp
+    features/FeatureVectorV3.cpp
+    features/MagicBytesDetector.cpp
+    models/EvolutionaryAlgorithms.cpp
+    models/RandomForest.cpp
+    runtime/ADEBridge.cpp
+    runtime/DecisionEngine.cpp
+)
 
-target_include_directories(ade
-    INTERFACE
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
+target_include_directories(
+    ade
+    PUBLIC
+        ${ADE_INCLUDE}
         ${CMAKE_SOURCE_DIR}/src
 )
 
-# Link required system libraries
 if(WIN32)
     target_link_libraries(ade PRIVATE)
 endif()
 
-# ========================================================================
-# TEST EXECUTABLE
-# ========================================================================
-
 add_executable(test_ade_feature_extractor
-    tests/test_feature_extractor.cpp
+    ${CMAKE_SOURCE_DIR}/tests/cpp/ade/test_feature_extractor.cpp
 )
 
 target_link_libraries(test_ade_feature_extractor
@@ -45,20 +48,19 @@ target_link_libraries(test_ade_feature_extractor
 )
 
 add_executable(test_ade_decision_engine
-    tests/test_decision_engine.cpp
+    ${CMAKE_SOURCE_DIR}/tests/cpp/ade/test_decision_engine.cpp
 )
 
 target_link_libraries(test_ade_decision_engine
     PRIVATE ade
 )
 
-# Enable testing
 enable_testing()
 add_test(NAME ADEFeatureExtractor COMMAND test_ade_feature_extractor)
 add_test(NAME ADEDecisionEngine COMMAND test_ade_decision_engine)
 
 add_executable(test_ade_evolutionary
-    tests/test_evolutionary.cpp
+    ${CMAKE_SOURCE_DIR}/tests/cpp/ade/test_evolutionary.cpp
 )
 
 target_link_libraries(test_ade_evolutionary
@@ -67,10 +69,6 @@ target_link_libraries(test_ade_evolutionary
 
 add_test(NAME ADEEvolutionary COMMAND test_ade_evolutionary)
 
-# ========================================================================
-# BENCHMARK/PROFILING EXECUTABLE (Optional)
-# ========================================================================
-
 option(ADE_BUILD_BENCHMARK "Build performance benchmark" ON)
 if(ADE_BUILD_BENCHMARK)
     add_executable(bench_ade_extractor
@@ -78,10 +76,6 @@ if(ADE_BUILD_BENCHMARK)
     )
     target_link_libraries(bench_ade_extractor PRIVATE ade)
 endif()
-
-# ========================================================================
-# TRAINING TOOL
-# ========================================================================
 
 option(ADE_BUILD_TOOLS "Build training and utility tools" ON)
 if(ADE_BUILD_TOOLS)
@@ -96,16 +90,9 @@ if(ADE_BUILD_TOOLS)
     target_link_libraries(generate_ade_dataset PRIVATE ade)
 endif()
 
-# ========================================================================
-# INSTALLATION RULES
-# ========================================================================
-
 install(TARGETS ade
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
 )
 
-install(DIRECTORY include/
-    DESTINATION include/ade
-    FILES_MATCHING PATTERN "*.hpp"
-)
+install(DIRECTORY include/ DESTINATION include/ade FILES_MATCHING PATTERN "*.hpp")

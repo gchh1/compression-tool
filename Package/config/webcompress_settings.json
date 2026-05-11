@@ -1,33 +1,33 @@
 {
   "version": 1,
   "algorithms": {
+    "deflate": {
+      "search_size": 32767,
+      "min_match": 0,
+      "max_chain_length": 256
+    },
+    "lzdp": {
+      "search_size": 4095,
+      "lookahead_size": 31,
+      "min_match": 0,
+      "dp_top": 6,
+      "match_engine": 1,
+      "use_flag_encoding": 1
+    },
     "lzss": {
       "search_size": 4095,
       "lookahead_size": 18,
       "min_match": 0,
       "use_flag_encoding": 1
     },
-    "lzdp": {
-      "search_size": 4096,
-      "lookahead_size": 64,
-      "min_match": 0,
-      "dp_depth": 6,
-      "match_engine": 1,
-      "use_flag_encoding": 1
-    },
     "dpflate": {
-      "search_size": 32512,
-      "lookahead_size": 128,
+      "search_size": 32767,
+      "lookahead_size": 255,
       "min_match": 0,
-      "dp_depth": 6,
-      "max_chain_length": 256,
+      "dp_sub_match_max": 10,
+      "max_chain_length": 255,
       "match_engine": 1,
       "use_flag_encoding": 1
-    },
-    "deflate": {
-      "search_size": 32768,
-      "min_match": 0,
-      "max_chain_length": 256
     },
     "gzip": {
       "compression_level": 6
@@ -65,6 +65,12 @@
     "accent_text": "#FFFFFF",
     "success": "#22C55E",
     "warning": "#EAB308",
-    "error": "#EF4444"
+    "error": "#EF4444",
+    "chart_1": "#4a90d9",
+    "chart_2": "#f5a623",
+    "chart_3": "#7ed321",
+    "chart_4": "#d0021b",
+    "chart_5": "#9013fe",
+    "chart_6": "#50e3c2"
   }
 }

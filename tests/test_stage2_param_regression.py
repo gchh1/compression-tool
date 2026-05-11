@@ -10,6 +10,7 @@ Tests the complete Stage2 neural network parameter regression pipeline:
 
 import sys
 import os
+os.environ['PYTHONIOENCODING'] = 'utf-8'
 import time
 import logging
 import random
@@ -34,7 +35,8 @@ def test_param_regressor_basic():
     print("TEST 1: ParameterRegressor Basic Functionality")
     print("=" * 70)
 
-    from gui.core.decision import ParameterRegressor, AlgorithmType
+    from gui.ade.params import ParameterRegressor
+    from gui.models import AlgorithmType
 
     regressor = ParameterRegressor.get()
 
@@ -65,7 +67,7 @@ def test_param_normalization():
     print("TEST 2: Parameter Normalization/Denormalization")
     print("=" * 70)
 
-    from gui.core.decision import ParameterRegressor
+    from gui.ade.params import ParameterRegressor
 
     regressor = ParameterRegressor.get()
 
@@ -108,14 +110,15 @@ def test_algorithm_encoding():
     print("TEST 3: Algorithm One-Hot Encoding")
     print("=" * 70)
 
-    from gui.core.decision import ParameterRegressor, AlgorithmType
+    from gui.ade.params import ParameterRegressor
+    from gui.models import AlgorithmType
 
     regressor = ParameterRegressor.get()
 
     algorithms = [
         AlgorithmType.DEFLATE,
         AlgorithmType.LZSS,
-        AlgorithmType.LZMINE,
+        AlgorithmType.LZDP,
         AlgorithmType.DPFLATE,
         AlgorithmType.BROTLI,
         AlgorithmType.ZSTD,
@@ -137,9 +140,9 @@ def test_training_data_collection():
     print("TEST 4: Training Data Collection")
     print("=" * 70)
 
-    from gui.core.decision import (
-        ParameterRegressor, DecisionResult, AlgorithmType, FileRecord
-    )
+    from gui.ade.params import ParameterRegressor
+    from gui.ade.types import DecisionResult
+    from gui.models import AlgorithmType, FileRecord
 
     regressor = ParameterRegressor.get()
 
@@ -157,7 +160,7 @@ def test_training_data_collection():
               'lookahead_size': 128, 'dp_range': 5}
 
     decision = DecisionResult(
-        algorithm=AlgorithmType.LZMINE,
+        algorithm=AlgorithmType.LZDP,
         confidence=0.85,
         reason="Test decision",
         params=predicted,
@@ -165,7 +168,7 @@ def test_training_data_collection():
 
     sample = regressor.collect_sample(
         record=record,
-        algorithm=AlgorithmType.LZMINE,
+        algorithm=AlgorithmType.LZDP,
         predicted_params=predicted,
         actual_params=actual,
         decision_result=decision,
@@ -195,7 +198,9 @@ def test_model_training():
     print("TEST 5: Model Training (Synthetic Data)")
     print("=" * 70)
 
-    from gui.core.decision import ParameterRegressor, AlgorithmType, FileRecord, DecisionResult
+    from gui.ade.params import ParameterRegressor
+    from gui.ade.types import DecisionResult
+    from gui.models import AlgorithmType, FileRecord
 
     regressor = ParameterRegressor.get()
 
@@ -273,7 +278,8 @@ def test_model_prediction():
     print("TEST 6: Model Prediction After Training")
     print("=" * 70)
 
-    from gui.core.decision import ParameterRegressor, AlgorithmType, FileRecord
+    from gui.ade.params import ParameterRegressor
+    from gui.models import AlgorithmType, FileRecord
 
     regressor = ParameterRegressor.get()
 
@@ -288,7 +294,7 @@ def test_model_prediction():
     test_record.raw_data = os.urandom(500000)
 
     algorithms_to_test = [
-        AlgorithmType.LZMINE,
+        AlgorithmType.LZDP,
         AlgorithmType.DEFLATE,
         AlgorithmType.BROTLI,
     ]
@@ -327,7 +333,8 @@ def test_decision_engine_integration():
     print("TEST 7: DecisionEngine Stage2 Integration")
     print("=" * 70)
 
-    from gui.core.decision import DecisionEngine, ParameterRegressor
+    from gui.ade.engine import DecisionEngine
+    from gui.ade.params import ParameterRegressor
 
     de = DecisionEngine.get()
     regressor = ParameterRegressor.get()
@@ -360,7 +367,8 @@ def test_auto_retrain_workflow():
     print("TEST 8: Auto-Retrain Workflow")
     print("=" * 70)
 
-    from gui.core.decision import DecisionEngine, ParameterRegressor
+    from gui.ade.engine import DecisionEngine
+    from gui.ade.params import ParameterRegressor
 
     de = DecisionEngine.get()
     regressor = ParameterRegressor.get()
@@ -388,10 +396,10 @@ def test_end_to_end_pipeline():
     print("TEST 9: End-to-End Pipeline Simulation")
     print("=" * 70)
 
-    from gui.core.decision import (
-        DecisionEngine, ParameterRegressor, DecisionResult,
-        AlgorithmType, FileRecord, CompressionStatus
-    )
+    from gui.ade.engine import DecisionEngine
+    from gui.ade.params import ParameterRegressor
+    from gui.ade.types import DecisionResult
+    from gui.models import AlgorithmType, CompressionStatus, FileRecord
 
     de = DecisionEngine.get()
     regressor = ParameterRegressor.get()

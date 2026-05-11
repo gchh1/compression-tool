@@ -7,8 +7,8 @@
 #include <span>
 #include <vector>
 
-#include "AlgorithmFactory.hpp"
 #include "Pipeline.hpp"
+#include "PipelineBuilder.hpp"
 
 namespace compressor::archiver {
 
@@ -58,13 +58,7 @@ auto PackReader::extractStream(size_t index) const
 
     const auto& meta = entries_[index];
 
-    // Build decompression chain: reverse compression chain, map each to inverse
-    std::vector<std::unique_ptr<algorithm::IAlgorithm>> algos;
-    for (auto it = meta.algo_chain.rbegin(); it != meta.algo_chain.rend(); ++it) {
-        if (auto a = core::createAlgorithm(core::getDecompressorID(*it)))
-            algos.push_back(std::move(a));
-    }
-    auto pipeline = std::make_unique<processor::Pipeline>(std::move(algos));
+    auto pipeline = processor::buildDecompressionPipeline(meta.algo_chain);
 
     std::vector<uint8_t> buffer(INPUT_BUFFER_SIZE);
     uint64_t comp_remain = meta.compressed_size;
