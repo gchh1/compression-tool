@@ -1040,13 +1040,13 @@ on_export_click(job_id, dst):
 ### 18.4 阶段进展追踪表（持续维护）
 
 
-| 阶段      | 目标             | 状态  | 最近更新时间     | 备注                     |
-| ------- | -------------- | --- | ---------- | ---------------------- |
-| Phase 1 | WCX 协议基线冻结     | 进行中 | 2026-05-11 | `algo_code` 与全头字节布局见 §16.2.1 / §16.2.1.1（与 `WCXProtocol` 对齐） |
-| Phase 2 | C++ 侧对齐 WCX 读写 | 进行中 | 2026-05-11 | 文件/目录 API 已写读 WCX 外层；`archiver` 内聚 `WCXWriter/WCXReader` 仍待（§15.2） |
-| Phase 3 | 绑定与调用面收敛       | 进行中 | 2026-05-11 | 详见 `wcx-streaming-remediation-log.md`（C++/pybind/GUI 命名与路径） |
-| Phase 4 | 回归与兼容测试        | 进行中 | 2026-05-11 | CI：`test_wcx_*`（含 `test_wcx_corrupt` 截断/错 magic/声明过大）、`test_PackWriter*`；>1GB 流式矩阵仍待补（§15.2 Phase 4） |
-| Phase 5 | 删除旧路径与规则固化     | 进行中 | 2026-05-11 | 读路径仅 WCX（`wcx_decompress_input`）；已移除 `WCX_STRICT_*` 与裸流/裸 Pack 回退；CONTRIBUTING 规则与 archiver 边界收敛仍待 |
+| 阶段      | 目标             | 状态   | 最近更新时间     | 备注                     |
+| ------- | -------------- | ---- | ---------- | ---------------------- |
+| Phase 1 | WCX 协议基线冻结     | 已完成  | 2026-05-11 | `algo_code` 与全头字节布局见 §16.2.1 / §16.2.1.1；权威实现为 `WCXProtocol`；后续字段变更走整改日志 |
+| Phase 2 | C++ 侧对齐 WCX 读写 | 进行中  | 2026-05-11 | **产品路径**：`api` 已写读 WCX 外层。**架构债**：`archiver` 仍以内层 Pack/`EntryHeader` 为主，尚未抽象 `WCXWriter/WCXReader`（§15.2） |
+| Phase 3 | 绑定与调用面收敛       | 已完成  | 2026-05-11 | GUI/pybind 主路径已用 `pack_wcx`/`unpack_wcx`；细节见 `wcx-streaming-remediation-log.md` |
+| Phase 4 | 回归与兼容测试        | 部分完成 | 2026-05-11 | CI 已跑 `test_wcx_*`（含 `test_wcx_corrupt`）、`test_PackWriter*`；**仍待**：>1GB 流式、更全损坏矩阵（§15.2 Phase 4） |
+| Phase 5 | 删除旧路径与规则固化     | 已完成  | 2026-05-11 | 读路径仅 WCX；裸流/裸 Pack 与 `WCX_STRICT_*` 产品开关已移除；`CONTRIBUTING` §7 约定单容器。**可选**：CI 自动拦截「第二容器格式」尚未单独门禁 |
 
 
 ### 18.5 整改事项存放位置

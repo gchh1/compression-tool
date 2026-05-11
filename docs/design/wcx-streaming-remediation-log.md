@@ -500,3 +500,11 @@
 - **验证**: `test_wcx_corrupt`、`test_wcx_directory_archive` 等通过
 - **结论**: 完成
 
+#### [2026-05-11] §18.4 阶段表与「WCX 主线已完成」体感对齐
+
+- **阶段**: 文档
+- **目标**: 将 `streaming-workspace-spec.md` §18.4 中仍一律「进行中」的表述，改为与仓库现状一致：Phase 1/3/5 标已完成，Phase 4 标部分完成，Phase 2 区分产品路径与 archiver 架构债。
+- **改动文件**: `docs/design/streaming-workspace-spec.md`（§18.4）
+- **协议影响**: 无
+- **结论**: 完成
+
