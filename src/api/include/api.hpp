@@ -71,6 +71,7 @@ auto unpack_wcx(const std::vector<uint8_t>& data) -> WCXUnpackResult;
 #ifndef __EMSCRIPTEN__
 
 /// Streaming single-file compression: read input in chunks, write to disk.
+/// Writes to `output_path + ".part"` then renames to `output_path` on success.
 /// @param stream_chunk_bytes  Read buffer / pool chunk size; `0` means default (1 MiB).
 ///                            Clamped to 64 KiB .. 64 MiB to match GUI limits.
 auto compressFile(const std::string& input_path,
@@ -79,12 +80,14 @@ auto compressFile(const std::string& input_path,
                   size_t stream_chunk_bytes = 0) -> CompressResult;
 
 /// Streaming single-file decompression: read archive in chunks, write to disk.
+/// Writes to `output_path + ".part"` then renames to `output_path` on success.
 auto decompressFile(const std::string& input_path,
                     const std::string& output_path,
                     std::span<const AlgorithmID> chain,
                     size_t stream_chunk_bytes = 0) -> CompressResult;
 
 /// Recursively pack and compress a directory into an archive file.
+/// Writes to `output_path + ".part"` then renames to `output_path` on success.
 auto compressDirectory(const std::string& dir_path,
                        const std::string& output_path,
                        std::span<const AlgorithmID> chain,

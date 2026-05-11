@@ -521,3 +521,16 @@
 - **验证**: 构建 `api` 与 `test_wcx_*`；重编 `core_engine` 后验证 GUI 大文件流式
 - **结论**: 完成
 
+#### [2026-05-11] 流式输出：compressFile / decompressFile / compressDirectory 使用 `.part` + 原子 rename
+
+- **阶段**: 流式工作区 / Phase 4
+- **目标**: 避免压缩或解压中断时在最终路径留下半截 WCX 或明文；与规格 §6 finalize 一致。
+- **改动文件**:
+  - `src/api/api.cpp`（`staged_part_path`、`commit_staged_to_final`、`remove_path_best_effort`）
+  - `src/api/include/api.hpp`（文档注释）
+  - `tests/test_wcx_corrupt.cpp`、`tests/test_wcx_directory_archive.cpp`（成功后无 `.part`）
+  - `docs/design/streaming-workspace-spec.md`（§5 finalize）
+- **协议影响**: 无（最终路径字节与此前一致）
+- **验证**: `test_wcx_*` 全通过
+- **结论**: 完成
+

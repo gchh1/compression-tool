@@ -68,6 +68,11 @@ int main() {
         fs::remove_all(base, ec);
         return 1;
     }
+    if (fs::exists(archive.string() + ".part")) {
+        std::cerr << "compressDirectory must not leave .part after success\n";
+        fs::remove_all(base, ec);
+        return 1;
+    }
 
     {
         std::ifstream in(archive, std::ios::binary);

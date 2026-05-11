@@ -56,6 +56,11 @@ int main() {
         fs::remove_all(base, ec);
         return 1;
     }
+    if (fs::exists(wcx_ok.string() + ".part")) {
+        std::cerr << "compressFile must not leave .part after success\n";
+        fs::remove_all(base, ec);
+        return 1;
+    }
 
     std::ifstream read_ok(wcx_ok, std::ios::binary | std::ios::ate);
     if (!read_ok) {
@@ -151,6 +156,11 @@ int main() {
     if (!dec_ok.success) {
         std::cerr << "valid WCX roundtrip failed: " << dec_ok.error_message
                   << '\n';
+        fs::remove_all(base, ec);
+        return 1;
+    }
+    if (fs::exists(out.string() + ".part")) {
+        std::cerr << "decompressFile must not leave .part after success\n";
         fs::remove_all(base, ec);
         return 1;
     }

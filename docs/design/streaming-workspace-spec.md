@@ -83,10 +83,11 @@ For each input file:
     - unresolved tail/state (kept in memory).
   - Release no-longer-needed input segments.
 5. Finalize:
-  - Feed end-of-stream flag (`is_last_chunk=true`).
-  - Flush remaining bytes + trailer/footer.
-  - fsync/close and atomically rename:
-    - `<job-id>.wcx.part` -> `<job-id>.wcx`
+   - Feed end-of-stream flag (`is_last_chunk=true`).
+   - Flush remaining bytes + trailer/footer.
+   - fsync/close and atomically rename:
+     - `<job-id>.wcx.part` -> `<job-id>.wcx`
+   - **实现**：`api::compressFile` / `api::decompressFile` / `api::compressDirectory` 先写 `<目标路径>.part`，成功后再 `rename` 到最终路径；中途失败会删除 `.part`（`rename` 失败时可能保留 `.part` 以便排查）。
 6. Record artifact metadata into job state for GUI listing/export.
 
 ---

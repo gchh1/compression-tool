@@ -62,6 +62,28 @@ auto effective_stream_chunk_bytes(size_t requested) -> size_t {
     }
     return std::min(kMax, std::max(kMin, requested));
 }
+
+auto staged_part_path(const std::string& final_path) -> fs::path {
+    return fs::path(final_path + ".part");
+}
+
+void remove_path_best_effort(const fs::path& p) {
+    std::error_code ec;
+    fs::remove(p, ec);
+}
+
+auto commit_staged_to_final(const fs::path& part_path, const fs::path& final_path,
+                            std::string& err_out) -> bool {
+    std::error_code ec;
+    fs::remove(final_path, ec);
+    ec.clear();
+    fs::rename(part_path, final_path, ec);
+    if (ec) {
+        err_out = ec.message();
+        return false;
+    }
+    return true;
+}
 #endif
 
 }  // namespace
@@ -297,10 +319,13 @@ auto compressFile(const std::string& input_path,
         return result;
     }
 
-    std::ofstream output(output_path,
-                         std::ios::binary | std::ios::trunc);
+    const fs::path path_final(output_path);
+    const fs::path path_part = staged_part_path(output_path);
+    remove_path_best_effort(path_part);
+
+    std::ofstream output(path_part, std::ios::binary | std::ios::trunc);
     if (!output) {
-        result.error_message = "Cannot open output file";
+        result.error_message = "Cannot open staged output file";
         return result;
     }
 
@@ -310,6 +335,8 @@ auto compressFile(const std::string& input_path,
         static_cast<uint32_t>(std::min<uint64_t>(result.original_size, UINT32_MAX));
     if (!wcx::writeHeader(output, algo_code, header_orig_u32, 0, original_filename)) {
         result.error_message = "Cannot write WCX header";
+        output.close();
+        remove_path_best_effort(path_part);
         return result;
     }
 
@@ -359,6 +386,24 @@ auto compressFile(const std::string& input_path,
     auto comp_u32 = static_cast<uint32_t>(std::min<uint64_t>(total_written, UINT32_MAX));
     wcx::patchCompressedSize(output, comp_u32);
     output.flush();
+    if (!output.good()) {
+        result.error_message = "Cannot flush staged output file";
+        output.close();
+        remove_path_best_effort(path_part);
+        auto t1 = std::chrono::high_resolution_clock::now();
+        result.time_ms =
+            std::chrono::duration<double, std::milli>(t1 - t0).count();
+        return result;
+    }
+    output.close();
+    std::string commit_err;
+    if (!commit_staged_to_final(path_part, path_final, commit_err)) {
+        result.error_message = "Cannot commit output: " + commit_err;
+        auto t1 = std::chrono::high_resolution_clock::now();
+        result.time_ms =
+            std::chrono::duration<double, std::milli>(t1 - t0).count();
+        return result;
+    }
 
     auto t1 = std::chrono::high_resolution_clock::now();
     result.time_ms =
@@ -431,10 +476,13 @@ auto decompressFile(const std::string& input_path,
         return result;
     }
 
-    std::ofstream output(output_path,
-                         std::ios::binary | std::ios::trunc);
+    const fs::path path_final(output_path);
+    const fs::path path_part = staged_part_path(output_path);
+    remove_path_best_effort(path_part);
+
+    std::ofstream output(path_part, std::ios::binary | std::ios::trunc);
     if (!output) {
-        result.error_message = "Cannot open output file";
+        result.error_message = "Cannot open staged output file";
         return result;
     }
 
@@ -478,6 +526,28 @@ auto decompressFile(const std::string& input_path,
 
     if (bytes_read != payload_size) {
         result.error_message = "WCX payload truncated";
+        output.close();
+        remove_path_best_effort(path_part);
+        auto t1 = std::chrono::high_resolution_clock::now();
+        result.time_ms =
+            std::chrono::duration<double, std::milli>(t1 - t0).count();
+        return result;
+    }
+
+    output.flush();
+    if (!output.good()) {
+        result.error_message = "Cannot flush staged output file";
+        output.close();
+        remove_path_best_effort(path_part);
+        auto t1 = std::chrono::high_resolution_clock::now();
+        result.time_ms =
+            std::chrono::duration<double, std::milli>(t1 - t0).count();
+        return result;
+    }
+    output.close();
+    std::string commit_err;
+    if (!commit_staged_to_final(path_part, path_final, commit_err)) {
+        result.error_message = "Cannot commit output: " + commit_err;
         auto t1 = std::chrono::high_resolution_clock::now();
         result.time_ms =
             std::chrono::duration<double, std::milli>(t1 - t0).count();
@@ -546,10 +616,13 @@ auto compressDirectory(const std::string& dir_path,
         return result;
     }
 
-    std::ofstream output(output_path,
-                         std::ios::binary | std::ios::trunc);
+    const fs::path path_final(output_path);
+    const fs::path path_part = staged_part_path(output_path);
+    remove_path_best_effort(path_part);
+
+    std::ofstream output(path_part, std::ios::binary | std::ios::trunc);
     if (!output) {
-        result.error_message = "Cannot open output file";
+        result.error_message = "Cannot open staged output file";
         return result;
     }
 
@@ -562,6 +635,8 @@ auto compressDirectory(const std::string& dir_path,
         static_cast<uint32_t>(std::min<uint64_t>(total_original, UINT32_MAX));
     if (!wcx::writeHeader(output, algo_code, header_orig_u32, 0, original_filename)) {
         result.error_message = "Cannot write WCX header";
+        output.close();
+        remove_path_best_effort(path_part);
         return result;
     }
     output.seekp(14, std::ios::beg);
@@ -617,6 +692,24 @@ auto compressDirectory(const std::string& dir_path,
     auto comp_u32 = static_cast<uint32_t>(std::min<uint64_t>(total_written, UINT32_MAX));
     wcx::patchCompressedSize(output, comp_u32);
     output.flush();
+    if (!output.good()) {
+        result.error_message = "Cannot flush staged output file";
+        output.close();
+        remove_path_best_effort(path_part);
+        auto t1 = std::chrono::high_resolution_clock::now();
+        result.time_ms =
+            std::chrono::duration<double, std::milli>(t1 - t0).count();
+        return result;
+    }
+    output.close();
+    std::string commit_err;
+    if (!commit_staged_to_final(path_part, path_final, commit_err)) {
+        result.error_message = "Cannot commit output: " + commit_err;
+        auto t1 = std::chrono::high_resolution_clock::now();
+        result.time_ms =
+            std::chrono::duration<double, std::milli>(t1 - t0).count();
+        return result;
+    }
 
     auto t1 = std::chrono::high_resolution_clock::now();
     result.time_ms =
