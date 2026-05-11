@@ -51,6 +51,17 @@ def run_cli():
 def run_gui():
     setup_logging()
 
+    import logging
+    logger = logging.getLogger("gui.main")
+
+    def handle_exception(exc_type, exc_value, exc_traceback):
+        if issubclass(exc_type, KeyboardInterrupt):
+            sys.__excepthook__(exc_type, exc_value, exc_traceback)
+            return
+        logger.error("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+
+    sys.excepthook = handle_exception
+
     from PyQt6.QtWidgets import QApplication
     from PyQt6.QtGui import QIcon
     from gui.ui.main_window import MainWindow
