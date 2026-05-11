@@ -559,3 +559,15 @@
 - **验证**: 本地导入与启动路径无异常
 - **结论**: 完成
 
+#### [2026-05-11] 配置项 ``streaming.workspace_root`` 覆盖默认工作区根路径
+
+- **阶段**: Phase 3 / 配置（规格 §12）
+- **目标**: 允许将工作区放到自定义磁盘路径；默认行为不变（空字符串）。
+- **改动文件**:
+  - `src/gui/config/settings.py`（`DEFAULTS["streaming"]["workspace_root"]`、`get_streaming_workspace_root_override`）
+  - `src/gui/utils/workspace.py`（`workspace_root()` 读取配置）
+  - `docs/design/streaming-workspace-spec.md`（§5、§12）
+- **协议影响**: 无
+- **验证**: 本地 `Path` 展开与 `allocate_streaming_wcx_path` 仍落在 ``compressed/`` 下
+- **结论**: 完成
+

@@ -65,7 +65,7 @@ Subdirectories:
 
 For current semantic preference in project, `compressed/` is mandatory.
 
-**GUI（流式大文件）**：压缩任务将 C++ 输出写到 ``<workspace_root>/compressed/<短uuid>_<原文件名主干>.wcx``，由 `gui.utils.workspace.allocate_streaming_wcx_path` 分配；`workspace_root` 为 **与 ``config`` 目录同级** 的 ``workspace``（启动时 `ensure_workspace_layout()` 创建 ``compressed/``、``tmp/``、``jobs/``）。
+**GUI（流式大文件）**：压缩任务将 C++ 输出写到 ``<workspace_root>/compressed/<短uuid>_<原文件名主干>.wcx``，由 `gui.utils.workspace.allocate_streaming_wcx_path` 分配。默认 ``workspace_root`` 为 **与 ``config`` 目录同级** 的 ``workspace``；若配置 ``streaming.workspace_root`` 非空则覆盖（启动时 `ensure_workspace_layout()` 创建 ``compressed/``、``tmp/``、``jobs/``、``decompressed/``）。
 
 ---
 
@@ -180,7 +180,7 @@ On crash/restart:
 Under `streaming`:
 
 - `chunk_size_kb` (int)
-- `workspace_root` (string, optional)
+- `workspace_root` (string, optional) — **已实现**：非空时使用该路径（``~`` 可展开）作为工作区根；空字符串则仍为 ``<config 的父目录>/workspace``。
 - `keep_completed_artifacts` (bool)
 - `retention_days` (int)
 - `max_workspace_size_mb` (int)

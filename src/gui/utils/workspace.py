@@ -19,7 +19,12 @@ def _config_dir() -> Path:
 
 
 def workspace_root() -> Path:
-    """Default root: sibling of the ``config`` directory, named ``workspace``."""
+    """Workspace root: ``streaming.workspace_root`` if set, else sibling ``config/../workspace``."""
+    from gui.config.settings import get_streaming_workspace_root_override, load_config
+
+    override = get_streaming_workspace_root_override(load_config())
+    if override:
+        return Path(override).expanduser().resolve()
     return _config_dir().parent / "workspace"
 
 

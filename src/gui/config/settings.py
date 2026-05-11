@@ -24,6 +24,7 @@ DEFAULTS = {
     "streaming": {
         "threshold_mb": STREAMING_THRESHOLD_MB,
         "chunk_size_kb": STREAMING_CHUNK_SIZE_KB,
+        "workspace_root": "",
     },
     "visualization": {
         "lzdp_dp_viz_max_size": LZDP_DP_VIZ_MAX_SIZE,
@@ -143,5 +144,16 @@ def get_streaming_chunk_size(config: dict | None = None) -> int:
     if config is None:
         config = load_config()
     return int(config.get("streaming", {}).get("chunk_size_kb", STREAMING_CHUNK_SIZE_KB))
+
+
+def get_streaming_workspace_root_override(config: dict | None = None) -> str | None:
+    """Non-empty ``streaming.workspace_root`` in config; ``None`` means use default layout."""
+    if config is None:
+        config = load_config()
+    raw = config.get("streaming", {}).get("workspace_root", "")
+    if raw is None:
+        return None
+    s = str(raw).strip()
+    return s if s else None
 
 
