@@ -10,22 +10,22 @@
       "search_size": 4095,
       "lookahead_size": 31,
       "min_match": 0,
-      "dp_top": 6,
+      "dp_top": 3,
       "match_engine": 1,
       "use_flag_encoding": 1
     },
     "lzss": {
       "search_size": 4095,
-      "lookahead_size": 18,
+      "lookahead_size": 15,
       "min_match": 0,
       "use_flag_encoding": 1
     },
     "dpflate": {
       "search_size": 32767,
-      "lookahead_size": 255,
+      "lookahead_size": 127,
       "min_match": 0,
-      "dp_sub_match_max": 10,
-      "max_chain_length": 255,
+      "dp_sub_match_max": 6,
+      "max_chain_length": 256,
       "match_engine": 1,
       "use_flag_encoding": 1
     },

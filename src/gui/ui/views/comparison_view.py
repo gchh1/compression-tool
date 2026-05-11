@@ -138,9 +138,9 @@ class ComparisonView(QWidget):
             ["工具", "压缩后大小", "压缩率", "压缩耗时", "解压耗时"])
         self._table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         self._table.setColumnWidth(1, 120)
-        self._table.setColumnWidth(2, 80)
-        self._table.setColumnWidth(3, 150)
-        self._table.setColumnWidth(4, 150)
+        self._table.setColumnWidth(2, 180)
+        self._table.setColumnWidth(3, 180)
+        self._table.setColumnWidth(4, 180)
         self._table.setAlternatingRowColors(True)
         layout.addWidget(self._table)
 
