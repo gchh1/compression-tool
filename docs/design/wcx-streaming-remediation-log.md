@@ -489,3 +489,14 @@
 - **验证**: 构建并运行 `test_wcx_corrupt` 及既有 `test_wcx_*`
 - **结论**: 完成
 
+#### [2026-05-11] unpack_wcx：按 compressed_size 定界 payload；拒绝截断与对齐 decompressFile
+
+- **阶段**: Phase 4
+- **目标**: 内存路径 `unpack_wcx` 原先把 `header.total_size` 之后直到 buffer 末尾一律当作 payload，截断文件仍 `success`，与 `decompressFile` 不一致。改为要求 `data.size() >= total_size + compressed_size`，payload 恰为 `compressed_size` 字节；允许 buffer 尾部附加无关字节时忽略尾段。
+- **改动文件**:
+  - `src/api/api.cpp`（`unpack_wcx`）
+  - `tests/test_wcx_corrupt.cpp`（`unpack_wcx` 截断失败、尾字节忽略、`payload.size()==compressed_size`）
+- **协议影响**: 否（与头字段语义一致；此前将尾字节误并入 payload 属宽松 bug）
+- **验证**: `test_wcx_corrupt`、`test_wcx_directory_archive` 等通过
+- **结论**: 完成
+

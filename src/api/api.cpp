@@ -234,8 +234,18 @@ auto unpack_wcx(const std::vector<uint8_t>& data) -> WCXUnpackResult {
         result.error_message = "WCX payload offset out of range";
         return result;
     }
-    result.payload.assign(data.begin() + static_cast<std::ptrdiff_t>(header.total_size),
-                          data.end());
+    const uint64_t need = static_cast<uint64_t>(header.total_size) +
+                          static_cast<uint64_t>(header.compressed_size);
+    if (need > data.size()) {
+        result.error_message =
+            "WCX data shorter than declared header + compressed_size";
+        return result;
+    }
+    const size_t payload_begin = header.total_size;
+    const size_t payload_end = static_cast<size_t>(need);
+    result.payload.assign(
+        data.begin() + static_cast<std::ptrdiff_t>(payload_begin),
+        data.begin() + static_cast<std::ptrdiff_t>(payload_end));
     result.success = true;
     return result;
 }

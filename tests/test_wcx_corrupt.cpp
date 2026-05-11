@@ -75,6 +75,21 @@ int main() {
         fs::remove_all(base, ec);
         return 1;
     }
+    if (hdr.payload.size() != hdr.compressed_size) {
+        std::cerr << "unpack_wcx payload size must match compressed_size\n";
+        fs::remove_all(base, ec);
+        return 1;
+    }
+
+    std::vector<uint8_t> with_trailer = full_wcx;
+    with_trailer.push_back(0xAB);
+    with_trailer.push_back(0xCD);
+    auto trail = unpack_wcx(with_trailer);
+    if (!trail.success || trail.payload != hdr.payload) {
+        std::cerr << "unpack_wcx must ignore trailing bytes after payload\n";
+        fs::remove_all(base, ec);
+        return 1;
+    }
     const size_t header_len = full_wcx.size() - hdr.payload.size();
     if (header_len < 18 || header_len > full_wcx.size()) {
         std::cerr << "bad header_len\n";
@@ -89,6 +104,13 @@ int main() {
                                        static_cast<std::ptrdiff_t>(
                                            std::min(cut, full_wcx.size())));
     write_all_bytes(wcx_trunc, truncated);
+
+    auto bad_hdr = unpack_wcx(truncated);
+    if (bad_hdr.success) {
+        std::cerr << "unpack_wcx must fail on truncated buffer\n";
+        fs::remove_all(base, ec);
+        return 1;
+    }
 
     auto dec_trunc = decompressFile(wcx_trunc.string(), out.string(), decomp_chain);
     if (dec_trunc.success) {
