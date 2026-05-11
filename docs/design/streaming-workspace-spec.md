@@ -65,6 +65,8 @@ Subdirectories:
 
 For current semantic preference in project, `compressed/` is mandatory.
 
+**GUI（流式大文件）**：压缩任务将 C++ 输出写到 ``<workspace_root>/compressed/<短uuid>_<原文件名主干>.wcx``，由 `gui.utils.workspace.allocate_streaming_wcx_path` 分配；`workspace_root` 为 **与 ``config`` 目录同级** 的 ``workspace``（启动时 `ensure_workspace_layout()` 创建 ``compressed/``、``tmp/``、``jobs/``）。
+
 ---
 
 ## 6. Streaming Compression Flow

@@ -1529,7 +1529,9 @@ class MainWindow(QMainWindow):
             record = self._table.get_record(row)
             if not record:
                 continue
-            if isinstance(record, FileRecord) and record.status == CompressionStatus.DONE and record.compressed_data:
+            if isinstance(record, FileRecord) and record.status == CompressionStatus.DONE and (
+                record.compressed_data or record.compressed_path
+            ):
                 done_count += 1
             elif isinstance(record, FolderRecord) and record.status == CompressionStatus.DONE and record.success_count > 0:
                 done_count += 1
@@ -1587,6 +1589,13 @@ class MainWindow(QMainWindow):
                 )
                 with open(export_path, 'wb') as f:
                     f.write(packed)
+                exported += 1
+            elif isinstance(record, FileRecord) and record.compressed_path:
+                import shutil
+
+                export_name = make_export_filename(record.name, record.algorithm)
+                export_path = os.path.join(export_dir, export_name)
+                shutil.copy2(record.compressed_path, export_path)
                 exported += 1
 
         logger.info("[export] done: exported=%d", exported)

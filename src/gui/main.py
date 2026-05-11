@@ -82,6 +82,10 @@ def run_gui():
 
     apply_theme()
 
+    from gui.utils.workspace import ensure_workspace_layout
+
+    ensure_workspace_layout()
+
     window = MainWindow()
     window.show()
 

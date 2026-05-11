@@ -28,6 +28,7 @@ ignore/
 
 # Runtime/package outputs (standardized as non-source artifacts)
 artifacts/
+workspace/
 Package/bin/logs/
 Package/logs/
 Package/compressed/

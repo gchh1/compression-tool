@@ -186,9 +186,10 @@ class CompressionWorker(QThread):
                         use_streaming = False
 
             if use_streaming and hasattr(record, 'path'):
-                import os
+                from gui.utils.workspace import allocate_streaming_wcx_path
+
                 logger.info("[compress] STREAMING mode for %d bytes (file-to-file)", record.size)
-                out_path = record.path + ".wcx"
+                out_path = str(allocate_streaming_wcx_path(record.path))
                 snap = CompressionEngine.snapshot_for_algorithm(record.algorithm)
                 result = engine.smart_compress_file(record.path, out_path, record.algorithm)
                 logger.info("[compress] streaming compress done: %d -> %d bytes", record.size, result.compressed_size)

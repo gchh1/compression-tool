@@ -534,3 +534,16 @@
 - **验证**: `test_wcx_*` 全通过
 - **结论**: 完成
 
+#### [2026-05-11] GUI 流式压缩：工作区 ``compressed/`` 产物路径 + 导出支持 ``compressed_path``
+
+- **阶段**: 流式工作区（规格 §5）
+- **目标**: 大文件流式压缩不再写到源文件旁 ``<path>.wcx``，改为 ``<与 config 目录同级>/workspace/compressed/<id>_<stem>.wcx``；导出原先只处理 ``compressed_data``，补充 ``compressed_path`` 的 ``shutil.copy2``；启动时创建 ``compressed/``、``tmp/``、``jobs/``。
+- **改动文件**:
+  - `src/gui/utils/workspace.py`（新建）
+  - `src/gui/ui/worker.py`、`src/gui/main.py`、`src/gui/ui/main_window.py`
+  - `.gitignore`（``workspace/``）
+  - `docs/design/streaming-workspace-spec.md`（§5 实现说明）
+- **协议影响**: 无
+- **验证**: 静态检查导入；手动：启动 GUI 后应出现 ``workspace/compressed``，大文件压缩后导出可复制 WCX
+- **结论**: 完成
+
