@@ -391,6 +391,24 @@ auto decompressFile(const std::string& input_path,
     }
     uint64_t payload_size = *payload_size_opt;
 
+    const std::streampos pos_after_hdr = input.tellg();
+    if (pos_after_hdr < std::streampos{0}) {
+        result.error_message = "Cannot determine WCX payload offset";
+        return result;
+    }
+    const uint64_t payload_begin =
+        static_cast<uint64_t>(pos_after_hdr);
+    if (payload_begin > file_on_disk) {
+        result.error_message = "Invalid WCX header span";
+        return result;
+    }
+    const uint64_t remaining = file_on_disk - payload_begin;
+    if (remaining < payload_size) {
+        result.error_message =
+            "WCX file shorter than declared compressed_size";
+        return result;
+    }
+
     std::ofstream output(output_path,
                          std::ios::binary | std::ios::trunc);
     if (!output) {
@@ -434,6 +452,14 @@ auto decompressFile(const std::string& input_path,
         output.write(reinterpret_cast<const char*>(v.data()),
                      static_cast<std::streamsize>(v.size()));
         total_written += v.size();
+    }
+
+    if (bytes_read != payload_size) {
+        result.error_message = "WCX payload truncated";
+        auto t1 = std::chrono::high_resolution_clock::now();
+        result.time_ms =
+            std::chrono::duration<double, std::milli>(t1 - t0).count();
+        return result;
     }
 
     auto t1 = std::chrono::high_resolution_clock::now();

@@ -1,6 +1,8 @@
 build/
 build_wasm/
 build_pybind/
+build_ci_check/
+build_verify_naming/
 .vscode/
 .cache/
 .gitignore/

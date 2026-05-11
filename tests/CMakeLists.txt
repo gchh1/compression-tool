@@ -74,3 +74,14 @@ target_link_libraries(
     PRIVATE
     api
 )
+
+add_executable(
+    test_wcx_corrupt
+    test_wcx_corrupt.cpp
+)
+
+target_link_libraries(
+    test_wcx_corrupt
+    PRIVATE
+    api
+)

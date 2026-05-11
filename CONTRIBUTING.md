@@ -1,6 +1,6 @@
 # Contributing Guide
 
-This repository follows the governance defined in `docs/engineering_standardization_directive.md`.
+Architecture and WCX / streaming constraints are documented in `docs/design/streaming-workspace-spec.md`; dated remediation entries live in `docs/design/wcx-streaming-remediation-log.md`.
 
 ## 1) Branch and commit policy
 
@@ -53,4 +53,10 @@ This repository follows the governance defined in `docs/engineering_standardizat
   - path mapping table
   - naming dictionary
   - duplicate-code cleanup list
+
+## 7) On-disk container protocol (WCX)
+
+- **Single container**: exported archives and GUI/C++ file interchange use **WCX v2** (`WCMP` magic) only. Do not introduce a second on-disk container format or parallel headers without an approved spec change and migration plan.
+- **Implementation**: keep header layout aligned with `src/api/WCXProtocol.*` and `docs/design/streaming-workspace-spec.md` §16.2.1.1.
+- **Decompression**: the read path must reject non-WCX inputs clearly (no silent fallback to raw streams or bare Pack as “compatible” shortcuts).
 

@@ -1045,7 +1045,7 @@ on_export_click(job_id, dst):
 | Phase 1 | WCX 协议基线冻结     | 进行中 | 2026-05-11 | `algo_code` 与全头字节布局见 §16.2.1 / §16.2.1.1（与 `WCXProtocol` 对齐） |
 | Phase 2 | C++ 侧对齐 WCX 读写 | 进行中 | 2026-05-11 | 文件/目录 API 已写读 WCX 外层；`archiver` 内聚 `WCXWriter/WCXReader` 仍待（§15.2） |
 | Phase 3 | 绑定与调用面收敛       | 进行中 | 2026-05-11 | 详见 `wcx-streaming-remediation-log.md`（C++/pybind/GUI 命名与路径） |
-| Phase 4 | 回归与兼容测试        | 进行中 | 2026-05-11 | CI：`test_wcx_*`、`test_PackWriter*`；损坏包 / >1GB 流式矩阵仍待补（§15.2 Phase 4） |
+| Phase 4 | 回归与兼容测试        | 进行中 | 2026-05-11 | CI：`test_wcx_*`（含 `test_wcx_corrupt` 截断/错 magic/声明过大）、`test_PackWriter*`；>1GB 流式矩阵仍待补（§15.2 Phase 4） |
 | Phase 5 | 删除旧路径与规则固化     | 进行中 | 2026-05-11 | 读路径仅 WCX（`wcx_decompress_input`）；已移除 `WCX_STRICT_*` 与裸流/裸 Pack 回退；CONTRIBUTING 规则与 archiver 边界收敛仍待 |
 
 

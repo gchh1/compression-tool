@@ -475,3 +475,17 @@
 - **风险与回滚**: 无；回滚为还原该 MD  diff
 - **结论**: 完成
 
+#### [2026-05-11] decompressFile：声明 payload 与截断校验；新增 test_wcx_corrupt
+
+- **阶段**: Phase 4（损坏输入）；仓库卫生与 CONTRIBUTING
+- **目标**: 修复 `decompressFile` 在 payload 短于头中 `compressed_size` 或读中断时仍 `success=true` 的问题；为错误 magic、声明过大、物理截断提供 CI 覆盖；修正 CONTRIBUTING 对已删治理文件的引用；忽略本地 `build_ci_check` 等目录。
+- **改动文件**:
+  - `src/api/api.cpp`（头后剩余字节校验；读循环后 `bytes_read == payload_size`）
+  - `tests/test_wcx_corrupt.cpp`、`tests/CMakeLists.txt`
+  - `.github/workflows/cpp.yml`
+  - `.gitignore`、`CONTRIBUTING.md`
+  - `docs/design/streaming-workspace-spec.md`（§18.4 Phase 4 备注）
+- **协议影响**: 否（仅失败路径更严格）
+- **验证**: 构建并运行 `test_wcx_corrupt` 及既有 `test_wcx_*`
+- **结论**: 完成
+
