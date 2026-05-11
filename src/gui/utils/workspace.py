@@ -1,10 +1,14 @@
-"""Runtime workspace layout for streaming artifacts (see streaming-workspace-spec §5)."""
+"""Runtime workspace layout for streaming artifacts (see streaming-workspace-spec §5, §11)."""
 
 from __future__ import annotations
 
+import logging
 import re
+import shutil
 import uuid
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 
 def _config_dir() -> Path:
@@ -32,10 +36,50 @@ def tmp_dir() -> Path:
 
 
 def ensure_workspace_layout() -> None:
-    """Create ``compressed/``, ``tmp/``, ``jobs/`` under the workspace root."""
+    """Create ``compressed/``, ``tmp/``, ``jobs/``, ``decompressed/``; sweep stale artifacts."""
     compressed_dir()
     tmp_dir()
     (workspace_root() / "jobs").mkdir(parents=True, exist_ok=True)
+    (workspace_root() / "decompressed").mkdir(parents=True, exist_ok=True)
+    sweep_workspace_transient_artifacts()
+
+
+def remove_stale_compressed_parts() -> None:
+    """Delete ``compressed/*.part`` (crash/interrupt leftovers)."""
+    comp = workspace_root() / "compressed"
+    if not comp.is_dir():
+        return
+    for p in comp.glob("*.part"):
+        try:
+            p.unlink(missing_ok=True)
+        except OSError as e:
+            logger.debug("[workspace] skip removing %s: %s", p, e)
+
+
+def empty_tmp_dir() -> None:
+    """Remove all entries under ``tmp/`` (best-effort)."""
+    td = workspace_root() / "tmp"
+    if not td.is_dir():
+        return
+    for child in td.iterdir():
+        try:
+            if child.is_symlink() or child.is_file():
+                child.unlink(missing_ok=True)
+            elif child.is_dir():
+                shutil.rmtree(child, ignore_errors=True)
+        except OSError as e:
+            logger.debug("[workspace] skip removing %s: %s", child, e)
+
+
+def sweep_workspace_transient_artifacts() -> None:
+    """Startup sweep: stale ``.part`` in ``compressed/`` and scratch under ``tmp/``."""
+    remove_stale_compressed_parts()
+    empty_tmp_dir()
+
+
+def cleanup_workspace_on_app_quit() -> None:
+    """Graceful exit: clear ``tmp/`` (completed ``.wcx`` stay under ``compressed/``)."""
+    empty_tmp_dir()
 
 
 def _safe_stem(source_path: str, max_len: int = 96) -> str:

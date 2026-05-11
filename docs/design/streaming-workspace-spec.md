@@ -164,10 +164,14 @@ On graceful app exit:
 - clean `tmp/`
 - optionally prune old completed artifacts by retention config
 
+**当前实现（GUI）**：`ensure_workspace_layout()` 在启动时已执行 ``compressed/*.part`` 删除与 ``tmp/`` 清空；`QApplication.aboutToQuit` 再次清空 ``tmp/``（`gui.utils.workspace.cleanup_workspace_on_app_quit`）。保留策略与 job 元数据仍待配置化（见下方 Config Keys）。
+
 On crash/restart:
 
 - detect incomplete jobs from `.part` + metadata
 - mark as failed/recoverable, never expose as completed output
+
+**当前实现**：启动时删除遗留 ``compressed/*.part``；尚未写入 ``jobs/`` 元数据时不对历史任务做结构化恢复。
 
 ---
 

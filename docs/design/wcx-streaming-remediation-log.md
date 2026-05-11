@@ -547,3 +547,15 @@
 - **验证**: 静态检查导入；手动：启动 GUI 后应出现 ``workspace/compressed``，大文件压缩后导出可复制 WCX
 - **结论**: 完成
 
+#### [2026-05-11] 工作区清理：启动扫除 ``.part``/``tmp``，退出再清 ``tmp``
+
+- **阶段**: 流式 §11 清理策略
+- **目标**: 崩溃或强退后遗留 ``compressed/*.part`` 与 ``tmp`` 垃圾在下次启动可自动清理；正常退出时再清 ``tmp``（不动已完成 ``.wcx``）。补充 ``decompressed/`` 目录占位。
+- **改动文件**:
+  - `src/gui/utils/workspace.py`（`remove_stale_compressed_parts`、`empty_tmp_dir`、`sweep_workspace_transient_artifacts`、`cleanup_workspace_on_app_quit`）
+  - `src/gui/main.py`（`aboutToQuit`）
+  - `docs/design/streaming-workspace-spec.md`（§11 与实现对齐）
+- **协议影响**: 无
+- **验证**: 本地导入与启动路径无异常
+- **结论**: 完成
+

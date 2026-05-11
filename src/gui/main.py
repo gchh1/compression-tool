@@ -86,6 +86,10 @@ def run_gui():
 
     ensure_workspace_layout()
 
+    from gui.utils.workspace import cleanup_workspace_on_app_quit
+
+    app.aboutToQuit.connect(cleanup_workspace_on_app_quit)
+
     window = MainWindow()
     window.show()
 
