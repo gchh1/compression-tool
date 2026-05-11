@@ -4,6 +4,11 @@ import logging
 import sys
 from pathlib import Path
 
+# Add src/ to sys.path automatically if running directly
+_src_dir = Path(__file__).resolve().parent.parent
+if str(_src_dir) not in sys.path:
+    sys.path.insert(0, str(_src_dir))
+
 from gui.utils.logging import setup_logging
 from gui.utils.resources import resolve_icon_path
 

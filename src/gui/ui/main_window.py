@@ -280,8 +280,7 @@ class ThemeConfigDialog(QDialog):
 
         except Exception as e:
             logger.error("[ThemeConfigDialog] _setup_ui failed: %s", e, exc_info=True)
-            error_label = QLabel(f"初始化主题配置对话框失败:
-{e}")
+            error_label = QLabel(f"初始化主题配置对话框失败:\\n{e}")
             error_label.setStyleSheet("color: red; padding: 20px;")
             layout.addWidget(error_label)
 
@@ -345,13 +344,10 @@ class ThemeConfigDialog(QDialog):
             
             table_style = (
                 f"QTableWidget {{ background: {t.bg_surface}; color: {t.text_primary}; "
-                f"border: 1px solid {t.border}; border-radius: 4px; gridline-color: {t.border}; alternate-background-color: {t.bg_hover}; }}
-"
-                f"QTableWidget::item:selected {{ background: {t.bg_selection}; color: {t.text_primary}; }}
-"
+                f"border: 1px solid {t.border}; border-radius: 4px; gridline-color: {t.border}; alternate-background-color: {t.bg_hover}; }}\n"
+                f"QTableWidget::item:selected {{ background: {t.bg_selection}; color: {t.text_primary}; }}\n"
                 f"QHeaderView::section {{ background: {t.bg_elevated}; color: {t.text_secondary}; "
-                f"border: 1px solid {t.border}; padding: 4px; font-weight: bold; }}
-"
+                f"border: 1px solid {t.border}; padding: 4px; font-weight: bold; }}\n"
             )
             self._preview_table.setStyleSheet(table_style)
             
