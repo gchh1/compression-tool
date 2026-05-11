@@ -875,7 +875,8 @@ class AlgorithmConfigDialog(QDialog):
             desc_label = QLabel(
                 "流式模式说明：文件超过阈值时自动启用，\n"
                 "采用 terminator 格式 ([4B长度][数据]...[4B 0]) 分块处理，\n"
-                "内存占用与文件大小无关，仅取决于分块大小。"
+                "内存占用与文件大小无关，仅取决于分块大小。\n"
+                "大文件走 C++ pipeline 时，上述「流式分块大小」会作为读缓冲 / MemoryPool 块大小传入（64 KB～64 MB）。"
             )
             desc_label.setWordWrap(True)
             desc_label.setStyleSheet(f"color: {ThemeManager.hex('text_muted')}; font-size: 11px; padding: 4px 0;")

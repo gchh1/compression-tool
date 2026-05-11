@@ -508,3 +508,16 @@
 - **协议影响**: 无
 - **结论**: 完成
 
+#### [2026-05-11] 流式分块：GUI `chunk_size_kb` 贯通 C++ pipeline 文件 API
+
+- **阶段**: Phase 3 / 流式产品
+- **目标**: C++ `compressFile`/`decompressFile`/`compressDirectory` 原固定 1 MiB 读缓冲，与「流式分块大小」配置脱节。增加可选 `stream_chunk_bytes`（0=默认 1 MiB，钳位 64 KiB～64 MiB）；pybind 与 `CompressionEngine.smart_compress_file`/`smart_decompress_file` 从 `get_streaming_chunk_size` 传入。
+- **改动文件**:
+  - `src/api/api.cpp`、`src/api/include/api.hpp`
+  - `src/bindings/pybind/pybind_module.cpp`
+  - `src/gui/engine/compressor.py`、`src/gui/ui/main_window.py`
+  - `docs/design/streaming-workspace-spec.md`（§6）
+- **协议影响**: 无
+- **验证**: 构建 `api` 与 `test_wcx_*`；重编 `core_engine` 后验证 GUI 大文件流式
+- **结论**: 完成
+

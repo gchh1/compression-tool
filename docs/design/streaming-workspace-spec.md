@@ -76,7 +76,7 @@ For each input file:
 2. Open input stream + output stream.
 3. Write required format/file header to `.part` once.
 4. Loop:
-  - Read one chunk (`chunk_size` from settings).
+   - Read one chunk (`chunk_size` from settings; C++ `compressFile`/`decompressFile`/`compressDirectory` 通过 `stream_chunk_bytes` 与 GUI `streaming.chunk_size_kb` 对齐，见 `api::effective_stream_chunk_bytes`)。
   - Feed chunk into compressor state machine.
   - Compressor emits:
     - safe flush bytes (write to `.part` immediately),

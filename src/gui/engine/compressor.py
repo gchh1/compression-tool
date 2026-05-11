@@ -8,6 +8,7 @@ from gui.config.settings import (
     save_config as _save_app_config,
     get_algo_config as _get_algo_from_file,
     get_streaming_threshold as _get_threshold_from_file,
+    get_streaming_chunk_size as _get_chunk_kb_from_file,
 )
 from gui.engine.bridge import get_core_engine
 from gui.models import (
@@ -247,8 +248,17 @@ class CompressionEngine:
         algo_id = self._get_pipeline_id(algorithm)
         if algo_id is None:
             raise ValueError(f"Algorithm {algorithm.value} not supported in pipeline mode")
-        logger.info("[smart_compress_file] %s -> %s via %s", input_path, output_path, algorithm.value)
-        return self._engine.pipeline_compress_file(input_path, output_path, [algo_id])
+        chunk_bytes = int(_get_chunk_kb_from_file(_load_app_config())) * 1024
+        logger.info(
+            "[smart_compress_file] %s -> %s via %s (chunk_bytes=%d)",
+            input_path,
+            output_path,
+            algorithm.value,
+            chunk_bytes,
+        )
+        return self._engine.pipeline_compress_file(
+            input_path, output_path, [algo_id], chunk_bytes
+        )
 
     def smart_decompress_file(
         self,
@@ -262,8 +272,17 @@ class CompressionEngine:
         decomp_id = self._get_decompress_pipeline_id(algorithm)
         if decomp_id is None:
             raise ValueError(f"Algorithm {algorithm.value} not supported in pipeline decompress mode")
-        logger.info("[smart_decompress_file] %s -> %s via %s", input_path, output_path, algorithm.value)
-        return self._engine.pipeline_decompress_file(input_path, output_path, [decomp_id])
+        chunk_bytes = int(_get_chunk_kb_from_file(_load_app_config())) * 1024
+        logger.info(
+            "[smart_decompress_file] %s -> %s via %s (chunk_bytes=%d)",
+            input_path,
+            output_path,
+            algorithm.value,
+            chunk_bytes,
+        )
+        return self._engine.pipeline_decompress_file(
+            input_path, output_path, [decomp_id], chunk_bytes
+        )
 
     def pack_files(self, records: list[FileRecord]) -> bytes:
         if not self.available:

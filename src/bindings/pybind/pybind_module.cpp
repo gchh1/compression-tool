@@ -273,24 +273,30 @@ PYBIND11_MODULE(core_engine, m) {
     m.def("pipeline_compress_file",
           [](const std::string& input_path,
              const std::string& output_path,
-             const std::vector<compressor::core::AlgorithmID>& chain)
+             const std::vector<compressor::core::AlgorithmID>& chain,
+             size_t stream_chunk_bytes)
               -> compressor::api::CompressResult {
-              return compressor::api::compressFile(input_path, output_path, chain);
+              return compressor::api::compressFile(input_path, output_path, chain,
+                                                    stream_chunk_bytes);
           },
           py::arg("input_path"), py::arg("output_path"), py::arg("chain"),
+          py::arg("stream_chunk_bytes") = size_t{0},
           py::call_guard<py::gil_scoped_release>(),
-          "Streaming compress a file in chunks");
+          "Streaming compress a file in chunks (optional stream_chunk_bytes; 0 = default 1 MiB)");
 
     m.def("pipeline_decompress_file",
           [](const std::string& input_path,
              const std::string& output_path,
-             const std::vector<compressor::core::AlgorithmID>& chain)
+             const std::vector<compressor::core::AlgorithmID>& chain,
+             size_t stream_chunk_bytes)
               -> compressor::api::CompressResult {
-              return compressor::api::decompressFile(input_path, output_path, chain);
+              return compressor::api::decompressFile(input_path, output_path, chain,
+                                                      stream_chunk_bytes);
           },
           py::arg("input_path"), py::arg("output_path"), py::arg("chain"),
+          py::arg("stream_chunk_bytes") = size_t{0},
           py::call_guard<py::gil_scoped_release>(),
-          "Streaming decompress a file in chunks");
+          "Streaming decompress a file in chunks (optional stream_chunk_bytes; 0 = default 1 MiB)");
 
     // ===== ADE (Algorithm Decision Engine) =====
     init_ade(m);

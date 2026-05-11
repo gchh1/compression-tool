@@ -52,7 +52,16 @@ class VectorReader : public archiver::IDataReader {
 };
 
 #ifndef __EMSCRIPTEN__
-constexpr size_t STREAMING_CHUNK_SIZE = 1048576;  // 1 MB
+constexpr size_t kDefaultStreamChunkBytes = 1048576;  // 1 MiB
+
+auto effective_stream_chunk_bytes(size_t requested) -> size_t {
+    constexpr size_t kMin = 64 * 1024;         // 64 KiB (matches GUI spin minimum)
+    constexpr size_t kMax = 64u * 1024 * 1024; // 64 MiB (matches GUI spin maximum)
+    if (requested == 0) {
+        return kDefaultStreamChunkBytes;
+    }
+    return std::min(kMax, std::max(kMin, requested));
+}
 #endif
 
 }  // namespace
@@ -256,10 +265,13 @@ auto unpack_wcx(const std::vector<uint8_t>& data) -> WCXUnpackResult {
 
 auto compressFile(const std::string& input_path,
                   const std::string& output_path,
-                  std::span<const AlgorithmID> chain) -> CompressResult {
+                  std::span<const AlgorithmID> chain,
+                  size_t stream_chunk_bytes) -> CompressResult {
     CompressResult result;
 
     auto t0 = std::chrono::high_resolution_clock::now();
+
+    const size_t chunk = effective_stream_chunk_bytes(stream_chunk_bytes);
 
     std::error_code ec;
     result.original_size = fs::file_size(input_path, ec);
@@ -276,8 +288,7 @@ auto compressFile(const std::string& input_path,
         return result;
     }
 
-    auto pool =
-        std::make_shared<memory::MemoryPool>(4, STREAMING_CHUNK_SIZE);
+    auto pool = std::make_shared<memory::MemoryPool>(4, chunk);
     processor::Pipeline pipeline(std::move(algos), pool);
 
     std::ifstream input(input_path, std::ios::binary);
@@ -302,12 +313,12 @@ auto compressFile(const std::string& input_path,
         return result;
     }
 
-    std::vector<uint8_t> buf(STREAMING_CHUNK_SIZE);
+    std::vector<uint8_t> buf(chunk);
     uint64_t bytes_read = 0;
     uint64_t total_written = 0;
 
     while (bytes_read < result.original_size) {
-        size_t to_read = std::min(STREAMING_CHUNK_SIZE,
+        size_t to_read = std::min(chunk,
                                   static_cast<size_t>(result.original_size -
                                                       bytes_read));
         input.read(reinterpret_cast<char*>(buf.data()),
@@ -321,9 +332,9 @@ auto compressFile(const std::string& input_path,
 
         // Drain output
         while (true) {
-            auto chunk = pipeline.pull();
-            if (chunk.empty()) break;
-            auto v = chunk.view();
+            auto out_chunk = pipeline.pull();
+            if (out_chunk.empty()) break;
+            auto v = out_chunk.view();
             output.write(reinterpret_cast<const char*>(v.data()),
                          static_cast<std::streamsize>(v.size()));
             total_written += v.size();
@@ -334,9 +345,9 @@ auto compressFile(const std::string& input_path,
 
     // Final drain
     while (true) {
-        auto chunk = pipeline.pull();
-        if (chunk.empty()) break;
-        auto v = chunk.view();
+        auto out_chunk = pipeline.pull();
+        if (out_chunk.empty()) break;
+        auto v = out_chunk.view();
         output.write(reinterpret_cast<const char*>(v.data()),
                      static_cast<std::streamsize>(v.size()));
         total_written += v.size();
@@ -363,10 +374,12 @@ auto compressFile(const std::string& input_path,
 
 auto decompressFile(const std::string& input_path,
                     const std::string& output_path,
-                    std::span<const AlgorithmID> chain) -> CompressResult {
+                    std::span<const AlgorithmID> chain,
+                    size_t stream_chunk_bytes) -> CompressResult {
     CompressResult result;
 
     auto t0 = std::chrono::high_resolution_clock::now();
+    const size_t chunk = effective_stream_chunk_bytes(stream_chunk_bytes);
 
     std::error_code ec;
     result.original_size = fs::file_size(input_path, ec);
@@ -383,8 +396,7 @@ auto decompressFile(const std::string& input_path,
         return result;
     }
 
-    auto pool =
-        std::make_shared<memory::MemoryPool>(4, STREAMING_CHUNK_SIZE);
+    auto pool = std::make_shared<memory::MemoryPool>(4, chunk);
     processor::Pipeline pipeline(std::move(algos), pool);
 
     std::ifstream input(input_path, std::ios::binary);
@@ -426,12 +438,12 @@ auto decompressFile(const std::string& input_path,
         return result;
     }
 
-    std::vector<uint8_t> buf(STREAMING_CHUNK_SIZE);
+    std::vector<uint8_t> buf(chunk);
     uint64_t bytes_read = 0;
     uint64_t total_written = 0;
 
     while (bytes_read < payload_size) {
-        size_t to_read = std::min(STREAMING_CHUNK_SIZE,
+        size_t to_read = std::min(chunk,
                                   static_cast<size_t>(payload_size -
                                                       bytes_read));
         input.read(reinterpret_cast<char*>(buf.data()),
@@ -444,9 +456,9 @@ auto decompressFile(const std::string& input_path,
         bytes_read += actual;
 
         while (true) {
-            auto chunk = pipeline.pull();
-            if (chunk.empty()) break;
-            auto v = chunk.view();
+            auto out_chunk = pipeline.pull();
+            if (out_chunk.empty()) break;
+            auto v = out_chunk.view();
             output.write(reinterpret_cast<const char*>(v.data()),
                          static_cast<std::streamsize>(v.size()));
             total_written += v.size();
@@ -456,9 +468,9 @@ auto decompressFile(const std::string& input_path,
     pipeline.finish();
 
     while (true) {
-        auto chunk = pipeline.pull();
-        if (chunk.empty()) break;
-        auto v = chunk.view();
+        auto out_chunk = pipeline.pull();
+        if (out_chunk.empty()) break;
+        auto v = out_chunk.view();
         output.write(reinterpret_cast<const char*>(v.data()),
                      static_cast<std::streamsize>(v.size()));
         total_written += v.size();
@@ -486,10 +498,12 @@ auto decompressFile(const std::string& input_path,
 
 auto compressDirectory(const std::string& dir_path,
                        const std::string& output_path,
-                       std::span<const AlgorithmID> chain) -> CompressResult {
+                       std::span<const AlgorithmID> chain,
+                       size_t stream_chunk_bytes) -> CompressResult {
     CompressResult result;
 
     auto t0 = std::chrono::high_resolution_clock::now();
+    const size_t chunk = effective_stream_chunk_bytes(stream_chunk_bytes);
 
     std::error_code ec;
     if (!fs::exists(dir_path, ec) || !fs::is_directory(dir_path, ec)) {
@@ -539,7 +553,7 @@ auto compressDirectory(const std::string& dir_path,
         return result;
     }
 
-    auto pool = std::make_shared<memory::MemoryPool>(8, STREAMING_CHUNK_SIZE);
+    auto pool = std::make_shared<memory::MemoryPool>(8, chunk);
     archiver::PackWriter writer(pool);
 
     const std::string original_filename = fs::path(dir_path).filename().string();
@@ -555,7 +569,7 @@ auto compressDirectory(const std::string& dir_path,
     output.seekp(0, std::ios::end);
 
     uint64_t total_written = 0;
-    std::vector<uint8_t> buf(STREAMING_CHUNK_SIZE);
+    std::vector<uint8_t> buf(chunk);
 
     for (const auto& file : files) {
         writer.beginFile(file.rel_path.string(), chain);
@@ -566,7 +580,7 @@ auto compressDirectory(const std::string& dir_path,
         uint64_t bytes_read = 0;
         while (bytes_read < file.file_size) {
             size_t to_read =
-                std::min(STREAMING_CHUNK_SIZE,
+                std::min(chunk,
                          static_cast<size_t>(file.file_size - bytes_read));
             input.read(reinterpret_cast<char*>(buf.data()),
                        static_cast<std::streamsize>(to_read));
