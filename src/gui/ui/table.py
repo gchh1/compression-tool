@@ -343,7 +343,7 @@ class FileTableWidget(QTableWidget):
                     self.setItem(row, self.COL_ALGORITHM, QTableWidgetItem("-"))
                 
                 if record.status == CompressionStatus.DONE and record.size > 0:
-                    comp_sz = _compressed_size(record)
+                    comp_sz = len(record.compressed_data) if getattr(record, 'compressed_data', None) else 0
                     ratio_str = f"{record.compression_ratio * 100:.2f}%({formatted_size(comp_sz)}/{formatted_size(record.size)})"
                 else:
                     ratio_str = "--"
