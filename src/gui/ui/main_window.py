@@ -115,30 +115,43 @@ class ThemeConfigDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("主题配置")
-        self.setMinimumSize(580, 600)
+        self.setMinimumSize(850, 650)
         self._color_buttons: dict[str, QPushButton] = {}
+        self._current_theme_dict = {}
         self._setup_ui()
+        self._update_preview()
 
     def _setup_ui(self) -> None:
         root = QVBoxLayout(self)
         body = QWidget()
         root.addWidget(body, 1)
-        layout = QVBoxLayout(body)
+        layout = QHBoxLayout(body)
+        
         try:
             from gui.config.theme import ThemeManager, THEME_FIELDS, LABELS_CN
             from gui.config.settings import get_theme_config
+            from PyQt6.QtWidgets import QColorDialog, QFormLayout, QScrollArea, QGroupBox, QTableWidget, QTableWidgetItem, QHeaderView
+            from PyQt6.QtGui import QColor, QBrush
+            
+            # 读取当前主题到内存
+            self._current_theme_dict = get_theme_config()
+            for field in THEME_FIELDS:
+                if field not in self._current_theme_dict:
+                    self._current_theme_dict[field] = ThemeManager.hex(field)
 
+            # --- 左侧：配置面板 ---
+            left_panel = QWidget()
+            left_layout = QVBoxLayout(left_panel)
+            left_layout.setContentsMargins(0,0,0,0)
+            
             title_label = QLabel("自定义界面主题颜色")
             title_label.setStyleSheet(f"font-size: 14px; font-weight: bold; color: {ThemeManager.hex('text_primary')}; padding: 8px;")
-            layout.addWidget(title_label)
+            left_layout.addWidget(title_label)
 
-            desc_label = QLabel(
-                "点击颜色方块可选择自定义颜色，或使用下方预设快速切换。\n"
-                "修改后点击\"应用\"生效，设置会自动保存到配置文件。"
-            )
+            desc_label = QLabel("修改颜色将实时展示在右侧预览区。点击\"应用\"以保存。")
             desc_label.setWordWrap(True)
             desc_label.setStyleSheet(f"font-size: 11px; color: {ThemeManager.hex('text_muted')}; padding: 4px 0 12px;")
-            layout.addWidget(desc_label)
+            left_layout.addWidget(desc_label)
 
             scroll = QScrollArea()
             scroll.setWidgetResizable(True)
@@ -147,73 +160,128 @@ class ThemeConfigDialog(QDialog):
             form = QFormLayout(form_inner)
             form.setSpacing(10)
             form.setContentsMargins(8, 8, 8, 8)
+            
+            # 分组配置
+            GROUPS = {
+                "🔲 基础背景": ["bg_primary", "bg_surface", "bg_elevated", "bg_hover", "bg_selection"],
+                "🅰️ 文字颜色": ["text_primary", "text_secondary", "text_muted"],
+                "📏 边框与线条": ["border", "border_dark"],
+                "✨ 强调与状态色": ["accent", "accent_hover", "accent_text", "success", "warning", "error"]
+            }
+            
+            for group_name, fields_list in GROUPS.items():
+                lbl = QLabel(group_name)
+                lbl.setStyleSheet(f"font-weight: bold; color: {ThemeManager.hex('text_primary')}; padding-top: 10px; font-size: 12px;")
+                form.addRow(lbl)
+                for field_name in fields_list:
+                    if field_name not in THEME_FIELDS: continue
+                    label_cn = LABELS_CN.get(field_name, field_name)
+                    row_layout = QHBoxLayout()
+                    row_layout.setSpacing(8)
 
-            current_theme = get_theme_config()
+                    color_btn = QPushButton()
+                    color_btn.setFixedSize(36, 28)
+                    color_val = self._current_theme_dict[field_name]
+                    if not str(color_val).startswith("#"): color_val = "#" + str(color_val)
+                    
+                    color_btn.setStyleSheet(f"background: {color_val}; border: 1px solid gray; border-radius: 4px;")
+                    color_btn.setToolTip(f"点击选择颜色: {label_cn}")
+                    color_btn.clicked.connect(lambda checked, f=field_name: self._pick_color(f))
+                    self._color_buttons[field_name] = color_btn
 
-            for field_name in THEME_FIELDS:
-                label_cn = LABELS_CN.get(field_name, field_name)
-                row_layout = QHBoxLayout()
-                row_layout.setSpacing(8)
+                    hex_label = QLabel(color_val.upper())
+                    hex_label.setMinimumWidth(70)
+                    hex_label.setStyleSheet(f"font-family: Consolas, monospace; font-size: 11px; color: {ThemeManager.hex('text_secondary')};")
+                    setattr(self, f"_theme_hex_{field_name}", hex_label)
 
-                color_btn = QPushButton()
-                color_btn.setFixedSize(36, 28)
-                color_val = current_theme.get(field_name, ThemeManager.hex(field_name))
-                if not str(color_val).startswith("#"):
-                    color_val = "#" + str(color_val)
-                color_btn.setStyleSheet(
-                    f"background: {color_val}; border: 2px solid {ThemeManager.hex('border')}; border-radius: 4px;"
-                )
-                color_btn.setToolTip(f"点击选择颜色: {label_cn}")
-                color_btn.clicked.connect(lambda checked, f=field_name: self._pick_color(f))
-                self._color_buttons[field_name] = color_btn
+                    name_label = QLabel(label_cn)
+                    name_label.setStyleSheet(f"color: {ThemeManager.hex('text_primary')};")
 
-                hex_label = QLabel(color_val.upper())
-                hex_label.setMinimumWidth(70)
-                hex_label.setStyleSheet(f"font-family: Consolas, monospace; font-size: 11px; color: {ThemeManager.hex('text_secondary')};")
-                setattr(self, f"_theme_hex_{field_name}", hex_label)
+                    row_layout.addWidget(color_btn)
+                    row_layout.addWidget(hex_label)
+                    row_layout.addStretch()
 
-                name_label = QLabel(label_cn)
-                name_label.setStyleSheet(f"color: {ThemeManager.hex('text_primary')};")
-
-                row_layout.addWidget(color_btn)
-                row_layout.addWidget(hex_label)
-                row_layout.addStretch()
-
-                form.addRow(name_label, row_layout)
-
+                    form.addRow(name_label, row_layout)
+            
             scroll.setWidget(form_inner)
-            layout.addWidget(scroll, 1)
+            left_layout.addWidget(scroll, 1)
 
             preset_group = QGroupBox("快速预设")
             preset_group.setStyleSheet(f"QGroupBox {{ font-weight: bold; color: {ThemeManager.hex('text_primary')}; border: 1px solid {ThemeManager.hex('border')}; border-radius: 6px; margin-top: 8px; padding-top: 16px; }} QGroupBox::title {{ subcontrol-origin: margin; left: 12px; padding: 0 6px; }}")
             preset_layout = QHBoxLayout(preset_group)
 
             dark_btn = QPushButton("🌙 暗色模式")
-            dark_btn.setToolTip("一键切换到暗色主题预设")
             dark_btn.clicked.connect(self._on_switch_dark)
             preset_layout.addWidget(dark_btn)
 
             light_btn = QPushButton("☀️ 亮色模式")
-            light_btn.setToolTip("恢复到亮色主题默认值")
             light_btn.clicked.connect(self._on_switch_light)
             preset_layout.addWidget(light_btn)
 
             reset_btn = QPushButton("↩️ 恢复默认")
-            reset_btn.setToolTip("重置所有颜色为程序默认值")
             reset_btn.clicked.connect(self._on_reset_all)
             preset_layout.addWidget(reset_btn)
 
             preset_layout.addStretch()
-            layout.addWidget(preset_group)
+            left_layout.addWidget(preset_group)
+            
+            layout.addWidget(left_panel, 1)
+
+            # --- 右侧：实时预览面板 ---
+            right_panel = QWidget()
+            right_layout = QVBoxLayout(right_panel)
+            right_layout.setContentsMargins(15, 0, 0, 0)
+            
+            preview_group = QGroupBox("界面预览")
+            preview_group.setStyleSheet(f"QGroupBox {{ font-weight: bold; color: {ThemeManager.hex('text_primary')}; border: 1px dashed {ThemeManager.hex('border')}; border-radius: 6px; padding-top: 16px; }} QGroupBox::title {{ subcontrol-origin: margin; left: 12px; padding: 0 6px; }}")
+            preview_layout = QVBoxLayout(preview_group)
+            
+            self._preview_container = QWidget()
+            pl = QVBoxLayout(self._preview_container)
+            pl.setSpacing(15)
+            
+            self._lbl_preview_title = QLabel("WebCompress 预览视图")
+            self._lbl_preview_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            pl.addWidget(self._lbl_preview_title)
+            
+            # 按钮区预览
+            btn_row = QHBoxLayout()
+            self._preview_btn = QPushButton("强调色按钮")
+            self._preview_btn_hover = QPushButton("Hover效果")
+            btn_row.addWidget(self._preview_btn)
+            btn_row.addWidget(self._preview_btn_hover)
+            pl.addLayout(btn_row)
+            
+            # 表格区预览
+            self._preview_table = QTableWidget()
+            self._preview_table.setColumnCount(3)
+            self._preview_table.setRowCount(3)
+            self._preview_table.setHorizontalHeaderLabels(["状态", "文件名", "大小"])
+            self._preview_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+            self._preview_table.setItem(0, 0, QTableWidgetItem("done"))
+            self._preview_table.setItem(0, 1, QTableWidgetItem("sample.txt"))
+            self._preview_table.setItem(0, 2, QTableWidgetItem("10 KB"))
+            self._preview_table.setItem(1, 0, QTableWidgetItem("failed"))
+            self._preview_table.setItem(1, 1, QTableWidgetItem("data.bin"))
+            self._preview_table.setItem(1, 2, QTableWidgetItem("45 MB"))
+            self._preview_table.setItem(2, 0, QTableWidgetItem("warning"))
+            self._preview_table.setItem(2, 1, QTableWidgetItem("config.json"))
+            self._preview_table.setItem(2, 2, QTableWidgetItem("2 KB"))
+            self._preview_table.selectRow(0)
+            self._preview_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+            self._preview_table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+            self._preview_table.setAlternatingRowColors(True)
+            pl.addWidget(self._preview_table, 1)
+            
+            preview_layout.addWidget(self._preview_container)
+            right_layout.addWidget(preview_group, 1)
+            
+            layout.addWidget(right_panel, 1)
 
         except Exception as e:
             logger.error("[ThemeConfigDialog] _setup_ui failed: %s", e, exc_info=True)
-            while layout.count():
-                item = layout.takeAt(0)
-                w = item.widget()
-                if w is not None:
-                    w.deleteLater()
-            error_label = QLabel(f"初始化主题配置对话框失败:\n{e}")
+            error_label = QLabel(f"初始化主题配置对话框失败:
+{e}")
             error_label.setStyleSheet("color: red; padding: 20px;")
             layout.addWidget(error_label)
 
@@ -229,59 +297,85 @@ class ThemeConfigDialog(QDialog):
         root.addLayout(btn_layout)
 
     def _pick_color(self, field_name: str) -> None:
-        from gui.config.theme import ThemeManager, LABELS_CN
-        current_hex = ThemeManager.hex(field_name)
+        from gui.config.theme import LABELS_CN
+        from PyQt6.QtWidgets import QColorDialog
+        from PyQt6.QtGui import QColor
+        current_hex = self._current_theme_dict.get(field_name, "#000000")
         color = QColorDialog.getColor(QColor(current_hex), self, f"选择颜色: {LABELS_CN.get(field_name, field_name)}")
         if color.isValid():
-            hex_val = color.name()
-            self._update_color_button(field_name, hex_val)
+            self._update_color_button(field_name, color.name())
 
     def _update_color_button(self, field_name: str, hex_val: str) -> None:
-        from gui.config.theme import ThemeManager
+        self._current_theme_dict[field_name] = hex_val
         btn = self._color_buttons.get(field_name)
         if btn:
-            btn.setStyleSheet(
-                f"background: {hex_val}; border: 2px solid {ThemeManager.hex('border')}; border-radius: 4px;"
-            )
+            btn.setStyleSheet(f"background: {hex_val}; border: 1px solid gray; border-radius: 4px;")
         hex_label = getattr(self, f"_theme_hex_{field_name}", None)
         if hex_label:
             hex_label.setText(hex_val.upper())
+        self._update_preview()
 
     def _on_switch_dark(self) -> None:
-        from gui.config.theme import ThemeManager as TM, THEME_FIELDS
-        TM.set_dark()
+        from gui.config.theme import _dark_theme, THEME_FIELDS
+        t = _dark_theme()
         for fname in THEME_FIELDS:
-            self._update_color_button(fname, TM.hex(fname))
+            self._update_color_button(fname, getattr(t, fname))
 
     def _on_switch_light(self) -> None:
-        from gui.config.theme import ThemeManager as TM, THEME_FIELDS
-        TM.reset_to_default()
+        from gui.config.theme import _light_theme, THEME_FIELDS
+        t = _light_theme()
         for fname in THEME_FIELDS:
-            self._update_color_button(fname, TM.hex(fname))
+            self._update_color_button(fname, getattr(t, fname))
 
     def _on_reset_all(self) -> None:
-        from gui.config.theme import ThemeManager as TM, THEME_FIELDS
-        TM.reset_to_default()
+        from gui.config.theme import DEFAULT_THEME, THEME_FIELDS
+        t = DEFAULT_THEME
         for fname in THEME_FIELDS:
-            self._update_color_button(fname, TM.hex(fname))
+            self._update_color_button(fname, getattr(t, fname))
+
+    def _update_preview(self) -> None:
+        try:
+            from gui.config.theme import ThemeManager, Theme
+            from PyQt6.QtGui import QColor, QBrush
+            t = Theme(**self._current_theme_dict)
+            self._preview_container.setStyleSheet(f"background: {t.bg_primary}; border-radius: 8px;")
+            self._lbl_preview_title.setStyleSheet(f"color: {t.text_primary}; font-weight: bold; font-size: 14px;")
+            self._preview_btn.setStyleSheet(f"background: {t.accent}; color: {t.accent_text}; padding: 8px; border-radius: 4px; border: none; font-weight: bold;")
+            self._preview_btn_hover.setStyleSheet(f"background: {t.accent_hover}; color: {t.accent_text}; padding: 8px; border-radius: 4px; border: none; font-weight: bold;")
+            
+            table_style = (
+                f"QTableWidget {{ background: {t.bg_surface}; color: {t.text_primary}; "
+                f"border: 1px solid {t.border}; border-radius: 4px; gridline-color: {t.border}; alternate-background-color: {t.bg_hover}; }}
+"
+                f"QTableWidget::item:selected {{ background: {t.bg_selection}; color: {t.text_primary}; }}
+"
+                f"QHeaderView::section {{ background: {t.bg_elevated}; color: {t.text_secondary}; "
+                f"border: 1px solid {t.border}; padding: 4px; font-weight: bold; }}
+"
+            )
+            self._preview_table.setStyleSheet(table_style)
+            
+            item_done = self._preview_table.item(0, 0)
+            item_fail = self._preview_table.item(1, 0)
+            item_warn = self._preview_table.item(2, 0)
+            if item_done: item_done.setForeground(QBrush(QColor(t.success)))
+            if item_fail: item_fail.setForeground(QBrush(QColor(t.error)))
+            if item_warn: item_warn.setForeground(QBrush(QColor(t.warning)))
+        except Exception:
+            pass
 
     def _on_apply(self) -> None:
         from gui.config.settings import save_theme
-        from gui.config.theme import ThemeManager
-
-        theme_dict = {}
-        for fname, btn in self._color_buttons.items():
-            hex_label = getattr(self, f"_theme_hex_{fname}", None)
-            if hex_label:
-                val = hex_label.text().strip()
-                if not val.startswith("#"):
-                    val = "#" + val
-                theme_dict[fname] = val
-        theme_obj = ThemeManager.from_dict(theme_dict)
+        from gui.config.theme import ThemeManager, Theme
+        
+        theme_obj = Theme(**self._current_theme_dict)
         ThemeManager.apply(theme_obj)
-        save_theme(theme_dict)
-
+        save_theme(self._current_theme_dict)
+        # Notify main window to reload theme visually
+        if hasattr(self.parent(), "refresh_theme"):
+            self.parent().refresh_theme()
         self.accept()
+
 
 
 class DecisionEngineManagerDialog(QDialog):

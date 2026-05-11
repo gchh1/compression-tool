@@ -43,8 +43,8 @@ class Theme:
         return cls(**filtered_data)
 
 
-DEFAULT_THEME = Theme()
-
+def _light_theme() -> Theme:
+    return Theme()
 
 def _dark_theme() -> Theme:
     return Theme(
@@ -72,6 +72,7 @@ def _dark_theme() -> Theme:
         chart_6="#2dd4bf",
     )
 
+DEFAULT_THEME = _dark_theme()
 
 THEME_FIELDS = [f.name for f in fields(Theme) if f.name != "chart_1" and not f.name.startswith("chart_")]
 CHART_FIELDS = ["chart_1", "chart_2", "chart_3", "chart_4", "chart_5", "chart_6"]
@@ -118,12 +119,17 @@ class ThemeManager:
     @classmethod
     def reset_to_default(cls) -> None:
         cls._theme = DEFAULT_THEME
-        logger.info("[theme] reset to default (light)")
+        logger.info("[theme] reset to default (dark)")
 
     @classmethod
     def set_dark(cls) -> None:
         cls._theme = _dark_theme()
         logger.info("[theme] switched to dark mode")
+
+    @classmethod
+    def set_light(cls) -> None:
+        cls._theme = _light_theme()
+        logger.info("[theme] switched to light mode")
 
     @classmethod
     def is_dark(cls) -> bool:
