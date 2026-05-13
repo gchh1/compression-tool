@@ -71,49 +71,134 @@ class AlgorithmParamDef:
 
 ALGORITHM_PARAMS: dict[AlgorithmType, list[AlgorithmParamDef]] = {
     AlgorithmType.LZSS: [
+        # search_size 上限受编码中距离表示约束（与实现 uint16 语义一致）
         AlgorithmParamDef("search_size", "搜索窗口大小", 4095, 255, 65535, 256, ""),
         AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 18, 4, 255, 1, ""),
-        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 50, 1, ""),
+        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 127, 1, ""),
         AlgorithmParamDef("use_flag_encoding", "编码方案", 1, choices={0: "Offset=0 兜底模式 (长纯文本占优)", 1: "1-Bit Flag 模式 (碎片化文件占优)"}),
     ],
     AlgorithmType.LZDP: [
-        AlgorithmParamDef("search_size", "搜索窗口大小", 4096, 256, 65536, 256, " B"),
-        AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 256, 2, 65536, 1, " B"),
-        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 50, 1, ""),
-        AlgorithmParamDef("dp_top", "DP 每步保留的匹配候选数", 3, 1, 32, 1, ""),
+        # 流式 OOC 链路与比特头：offset/length 位宽 ≤24，packed 距离 uint16 → 窗口上界 65535
+        AlgorithmParamDef("search_size", "搜索窗口大小", 4096, 256, 65535, 256, " B"),
+        AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 256, 2, 65535, 1, " B"),
+        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 127, 1, ""),
+        AlgorithmParamDef("dp_top", "DP 每步保留的匹配候选数", 3, 1, 64, 1, ""),
         AlgorithmParamDef("match_engine", "匹配引擎选择", 0, choices={0: "KMP 引擎 (支持重叠匹配, 慢)", 1: "HashChain 引擎 (支持重叠匹配, 快)"}),
         AlgorithmParamDef("use_flag_encoding", "编码方案", 0, choices={0: "Offset=0 兜底模式 (长纯文本占优)", 1: "1-Bit Flag 模式 (碎片化文件占优)"}),
     ],
     AlgorithmType.DPFLATE: [
+        # FLATE 距离码最大距离 32768（与 Inflate 兼容）；不可再上调
         AlgorithmParamDef("search_size", "搜索窗口大小", 4096, 256, 32768, 256, " B"),
-        AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 256, 16, 4096, 16, " B"),
-        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 50, 1, ""),
-        AlgorithmParamDef("dp_sub_match_max", "DP 每步保留的匹配候选数", 6, 1, 32, 1, ""),
-        AlgorithmParamDef("max_chain_length", "最大搜索链长", 256, 4, 4096, 4, ""),
+        AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 256, 16, 8192, 16, " B"),
+        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 127, 1, ""),
+        AlgorithmParamDef("dp_sub_match_max", "DP 每步保留的匹配候选数", 6, 1, 64, 1, ""),
+        AlgorithmParamDef("max_chain_length", "最大搜索链长", 256, 4, 8192, 4, ""),
         AlgorithmParamDef("match_engine", "匹配引擎选择", 1, choices={0: "KMP 引擎 (支持重叠匹配, 慢)", 1: "HashChain 引擎 (支持重叠匹配, 快)"}),
         AlgorithmParamDef("use_flag_encoding", "编码方案", 1, choices={0: "Offset=0 兜底模式 (长纯文本占优)", 1: "1-Bit Flag 模式 (碎片化文件占优)"}),
+        AlgorithmParamDef("use_3hfmtree", "Huffman 树策略", 0, choices={0: "标准 FLATE（两树，兼容 Inflate）", 1: "3HfMTree（三树 + 多级槽）"}),
+        AlgorithmParamDef("huffman_offset_chunk_bits", "3HfM offset 槽宽（bit）", 8, 2, 20, 1, ""),
+        AlgorithmParamDef("huffman_length_chunk_bits", "3HfM length 槽宽（bit）", 8, 2, 20, 1, ""),
     ],
     AlgorithmType.DEFLATE: [
-        AlgorithmParamDef("search_size", "搜索窗口大小", 32768, 1024, 65536, 1024, " B"),
-        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 50, 1, ""),
-        AlgorithmParamDef("max_chain_length", "最大搜索链长", 256, 4, 4096, 4, ""),
+        AlgorithmParamDef(
+            "search_size",
+            "搜索窗口大小",
+            32768,
+            1024,
+            65536,
+            1024,
+            " B；大文件分块管线与其它算法共用同一 WCX 容器与分块策略；"
+            "该路径内载荷为经典两树 Deflate（与 Inflate 解压一致），"
+            "下列 3HfM 相关项仅在「整块内存压缩」时参与",
+        ),
+        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 127, 1, ""),
+        AlgorithmParamDef("max_chain_length", "最大搜索链长", 256, 4, 8192, 4, ""),
+        AlgorithmParamDef(
+            "use_3hfmtree",
+            "Huffman 树策略",
+            0,
+            0,
+            1,
+            1,
+            "",
+            choices={
+                0: "标准 Deflate（两树；分块管线与整块内存一致）",
+                1: "3HfM（仅整块内存压缩；分块管线仍为经典 Deflate，便于 Inflate 解压）",
+            },
+        ),
+        AlgorithmParamDef(
+            "lookahead_size",
+            "3HfM 前瞻窗口（字节）",
+            258,
+            16,
+            8192,
+            16,
+            " 仅 use_3hfmtree=1 且整块内存压缩（分块文件管线不使用）",
+        ),
+        AlgorithmParamDef(
+            "dp_sub_match_max",
+            "3HfM DP 候选数",
+            6,
+            1,
+            64,
+            1,
+            " 仅 use_3hfmtree=1 且整块内存压缩（分块文件管线不使用）",
+        ),
+        AlgorithmParamDef(
+            "match_engine",
+            "3HfM 匹配引擎",
+            1,
+            0,
+            1,
+            1,
+            " 仅 use_3hfmtree=1（整块内存）",
+            choices={0: "KMP", 1: "HashChain"},
+        ),
+        AlgorithmParamDef(
+            "use_flag_encoding",
+            "3HfM 编码方案",
+            0,
+            0,
+            1,
+            1,
+            " 仅 use_3hfmtree=1（整块内存）",
+            choices={0: "Offset=0 兜底", 1: "1-Bit Flag"},
+        ),
+        AlgorithmParamDef(
+            "huffman_offset_chunk_bits",
+            "3HfM offset 槽宽（bit）",
+            8,
+            2,
+            20,
+            1,
+            " 仅 use_3hfmtree=1（整块内存）",
+        ),
+        AlgorithmParamDef(
+            "huffman_length_chunk_bits",
+            "3HfM length 槽宽（bit）",
+            8,
+            2,
+            20,
+            1,
+            " 仅 use_3hfmtree=1（整块内存）",
+        ),
     ],
     AlgorithmType.GZIP: [
         AlgorithmParamDef("compression_level", "压缩级别", 6, 1, 9, 1, ""),
     ],
     AlgorithmType.BROTLI: [
         AlgorithmParamDef("window_size", "窗口大小", 65536, 4096, 65536, 4096, " B"),
-        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 50, 1, ""),
-        AlgorithmParamDef("max_chain_length", "最大搜索链长", 256, 4, 4096, 4, ""),
+        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 127, 1, ""),
+        AlgorithmParamDef("max_chain_length", "最大搜索链长", 256, 4, 8192, 4, ""),
     ],
     AlgorithmType.ZSTD: [
-        AlgorithmParamDef("compression_level", "压缩级别", 3, 1, 19, 1, ""),
+        AlgorithmParamDef("compression_level", "压缩级别", 3, 1, 22, 1, ""),
     ],
 }
 
 STREAMING_THRESHOLD_MB = 10
 STREAMING_CHUNK_SIZE_KB = 1024
-LZDP_DP_VIZ_MAX_SIZE = 65536
+LZDP_DP_VIZ_MAX_SIZE = 131072
 
 
 def get_default_config() -> dict[AlgorithmType, dict[str, int]]:

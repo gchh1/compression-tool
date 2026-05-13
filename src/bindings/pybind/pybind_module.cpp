@@ -1,3 +1,5 @@
+#include <optional>
+
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/functional.h>
@@ -51,7 +53,23 @@ PYBIND11_MODULE(core_engine, m) {
         .def("set_min_match", &DeflateCompressor::set_min_match)
         .def("get_min_match", &DeflateCompressor::get_min_match)
         .def("set_max_chain_length", &DeflateCompressor::set_max_chain_length)
-        .def("get_max_chain_length", &DeflateCompressor::get_max_chain_length);
+        .def("get_max_chain_length", &DeflateCompressor::get_max_chain_length)
+        .def("set_use_3hfmtree", &DeflateCompressor::set_use_3hfmtree)
+        .def("get_use_3hfmtree", &DeflateCompressor::get_use_3hfmtree)
+        .def("set_huffman_chunk_bits", &DeflateCompressor::set_huffman_chunk_bits)
+        .def("get_huffman_chunk_bits", &DeflateCompressor::get_huffman_chunk_bits)
+        .def("set_huffman_offset_chunk_bits", &DeflateCompressor::set_huffman_offset_chunk_bits)
+        .def("set_huffman_length_chunk_bits", &DeflateCompressor::set_huffman_length_chunk_bits)
+        .def("get_huffman_offset_chunk_bits", &DeflateCompressor::get_huffman_offset_chunk_bits)
+        .def("get_huffman_length_chunk_bits", &DeflateCompressor::get_huffman_length_chunk_bits)
+        .def("set_lookahead_size", &DeflateCompressor::set_lookahead_size)
+        .def("get_lookahead_size", &DeflateCompressor::get_lookahead_size)
+        .def("set_dp_sub_match_max", &DeflateCompressor::set_dp_sub_match_max)
+        .def("get_dp_sub_match_max", &DeflateCompressor::get_dp_sub_match_max)
+        .def("set_match_engine", &DeflateCompressor::set_match_engine)
+        .def("get_match_engine", &DeflateCompressor::get_match_engine)
+        .def("set_use_flag_encoding", &DeflateCompressor::set_use_flag_encoding)
+        .def("get_use_flag_encoding", &DeflateCompressor::get_use_flag_encoding);
 
     py::class_<LZSSCompressor, ICompressor,
                std::shared_ptr<LZSSCompressor>>(m, "LZSSCompressor")
@@ -143,7 +161,15 @@ PYBIND11_MODULE(core_engine, m) {
         .def("set_match_engine", &DPFlateCompressor::set_match_engine)
         .def("get_match_engine", &DPFlateCompressor::get_match_engine)
         .def("set_use_flag_encoding", &DPFlateCompressor::set_use_flag_encoding)
-        .def("get_use_flag_encoding", &DPFlateCompressor::get_use_flag_encoding);
+        .def("get_use_flag_encoding", &DPFlateCompressor::get_use_flag_encoding)
+        .def("set_use_3hfmtree", &DPFlateCompressor::set_use_3hfmtree)
+        .def("get_use_3hfmtree", &DPFlateCompressor::get_use_3hfmtree)
+        .def("set_huffman_chunk_bits", &DPFlateCompressor::set_huffman_chunk_bits)
+        .def("get_huffman_chunk_bits", &DPFlateCompressor::get_huffman_chunk_bits)
+        .def("set_huffman_offset_chunk_bits", &DPFlateCompressor::set_huffman_offset_chunk_bits)
+        .def("set_huffman_length_chunk_bits", &DPFlateCompressor::set_huffman_length_chunk_bits)
+        .def("get_huffman_offset_chunk_bits", &DPFlateCompressor::get_huffman_offset_chunk_bits)
+        .def("get_huffman_length_chunk_bits", &DPFlateCompressor::get_huffman_length_chunk_bits);
 
     py::class_<GzipCompressor, ICompressor,
                std::shared_ptr<GzipCompressor>>(m, "GzipCompressor")
@@ -200,6 +226,34 @@ PYBIND11_MODULE(core_engine, m) {
         .value("ZSTD", compressor::core::AlgorithmID::Zstd)
         .value("ZSTD_DECOMPRESS", compressor::core::AlgorithmID::ZstdDecompress)
         .export_values();
+
+    py::class_<compressor::core::LzdpWholeFileParams>(m, "LzdpWholeFileParams")
+        .def(py::init<>())
+        .def_readwrite("search_size", &compressor::core::LzdpWholeFileParams::search_size)
+        .def_readwrite("lookahead_size", &compressor::core::LzdpWholeFileParams::lookahead_size)
+        .def_readwrite("min_match", &compressor::core::LzdpWholeFileParams::min_match)
+        .def_readwrite("dp_top", &compressor::core::LzdpWholeFileParams::dp_top)
+        .def_readwrite("use_flag_encoding", &compressor::core::LzdpWholeFileParams::use_flag_encoding)
+        .def_readwrite("match_engine", &compressor::core::LzdpWholeFileParams::match_engine);
+
+    py::class_<compressor::core::DpflatePipelineParams>(m, "DpflatePipelineParams")
+        .def(py::init<>())
+        .def_readwrite("search_size", &compressor::core::DpflatePipelineParams::search_size)
+        .def_readwrite("lookahead_size", &compressor::core::DpflatePipelineParams::lookahead_size)
+        .def_readwrite("min_match", &compressor::core::DpflatePipelineParams::min_match)
+        .def_readwrite("max_chain_length",
+                       &compressor::core::DpflatePipelineParams::max_chain_length)
+        .def_readwrite("dp_sub_match_max",
+                       &compressor::core::DpflatePipelineParams::dp_sub_match_max)
+        .def_readwrite("match_engine", &compressor::core::DpflatePipelineParams::match_engine)
+        .def_readwrite("use_flag_encoding",
+                       &compressor::core::DpflatePipelineParams::use_flag_encoding)
+        .def_readwrite("use_3hfmtree",
+                       &compressor::core::DpflatePipelineParams::use_3hfmtree)
+        .def_readwrite("huffman_offset_chunk_bits",
+                       &compressor::core::DpflatePipelineParams::huffman_offset_chunk_bits)
+        .def_readwrite("huffman_length_chunk_bits",
+                       &compressor::core::DpflatePipelineParams::huffman_length_chunk_bits);
 
     py::class_<compressor::api::CompressResult>(m, "PipelineCompressResult")
         .def(py::init<>())
@@ -274,15 +328,57 @@ PYBIND11_MODULE(core_engine, m) {
           [](const std::string& input_path,
              const std::string& output_path,
              const std::vector<compressor::core::AlgorithmID>& chain,
-             size_t stream_chunk_bytes)
+             size_t stream_chunk_bytes,
+             uint32_t file_compress_opts,
+             const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
+             const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p)
               -> compressor::api::CompressResult {
+              const compressor::core::LzdpWholeFileParams* p =
+                  lzdp_wf.has_value() ? &lzdp_wf.value() : nullptr;
+              const compressor::core::DpflatePipelineParams* d =
+                  dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
               return compressor::api::compressFile(input_path, output_path, chain,
-                                                    stream_chunk_bytes);
+                                                    stream_chunk_bytes,
+                                                    file_compress_opts,
+                                                    p, d);
           },
           py::arg("input_path"), py::arg("output_path"), py::arg("chain"),
           py::arg("stream_chunk_bytes") = size_t{0},
+          py::arg("file_compress_opts") = uint32_t{0},
+          py::arg("lzdp_whole_file") = std::nullopt,
+          py::arg("dpflate_pipeline") = std::nullopt,
           py::call_guard<py::gil_scoped_release>(),
-          "Streaming compress a file in chunks (optional stream_chunk_bytes; 0 = default 1 MiB)");
+          "Streaming compress a file in chunks. stream_chunk_bytes is clamped to 64 KiB–128 MiB "
+          "(default 1 MiB when 0); same policy as LZDP/DPFlate pipeline chunk size. "
+          "LZDP: LZDP_OutOfCore (chunked window + spill A/B + backtrack + emit); LzdpWholeFileParams. "
+          "DPFlate: pass DpflatePipelineParams matching DPFlateCompressor / GUI. "
+          "lzdp_whole_file / dpflate_pipeline: optional snapshots (omit when not using that algo).");
+
+    m.def("pipeline_compress_directory",
+          [](const std::string& dir_path,
+             const std::string& output_path,
+             const std::vector<compressor::core::AlgorithmID>& chain,
+             size_t stream_chunk_bytes,
+             uint32_t file_compress_opts,
+             const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
+             const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p)
+              -> compressor::api::CompressResult {
+              const compressor::core::LzdpWholeFileParams* p =
+                  lzdp_wf.has_value() ? &lzdp_wf.value() : nullptr;
+              const compressor::core::DpflatePipelineParams* d =
+                  dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
+              return compressor::api::compressDirectory(dir_path, output_path, chain,
+                                                       stream_chunk_bytes,
+                                                       file_compress_opts, p, d);
+          },
+          py::arg("dir_path"), py::arg("output_path"), py::arg("chain"),
+          py::arg("stream_chunk_bytes") = size_t{0},
+          py::arg("file_compress_opts") = uint32_t{0},
+          py::arg("lzdp_whole_file") = std::nullopt,
+          py::arg("dpflate_pipeline") = std::nullopt,
+          py::call_guard<py::gil_scoped_release>(),
+          "Streaming compress a directory tree to one WCX (folder flag); same optional params as "
+          "pipeline_compress_file.");
 
     m.def("pipeline_decompress_file",
           [](const std::string& input_path,
@@ -296,7 +392,14 @@ PYBIND11_MODULE(core_engine, m) {
           py::arg("input_path"), py::arg("output_path"), py::arg("chain"),
           py::arg("stream_chunk_bytes") = size_t{0},
           py::call_guard<py::gil_scoped_release>(),
-          "Streaming decompress a file in chunks (optional stream_chunk_bytes; 0 = default 1 MiB)");
+          "Streaming decompress a file in chunks (stream_chunk_bytes clamped like compress).");
+
+    m.def("set_streaming_compress_cancel_requested",
+          [](bool requested) {
+              compressor::api::set_streaming_compress_cancel_requested(requested);
+          },
+          py::arg("requested"),
+          "Request cooperative cancel for pipeline_compress_file (checked between input chunks).");
 
     // ===== ADE (Algorithm Decision Engine) =====
     init_ade(m);

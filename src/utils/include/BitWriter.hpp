@@ -68,6 +68,13 @@ class BitWriter {
         return byte_pos_ + (buffer_idx_ + count) / 8 <= write_.size();
     }
 
+    /// Drop pending fractional bits (does not advance ``byte_pos_``). Call when starting a new
+    /// byte-aligned region (e.g. raw LZDP header) or when resetting an algorithm instance.
+    auto resetPendingBits() -> void {
+        buffer_ = 0;
+        buffer_idx_ = 0;
+    }
+
     /**
      * @brief Write a bit to the write_ in `little-endian`
      *

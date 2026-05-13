@@ -6,6 +6,8 @@
 
 namespace compressor::algorithm {
 
+bool (*g_cancel_callback)() = nullptr;
+
 auto AlgorithmBase::process(std::span<const uint8_t> read,
                             std::span<uint8_t> write, bool is_last_chunk)
     -> AlgorithmStatus {

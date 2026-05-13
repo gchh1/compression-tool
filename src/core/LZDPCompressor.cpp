@@ -16,11 +16,8 @@ auto LZDPCompressor::compress(std::vector<uint8_t> data) -> CompressorResult {
     lzdp.set_use_flag_encoding(use_flag_encoding_);
     lzdp.set_match_engine(match_engine_);
     lzdp.autoBitWidth(search_size_, lookahead_size_);
-    if (dp_range_ > 1) {
-        result.data = lzdp.compress_dp(data, search_size_, lookahead_size_, dp_range_);
-    } else {
-        result.data = lzdp.compress(data, search_size_, lookahead_size_);
-    }
+    auto dp_result = lzdp.dp_core(data, search_size_, lookahead_size_, dp_range_);
+    result.data = lzdp.encode_triples(dp_result.triples, lzdp.get_offset_bits(), lzdp.get_length_bits(), use_flag_encoding_);
     auto end_time = std::chrono::high_resolution_clock::now();
 
     result.original_size = data.size();

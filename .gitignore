@@ -38,6 +38,7 @@ src/logs/
 src/*.dll
 bin/
 build/PyInstaller/
+resources/level5_large
 
 # Local backups and temp outputs
 *.backup
@@ -46,4 +47,5 @@ tmp*.txt
 *.lnk
 *.wcx
 *.restored
+
 resources/level5_large/test_1gb.bin

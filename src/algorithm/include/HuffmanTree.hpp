@@ -92,7 +92,7 @@ class HuffmanTree {
     auto serializeTree(utils::BitWriter& writer) const -> void;
 
     /** @brief Return the root of the Huffman Tree */
-    auto getRoot(void) -> node* const { return root_; }
+    auto getRoot(void) const -> node* { return root_; }
 
     auto getTreeSize(void) -> size_t const { return tree_size_; }
 

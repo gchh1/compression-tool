@@ -92,4 +92,16 @@ write token.byte（也就是字符）
 
 我的写法可能不规范，但是这个设计请你跟我展开大讨论：
 
-gui的框选选择之后框还是中空的
+gui的所有的框选选择之后框还是中空的
+（已处理：`theme.py` 表 `selection-background-color` / `show-decoration-selected`；`table.py` 框选与 Qt 行选同步到 ☑ 列。）
+
+dp并不是候选越多越好，补充分析到dp的设计文档
+
+阅读文档，准备接续ade的工作，不要管其他无关未提及的，因为我已经修复好了
+
+大文件压缩过程中点击取消压缩，没有响应；
+大文件压缩/取消压缩过程中如果把压缩中的文件删了，那就会有bug导致开始压缩按钮不可以用
+（已处理：C++ `compressFile` 读循环协作取消 + `set_streaming_compress_cancel_requested`；Worker `cancel` 置位；`finished` 里 `finally` 恢复工具栏；进度信号携带 `Record` + `row_for_record` / `mark_error_record` 避免删行错位。整文件 LZDP 单次 `compress` 段内仍可能延迟响应取消，见 `wcx-streaming-remediation-log` 最新条。）
+
+
+大文件内存观测（20 MiB 量级）：LZDP ~8 GiB、Deflate ~140 MiB 且完成后显示 none 算法、DPFlate ~4 GiB — 已记入 `docs/design/lzdp-dpflate-work-report.md` §9。

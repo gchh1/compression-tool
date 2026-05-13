@@ -85,3 +85,47 @@ target_link_libraries(
     PRIVATE
     api
 )
+
+add_executable(
+    test_lzdp_memory_streaming_parity
+    test_lzdp_memory_streaming_parity.cpp
+)
+
+target_link_libraries(
+    test_lzdp_memory_streaming_parity
+    PRIVATE
+    api
+)
+
+add_executable(
+    test_lzdp_dpflate_regression
+    test_lzdp_dpflate_regression.cpp
+)
+
+target_link_libraries(
+    test_lzdp_dpflate_regression
+    PRIVATE
+    algorithm
+)
+
+add_executable(
+    test_lzdp_dpflate_stream
+    test_lzdp_dpflate_stream.cpp
+)
+
+target_link_libraries(
+    test_lzdp_dpflate_stream
+    PRIVATE
+    api
+)
+
+add_executable(
+    test_HuffmanTree3HM
+    test_HuffmanTree3HM.cpp
+)
+
+target_link_libraries(
+    test_HuffmanTree3HM
+    PRIVATE
+    algorithm
+)

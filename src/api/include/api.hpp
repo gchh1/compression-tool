@@ -70,6 +70,9 @@ auto unpack_wcx(const std::vector<uint8_t>& data) -> WCXUnpackResult;
 
 #ifndef __EMSCRIPTEN__
 
+/// Cooperative cancel for ``compressFile`` (GUI worker sets true while C++ is in the read loop).
+void set_streaming_compress_cancel_requested(bool requested);
+
 /// Streaming single-file compression: read input in chunks, write to disk.
 /// Writes to `output_path + ".part"` then renames to `output_path` on success.
 /// @param stream_chunk_bytes  Read buffer / pool chunk size; `0` means default (1 MiB).
@@ -77,7 +80,11 @@ auto unpack_wcx(const std::vector<uint8_t>& data) -> WCXUnpackResult;
 auto compressFile(const std::string& input_path,
                   const std::string& output_path,
                   std::span<const AlgorithmID> chain,
-                  size_t stream_chunk_bytes = 0) -> CompressResult;
+                  size_t stream_chunk_bytes = 0,
+                  uint32_t file_compress_opts = core::kFileCompressOptsNone,
+                  const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
+                  const core::DpflatePipelineParams* dpflate_pipeline = nullptr)
+    -> CompressResult;
 
 /// Streaming single-file decompression: read archive in chunks, write to disk.
 /// Writes to `output_path + ".part"` then renames to `output_path` on success.
@@ -91,7 +98,11 @@ auto decompressFile(const std::string& input_path,
 auto compressDirectory(const std::string& dir_path,
                        const std::string& output_path,
                        std::span<const AlgorithmID> chain,
-                       size_t stream_chunk_bytes = 0) -> CompressResult;
+                       size_t stream_chunk_bytes = 0,
+                       uint32_t file_compress_opts = core::kFileCompressOptsNone,
+                       const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
+                       const core::DpflatePipelineParams* dpflate_pipeline = nullptr)
+    -> CompressResult;
 
 /// Unpack a compressed archive to disk, preserving directory structure.
 auto decompressAndUnpackToDisk(const std::string& input_path,

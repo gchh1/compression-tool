@@ -21,7 +21,7 @@ public:
     auto decompress(std::vector<uint8_t> data) -> CompressorResult override;
 
     inline auto get_algorithm_name(void) -> std::string override {
-        return "LZDP (KMP+DP+BitPack)";
+        return "LZDP (DP+BitPack)";
     }
 
     void set_search_size(size_t v) { search_size_ = v; }

@@ -10,28 +10,41 @@
 #include "LZSS.hpp"
 #include "DPFlate.hpp"
 #include "ChunkedStreamAdapter.hpp"
+#include "StreamChunkPolicy.hpp"
 #include "Zstd.hpp"
 
 namespace compressor::core {
 
-auto createAlgorithm(AlgorithmID id) -> std::unique_ptr<algorithm::IAlgorithm> {
-    using processor::StreamingCompressAdapter;
-    using processor::StreamingDecompressAdapter;
+bool (*g_cancel_callback)() = nullptr;
+
+auto createAlgorithm(AlgorithmID id,
+                     uint32_t file_compress_opts,
+                     const LzdpWholeFileParams* lzdp_whole_file,
+                     std::size_t streaming_compress_chunk_bytes,
+                     const DpflatePipelineParams* dpflate_pipeline)
+    -> std::unique_ptr<algorithm::IAlgorithm> {
+    // Pipeline adapters from ChunkedStreamAdapter.hpp; short names keep the switch readable.
+    using SCA = processor::StreamingCompressAdapter;          // SCA: per-chunk compress + u32 length framing
+    using SDA = processor::StreamingDecompressAdapter;        // SDA: framed chunk decompress
+    const size_t sca_chunk =
+        processor::effective_stream_chunk_bytes(streaming_compress_chunk_bytes);
 
     switch (id) {
         case AlgorithmID::None:
             return nullptr;
+        // 文件流式：仅 chunked classic Deflate（LZ77+Huffman）；不使用 DPFlate / 不读 ``dpflate_pipeline``。
         case AlgorithmID::Deflate:
-            return std::make_unique<StreamingCompressAdapter>(
+            return std::make_unique<SCA>(
                 [](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {
                     algorithm::Deflate deflater;
                     std::vector<uint8_t> out(data.size() + 1024);
                     auto status = deflater.process(data, out, true);
                     out.resize(status.bytes_produced);
                     return out;
-                });
+                },
+                sca_chunk);
         case AlgorithmID::Inflate:
-            return std::make_unique<StreamingDecompressAdapter>(
+            return std::make_unique<SDA>(
                 [](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {
                     algorithm::Inflate inflate;
                     std::vector<uint8_t> out(std::max(data.size() * 4 + 65536, size_t(2097152)));
@@ -43,46 +56,61 @@ auto createAlgorithm(AlgorithmID id) -> std::unique_ptr<algorithm::IAlgorithm> {
             return std::make_unique<algorithm::DeltaEncode>();
         case AlgorithmID::DeltaDecode:
             return std::make_unique<algorithm::DeltaDecode>();
-        case AlgorithmID::DPFlate:
-            return std::make_unique<algorithm::DPFlate>();
+        case AlgorithmID::DPFlate: {
+            const DpflatePipelineParams df_fallback{};
+            const DpflatePipelineParams& df =
+                dpflate_pipeline ? *dpflate_pipeline : df_fallback;
+            const std::size_t min_m =
+                df.min_match == 0 ? std::size_t{4} : df.min_match;
+            auto inst = std::make_unique<algorithm::DPFlate>(
+                df.search_size, df.lookahead_size, min_m, df.max_chain_length,
+                df.dp_sub_match_max);
+            inst->set_match_engine(df.match_engine);
+            inst->set_use_flag_encoding(df.use_flag_encoding);
+            inst->set_use_3hfmtree(df.use_3hfmtree);
+            const std::size_t hob =
+                df.huffman_offset_chunk_bits > 0 ? df.huffman_offset_chunk_bits : 8;
+            const std::size_t hlb =
+                df.huffman_length_chunk_bits > 0 ? df.huffman_length_chunk_bits : 8;
+            inst->set_huffman_offset_chunk_bits(hob);
+            inst->set_huffman_length_chunk_bits(hlb);
+            return inst;
+        }
         case AlgorithmID::LZSS:
-            return std::make_unique<StreamingCompressAdapter>(
+            return std::make_unique<SCA>(
                 [](const std::vector<uint8_t>& data) {
                     return algorithm::LZSS::compress(data);
-                });
+                },
+                sca_chunk);
         case AlgorithmID::LZSSDecompress:
-            return std::make_unique<StreamingDecompressAdapter>(
+            return std::make_unique<SDA>(
                 [](const std::vector<uint8_t>& data) {
                     return algorithm::LZSS::decompress(data);
                 });
-        case AlgorithmID::LZDP:
-            return std::make_unique<StreamingCompressAdapter>(
-                [](const std::vector<uint8_t>& data) {
-                    algorithm::LZDP lzdp;
-                    size_t search_size = std::min(data.size() / 2, size_t(32768));
-                    size_t lookahead_size = std::min(data.size() / 4, size_t(258));
-                    if (search_size < 16) search_size = 16;
-                    if (lookahead_size < 4) lookahead_size = 4;
-                    lzdp.autoBitWidth(search_size, lookahead_size);
-                    return lzdp.compress(data, search_size, lookahead_size);
-                });
+        case AlgorithmID::LZDP: {
+            // Streaming path: ``LZDP_OutOfCore`` — chunked plaintext window, forward DP with packed
+            // link spill (temp A), backtrack to temp B, then emit bitstream (see
+            // ``docs/design/lzdp-file-pipeline-design.md``). Parameters from ``LzdpWholeFileParams``.
+            const LzdpWholeFileParams wf_fallback{};
+            const LzdpWholeFileParams wf = lzdp_whole_file ? *lzdp_whole_file : wf_fallback;
+            return std::make_unique<algorithm::LZDP_OutOfCore>(
+                wf.search_size, wf.lookahead_size, wf.min_match, wf.dp_top,
+                wf.use_flag_encoding, wf.match_engine);
+        }
         case AlgorithmID::LZDPDecompress:
-            return std::make_unique<StreamingDecompressAdapter>(
-                [](const std::vector<uint8_t>& data) {
-                    algorithm::LZDP lzdp;
-                    return lzdp.decompress(data);
-                });
+            return std::make_unique<algorithm::LZDPDecompress_OutOfCore>(false);
         case AlgorithmID::Brotli:
-            return std::make_unique<StreamingCompressAdapter>(
+            return std::make_unique<SCA>(
                 [](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {
                     algorithm::BrotliCompress brotli(65536, 3, 256);
                     std::vector<uint8_t> out(data.size() + 1024);
                     auto status = brotli.process(data, out, true);
                     out.resize(status.bytes_produced);
                     return out;
-                });
+                },
+                sca_chunk);
         case AlgorithmID::BrotliDecompress:
-            return std::make_unique<StreamingDecompressAdapter>(
+            return std::make_unique<SDA>(
                 [](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {
                     algorithm::BrotliDecompress decompress;
                     std::vector<uint8_t> out(std::max(data.size() * 4 + 65536, size_t(2097152)));
@@ -91,12 +119,13 @@ auto createAlgorithm(AlgorithmID id) -> std::unique_ptr<algorithm::IAlgorithm> {
                     return out;
                 });
         case AlgorithmID::Zstd:
-            return std::make_unique<StreamingCompressAdapter>(
+            return std::make_unique<SCA>(
                 [](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {
                     return algorithm::ZstdCompress::compress(data, 3);
-                });
+                },
+                sca_chunk);
         case AlgorithmID::ZstdDecompress:
-            return std::make_unique<StreamingDecompressAdapter>(
+            return std::make_unique<SDA>(
                 [](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {
                     algorithm::ZstdDecompress decomp;
                     return decomp.decompress(data);
@@ -105,4 +134,4 @@ auto createAlgorithm(AlgorithmID id) -> std::unique_ptr<algorithm::IAlgorithm> {
     return nullptr;
 }
 
-}
+}  // namespace compressor::core

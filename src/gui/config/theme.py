@@ -178,9 +178,13 @@ class ThemeManager:
     @classmethod
     def table_sheet(cls) -> str:
         t = cls._theme
+        # selection-background-color / selection-color: Fusion 等样式下仅写 ::item:selected 时框选区域可能仍「中空」
+        # show-decoration-selected: 整行装饰与选中填充一致
         return (
             f"QTableWidget {{ background: {t.bg_surface}; color: {t.text_primary}; "
-            f"border: 1px solid {t.border}; border-radius: 8px; gridline-color: {t.border}; }}\n"
+            f"border: 1px solid {t.border}; border-radius: 8px; gridline-color: {t.border}; "
+            f"selection-background-color: {t.bg_selection}; selection-color: {t.text_primary}; "
+            f"show-decoration-selected: 1; }}\n"
             f"QTableWidget::item:selected {{ background: {t.bg_selection}; color: {t.text_primary}; }}\n"
             f"QHeaderView::section {{ background: {t.bg_elevated}; color: {t.text_secondary}; "
             f"border: 1px solid {t.border}; padding: 6px 10px; font-weight: bold; }}\n"

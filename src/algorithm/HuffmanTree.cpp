@@ -59,8 +59,8 @@ HuffmanTree::HuffmanTree(utils::BitReader& reader, size_t dictionary_size,
         if (reader.getRemainingBits() == 0) {
             return nullptr;
         }
-        uint8_t bit = reader.readBit();
-        if (reader.getRemainingBits() == 0) {
+        uint8_t bit = static_cast<uint8_t>(reader.readBit());
+        if (reader.getRemainingBits() == 0 && bit == 0) {
             return nullptr;
         }
         if (bit == 0) {

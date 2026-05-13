@@ -1,21 +1,25 @@
 {
-  "total_samples": 169,
-  "valid_samples": 169,
-  "invalid_samples": 0,
-  "last_save_time": 1778480564.6012435,
+  "total_samples": 266,
+  "valid_samples": 266,
+  "invalid_samples": 2,
+  "last_save_time": 1778689254.5302813,
   "data_version": "3.0",
   "algorithm_distribution": {
     "myflate": 6,
     "lzmine": 5,
     "lzss": 12,
-    "lzdp": 69,
-    "dpflate": 66,
-    "deflate": 7,
+    "lzdp": 130,
+    "dpflate": 82,
+    "deflate": 12,
     "gzip": 2,
-    "none": 1,
-    "zstd": 1
+    "none": 7,
+    "zstd": 4,
+    "brotli": 6
   },
   "type_distribution": {
-    "UNKNOWN": 169
+    "UNKNOWN": 256,
+    "AUDIO_WAV": 3,
+    "IMAGE_PNG": 6,
+    "IMAGE_BMP": 1
   }
 }

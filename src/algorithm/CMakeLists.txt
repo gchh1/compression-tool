@@ -8,6 +8,7 @@ add_library(
 
     # Huffman.cpp (pre-existing compile errors)
     HuffmanTree.cpp
+    HuffmanTree3HM.cpp
 
     LZDP.cpp
     LZSS.cpp

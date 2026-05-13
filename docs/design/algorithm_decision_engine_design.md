@@ -137,10 +137,27 @@ Stage 1 - 分类器 (随机森林/MLP):
   
 Stage 2 - 回归器 (神经网络):
   输入: [文件特征, 选定算法ID]
-  输出: 最优参数值 {window_size: 8192, chain_length: 256}
-
-优势: 模块化，Stage1可解释性强
+  输出: 最优参数值 {window_size: 8192, chain_length: 256, use_flag_encoding: 1,
+                    use_3hfmtree: 0, huffman_chunk_bits: 8,
+                    huffman_offset_chunk_bits: 0, huffman_length_chunk_bits: 0}
 ```
+
+后两项为 `0` 时表示未单独指定 offset/length 槽宽、沿用 `huffman_chunk_bits`（语义见 `flate-encoding-design.md`）。
+
+**优势**: 模块化，Stage1可解释性强
+
+**与 Flate 后端、3HfMTree 的衔接（ADE 只约定「学什麽、存什麽」）**
+
+实现侧在 **LZSS / LZDP / DPFlate**（以及可选走 3HfM 内核的 **Deflate** 路径）上采用与 `docs/design/flate-encoding-design.md` 一致的 **编码方案 × 树策略** 组合矩阵。对 ADE 而言，除已有的 **`use_flag_encoding`**（flag / non-flag）外，**树策略与多级槽**进入同一套 **Stage2 可预测、可探索、`params_used` 可落盘** 的子空间，而不在本篇重复比特级规格：
+
+| 键名（示例，与 GUI / 管线快照对齐） | 含义（摘要） |
+| --- | --- |
+| `use_3hfmtree` | `0` = FLATE 风格两树（与标准 Inflate 兼容的解压路径）；`1` = **3HfMTree**（字面量 + offset + length 三树，**一树多查**多级槽，见 flate 文档 §3.2） |
+| `huffman_chunk_bits` | offset/length **共用**默认槽宽 `w`（实现里可对应统一 `huffman_chunk_bits`） |
+| `huffman_offset_chunk_bits` | 非 `0` 时覆盖 offset 侧槽宽 `w_ob`；`0` 表示不覆盖、沿用统一槽宽 |
+| `huffman_length_chunk_bits` | 非 `0` 时覆盖 length 侧槽宽 `w_lb`；`0` 同上 |
+
+**K／w 对偶、末段掩码、组合矩阵** 等细节一律以 **`flate-encoding-design.md`** 为准；ADE 设计仅要求：选中算法后，Stage2/EA/静默探索在**预算内**可扰动上述离散/小整数维度，且训练 JSON 中 **`algorithm_used` + `params_used` 能无损回放** 本次压缩配置。
 
 **Q4.2 论文调研四大方向**:
 1. **文件特征提取** (File Fingerprinting)
@@ -608,7 +625,8 @@ class MLTrainingRecord:
     
     # 算法与参数 (决策)
     algorithm_used: str               # "LZMINE", "DEFLATE", etc.
-    params_used: dict                 # {"window_size": 4096, ...}
+    params_used: dict                 # {"window_size": 4096, "use_flag_encoding": 1,
+                                      #  "use_3hfmtree": 0, "huffman_chunk_bits": 8, ...}
     
     # 结果 (输出)
     compression_ratio: float
@@ -724,7 +742,12 @@ class HybridStorageManager:
     "search_size": 4096,
     "lookahead_size": 256,
     "min_match": 3,
-    "dp_depth": 3
+    "dp_depth": 3,
+    "use_flag_encoding": 1,
+    "use_3hfmtree": 0,
+    "huffman_chunk_bits": 8,
+    "huffman_offset_chunk_bits": 0,
+    "huffman_length_chunk_bits": 0
   },
   "compression_ratio": 0.65,
   "compression_time_ms": 120.5,
@@ -807,6 +830,13 @@ class OptimizerConfig:
     ea_mutation_rate: float = 0.1           # 变异概率 (0.01-0.5)
     ea_crossover_rate: float = 0.8          # 交叉概率 (0.5-0.95)
     
+    # 位流后端探索：flag 编码 + 树策略 (FLATE vs 3HfMTree) + 槽宽族
+    # （与 flate-encoding-design 中组合矩阵一致；实现可分期打开各子开关）
+    encoding_scheme_exploration: bool = True   # 是否探索 use_flag_encoding 等切换
+    encoding_scheme_strategy: str = "adaptive" # "fixed" / "adaptive" / "random"
+    tree_strategy_exploration: bool = False      # 是否在适用算法上探索 use_3hfmtree（成本高，默认关）
+    huffman_slot_exploration: bool = False       # 是否在 3HfM 路径上探索 huffman_*_chunk_bits（默认关）
+    
     # 时间限制
     max_optimization_time_ms: int = 500     # 最大优化时间 (100-2000ms)
 
@@ -864,6 +894,11 @@ class FeatureConfig:
 │ │   代数: [30]   种群大小: [20]                            │ │
 │ │   变异率: [0.1]   交叉率: [0.8]                          │ │
 │ │                                                         │ │
+│ │ 位流探索: [☑] flag 编码等 (LZSS/LZDP/DPFlate…)        │ │
+│ │   [☐] 树策略 3HfMTree↔FLATE（可选，算力敏感）          │ │
+│ │   [☐] 3HfM 槽宽 huffman_*_chunk_bits（可选）           │ │
+│ │   策略: [自适应 ▼] (固定/自适应/随机扰动)               │ │
+│ │                                                         │ │
 │ │ ⏱️ 最大优化时间: [500] ms                                │ │
 │ └─────────────────────────────────────────────────────────┘ │
 │                                                             │
@@ -919,9 +954,10 @@ class CompressionRecord:
     # ===== 文件特征（输入侧 - 已解耦）=====
     features: FeatureVector           # 30+维特征向量（自定义数据结构）
     
-    # ===== 算法与参数（决策侧）=====
+    # 算法与参数（决策侧）
     algorithm_used: AlgorithmType     # 实际使用的算法
-    params_used: dict                 # 实际使用的参数字典
+    params_used: dict                 # 实际参数字典；含 flate 后端时见 use_flag_encoding /
+                                      # use_3hfmtree / huffman_* （与 flate-encoding-design 对齐）
     
     # ===== 结果（输出侧）=====
     compression_ratio: float          # 实际压缩率
@@ -1020,7 +1056,7 @@ class RandomForest:
 - 🎵 音频无损压缩 (FLAC/APE)
 - 🎬 视频无损压缩 ( HuffYUV/FFV1)
 - 📄 字典增强压缩 (针对HTML/JSON/XML的预训练字典)
-- 🔧 各种预处理辅助选项 (如去重、Delta编码、Burrows-Wheeler变换)
+- 🔧 各种可逆预处理辅助选项（如去重、规范化；具体算法与管线不在本文约定）
 
 **这些都需要在架构设计中预留接口！**
 
@@ -1285,6 +1321,9 @@ class FileRecord(Record):
    ✓ 神经网络开关 + 架构参数
    ✓ EA算法选择 (GA/PSO/CMA-ES/NONE)
    ✓ EA参数 (代数、种群大小、变异率、交叉率)
+   ✓ 编码方案探索开关 + 策略 (fixed/adaptive/random) — `use_flag_encoding` 等
+   ✓ （可选）树策略探索 — `use_3hfmtree`（FLATE vs 3HfMTree，见 `flate-encoding-design.md`）
+   ✓ （可选）3HfM 槽宽探索 — `huffman_chunk_bits` / `huffman_offset_chunk_bits` / `huffman_length_chunk_bits`
    ✓ 最大优化时间限制
 
 🎯 GPU加速:
@@ -1332,6 +1371,8 @@ class FileRecord(Record):
 | 2026-01-15 | v0.3 | 添加额外需求和洞察，整理schema | AI Assistant |
 | 2026-01-15 | v1.0 | 重大修订: C++原生实现、单次遍历特征提取、种群统一管理、二进制格式 | AI Assistant |
 | **2026-01-15** | **v2.0** | **务实修正: JSON格式、高级配置系统、GPU整合、移除不切实际承诺** | **AI Assistant** |
+| **2026-05-12** | **v2.1** | **编码方案参数补充: 新增 use_flag_encoding 到参数空间、优化器配置、L2探索、高级UI** | **AI Assistant** |
+| **2026-05-13** | **v2.2** | **3HfMTree：Stage2/`params_used`/高级配置与 L2 探索与 `flate-encoding-design.md` 对齐说明** | **AI Assistant** |
 
 ---
 
@@ -1620,6 +1661,9 @@ def should_explore(self, cluster_id: int, greedy_algo: AlgorithmType) -> tuple[b
 │  • chain_length: ±50% 随机 → [64, 192]              │
 │  • hash_bits: ±1 步长 → [14, 16, 18]               │
 │  • lazy_match: 开关翻转                              │
+│  • use_flag_encoding: 开关翻转 (0↔1)                │
+│  • use_3hfmtree: 开关翻转 (0↔1)，仅适用算法且预算充足时  │
+│  • huffman_chunk_bits: ±1～2 档（在允许范围内），同上   │
 │                                                      │
 │ 优先级: 先扰动能影响最大的参数 (window_size > chain)  │
 └──────────────────────────────────────────────────────┘

@@ -92,3 +92,109 @@ LZ77 常常会遇到**重叠匹配 (Overlapping Match)**的情况：当匹配的
 - **LZDP** 展现了精妙的自包含编码哲学，通过 `offset=0` 哨兵实现字面量游程的高效位打包，同时结合动态位宽判定来淘汰无效短匹配。
 - **DPFlate** 则展现了极强的向后兼容性，用 DP 与 HashChain 强强联合，使得输出流满足 DEFLATE 规范且压缩率登顶。
 - 两者通过共享一套坚实的动态规划（DP）底座与特征选择机制（如 ADE 下发 `use_flag_encoding`），灵活适配了多样的文件分布场景。
+
+---
+
+## 6. 算子设计：dp_core + 两个方向封装
+
+### 6.1 设计思想
+
+将 DP 算法内核抽象为一个**算子** `dp_core`，它只关心"在给定的连续字节流上，从位置 A 到位置 B 做 DP 推进"，不感知调用者是流式还是非流式。
+
+在算子的基础上做**两个方向的封装**：
+1. **非流式封装 `compress()`**：硬边界，`core_begin=0, core_end=input.size()`，一次处理整个输入
+2. **流式封装 `compress_streaming()`**：软边界，传入 `core_begin`/`core_end` 限定 current_chunk 范围，search/lookahead 可延伸到相邻分块
+
+### 6.2 算子定义：`dp_core`
+
+```cpp
+struct DpCoreResult {
+    std::vector<Triple> triples;   // 最优路径（正向顺序）
+    size_t literal_count;          // 字面量 token 数
+    size_t match_count;            // 匹配 token 数
+};
+
+DpCoreResult dp_core(
+    const std::vector<uint8_t>& input,   // 连续字节流
+    size_t search_size,                   // 最大搜索距离
+    size_t lookahead_size,                // 最大前瞻距离
+    size_t range = 3,                     // DP top-k
+    size_t core_begin = 0,                // i 指针起始位置（默认 0）
+    size_t core_end = SIZE_MAX            // i 指针结束位置（默认末尾）
+);
+```
+
+**语义**：
+- DP 在整个 `input` 上运行，search/lookahead 不截断
+- i 指针只在 `[core_begin, core_end)` 范围内推进
+- 回溯从 `core_end` 开始
+- 默认值 `core_begin=0, core_end=SIZE_MAX` 等价于硬边界（行为不变）
+- 返回的 `literal_count` / `match_count` 是 `[core_begin, core_end)` 范围内的计数，用于 emit 阶段预计算输出文件大小
+
+**实现要点**：
+- `dp[core_begin]` 初始化为 `Node(num=0, literal_count=0, match_count=0, ...)`
+- HashChain 在独立循环中为所有位置构建（包括 `core_begin` 之前的位置）
+- i 指针循环范围：`for (pos = core_begin; pos < core_end; pos++)`
+- 字面量推进：`literal_count = dp[pos].literal_count + 1`
+- 匹配推进：`match_count = dp[pos].match_count + 1`
+- 回溯起点：`dp[core_end]`（替代 `dp[in_len]`）
+
+### 6.3 封装一：非流式 `compress()`（硬边界）
+
+```
+compress(input, search, lookahead, range):
+    dp_result = dp_core(input, search, lookahead, range)
+    // core_begin=0, core_end=input.size()（默认值）
+    // search/lookahead 在 input 边界处硬截断
+    // dp_result.literal_count / match_count 可用于预计算输出大小
+    return encode(dp_result.triples)
+```
+
+**行为**：与原来的 `dp_core`（默认参数）完全一致。一次处理整个输入，边界即数据真实边界。
+
+### 6.4 封装二：流式 `compress_streaming()`（软边界）
+
+```
+compress_streaming(buffer, search, lookahead, range,
+                   search_win_size, current_size):
+    core_begin = search_win_size
+    core_end   = search_win_size + current_size
+    dp_result = dp_core(buffer, search, lookahead, range,
+                        core_begin, core_end)
+    // i 指针只在 current_chunk 范围内推进
+    // search 可回溯到 search_window（buffer 开头）
+    // lookahead 可延伸到 new_chunk（buffer 末尾）
+    // dp_result.literal_count / match_count 是 current_chunk 范围的计数
+    return encode(dp_result.triples)
+```
+
+**行为**：
+- `buffer = search_window + current_chunk + lookahead_window`
+- i 指针从 `search_win_size` 开始，到 `search_win_size + current_size` 结束
+- search window 提供历史匹配字典（不截断）
+- lookahead window 提供前瞻字节（不截断）
+- 回溯从 `core_end` 开始，只返回 current_chunk 范围内的 Triple
+
+### 6.5 两种封装对比
+
+| 方面 | `compress()`（非流式） | `compress_streaming()`（流式） |
+|------|----------------------|-------------------------------|
+| core_begin | 0（默认） | search_win_size |
+| core_end | input.size()（默认） | search_win_size + current_size |
+| 边界行为 | 硬截断 | 软边界，window 延伸 |
+| 输入含义 | 完整数据 | search + current + lookahead |
+| 使用场景 | 内存压缩 | 流式分块压缩 |
+
+### 6.6 调用关系
+
+```
+非流式:  compress()
+           └→ dp_core(input, search, lookahead, range)
+                └→ core_begin=0, core_end=input.size()  ← 硬边界
+
+流式:    compress_streaming()
+           └→ dp_core(buffer, search, lookahead, range,
+                       core_begin, core_end)
+                └→ core_begin=search_win_size            ← 跳过 search window
+                └→ core_end=search_win_size+current_size  ← 限定 current
+```

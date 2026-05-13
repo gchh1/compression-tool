@@ -1,6 +1,7 @@
 #include "api.hpp"
 
 #include <algorithm>
+#include <atomic>
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
@@ -16,6 +17,7 @@
 #include "PackReader.hpp"
 #include "PackWriter.hpp"
 #include "Pipeline.hpp"
+#include "StreamChunkPolicy.hpp"
 #include "WCXProtocol.hpp"
 
 #ifndef __EMSCRIPTEN__
@@ -29,7 +31,21 @@ namespace fs = std::filesystem;
 
 namespace compressor::api {
 
-// ---- internal helper: in-memory IDataReader ----
+#ifndef __EMSCRIPTEN__
+namespace detail_stream_cancel {
+std::atomic<bool> flag{false};
+inline bool is_cancel_requested() {
+    return flag.load(std::memory_order_relaxed);
+}
+inline void set_flag(bool v) {
+    flag.store(v, std::memory_order_relaxed);
+}
+}
+
+void set_streaming_compress_cancel_requested(bool requested) {
+    detail_stream_cancel::set_flag(requested);
+}
+#endif
 
 namespace {
 
@@ -51,18 +67,13 @@ class VectorReader : public archiver::IDataReader {
     const std::vector<uint8_t>& data_;
 };
 
+/// Buffers sitting in ``StreamProcessor``'s ready queue are still checked out of the pool.
+/// A single ``push()`` may run ``process()`` many times (e.g. LZDP / DPFlate emit) before the
+/// caller drains via ``pull()``; ``MemoryPool::acquire()`` blocks when the pool is empty, so
+/// the count must cover worst-case in-flight publishes (not merely pipeline stage count).
+constexpr size_t kStreamingPipelinePoolChunks = 32;
+
 #ifndef __EMSCRIPTEN__
-constexpr size_t kDefaultStreamChunkBytes = 1048576;  // 1 MiB
-
-auto effective_stream_chunk_bytes(size_t requested) -> size_t {
-    constexpr size_t kMin = 64 * 1024;         // 64 KiB (matches GUI spin minimum)
-    constexpr size_t kMax = 64u * 1024 * 1024; // 64 MiB (matches GUI spin maximum)
-    if (requested == 0) {
-        return kDefaultStreamChunkBytes;
-    }
-    return std::min(kMax, std::max(kMin, requested));
-}
-
 auto staged_part_path(const std::string& final_path) -> fs::path {
     return fs::path(final_path + ".part");
 }
@@ -88,6 +99,15 @@ auto commit_staged_to_final(const fs::path& part_path, const fs::path& final_pat
 
 }  // namespace
 
+#ifndef __EMSCRIPTEN__
+struct CancelCallbackRegistrar {
+    CancelCallbackRegistrar() {
+        compressor::algorithm::g_cancel_callback = detail_stream_cancel::is_cancel_requested;
+    }
+};
+static CancelCallbackRegistrar g_cancel_registrar;
+#endif
+
 // ---- public API ----
 
 auto compress(const std::vector<uint8_t>& data,
@@ -99,14 +119,14 @@ auto compress(const std::vector<uint8_t>& data,
 
     std::vector<std::unique_ptr<algorithm::IAlgorithm>> algos;
     for (auto id : chain) {
-        if (auto a = core::createAlgorithm(id)) algos.push_back(std::move(a));
+        if (auto a = core::createAlgorithm(id, core::kFileCompressOptsNone, nullptr, 0)) algos.push_back(std::move(a));
     }
     if (algos.empty()) {
         result.error_message = "Unknown or null algorithm";
         return result;
     }
 
-    auto pool = std::make_shared<memory::MemoryPool>(4, 65536);
+    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, 65536);
     processor::Pipeline pipeline(std::move(algos), pool);
     pipeline.push(data, true);
     pipeline.finish();
@@ -141,14 +161,14 @@ auto decompress(const std::vector<uint8_t>& data,
 
     std::vector<std::unique_ptr<algorithm::IAlgorithm>> algos;
     for (auto id : chain) {
-        if (auto a = core::createAlgorithm(id)) algos.push_back(std::move(a));
+        if (auto a = core::createAlgorithm(id, core::kFileCompressOptsNone, nullptr, 0)) algos.push_back(std::move(a));
     }
     if (algos.empty()) {
         result.error_message = "Unknown or null algorithm";
         return result;
     }
 
-    auto pool = std::make_shared<memory::MemoryPool>(4, 65536);
+    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, 65536);
     processor::Pipeline pipeline(std::move(algos), pool);
     pipeline.push(data, true);
     pipeline.finish();
@@ -175,7 +195,7 @@ auto decompress(const std::vector<uint8_t>& data,
 auto packAndCompress(const std::vector<WebFile>& files,
                      std::span<const AlgorithmID> chain)
     -> std::vector<uint8_t> {
-    auto pool = std::make_shared<memory::MemoryPool>(8, 65536);
+    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, 65536);
     archiver::PackWriter writer(pool);
 
     std::vector<uint8_t> result;
@@ -288,12 +308,16 @@ auto unpack_wcx(const std::vector<uint8_t>& data) -> WCXUnpackResult {
 auto compressFile(const std::string& input_path,
                   const std::string& output_path,
                   std::span<const AlgorithmID> chain,
-                  size_t stream_chunk_bytes) -> CompressResult {
+                  size_t stream_chunk_bytes,
+                  uint32_t file_compress_opts,
+                  const core::LzdpWholeFileParams* lzdp_whole_file,
+                  const core::DpflatePipelineParams* dpflate_pipeline) -> CompressResult {
     CompressResult result;
 
     auto t0 = std::chrono::high_resolution_clock::now();
 
-    const size_t chunk = effective_stream_chunk_bytes(stream_chunk_bytes);
+    const size_t chunk =
+        processor::effective_stream_chunk_bytes(stream_chunk_bytes);
 
     std::error_code ec;
     result.original_size = fs::file_size(input_path, ec);
@@ -303,14 +327,20 @@ auto compressFile(const std::string& input_path,
     }
 
     std::vector<std::unique_ptr<algorithm::IAlgorithm>> algos;
-    for (auto id : chain)
-        if (auto a = core::createAlgorithm(id)) algos.push_back(std::move(a));
+    for (auto id : chain) {
+        const core::LzdpWholeFileParams* lz =
+            (id == core::AlgorithmID::LZDP) ? lzdp_whole_file : nullptr;
+        const core::DpflatePipelineParams* df =
+            (id == core::AlgorithmID::DPFlate) ? dpflate_pipeline : nullptr;
+        if (auto a = core::createAlgorithm(id, file_compress_opts, lz, chunk, df))
+            algos.push_back(std::move(a));
+    }
     if (algos.empty()) {
         result.error_message = "Unknown or null algorithm";
         return result;
     }
 
-    auto pool = std::make_shared<memory::MemoryPool>(4, chunk);
+    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
     processor::Pipeline pipeline(std::move(algos), pool);
 
     std::ifstream input(input_path, std::ios::binary);
@@ -340,25 +370,83 @@ auto compressFile(const std::string& input_path,
         return result;
     }
 
+    auto abort_compress_file = [&](const std::string& msg) -> CompressResult {
+        CompressResult r;
+        input.close();
+        output.close();
+        remove_path_best_effort(path_part);
+        auto t1 = std::chrono::high_resolution_clock::now();
+        r.time_ms =
+            std::chrono::duration<double, std::milli>(t1 - t0).count();
+        r.error_message = msg;
+        r.success = false;
+        return r;
+    };
+
     std::vector<uint8_t> buf(chunk);
     uint64_t bytes_read = 0;
     uint64_t total_written = 0;
 
-    while (bytes_read < result.original_size) {
-        size_t to_read = std::min(chunk,
-                                  static_cast<size_t>(result.original_size -
-                                                      bytes_read));
-        input.read(reinterpret_cast<char*>(buf.data()),
-                   static_cast<std::streamsize>(to_read));
-        size_t actual = static_cast<size_t>(input.gcount());
-        if (actual == 0) break;
+    try {
+        while (bytes_read < result.original_size) {
+            if (detail_stream_cancel::is_cancel_requested()) {
+                return abort_compress_file("cancelled");
+            }
+            size_t to_read = std::min(chunk,
+                                      static_cast<size_t>(result.original_size -
+                                                          bytes_read));
+            input.read(reinterpret_cast<char*>(buf.data()),
+                       static_cast<std::streamsize>(to_read));
+            size_t actual = static_cast<size_t>(input.gcount());
+            if (actual == 0) break;
 
-        bool is_last = (bytes_read + actual >= result.original_size);
-        pipeline.push(std::span<const uint8_t>(buf.data(), actual), is_last);
-        bytes_read += actual;
+            bool is_last = (bytes_read + actual >= result.original_size);
+            pipeline.push(std::span<const uint8_t>(buf.data(), actual), is_last);
+            bytes_read += actual;
 
-        // Drain output
+            // Drain output
+            while (true) {
+                if (detail_stream_cancel::is_cancel_requested()) {
+                    return abort_compress_file("cancelled");
+                }
+                auto out_chunk = pipeline.pull();
+                if (out_chunk.empty()) break;
+                auto v = out_chunk.view();
+                output.write(reinterpret_cast<const char*>(v.data()),
+                             static_cast<std::streamsize>(v.size()));
+                total_written += v.size();
+            }
+        }
+
+        if (bytes_read == 0 && result.original_size == 0) {
+            if (detail_stream_cancel::is_cancel_requested()) {
+                return abort_compress_file("cancelled");
+            }
+            pipeline.push(std::span<const uint8_t>{}, true);
+            while (true) {
+                if (detail_stream_cancel::is_cancel_requested()) {
+                    return abort_compress_file("cancelled");
+                }
+                auto out_chunk = pipeline.pull();
+                if (out_chunk.empty()) break;
+                auto v = out_chunk.view();
+                output.write(reinterpret_cast<const char*>(v.data()),
+                             static_cast<std::streamsize>(v.size()));
+                total_written += v.size();
+            }
+        }
+
+        if (detail_stream_cancel::is_cancel_requested()) {
+            return abort_compress_file("cancelled");
+        }
+
+        pipeline.finish();
+
+        // Final drain
         while (true) {
+            if (detail_stream_cancel::is_cancel_requested()) {
+                return abort_compress_file("cancelled");
+            }
             auto out_chunk = pipeline.pull();
             if (out_chunk.empty()) break;
             auto v = out_chunk.view();
@@ -366,18 +454,8 @@ auto compressFile(const std::string& input_path,
                          static_cast<std::streamsize>(v.size()));
             total_written += v.size();
         }
-    }
-
-    pipeline.finish();
-
-    // Final drain
-    while (true) {
-        auto out_chunk = pipeline.pull();
-        if (out_chunk.empty()) break;
-        auto v = out_chunk.view();
-        output.write(reinterpret_cast<const char*>(v.data()),
-                     static_cast<std::streamsize>(v.size()));
-        total_written += v.size();
+    } catch (const std::exception& e) {
+        return abort_compress_file(e.what());
     }
 
     result.block_profile = pipeline.getBlockProfile();
@@ -424,7 +502,8 @@ auto decompressFile(const std::string& input_path,
     CompressResult result;
 
     auto t0 = std::chrono::high_resolution_clock::now();
-    const size_t chunk = effective_stream_chunk_bytes(stream_chunk_bytes);
+    const size_t chunk =
+        processor::effective_stream_chunk_bytes(stream_chunk_bytes);
 
     std::error_code ec;
     result.original_size = fs::file_size(input_path, ec);
@@ -435,13 +514,13 @@ auto decompressFile(const std::string& input_path,
 
     std::vector<std::unique_ptr<algorithm::IAlgorithm>> algos;
     for (auto id : chain)
-        if (auto a = core::createAlgorithm(id)) algos.push_back(std::move(a));
+        if (auto a = core::createAlgorithm(id, core::kFileCompressOptsNone, nullptr, 0)) algos.push_back(std::move(a));
     if (algos.empty()) {
         result.error_message = "Unknown or null algorithm";
         return result;
     }
 
-    auto pool = std::make_shared<memory::MemoryPool>(4, chunk);
+    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
     processor::Pipeline pipeline(std::move(algos), pool);
 
     std::ifstream input(input_path, std::ios::binary);
@@ -486,24 +565,59 @@ auto decompressFile(const std::string& input_path,
         return result;
     }
 
+    auto abort_decompress_file = [&](const std::string& msg) -> CompressResult {
+        CompressResult r;
+        input.close();
+        output.close();
+        remove_path_best_effort(path_part);
+        auto t1 = std::chrono::high_resolution_clock::now();
+        r.time_ms =
+            std::chrono::duration<double, std::milli>(t1 - t0).count();
+        r.error_message = msg;
+        r.success = false;
+        return r;
+    };
+
     std::vector<uint8_t> buf(chunk);
     uint64_t bytes_read = 0;
     uint64_t total_written = 0;
 
-    while (bytes_read < payload_size) {
-        size_t to_read = std::min(chunk,
-                                  static_cast<size_t>(payload_size -
-                                                      bytes_read));
-        input.read(reinterpret_cast<char*>(buf.data()),
-                   static_cast<std::streamsize>(to_read));
-        size_t actual = static_cast<size_t>(input.gcount());
-        if (actual == 0) break;
+    try {
+        while (bytes_read < payload_size) {
+            if (detail_stream_cancel::is_cancel_requested()) {
+                return abort_decompress_file("cancelled");
+            }
+            size_t to_read = std::min(chunk,
+                                      static_cast<size_t>(payload_size -
+                                                          bytes_read));
+            input.read(reinterpret_cast<char*>(buf.data()),
+                       static_cast<std::streamsize>(to_read));
+            size_t actual = static_cast<size_t>(input.gcount());
+            if (actual == 0) break;
 
-        bool is_last = (bytes_read + actual >= payload_size);
-        pipeline.push(std::span<const uint8_t>(buf.data(), actual), is_last);
-        bytes_read += actual;
+            bool is_last = (bytes_read + actual >= payload_size);
+            pipeline.push(std::span<const uint8_t>(buf.data(), actual), is_last);
+            bytes_read += actual;
+
+            while (true) {
+                if (detail_stream_cancel::is_cancel_requested()) {
+                    return abort_decompress_file("cancelled");
+                }
+                auto out_chunk = pipeline.pull();
+                if (out_chunk.empty()) break;
+                auto v = out_chunk.view();
+                output.write(reinterpret_cast<const char*>(v.data()),
+                             static_cast<std::streamsize>(v.size()));
+                total_written += v.size();
+            }
+        }
+
+        pipeline.finish();
 
         while (true) {
+            if (detail_stream_cancel::is_cancel_requested()) {
+                return abort_decompress_file("cancelled");
+            }
             auto out_chunk = pipeline.pull();
             if (out_chunk.empty()) break;
             auto v = out_chunk.view();
@@ -511,17 +625,8 @@ auto decompressFile(const std::string& input_path,
                          static_cast<std::streamsize>(v.size()));
             total_written += v.size();
         }
-    }
-
-    pipeline.finish();
-
-    while (true) {
-        auto out_chunk = pipeline.pull();
-        if (out_chunk.empty()) break;
-        auto v = out_chunk.view();
-        output.write(reinterpret_cast<const char*>(v.data()),
-                     static_cast<std::streamsize>(v.size()));
-        total_written += v.size();
+    } catch (const std::exception& e) {
+        return abort_decompress_file(e.what());
     }
 
     if (bytes_read != payload_size) {
@@ -569,11 +674,15 @@ auto decompressFile(const std::string& input_path,
 auto compressDirectory(const std::string& dir_path,
                        const std::string& output_path,
                        std::span<const AlgorithmID> chain,
-                       size_t stream_chunk_bytes) -> CompressResult {
+                       size_t stream_chunk_bytes,
+                       uint32_t file_compress_opts,
+                       const core::LzdpWholeFileParams* lzdp_whole_file,
+                       const core::DpflatePipelineParams* dpflate_pipeline) -> CompressResult {
     CompressResult result;
 
     auto t0 = std::chrono::high_resolution_clock::now();
-    const size_t chunk = effective_stream_chunk_bytes(stream_chunk_bytes);
+    const size_t chunk =
+        processor::effective_stream_chunk_bytes(stream_chunk_bytes);
 
     std::error_code ec;
     if (!fs::exists(dir_path, ec) || !fs::is_directory(dir_path, ec)) {
@@ -626,7 +735,7 @@ auto compressDirectory(const std::string& dir_path,
         return result;
     }
 
-    auto pool = std::make_shared<memory::MemoryPool>(8, chunk);
+    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
     archiver::PackWriter writer(pool);
 
     const std::string original_filename = fs::path(dir_path).filename().string();
@@ -646,29 +755,91 @@ auto compressDirectory(const std::string& dir_path,
     uint64_t total_written = 0;
     std::vector<uint8_t> buf(chunk);
 
-    for (const auto& file : files) {
-        writer.beginFile(file.rel_path.string(), chain);
+    auto abort_compress_dir = [&](const std::string& msg) -> CompressResult {
+        CompressResult r;
+        output.close();
+        remove_path_best_effort(path_part);
+        auto t1 = std::chrono::high_resolution_clock::now();
+        r.time_ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
+        r.error_message = msg;
+        r.success = false;
+        return r;
+    };
 
-        std::ifstream input(file.abs_path, std::ios::binary);
-        if (!input) continue;
+    try {
+        for (const auto& file : files) {
+            writer.beginFile(file.rel_path.string(), chain, file_compress_opts,
+                             lzdp_whole_file, chunk, dpflate_pipeline);
 
-        uint64_t bytes_read = 0;
-        while (bytes_read < file.file_size) {
-            size_t to_read =
-                std::min(chunk,
-                         static_cast<size_t>(file.file_size - bytes_read));
-            input.read(reinterpret_cast<char*>(buf.data()),
-                       static_cast<std::streamsize>(to_read));
-            size_t actual = static_cast<size_t>(input.gcount());
-            if (actual == 0) break;
-            writer.pushFileData(std::span<const uint8_t>(buf.data(), actual));
-            bytes_read += actual;
+            std::ifstream input(file.abs_path, std::ios::binary);
+            if (!input) continue;
+
+            uint64_t bytes_read = 0;
+            while (bytes_read < file.file_size) {
+                if (detail_stream_cancel::is_cancel_requested()) {
+                    return abort_compress_dir("cancelled");
+                }
+                size_t to_read =
+                    std::min(chunk,
+                             static_cast<size_t>(file.file_size - bytes_read));
+                input.read(reinterpret_cast<char*>(buf.data()),
+                           static_cast<std::streamsize>(to_read));
+                size_t actual = static_cast<size_t>(input.gcount());
+                if (actual == 0) break;
+                writer.pushFileData(std::span<const uint8_t>(buf.data(), actual));
+                bytes_read += actual;
+
+                while (true) {
+                    if (detail_stream_cancel::is_cancel_requested()) {
+                        return abort_compress_dir("cancelled");
+                    }
+                    auto out = writer.pullOutput();
+                    if (out.empty()) break;
+                    output.write(reinterpret_cast<const char*>(out.data()),
+                                 static_cast<std::streamsize>(out.size()));
+                    total_written += out.size();
+                    writer.consumeOutput(out.size());
+                }
+            }
+
+            if (file.file_size == 0) {
+                writer.pushFileData(std::span<const uint8_t>{});
+                while (true) {
+                    if (detail_stream_cancel::is_cancel_requested()) {
+                        return abort_compress_dir("cancelled");
+                    }
+                    auto out = writer.pullOutput();
+                    if (out.empty()) break;
+                    output.write(reinterpret_cast<const char*>(out.data()),
+                                 static_cast<std::streamsize>(out.size()));
+                    total_written += out.size();
+                    writer.consumeOutput(out.size());
+                }
+            }
+
+            writer.endFile();
+
+            // Drain writer output
+            while (true) {
+                if (detail_stream_cancel::is_cancel_requested()) {
+                    return abort_compress_dir("cancelled");
+                }
+                auto out = writer.pullOutput();
+                if (out.empty()) break;
+                output.write(reinterpret_cast<const char*>(out.data()),
+                             static_cast<std::streamsize>(out.size()));
+                total_written += out.size();
+                writer.consumeOutput(out.size());
+            }
         }
 
-        writer.endFile();
+        writer.finish();
 
-        // Drain writer output
+        // Final drain
         while (true) {
+            if (detail_stream_cancel::is_cancel_requested()) {
+                return abort_compress_dir("cancelled");
+            }
             auto out = writer.pullOutput();
             if (out.empty()) break;
             output.write(reinterpret_cast<const char*>(out.data()),
@@ -676,18 +847,8 @@ auto compressDirectory(const std::string& dir_path,
             total_written += out.size();
             writer.consumeOutput(out.size());
         }
-    }
-
-    writer.finish();
-
-    // Final drain
-    while (true) {
-        auto out = writer.pullOutput();
-        if (out.empty()) break;
-        output.write(reinterpret_cast<const char*>(out.data()),
-                     static_cast<std::streamsize>(out.size()));
-        total_written += out.size();
-        writer.consumeOutput(out.size());
+    } catch (const std::exception& e) {
+        return abort_compress_dir(e.what());
     }
     auto comp_u32 = static_cast<uint32_t>(std::min<uint64_t>(total_written, UINT32_MAX));
     wcx::patchCompressedSize(output, comp_u32);
@@ -787,6 +948,12 @@ auto decompressAndUnpackToDisk(const std::string& input_path,
 
         total_original += entries[i].original_size;
         while (true) {
+            if (detail_stream_cancel::is_cancel_requested()) {
+                result.error_message = "cancelled";
+                result.success = false;
+                output.close();
+                return result;
+            }
             auto chunk = pipeline->pull();
             if (chunk.empty()) break;
             auto v = chunk.view();

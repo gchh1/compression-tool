@@ -34,6 +34,8 @@ struct AlgorithmStatus {
     bool done{false};
 };
 
+extern bool (*g_cancel_callback)();
+
 class IAlgorithm {
    public:
     virtual ~IAlgorithm() = default;

@@ -74,7 +74,8 @@ def calc_bit_width(max_val: int) -> int:
 
 def lzdp_effective_min_match(offset_bits: int, length_bits: int, min_match_param: int) -> int:
     if min_match_param == 0:
-        return (offset_bits + length_bits) // 8 + 1
+        match_bits = offset_bits + length_bits
+        return match_bits // 8 + 1
     return min_match_param
 
 

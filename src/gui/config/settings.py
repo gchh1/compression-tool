@@ -18,6 +18,23 @@ logger = logging.getLogger(__name__)
 
 CONFIG_FILENAME = "webcompress_settings.json"
 
+
+def _streaming_per_algorithm_defaults() -> dict[str, dict]:
+    """Defaults for per-algorithm streaming overrides (see streaming-workspace-spec)."""
+    chunk = STREAMING_CHUNK_SIZE_KB
+    keys = ("deflate", "lzss", "lzdp", "dpflate", "gzip", "brotli", "zstd")
+    out: dict[str, dict] = {}
+    thr = float(STREAMING_THRESHOLD_MB)
+    for k in keys:
+        out[k] = {
+            "follow_global_chunk": True,
+            "chunk_size_kb": chunk,
+            "follow_global_threshold": True,
+            "threshold_mb": thr,
+        }
+    return out
+
+
 DEFAULTS = {
     "version": 1,
     "algorithms": {},
@@ -25,6 +42,7 @@ DEFAULTS = {
         "threshold_mb": STREAMING_THRESHOLD_MB,
         "chunk_size_kb": STREAMING_CHUNK_SIZE_KB,
         "workspace_root": "",
+        "per_algorithm": _streaming_per_algorithm_defaults(),
     },
     "visualization": {
         "lzdp_dp_viz_max_size": LZDP_DP_VIZ_MAX_SIZE,
@@ -86,7 +104,19 @@ def _merge_with_defaults(user_data: dict) -> dict:
             if algo_name in result["algorithms"] and isinstance(algo_params, dict):
                 result["algorithms"][algo_name].update(algo_params)
     if "streaming" in user_data and isinstance(user_data["streaming"], dict):
-        result["streaming"].update(user_data["streaming"])
+        u_s = user_data["streaming"]
+        r_s = result["streaming"]
+        for k, v in u_s.items():
+            if k == "per_algorithm" and isinstance(v, dict):
+                base_pa = r_s.setdefault(
+                    "per_algorithm", _streaming_per_algorithm_defaults()
+                )
+                for ak, sub in v.items():
+                    if isinstance(sub, dict):
+                        slot = base_pa.setdefault(ak, {})
+                        slot.update(sub)
+            else:
+                r_s[k] = v
     if "visualization" in user_data and isinstance(user_data["visualization"], dict):
         result["visualization"].update(user_data["visualization"])
     if "theme" in user_data and isinstance(user_data["theme"], dict):
@@ -137,7 +167,8 @@ def get_algo_config(config: dict | None = None) -> dict[AlgorithmType, dict[str,
 def get_streaming_threshold(config: dict | None = None) -> float:
     if config is None:
         config = load_config()
-    return float(config.get("streaming", {}).get("threshold_mb", STREAMING_THRESHOLD_MB))
+    raw = float(config.get("streaming", {}).get("threshold_mb", STREAMING_THRESHOLD_MB))
+    return max(0.0, raw)
 
 
 def get_streaming_chunk_size(config: dict | None = None) -> int:
@@ -157,3 +188,54 @@ def get_streaming_workspace_root_override(config: dict | None = None) -> str | N
     return s if s else None
 
 
+def get_streaming_per_algorithm(config: dict | None = None) -> dict[str, dict]:
+    if config is None:
+        config = load_config()
+    pa = config.get("streaming", {}).get("per_algorithm")
+    if not isinstance(pa, dict):
+        return _streaming_per_algorithm_defaults()
+    merged = _streaming_per_algorithm_defaults()
+    for k, sub in pa.items():
+        if isinstance(sub, dict) and k in merged:
+            merged[k].update(sub)
+        elif isinstance(sub, dict):
+            merged[k] = dict(sub)
+    # DPFlate: only global spill path is supported; drop legacy config key if present.
+    dp = merged.get("dpflate")
+    if isinstance(dp, dict):
+        dp.pop("streaming_mode", None)
+    lz = merged.get("lzdp")
+    if isinstance(lz, dict):
+        lz.pop("streaming_mode", None)
+    return merged
+
+
+def get_effective_streaming_chunk_kb(
+    algorithm: AlgorithmType | None, config: dict | None = None
+) -> int:
+    """Effective read/chunk KB for pipeline: per-algorithm override or global ``chunk_size_kb``."""
+    if config is None:
+        config = load_config()
+    key = algorithm.value if algorithm is not None else "deflate"
+    sub = get_streaming_per_algorithm(config).get(key, {})
+    if bool(sub.get("follow_global_chunk", True)):
+        return int(config.get("streaming", {}).get("chunk_size_kb", STREAMING_CHUNK_SIZE_KB))
+    return int(sub.get("chunk_size_kb", STREAMING_CHUNK_SIZE_KB))
+
+
+def get_effective_streaming_threshold_mb(
+    algorithm: AlgorithmType | None, config: dict | None = None
+) -> float:
+    """When to switch to streaming path: per-algorithm override or global ``threshold_mb``."""
+    if config is None:
+        config = load_config()
+    if algorithm is None:
+        raw = float(config.get("streaming", {}).get("threshold_mb", STREAMING_THRESHOLD_MB))
+        return max(0.0, raw)
+    key = algorithm.value
+    sub = get_streaming_per_algorithm(config).get(key, {})
+    if bool(sub.get("follow_global_threshold", True)):
+        raw = float(config.get("streaming", {}).get("threshold_mb", STREAMING_THRESHOLD_MB))
+        return max(0.0, raw)
+    raw = float(sub.get("threshold_mb", STREAMING_THRESHOLD_MB))
+    return max(0.0, raw)

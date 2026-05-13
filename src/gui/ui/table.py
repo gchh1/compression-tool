@@ -4,9 +4,10 @@ import logging
 import os
 from pathlib import Path
 
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import Qt, QItemSelectionModel, pyqtSignal
 from PyQt6.QtGui import QAction, QBrush, QColor
 from PyQt6.QtWidgets import (
+    QAbstractItemView,
     QTableWidget,
     QTableWidgetItem,
     QComboBox,
@@ -49,9 +50,12 @@ class FileTableWidget(QTableWidget):
     request_folder_summary = pyqtSignal(int)
     request_decision_detail = pyqtSignal(int)
 
+    _SEL_TOGGLE = (
+        QItemSelectionModel.SelectionFlag.Toggle | QItemSelectionModel.SelectionFlag.Rows
+    )
+
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._selected: set[int] = set()
         self._setup_ui()
 
     def _setup_ui(self) -> None:
@@ -59,7 +63,8 @@ class FileTableWidget(QTableWidget):
         self.setHorizontalHeaderLabels(["☐", "文件名", "大小", "类型", "状态", "算法", "压缩率"])
         self.horizontalHeader().setStretchLastSection(True)
         self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
-        self.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        self.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.setAlternatingRowColors(True)
 
         self.setColumnWidth(self.COL_CHECK, 36)
@@ -70,15 +75,39 @@ class FileTableWidget(QTableWidget):
         self.setColumnWidth(self.COL_ALGORITHM, 100)
         self.setColumnWidth(self.COL_RATIO, 170)
         self.setStyleSheet(ThemeManager.table_sheet())
+        self.itemSelectionChanged.connect(self._sync_checkboxes_from_selection)
 
     def refresh_theme(self):
         self.setStyleSheet(ThemeManager.table_sheet())
+        self._sync_checkboxes_from_selection()
+
+    def _sync_checkboxes_from_selection(self) -> None:
+        """Keep ☑ column / row brush in sync with Qt selection (含框选 rubber band)."""
+        try:
+            rows = {ix.row() for ix in self.selectionModel().selectedRows()}
+            sel_color = ThemeManager.color("bg_selection")
+            for row in range(self.rowCount()):
+                check_item = self.item(row, self.COL_CHECK)
+                if check_item is None:
+                    continue
+                checked = row in rows
+                check_item.setData(self.Check_Role, checked)
+                check_item.setText("☑" if checked else "☐")
+                brush = QBrush(sel_color) if checked else QBrush()
+                for col in range(1, self.columnCount()):
+                    ci = self.item(row, col)
+                    if ci is not None:
+                        ci.setBackground(brush)
+            self.selection_changed.emit()
+        except Exception as e:
+            logger.exception("_sync_checkboxes_from_selection: %s", e)
 
     def mousePressEvent(self, event) -> None:
         try:
             item = self.itemAt(event.pos())
             if item is not None:
-                self._toggle_row(item.row())
+                idx = self.model().index(item.row(), 0)
+                self.selectionModel().select(idx, self._SEL_TOGGLE)
                 return
             super().mousePressEvent(event)
         except Exception as e:
@@ -156,16 +185,7 @@ class FileTableWidget(QTableWidget):
 
     def remove_row(self, row: int) -> None:
         try:
-            self._selected.discard(row)
             self.removeRow(row)
-            reindex = set()
-            for r in self._selected:
-                if r > row:
-                    reindex.add(r - 1)
-                else:
-                    reindex.add(r)
-            self._selected = reindex
-            self.selection_changed.emit()
         except Exception as e:
             logger.exception("remove_row crash: row=%d, err=%s", row, e)
 
@@ -198,48 +218,20 @@ class FileTableWidget(QTableWidget):
             logger.error("复制路径失败: %s", e)
             QMessageBox.warning(self, "错误", f"无法复制路径:\n{e}")
 
-    def _toggle_row(self, row: int) -> None:
-        try:
-            check_item = self.item(row, self.COL_CHECK)
-            if check_item is None:
-                return
-            checked = check_item.data(self.Check_Role) or False
-            check_item.setData(self.Check_Role, not checked)
-            check_item.setText("☑" if not checked else "☐")
-
-            bg = QBrush(Qt.GlobalColor.lightGray) if not checked else QBrush()
-            for col in range(1, self.columnCount()):
-                ci = self.item(row, col)
-                if ci:
-                    ci.setBackground(bg)
-
-            if not checked:
-                self._selected.add(row)
-            else:
-                self._selected.discard(row)
-            self.selection_changed.emit()
-        except Exception as e:
-            logger.exception("_toggle_row crash: row=%d, err=%s", row, e)
-
     def select_all(self, checked: bool = True) -> None:
-        for row in range(self.rowCount()):
-            check_item = self.item(row, self.COL_CHECK)
-            if check_item is None:
-                continue
-            current = check_item.data(self.Check_Role) or False
-            if current != checked:
-                self._toggle_row(row)
-        if not checked:
-            self._selected.clear()
-        self.selection_changed.emit()
+        if checked:
+            self.selectAll()
+        else:
+            self.clearSelection()
 
     @property
     def selected_rows(self) -> list[int]:
-        return sorted(self._selected)
+        return sorted({ix.row() for ix in self.selectionModel().selectedRows()})
 
     @property
     def is_all_selected(self) -> bool:
-        return self.rowCount() > 0 and len(self._selected) == self.rowCount()
+        n = self.rowCount()
+        return n > 0 and len(self.selected_rows) == n
 
     def add_file(self, path: str) -> int:
         try:
@@ -367,6 +359,18 @@ class FileTableWidget(QTableWidget):
                 records.append(rec)
         return records
 
+    def row_for_record(self, record: Record) -> int | None:
+        """Current table row displaying ``record`` (top-level row or folder containing file)."""
+        for r in range(self.rowCount()):
+            top = self.get_record(r)
+            if top is None:
+                continue
+            if top is record:
+                return r
+            if isinstance(top, FolderRecord) and record in top.files:
+                return r
+        return None
+
     def mark_error(self, row: int) -> None:
         try:
             item = self.item(row, self.COL_NAME)
@@ -382,7 +386,23 @@ class FileTableWidget(QTableWidget):
         except Exception as e:
             logger.error("[mark_error] CRASH row=%d: %s", row, e, exc_info=True)
 
+    def mark_error_record(self, record: Record) -> None:
+        """Like ``mark_error`` but resolves row by record (survives row reorder/remove during compress)."""
+        row = self.row_for_record(record)
+        if row is None:
+            logger.warning("[mark_error_record] record not in table")
+            return
+        try:
+            record.status = CompressionStatus.FAILED
+            self.setItem(row, self.COL_STATUS, QTableWidgetItem(CompressionStatus.FAILED.value))
+            status_item = self.item(row, self.COL_STATUS)
+            if status_item:
+                status_item.setForeground(QBrush(Qt.GlobalColor.red))
+            self.update_row(row)
+        except Exception as e:
+            logger.error("[mark_error_record] CRASH: %s", e, exc_info=True)
+
     def clear_all(self) -> None:
-        self._selected.clear()
+        self.clearSelection()
         self.setRowCount(0)
 

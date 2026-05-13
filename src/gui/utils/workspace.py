@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import re
 import shutil
 import uuid
@@ -47,6 +48,8 @@ def ensure_workspace_layout() -> None:
     (workspace_root() / "jobs").mkdir(parents=True, exist_ok=True)
     (workspace_root() / "decompressed").mkdir(parents=True, exist_ok=True)
     sweep_workspace_transient_artifacts()
+    # C++ DP spill (TempFile) reads this and writes under ``<root>/tmp/`` (see TempFile.hpp).
+    os.environ["WEBCOMPRESS_WORKSPACE"] = os.fsdecode(workspace_root())
 
 
 def remove_stale_compressed_parts() -> None:

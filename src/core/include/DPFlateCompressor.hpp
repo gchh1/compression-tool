@@ -51,6 +51,19 @@ public:
     void set_use_flag_encoding(bool v) { use_flag_encoding_ = v; }
     bool get_use_flag_encoding() const { return use_flag_encoding_; }
 
+    void set_use_3hfmtree(bool v) { use_3hfmtree_ = v; }
+    bool get_use_3hfmtree() const { return use_3hfmtree_; }
+
+    void set_huffman_chunk_bits(size_t k) {
+        huffman_offset_chunk_bits_ = k;
+        huffman_length_chunk_bits_ = k;
+    }
+    size_t get_huffman_chunk_bits() const { return huffman_offset_chunk_bits_; }
+    void set_huffman_offset_chunk_bits(size_t k) { huffman_offset_chunk_bits_ = k; }
+    void set_huffman_length_chunk_bits(size_t k) { huffman_length_chunk_bits_ = k; }
+    size_t get_huffman_offset_chunk_bits() const { return huffman_offset_chunk_bits_; }
+    size_t get_huffman_length_chunk_bits() const { return huffman_length_chunk_bits_; }
+
 private:
     size_t search_size_;
     size_t lookahead_size_;
@@ -59,6 +72,9 @@ private:
     size_t dp_sub_match_max_;
     int match_engine_{1};
     bool use_flag_encoding_{false};
+    bool use_3hfmtree_{false};
+    size_t huffman_offset_chunk_bits_{8};
+    size_t huffman_length_chunk_bits_{8};
 };
 
 }  // namespace core

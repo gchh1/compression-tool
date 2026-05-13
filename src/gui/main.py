@@ -17,6 +17,10 @@ def run_cli():
     setup_logging()
     logger = logging.getLogger("gui")
 
+    from gui.utils.workspace import ensure_workspace_layout
+
+    ensure_workspace_layout()
+
     from gui.engine.compressor import CompressionEngine
     from gui.utils.file_helper import scan_directory, load_batch
     from gui.ade.engine import StrategyDispatcher

@@ -2,6 +2,8 @@
 
 本文档汇总近期 GUI / 核心引擎相关改动、**文件架构迁移说明**，供后续维护与发布使用。权威 GUI 目录树仍以 `docs/gui_architecture.md` §一为准。
 
+**流式压缩 / LZDP 争议与未闭环项**（单独成文，便于接手）：[`docs/handoff_streaming_lzdp_work_2026-05-12.md`](handoff_streaming_lzdp_work_2026-05-12.md)。
+
 ---
 
 ## 一、工作总览（按主题）

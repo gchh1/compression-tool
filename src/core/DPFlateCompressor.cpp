@@ -23,6 +23,9 @@ auto DPFlateCompressor::compress(std::vector<uint8_t> original_data)
                                max_chain_length_, dp_sub_match_max_);
     dpflate.set_match_engine(match_engine_);
     dpflate.set_use_flag_encoding(use_flag_encoding_);
+    dpflate.set_use_3hfmtree(use_3hfmtree_);
+    dpflate.set_huffman_offset_chunk_bits(huffman_offset_chunk_bits_);
+    dpflate.set_huffman_length_chunk_bits(huffman_length_chunk_bits_);
     dpflate.reset();
 
     size_t out_capacity = original_data.size() * 2 + 65536;

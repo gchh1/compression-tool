@@ -80,7 +80,8 @@ int main() {
         LZDP lzdp_comp;
         LZDP lzdp_decomp; // LZDP implements compress/decompress but they are not IAlgorithm, let's just test it manually
         
-        auto enc = lzdp_comp.compress_dp(text_data, 32768, 258, 4);
+        auto dp_result = lzdp_comp.dp_core(text_data, 32768, 258, 4);
+        auto enc = lzdp_comp.encode_triples(dp_result.triples, lzdp_comp.get_offset_bits(), lzdp_comp.get_length_bits(), lzdp_comp.get_use_flag_encoding());
         try {
             auto dec = lzdp_decomp.decompress(enc);
             if (dec.size() != text_data.size()) {
@@ -96,7 +97,8 @@ int main() {
 
         lzdp_comp.set_use_flag_encoding(true);
         lzdp_decomp.set_use_flag_encoding(true);
-        auto enc_flag = lzdp_comp.compress_dp(text_data, 32768, 258, 4);
+        auto triples_flag = lzdp_comp.dp_core(text_data, 32768, 258, 4);
+        auto enc_flag = lzdp_comp.encode_triples(triples_flag.triples, lzdp_comp.get_offset_bits(), lzdp_comp.get_length_bits(), lzdp_comp.get_use_flag_encoding());
         try {
             auto dec = lzdp_decomp.decompress(enc_flag);
             if (dec.size() != text_data.size()) {

@@ -11,7 +11,11 @@ namespace compressor::processor {
 
 auto buildCompressionPipeline(
     const std::vector<core::AlgorithmID>& chain,
-    std::shared_ptr<memory::MemoryPool> pool = nullptr)
+    std::shared_ptr<memory::MemoryPool> pool = nullptr,
+    uint32_t file_compress_opts = core::kFileCompressOptsNone,
+    const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
+    std::size_t streaming_compress_chunk_bytes = 0,
+    const core::DpflatePipelineParams* dpflate_pipeline = nullptr)
     -> std::unique_ptr<Pipeline>;
 
 auto buildDecompressionPipeline(

@@ -1,0 +1,2 @@
+D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc libarchiver.a CMakeFiles/archiver.dir/FileReader.cpp.obj CMakeFiles/archiver.dir/PackReader.cpp.obj CMakeFiles/archiver.dir/PackWriter.cpp.obj
+D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe libarchiver.a

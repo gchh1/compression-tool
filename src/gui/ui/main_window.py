@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import math
 import os
 from pathlib import Path
 
@@ -9,15 +10,29 @@ from PyQt6.QtGui import QAction, QDragEnterEvent, QDropEvent, QBrush, QColor
 from PyQt6.QtWidgets import (
     QMainWindow, QFileDialog, QMessageBox, QToolBar, QWidget,
     QStatusBar, QProgressBar, QLabel, QVBoxLayout, QHBoxLayout,
-    QTableWidget, QTableWidgetItem, QComboBox, QMenu, QDialog, QPushButton,
-    QTabWidget, QFormLayout, QSpinBox, QGroupBox, QScrollArea, QColorDialog,
+    QTableWidget, QTableWidgetItem, QHeaderView, QComboBox, QMenu, QDialog, QPushButton,
+    QTabWidget, QFormLayout, QSpinBox, QDoubleSpinBox, QGroupBox, QScrollArea, QColorDialog,
     QCheckBox,
+    QAbstractButton,
 )
 
 logger = logging.getLogger("gui.main_window")
 
-from gui.models import Record, FileRecord, FolderRecord, CompressionStatus, AlgorithmType, ResourceType, formatted_size, ALGORITHM_PARAMS, get_default_config, LZDP_DP_VIZ_MAX_SIZE, STREAMING_CHUNK_SIZE_KB
-from gui.config.settings import load_config, get_streaming_chunk_size
+from gui.models import (
+    Record,
+    FileRecord,
+    FolderRecord,
+    CompressionStatus,
+    AlgorithmType,
+    ResourceType,
+    formatted_size,
+    ALGORITHM_PARAMS,
+    get_default_config,
+    LZDP_DP_VIZ_MAX_SIZE,
+    STREAMING_CHUNK_SIZE_KB,
+    STREAMING_THRESHOLD_MB,
+)
+from gui.config.settings import load_config, get_defaults
 from gui.config.theme import ThemeManager
 from gui.ui.table import FileTableWidget
 from gui.ui.worker import CompressionWorker, ComparisonWorker, COMPARISON_ALGORITHMS
@@ -79,7 +94,7 @@ class StatusBarWidget(QWidget):
 
 class AlgorithmSelector(QComboBox):
     ALGORITHMS = [
-        ("LZDP (KMP+DP)", AlgorithmType.LZDP),
+        ("LZDP", AlgorithmType.LZDP),
         ("DPFlate (HashChain DP+Huffman)", AlgorithmType.DPFLATE),
         ("LZSS", AlgorithmType.LZSS),
         ("Deflate", AlgorithmType.DEFLATE),
@@ -345,7 +360,10 @@ class ThemeConfigDialog(QDialog):
             
             table_style = (
                 f"QTableWidget {{ background: {t.bg_surface}; color: {t.text_primary}; "
-                f"border: 1px solid {t.border}; border-radius: 4px; gridline-color: {t.border}; alternate-background-color: {t.bg_hover}; }}\n"
+                f"border: 1px solid {t.border}; border-radius: 4px; gridline-color: {t.border}; "
+                f"alternate-background-color: {t.bg_hover}; "
+                f"selection-background-color: {t.bg_selection}; selection-color: {t.text_primary}; "
+                f"show-decoration-selected: 1; }}\n"
                 f"QTableWidget::item:selected {{ background: {t.bg_selection}; color: {t.text_primary}; }}\n"
                 f"QHeaderView::section {{ background: {t.bg_elevated}; color: {t.text_secondary}; "
                 f"border: 1px solid {t.border}; padding: 4px; font-weight: bold; }}\n"
@@ -466,7 +484,7 @@ class DecisionEngineManagerDialog(QDialog):
             from gui.ade.explorer import SilentExplorer
             explorer = SilentExplorer.get()
             stats = explorer.get_stats()
-        except Exception as explorer:
+        except Exception:
             stats = {}
 
         info_group = QGroupBox("探索器概览")
@@ -699,6 +717,36 @@ class DecisionEngineManagerDialog(QDialog):
             pass
 
 
+def _streaming_follow_toggle_button(label: str, *, checked: bool) -> QPushButton:
+    """☐/☑ 文案 + 扁平按钮，与主窗口工具栏「全选」同一套符号，避免原生 QCheckBox 在主题下难点、难看。"""
+    from gui.config.theme import ThemeManager
+
+    btn = QPushButton()
+    btn.setCheckable(True)
+    btn.setChecked(checked)
+    btn.setFlat(True)
+    btn.setCursor(Qt.CursorShape.PointingHandCursor)
+    btn.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+    tp = ThemeManager.hex("text_primary")
+    bh = ThemeManager.hex("bg_hover")
+    bs = ThemeManager.hex("bg_selection")
+    btn.setStyleSheet(
+        f"QPushButton {{ background: transparent; color: {tp}; "
+        f"text-align: left; padding: 4px 2px; border: none; border-radius: 4px; font-size: 13px; }}"
+        f"QPushButton:hover {{ background: {bh}; }}"
+        f"QPushButton:pressed {{ background: {bs}; }}"
+        f"QPushButton:checked {{ background: {bs}; color: {tp}; }}"
+    )
+
+    def sync_text() -> None:
+        sym = "☑" if btn.isChecked() else "☐"
+        btn.setText(f"{sym} {label}")
+
+    btn.toggled.connect(sync_text)
+    sync_text()
+    return btn
+
+
 class MinMatchWidget(QWidget):
     def __init__(self, p, current_val, parent=None):
         super().__init__(parent)
@@ -708,25 +756,25 @@ class MinMatchWidget(QWidget):
         self.spin.setMinimum(max(1, p.min_val))
         self.spin.setMaximum(p.max_val)
         self.spin.setSingleStep(p.step)
-        
-        self.auto_btn = QCheckBox("Auto计算")
-        
+
+        self.auto_btn = _streaming_follow_toggle_button("Auto计算", checked=False)
+
         layout.addWidget(self.spin)
         layout.addWidget(self.auto_btn)
-        
+
         self.auto_btn.toggled.connect(self._on_auto_toggled)
-        
+
         self.default_val = p.default if p.default > 0 else 3
         self.setValue(current_val)
-            
+
     def _on_auto_toggled(self, checked):
         self.spin.setEnabled(not checked)
-        
+
     def value(self):
         if self.auto_btn.isChecked():
             return 0
         return self.spin.value()
-        
+
     def setValue(self, val):
         if val == 0:
             self.auto_btn.setChecked(True)
@@ -737,6 +785,7 @@ class MinMatchWidget(QWidget):
             self.spin.setValue(val)
             self.spin.setEnabled(True)
 
+
 class AlgorithmConfigDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -744,8 +793,9 @@ class AlgorithmConfigDialog(QDialog):
         self.setMinimumSize(640, 520)
         self._spinboxes: dict[AlgorithmType, dict[str, QWidget]] = {}
         self._encoding_preview_labels: dict[AlgorithmType, QLabel] = {}
-        self._streaming_threshold_spin: QSpinBox | None = None
+        self._streaming_threshold_spin: QDoubleSpinBox | None = None
         self._streaming_chunk_spin: QSpinBox | None = None
+        self._per_algo_stream_widgets: dict[AlgorithmType, dict[str, object]] = {}
         self._setup_ui()
 
     def _setup_ui(self) -> None:
@@ -758,6 +808,18 @@ class AlgorithmConfigDialog(QDialog):
             from gui.config.theme import ThemeManager
 
             current_config = CompressionEngine.get_config()
+
+            from gui.config.settings import (
+                load_config as _cfg_load_stream,
+                get_streaming_chunk_size,
+                get_streaming_per_algorithm,
+                get_streaming_threshold,
+            )
+            _stream_file_cfg = _cfg_load_stream()
+            _global_chunk_kb = get_streaming_chunk_size(_stream_file_cfg)
+            _global_threshold_mb = float(get_streaming_threshold(_stream_file_cfg))
+            _per_algo_saved = get_streaming_per_algorithm(_stream_file_cfg)
+            self._per_algo_stream_widgets = {}
 
             tabs = QTabWidget()
             algo_labels = {
@@ -814,6 +876,54 @@ class AlgorithmConfigDialog(QDialog):
                         form.addRow(f"{p.label}:", spin)
                         self._spinboxes[algo][p.key] = spin
 
+                pa0 = _per_algo_saved.get(algo.value, {})
+                follow_global = bool(pa0.get("follow_global_chunk", True))
+                stream_gb = QGroupBox("流式（本算法）")
+                sform = QFormLayout(stream_gb)
+                follow_cb = _streaming_follow_toggle_button(
+                    "分块大小跟随全局「流式设置」", checked=follow_global
+                )
+                chunk_sb = QSpinBox()
+                chunk_sb.setMinimum(64)
+                chunk_sb.setMaximum(128 * 1024)
+                chunk_sb.setSingleStep(64)
+                chunk_sb.setSuffix(" KB")
+                chunk_sb.setValue(int(pa0.get("chunk_size_kb", _global_chunk_kb)))
+
+                # 与 MinMatchWidget 一致：用 toggled(bool) + 信号里的 checked，不用 isChecked() 竞态。
+                # 必须用 lambda 默认参数绑定 sb=chunk_sb，避免 for 循环闭包延迟绑定到「最后一个算法」的 SpinBox。
+                follow_cb.toggled.connect(
+                    lambda checked, sb=chunk_sb: sb.setEnabled(not checked)
+                )
+                chunk_sb.setEnabled(not follow_global)
+                sform.addRow("", follow_cb)
+                sform.addRow("本算法流式分块:", chunk_sb)
+                follow_thresh = bool(pa0.get("follow_global_threshold", True))
+                follow_thresh_cb = _streaming_follow_toggle_button(
+                    "流式阈值跟随全局「流式设置」", checked=follow_thresh
+                )
+                thresh_sb = QDoubleSpinBox()
+                thresh_sb.setMinimum(0.0)
+                thresh_sb.setMaximum(20480.0)
+                thresh_sb.setDecimals(4)
+                thresh_sb.setSingleStep(0.001)
+                thresh_sb.setSuffix(" MB")
+                thresh_sb.setValue(float(pa0.get("threshold_mb", _global_threshold_mb)))
+
+                follow_thresh_cb.toggled.connect(
+                    lambda checked, sb=thresh_sb: sb.setEnabled(not checked)
+                )
+                thresh_sb.setEnabled(not follow_thresh)
+                sform.addRow("", follow_thresh_cb)
+                sform.addRow("本算法流式阈值:", thresh_sb)
+                tab_outer.addWidget(stream_gb)
+                self._per_algo_stream_widgets[algo] = {
+                    "follow": follow_cb,
+                    "chunk": chunk_sb,
+                    "follow_threshold": follow_thresh_cb,
+                    "threshold": thresh_sb,
+                }
+
                 if algo in (
                     AlgorithmType.LZSS,
                     AlgorithmType.LZDP,
@@ -842,27 +952,27 @@ class AlgorithmConfigDialog(QDialog):
             stream_form.setContentsMargins(12, 12, 12, 12)
 
             from gui.engine.compressor import CompressionEngine as _CE
-            from gui.config.settings import load_config, get_streaming_chunk_size
 
             cur_threshold = _CE.get_streaming_threshold()
-            _file_cfg = load_config()
-            _chunk_kb = get_streaming_chunk_size(_file_cfg)
+            _chunk_kb = _global_chunk_kb
 
-            self._streaming_threshold_spin = QSpinBox()
-            self._streaming_threshold_spin.setMinimum(1)
-            self._streaming_threshold_spin.setMaximum(10240)
-            self._streaming_threshold_spin.setSingleStep(1)
-            self._streaming_threshold_spin.setValue(int(cur_threshold))
+            self._streaming_threshold_spin = QDoubleSpinBox()
+            self._streaming_threshold_spin.setMinimum(0.0)
+            self._streaming_threshold_spin.setMaximum(20480.0)
+            self._streaming_threshold_spin.setDecimals(4)
+            self._streaming_threshold_spin.setSingleStep(0.001)
+            self._streaming_threshold_spin.setValue(float(cur_threshold))
             self._streaming_threshold_spin.setSuffix(" MB")
             self._streaming_threshold_spin.setToolTip(
-                "当文件大小超过此阈值时，自动切换到流式分块压缩/解压模式\n"
-                "流式模式内存占用恒定，适合处理超大文件"
+                "当文件大小严格大于该值（MB×1024² 字节）时走流式路径。\n"
+                "0 = 任意非空文件即流式，便于测试；可填小数（如 0.01）测小文件。\n"
+                "流式模式内存占用更平稳，适合超大文件。"
             )
             stream_form.addRow("使用流式的大小阈值:", self._streaming_threshold_spin)
 
             self._streaming_chunk_spin = QSpinBox()
             self._streaming_chunk_spin.setMinimum(64)
-            self._streaming_chunk_spin.setMaximum(64 * 1024)
+            self._streaming_chunk_spin.setMaximum(128 * 1024)
             self._streaming_chunk_spin.setSingleStep(64)
             self._streaming_chunk_spin.setValue(_chunk_kb)
             self._streaming_chunk_spin.setSuffix(" KB")
@@ -873,10 +983,11 @@ class AlgorithmConfigDialog(QDialog):
             stream_form.addRow("流式分块大小:", self._streaming_chunk_spin)
 
             desc_label = QLabel(
-                "流式模式说明：文件超过阈值时自动启用，\n"
-                "采用 terminator 格式 ([4B长度][数据]...[4B 0]) 分块处理，\n"
-                "内存占用与文件大小无关，仅取决于分块大小。\n"
-                "大文件走 C++ pipeline 时，上述「流式分块大小」会作为读缓冲 / MemoryPool 块大小传入（64 KB～64 MB）。"
+                "流式模式说明：文件超过阈值时自动启用；C++ pipeline 使用 terminator 分帧"
+                "（[4B长度][数据]…[4B 0]）。\n"
+                "全局「流式分块大小」与「流式阈值」为各算法默认值；各算法页可分别取消「跟随全局」单独设置。\n"
+                "LZDP 文件管线与内存压缩共用同一套 ``LZDPCompressor`` 语义（整文件明文缓冲后单次 compress / compress_dp；见 docs/design/lzdp-file-pipeline-design.md）。"
+                "DPFlate 文件流式固定为外存 DP + 整文件 Huffman 路径（§16.6）。"
             )
             desc_label.setWordWrap(True)
             desc_label.setStyleSheet(f"color: {ThemeManager.hex('text_muted')}; font-size: 11px; padding: 4px 0;")
@@ -1007,9 +1118,27 @@ class AlgorithmConfigDialog(QDialog):
                     fallback = widget.minimum() if hasattr(widget, 'minimum') else 0
                     widget.setValue(cfg.get(key, fallback))
         if self._streaming_threshold_spin:
-            self._streaming_threshold_spin.setValue(int(CompressionEngine.get_streaming_threshold()))
+            self._streaming_threshold_spin.setValue(
+                float(CompressionEngine.get_streaming_threshold())
+            )
         if self._streaming_chunk_spin:
             self._streaming_chunk_spin.setValue(STREAMING_CHUNK_SIZE_KB)
+        dpa = get_defaults()["streaming"]["per_algorithm"]
+        for algo, pack in self._per_algo_stream_widgets.items():
+            follow_cb = pack["follow"]
+            chunk_sb = pack["chunk"]
+            follow_th = pack.get("follow_threshold")
+            thresh_sb = pack.get("threshold")
+            if not isinstance(follow_cb, QAbstractButton) or not isinstance(chunk_sb, QSpinBox):
+                continue
+            sub = dpa.get(algo.value, {})
+            follow_cb.setChecked(bool(sub.get("follow_global_chunk", True)))
+            chunk_sb.setValue(int(sub.get("chunk_size_kb", STREAMING_CHUNK_SIZE_KB)))
+            chunk_sb.setEnabled(not follow_cb.isChecked())
+            if isinstance(follow_th, QAbstractButton) and isinstance(thresh_sb, QDoubleSpinBox):
+                follow_th.setChecked(bool(sub.get("follow_global_threshold", True)))
+                thresh_sb.setValue(float(sub.get("threshold_mb", STREAMING_THRESHOLD_MB)))
+                thresh_sb.setEnabled(not follow_th.isChecked())
         for prev_algo in self._encoding_preview_labels:
             self._refresh_encoding_preview(prev_algo)
 
@@ -1039,6 +1168,24 @@ class AlgorithmConfigDialog(QDialog):
             full["streaming"] = {}
         if self._streaming_chunk_spin:
             full["streaming"]["chunk_size_kb"] = int(self._streaming_chunk_spin.value())
+        if self._per_algo_stream_widgets:
+            pa_out: dict[str, dict] = {}
+            for algo, pack in self._per_algo_stream_widgets.items():
+                follow_cb = pack["follow"]
+                chunk_sb = pack["chunk"]
+                follow_th = pack.get("follow_threshold")
+                thresh_sb = pack.get("threshold")
+                if not isinstance(follow_cb, QAbstractButton) or not isinstance(chunk_sb, QSpinBox):
+                    continue
+                ent: dict = {
+                    "follow_global_chunk": bool(follow_cb.isChecked()),
+                    "chunk_size_kb": int(chunk_sb.value()),
+                }
+                if isinstance(follow_th, QAbstractButton) and isinstance(thresh_sb, QDoubleSpinBox):
+                    ent["follow_global_threshold"] = bool(follow_th.isChecked())
+                    ent["threshold_mb"] = float(thresh_sb.value())
+                pa_out[algo.value] = ent
+            full["streaming"]["per_algorithm"] = pa_out
         save_config(full)
 
         self.accept()
@@ -1310,9 +1457,9 @@ class MainWindow(QMainWindow):
         self._cancel_compress_action.setEnabled(True)
 
         self._worker = CompressionWorker(tasks, self._algo_selector.current_algorithm)
-        self._worker.row_started.connect(self._on_row_started)
-        self._worker.finished_row.connect(self._on_row_finished)
-        self._worker.error.connect(self._table.mark_error)
+        self._worker.row_started.connect(self._on_compress_row_started)
+        self._worker.finished_row.connect(self._on_compress_row_finished)
+        self._worker.error.connect(self._table.mark_error_record)
         self._worker.finished.connect(self._on_compression_finished)
 
         file_count = sum(len(r.files) if isinstance(r, FolderRecord) else 1 for r in records)
@@ -1326,33 +1473,39 @@ class MainWindow(QMainWindow):
             self._worker.cancel()
             self._statusbar.set_status_text("正在取消压缩...")
 
-    def _on_row_started(self, row: int) -> None:
+    def _on_compress_row_started(self, record: object) -> None:
         try:
-            record = self._table.get_record(row)
-            if record and isinstance(record, FileRecord):
-                record.status = CompressionStatus.COMPRESSING
-                self._table.update_row(row)
-                
-                algo_info = ""
-                if hasattr(record, 'algorithm') and record.algorithm:
-                    algo_name = record.algorithm.value if hasattr(record.algorithm, 'value') else str(record.algorithm)
-                    algo_info = f" [算法: {algo_name}]"
-                
-                decision_info = ""
-                if hasattr(record, 'decision_result') and record.decision_result:
-                    confidence = record.decision_result.confidence * 100
-                    decision_info = f" (置信度: {confidence:.0f}%)"
-                
-                self._statusbar.set_status_text(
-                    f"正在压缩: {record.name}{algo_info}{decision_info} [{row + 1}/{self._table.rowCount()}]"
-                )
-        except Exception as e:
-            logger.error("[_on_row_started] CRASH row=%d: %s", row, e, exc_info=True)
+            if not isinstance(record, FileRecord):
+                return
+            row = self._table.row_for_record(record)
+            if row is None:
+                return
+            record.status = CompressionStatus.COMPRESSING
+            self._table.update_row(row)
 
-    def _on_row_finished(self, row: int) -> None:
+            algo_info = ""
+            if hasattr(record, 'algorithm') and record.algorithm:
+                algo_name = record.algorithm.value if hasattr(record.algorithm, 'value') else str(record.algorithm)
+                algo_info = f" [算法: {algo_name}]"
+
+            decision_info = ""
+            if hasattr(record, 'decision_result') and record.decision_result:
+                confidence = record.decision_result.confidence * 100
+                decision_info = f" (置信度: {confidence:.0f}%)"
+
+            self._statusbar.set_status_text(
+                f"正在压缩: {record.name}{algo_info}{decision_info} [{row + 1}/{self._table.rowCount()}]"
+            )
+        except Exception as e:
+            logger.error("[_on_compress_row_started] CRASH: %s", e, exc_info=True)
+
+    def _on_compress_row_finished(self, record: object) -> None:
         try:
-            record = self._table.get_record(row)
-            logger.info("[compress] row %d finished: name=%s, status=%s, ratio=%.4f",
+            row = self._table.row_for_record(record)
+            if row is None:
+                logger.warning("[compress] finished signal but row removed: %s", getattr(record, 'name', '?'))
+                return
+            logger.info("[compress] row %s finished: name=%s, status=%s, ratio=%.4f",
                          row, getattr(record, 'name', '?'), getattr(record, 'status', '?'),
                          getattr(record, 'compression_ratio', 0))
             self._table.update_row(row)
@@ -1365,18 +1518,16 @@ class MainWindow(QMainWindow):
             progress = int(done / total * 100) if total else 0
             self._statusbar.set_progress_value(progress)
         except Exception as e:
-            logger.error("[_on_row_finished] CRASH row=%d: %s", row, e, exc_info=True)
+            logger.error("[_on_compress_row_finished] CRASH: %s", e, exc_info=True)
 
     def _on_compression_finished(self) -> None:
         try:
-            self._compress_action.setEnabled(True)
-            self._cancel_compress_action.setEnabled(False)
             self._statusbar.set_progress_value(100)
             if self._worker and self._worker._is_cancelled:
                 self._statusbar.set_status_text("压缩已取消")
             else:
                 self._statusbar.set_status_text("压缩完成")
-                
+
                 try:
                     from gui.ade.training import get_training_store
                     store = get_training_store()
@@ -1387,6 +1538,7 @@ class MainWindow(QMainWindow):
                     logger.debug("[compress] training data save skipped: %s", e)
         except Exception as e:
             logger.error("[_on_compression_finished] CRASH: %s", e, exc_info=True)
+        finally:
             self._compress_action.setEnabled(True)
             self._cancel_compress_action.setEnabled(False)
 
@@ -1957,7 +2109,6 @@ class MainWindow(QMainWindow):
 
         from PyQt6.QtWidgets import QProgressDialog
 
-        chunk_size_kb = get_streaming_chunk_size(load_config())
         progress = QProgressDialog("准备算法对比...", "取消", 0, 100, self)
         progress.setWindowTitle(title)
         progress.setWindowModality(Qt.WindowModality.WindowModal)
@@ -1967,7 +2118,7 @@ class MainWindow(QMainWindow):
         progress.setValue(0)
 
         self._comparison_progress = progress
-        self._comparison_worker = ComparisonWorker(record, COMPARISON_ALGORITHMS, chunk_size_kb, self)
+        self._comparison_worker = ComparisonWorker(record, COMPARISON_ALGORITHMS, self)
         self._comparison_worker.progress.connect(self._on_comparison_progress)
         self._comparison_worker.comparison_finished.connect(self._on_comparison_finished)
         self._comparison_worker.failed.connect(self._on_comparison_failed)
@@ -2313,6 +2464,9 @@ class FolderReportWidget(QWidget):
                 font-size: 13px;
                 border: 1px solid {ThemeManager.hex('border_dark')};
                 border-radius: 4px;
+                selection-background-color: {ThemeManager.hex('accent')};
+                selection-color: {ThemeManager.hex('text_primary')};
+                show-decoration-selected: 1;
             }}
             QTableWidget::item {{
                 padding: 8px 12px;
@@ -2377,23 +2531,61 @@ class FolderReportWidget(QWidget):
 
 
 class DecisionDetailDialog(QDialog):
+    """右键「查看决策详情」：展示基础特征与 ADE 决策；避免 Unicode 下标等字符在部分字体下显示为方块。"""
+
     def __init__(self, record: FileRecord, parent=None):
         super().__init__(parent)
         self.record = record
         self.setWindowTitle(f"决策详情 - {record.name}")
         self.setMinimumSize(600, 500)
+        # 主窗口样式含 QWidget 背景，会级联到子对话框；若不套 full_dialog_sheet，QLabel 可能
+        # 无明确前景色，在深色主题下特征行会像「乱码/碎点」。与其它对话框一致。
+        self.setStyleSheet(ThemeManager.full_dialog_sheet())
         self._setup_ui()
+
+    @staticmethod
+    def _scalar_from_base_features(bf, field_key: str, default: float = 0.0) -> float:
+        if bf is None:
+            return default
+        if isinstance(bf, dict):
+            raw = bf.get(field_key, default)
+        else:
+            raw = getattr(bf, field_key, default)
+        try:
+            v = float(raw)
+        except (TypeError, ValueError):
+            return default
+        if math.isnan(v) or math.isinf(v):
+            return default
+        return v
+
+    @staticmethod
+    def _format_feature_text(val: float, unit: str) -> str:
+        if unit == "%":
+            return f"{val:.4f}" if abs(val) < 10 else f"{val:.2%}"
+        if unit == "bits/byte":
+            return f"{val:.4f}"
+        return f"{val:.4f}"
+
+    @staticmethod
+    def _label_text(s) -> str:
+        if s is None:
+            return ""
+        if isinstance(s, (bytes, bytearray)):
+            return bytes(s).decode("utf-8", errors="replace")
+        return str(s)
 
     def _setup_ui(self):
         layout = QVBoxLayout(self)
-        
+
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         content = QWidget()
-        form = QFormLayout(content)
-        
+        content_layout = QVBoxLayout(content)
+        content_layout.setContentsMargins(8, 8, 8, 8)
+
         from gui.ade.engine import DecisionEngine
-        
+
         file_info_group = QGroupBox("文件信息")
         file_form = QFormLayout(file_info_group)
         file_form.addRow("文件名:", QLabel(self.record.name))
@@ -2406,15 +2598,15 @@ class DecisionDetailDialog(QDialog):
         if detected_ft is not None:
             ft_name = getattr(detected_ft, 'name', str(detected_ft))
             file_form.addRow("检测类型 (Magic):", QLabel(ft_name))
-        layout.addWidget(file_info_group)
-        
+        content_layout.addWidget(file_info_group)
+
         features_group = QGroupBox("特征分析 (20维基础向量)")
         features_form = QFormLayout(features_group)
         
         bf = getattr(self.record, 'base_features', None)
         if bf is not None:
             feature_labels = [
-                ("file_size_log2", "文件大小 (log₂)", ""),
+                ("file_size_log2", "文件大小 (log2)", ""),
                 ("magic_confidence", "魔数置信度", ""),
                 ("printable_ratio", "可打印ASCII占比", "%"),
                 ("shannon_entropy", "香农熵", "bits/byte"),
@@ -2422,9 +2614,9 @@ class DecisionDetailDialog(QDialog):
                 ("unique_byte_ratio", "唯一字节比率", "%"),
                 ("mean_byte_normalized", "字节均值 (归一化)", "/255"),
                 ("std_byte_normalized", "字节标准差", "/115"),
-                ("longest_run_log2", "最长连续字节 (log₂)", ""),
+                ("longest_run_log2", "最长连续字节 (log2)", ""),
                 ("zero_byte_ratio", "零字节占比", "%"),
-                ("high_bit_ratio", "高位字节占比 (≥128)", "%"),
+                ("high_bit_ratio", "高位字节占比 (>=128)", "%"),
                 ("header_entropy", "头部熵 (1KB)", "bits/byte"),
                 ("local_entropy_variance", "局部熵方差", ""),
                 ("block_boundary_density", "块边界密度", ""),
@@ -2436,13 +2628,8 @@ class DecisionDetailDialog(QDialog):
                 ("dict_potential", "字典/LZ77潜力", ""),
             ]
             for field_key, label, unit in feature_labels:
-                val = getattr(bf, field_key, 0.0)
-                if unit == "%":
-                    text = f"{val:.4f}" if abs(val) < 10 else f"{val:.2%}"
-                elif unit == "bits/byte":
-                    text = f"{val:.4f}"
-                else:
-                    text = f"{val:.4f}"
+                val = self._scalar_from_base_features(bf, field_key)
+                text = self._format_feature_text(val, unit)
                 features_form.addRow(label + ":", QLabel(text))
         else:
             entropy_val = getattr(self.record, 'content_entropy', 0.0)
@@ -2450,8 +2637,8 @@ class DecisionDetailDialog(QDialog):
             features_form.addRow("香农熵:", QLabel(f"{entropy_val:.4f}" if entropy_val > 0 else "未计算"))
             features_form.addRow("重复率:", QLabel(f"{repetition_val:.2%}" if repetition_val > 0 else "未计算"))
             features_form.addRow("基础特征:", QLabel("未提取 (请先执行压缩)"))
-        layout.addWidget(features_group)
-        
+        content_layout.addWidget(features_group)
+
         decision_group = QGroupBox("ADE 决策详情")
         decision_form = QFormLayout(decision_group)
         
@@ -2461,7 +2648,7 @@ class DecisionDetailDialog(QDialog):
             confidence_pct = decision_result.confidence * 100
             decision_form.addRow("推荐算法:", QLabel(algo_name))
             decision_form.addRow("置信度:", QLabel(f"{confidence_pct:.1f}%"))
-            decision_form.addRow("决策原因:", QLabel(decision_result.reason or "无"))
+            decision_form.addRow("决策原因:", QLabel(self._label_text(decision_result.reason) or "无"))
             
             if decision_result.params:
                 params_text = "\n".join([f"  - {k}: {v}" for k, v in decision_result.params.items()])
@@ -2478,7 +2665,7 @@ class DecisionDetailDialog(QDialog):
                     confidence_pct = new_decision.confidence * 100
                     decision_form.addRow("推荐算法:", QLabel(algo_name))
                     decision_form.addRow("置信度:", QLabel(f"{confidence_pct:.1f}%"))
-                    decision_form.addRow("决策原因:", QLabel(new_decision.reason or "无"))
+                    decision_form.addRow("决策原因:", QLabel(self._label_text(new_decision.reason) or "无"))
                     if new_decision.params:
                         params_text = "\n".join([f"  - {k}: {v}" for k, v in new_decision.params.items()])
                         decision_form.addRow("使用参数:", QLabel(params_text))
@@ -2488,9 +2675,9 @@ class DecisionDetailDialog(QDialog):
                     decision_form.addRow("状态:", QLabel("ADE 未初始化或无法决策"))
             except Exception as e:
                 decision_form.addRow("状态:", QLabel(f"重新分析失败: {e}"))
-        
-        layout.addWidget(decision_group)
-        
+
+        content_layout.addWidget(decision_group)
+
         if self.record.status == CompressionStatus.DONE:
             results_group = QGroupBox("实际压缩结果")
             results_form = QFormLayout(results_group)
@@ -2511,9 +2698,9 @@ class DecisionDetailDialog(QDialog):
                 results_form.addRow("算法变更:", QLabel(
                     f"{decision_result.algorithm.value} → {actual_algo}"
                 ))
-            
-            layout.addWidget(results_group)
-        
+
+            content_layout.addWidget(results_group)
+
         scroll.setWidget(content)
         layout.addWidget(scroll)
         

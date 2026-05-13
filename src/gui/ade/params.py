@@ -18,11 +18,11 @@ class ParameterRegressor:
 
     PARAM_NAMES = ['window_size', 'min_match', 'max_chain_length', 'lookahead_size', 'dp_range']
     PARAM_RANGES = {
-        'window_size': (1024, 262144),
-        'min_match': (2, 64),
-        'max_chain_length': (4, 512),
-        'lookahead_size': (8, 256),
-        'dp_range': (1, 16),
+        'window_size': (1024, 524288),
+        'min_match': (2, 96),
+        'max_chain_length': (4, 1024),
+        'lookahead_size': (8, 512),
+        'dp_range': (1, 24),
     }
     ALGORITHM_MAP = {
         AlgorithmType.DEFLATE: 0,
