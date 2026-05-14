@@ -19,11 +19,11 @@ struct LzdpWholeFileParams {
     int match_engine{0};
 };
 
-/// Snapshot for file-streaming ``algorithm::Deflate`` (must match GUI Deflate row: ``search_size``,
-/// ``min_match``, ``max_chain_length``). ``slide_size`` is passed to ``Deflate`` ctor as the LZ77
-/// slide buffer size (same numeric field as GUI ``search_size``).
+/// Snapshot for file-streaming ``algorithm::Deflate`` (same window fields as ``DpflatePipelineParams``
+/// / GUI: ``search_size``, ``lookahead_size``, ``min_match``, ``max_chain_length``).
 struct DeflatePipelineParams {
-    std::size_t slide_size{32768};
+    std::size_t search_size{4096};
+    std::size_t lookahead_size{256};
     std::size_t min_match{0};
     std::size_t max_chain_length{256};
 };
@@ -68,18 +68,13 @@ enum class AlgorithmID {
 
 /// @param streaming_compress_chunk_bytes  Raw requested plaintext chunk size (bytes). Always
 ///                                        normalized via ``processor::effective_stream_chunk_bytes``
-///                                        (same min/max/default for all file streaming). That value
-///                                        is: the ``StreamingCompressAdapter`` segment size for
-///                                        Deflate / LZSS / Brotli / Zstd; and the file read /
-///                                        ``MemoryPool`` chunk that feeds one ``process()`` read for
-///                                        ``LZDP_OutOfCore`` / ``DPFlate`` (see
-///                                        ``docs/design/streaming-compression-design.md`` §2.3,
-///                                        ``docs/design/lzdp-file-pipeline-design.md`` §1).
+///                                        (same min/max/default for all file streaming). Used as
+///                                        the ``StreamingCompressAdapter`` segment size for LZSS /
+///                                        Brotli / Zstd, and as the file read / ``MemoryPool`` chunk
+///                                        for ``algorithm::Deflate``, ``LZDP_OutOfCore``, and
+///                                        ``DPFlate`` (one ``process()`` read per disk chunk).
 /// @param deflate_pipeline                 When ``id == Deflate``, ctor args for ``algorithm::Deflate``
-///                                        (omit or null for defaults). File streaming uses this
-///                                        core (same push/pull interaction as DPFlate / LZDP), not
-///                                        ``StreamingCompressAdapter``.
-/// @param deflate_pipeline                 Ignored for non-Deflate ids.
+///                                        (omit or null for defaults). Ignored for other ids.
 auto createAlgorithm(AlgorithmID id,
                        uint32_t file_compress_opts = kFileCompressOptsNone,
                        const LzdpWholeFileParams* lzdp_whole_file = nullptr,

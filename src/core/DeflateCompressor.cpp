@@ -41,8 +41,10 @@ auto DeflateCompressor::compress(std::vector<uint8_t> original_data)
             std::copy_n(out.begin(), status.bytes_produced, result.data.begin());
         }
     } else {
+        const size_t look =
+            lookahead_size_ == 0 ? size_t{258} : lookahead_size_;
         algorithm::Deflate deflate(slide_size_, min_match_ == 0 ? 3 : min_match_,
-                                   max_chain_length_);
+                                   max_chain_length_, look);
         deflate.reset();
 
         size_t out_capacity = original_data.size() * 2 + 65536;

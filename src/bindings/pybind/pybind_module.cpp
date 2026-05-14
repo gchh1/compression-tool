@@ -255,6 +255,15 @@ PYBIND11_MODULE(core_engine, m) {
         .def_readwrite("huffman_length_chunk_bits",
                        &compressor::core::DpflatePipelineParams::huffman_length_chunk_bits);
 
+    py::class_<compressor::core::DeflatePipelineParams>(m, "DeflatePipelineParams")
+        .def(py::init<>())
+        .def_readwrite("search_size", &compressor::core::DeflatePipelineParams::search_size)
+        .def_readwrite("lookahead_size",
+                       &compressor::core::DeflatePipelineParams::lookahead_size)
+        .def_readwrite("min_match", &compressor::core::DeflatePipelineParams::min_match)
+        .def_readwrite("max_chain_length",
+                       &compressor::core::DeflatePipelineParams::max_chain_length);
+
     py::class_<compressor::api::CompressResult>(m, "PipelineCompressResult")
         .def(py::init<>())
         .def_readwrite("data", &compressor::api::CompressResult::data)
@@ -306,23 +315,51 @@ PYBIND11_MODULE(core_engine, m) {
 
     m.def("pipeline_compress",
           [](const std::vector<uint8_t>& data,
-             const std::vector<compressor::core::AlgorithmID>& chain)
+             const std::vector<compressor::core::AlgorithmID>& chain,
+             const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
+             const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p,
+             const std::optional<compressor::core::DeflatePipelineParams>& deflate_p,
+             size_t stream_chunk_bytes)
               -> compressor::api::CompressResult {
-              return compressor::api::compress(data, chain);
+              const compressor::core::LzdpWholeFileParams* p =
+                  lzdp_wf.has_value() ? &lzdp_wf.value() : nullptr;
+              const compressor::core::DpflatePipelineParams* d =
+                  dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
+              const compressor::core::DeflatePipelineParams* df =
+                  deflate_p.has_value() ? &deflate_p.value() : nullptr;
+              return compressor::api::compress(data, chain, p, d, df, stream_chunk_bytes);
           },
           py::arg("data"), py::arg("chain"),
+          py::arg("lzdp_whole_file") = std::nullopt,
+          py::arg("dpflate_pipeline") = std::nullopt,
+          py::arg("deflate_pipeline") = std::nullopt,
+          py::arg("stream_chunk_bytes") = size_t{0},
           py::call_guard<py::gil_scoped_release>(),
-          "Compress data using a pipeline of algorithms with streaming chunking");
+          "Compress data using a pipeline (same optional pipeline structs as compressFile).");
 
     m.def("pipeline_decompress",
           [](const std::vector<uint8_t>& data,
-             const std::vector<compressor::core::AlgorithmID>& chain)
+             const std::vector<compressor::core::AlgorithmID>& chain,
+             const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
+             const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p,
+             const std::optional<compressor::core::DeflatePipelineParams>& deflate_p,
+             size_t stream_chunk_bytes)
               -> compressor::api::CompressResult {
-              return compressor::api::decompress(data, chain);
+              const compressor::core::LzdpWholeFileParams* p =
+                  lzdp_wf.has_value() ? &lzdp_wf.value() : nullptr;
+              const compressor::core::DpflatePipelineParams* d =
+                  dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
+              const compressor::core::DeflatePipelineParams* df =
+                  deflate_p.has_value() ? &deflate_p.value() : nullptr;
+              return compressor::api::decompress(data, chain, p, d, df, stream_chunk_bytes);
           },
           py::arg("data"), py::arg("chain"),
+          py::arg("lzdp_whole_file") = std::nullopt,
+          py::arg("dpflate_pipeline") = std::nullopt,
+          py::arg("deflate_pipeline") = std::nullopt,
+          py::arg("stream_chunk_bytes") = size_t{0},
           py::call_guard<py::gil_scoped_release>(),
-          "Decompress data using a pipeline of algorithms");
+          "Decompress data using a pipeline (optional structs for pool / symmetry).");
 
     m.def("pipeline_compress_file",
           [](const std::string& input_path,
@@ -331,28 +368,33 @@ PYBIND11_MODULE(core_engine, m) {
              size_t stream_chunk_bytes,
              uint32_t file_compress_opts,
              const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
-             const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p)
+             const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p,
+             const std::optional<compressor::core::DeflatePipelineParams>& deflate_p)
               -> compressor::api::CompressResult {
               const compressor::core::LzdpWholeFileParams* p =
                   lzdp_wf.has_value() ? &lzdp_wf.value() : nullptr;
               const compressor::core::DpflatePipelineParams* d =
                   dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
+              const compressor::core::DeflatePipelineParams* df =
+                  deflate_p.has_value() ? &deflate_p.value() : nullptr;
               return compressor::api::compressFile(input_path, output_path, chain,
                                                     stream_chunk_bytes,
                                                     file_compress_opts,
-                                                    p, d);
+                                                    p, d, df);
           },
           py::arg("input_path"), py::arg("output_path"), py::arg("chain"),
           py::arg("stream_chunk_bytes") = size_t{0},
           py::arg("file_compress_opts") = uint32_t{0},
           py::arg("lzdp_whole_file") = std::nullopt,
           py::arg("dpflate_pipeline") = std::nullopt,
+          py::arg("deflate_pipeline") = std::nullopt,
           py::call_guard<py::gil_scoped_release>(),
           "Streaming compress a file in chunks. stream_chunk_bytes is clamped to 64 KiB–128 MiB "
           "(default 1 MiB when 0); same policy as LZDP/DPFlate pipeline chunk size. "
-          "LZDP: LZDP_OutOfCore (chunked window + spill A/B + backtrack + emit); LzdpWholeFileParams. "
-          "DPFlate: pass DpflatePipelineParams matching DPFlateCompressor / GUI. "
-          "lzdp_whole_file / dpflate_pipeline: optional snapshots (omit when not using that algo).");
+          "Deflate: ``algorithm::Deflate`` streaming core (same interaction as DPFlate/LZDP); "
+          "optional DeflatePipelineParams (search_size / lookahead_size / min_match / "
+          "max_chain_length; lookahead caps LZ match length, max 258 for valid DEFLATE). "
+          "LZDP: LzdpWholeFileParams. DPFlate: DpflatePipelineParams.");
 
     m.def("pipeline_compress_directory",
           [](const std::string& dir_path,
@@ -361,21 +403,25 @@ PYBIND11_MODULE(core_engine, m) {
              size_t stream_chunk_bytes,
              uint32_t file_compress_opts,
              const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
-             const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p)
+             const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p,
+             const std::optional<compressor::core::DeflatePipelineParams>& deflate_p)
               -> compressor::api::CompressResult {
               const compressor::core::LzdpWholeFileParams* p =
                   lzdp_wf.has_value() ? &lzdp_wf.value() : nullptr;
               const compressor::core::DpflatePipelineParams* d =
                   dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
+              const compressor::core::DeflatePipelineParams* df =
+                  deflate_p.has_value() ? &deflate_p.value() : nullptr;
               return compressor::api::compressDirectory(dir_path, output_path, chain,
                                                        stream_chunk_bytes,
-                                                       file_compress_opts, p, d);
+                                                       file_compress_opts, p, d, df);
           },
           py::arg("dir_path"), py::arg("output_path"), py::arg("chain"),
           py::arg("stream_chunk_bytes") = size_t{0},
           py::arg("file_compress_opts") = uint32_t{0},
           py::arg("lzdp_whole_file") = std::nullopt,
           py::arg("dpflate_pipeline") = std::nullopt,
+          py::arg("deflate_pipeline") = std::nullopt,
           py::call_guard<py::gil_scoped_release>(),
           "Streaming compress a directory tree to one WCX (folder flag); same optional params as "
           "pipeline_compress_file.");

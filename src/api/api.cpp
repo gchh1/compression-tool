@@ -111,22 +111,36 @@ static CancelCallbackRegistrar g_cancel_registrar;
 // ---- public API ----
 
 auto compress(const std::vector<uint8_t>& data,
-              std::span<const AlgorithmID> chain) -> CompressResult {
+              std::span<const AlgorithmID> chain,
+              const core::LzdpWholeFileParams* lzdp_whole_file,
+              const core::DpflatePipelineParams* dpflate_pipeline,
+              const core::DeflatePipelineParams* deflate_pipeline,
+              std::size_t streaming_compress_chunk_bytes) -> CompressResult {
     CompressResult result;
     result.original_size = data.size();
 
     auto t0 = std::chrono::high_resolution_clock::now();
 
+    const size_t chunk =
+        processor::effective_stream_chunk_bytes(streaming_compress_chunk_bytes);
+
     std::vector<std::unique_ptr<algorithm::IAlgorithm>> algos;
     for (auto id : chain) {
-        if (auto a = core::createAlgorithm(id, core::kFileCompressOptsNone, nullptr, 0)) algos.push_back(std::move(a));
+        const core::LzdpWholeFileParams* lz =
+            (id == core::AlgorithmID::LZDP) ? lzdp_whole_file : nullptr;
+        const core::DpflatePipelineParams* df =
+            (id == core::AlgorithmID::DPFlate) ? dpflate_pipeline : nullptr;
+        const core::DeflatePipelineParams* dfl =
+            (id == core::AlgorithmID::Deflate) ? deflate_pipeline : nullptr;
+        if (auto a = core::createAlgorithm(id, core::kFileCompressOptsNone, lz, chunk, df, dfl))
+            algos.push_back(std::move(a));
     }
     if (algos.empty()) {
         result.error_message = "Unknown or null algorithm";
         return result;
     }
 
-    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, 65536);
+    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
     processor::Pipeline pipeline(std::move(algos), pool);
     pipeline.push(data, true);
     pipeline.finish();
@@ -153,22 +167,36 @@ auto compress(const std::vector<uint8_t>& data,
 }
 
 auto decompress(const std::vector<uint8_t>& data,
-                std::span<const AlgorithmID> chain) -> CompressResult {
+                std::span<const AlgorithmID> chain,
+                const core::LzdpWholeFileParams* lzdp_whole_file,
+                const core::DpflatePipelineParams* dpflate_pipeline,
+                const core::DeflatePipelineParams* deflate_pipeline,
+                std::size_t streaming_compress_chunk_bytes) -> CompressResult {
     CompressResult result;
     result.original_size = data.size();
 
     auto t0 = std::chrono::high_resolution_clock::now();
 
+    const size_t chunk =
+        processor::effective_stream_chunk_bytes(streaming_compress_chunk_bytes);
+
     std::vector<std::unique_ptr<algorithm::IAlgorithm>> algos;
     for (auto id : chain) {
-        if (auto a = core::createAlgorithm(id, core::kFileCompressOptsNone, nullptr, 0)) algos.push_back(std::move(a));
+        const core::LzdpWholeFileParams* lz =
+            (id == core::AlgorithmID::LZDP) ? lzdp_whole_file : nullptr;
+        const core::DpflatePipelineParams* df =
+            (id == core::AlgorithmID::DPFlate) ? dpflate_pipeline : nullptr;
+        const core::DeflatePipelineParams* dfl =
+            (id == core::AlgorithmID::Deflate) ? deflate_pipeline : nullptr;
+        if (auto a = core::createAlgorithm(id, core::kFileCompressOptsNone, lz, chunk, df, dfl))
+            algos.push_back(std::move(a));
     }
     if (algos.empty()) {
         result.error_message = "Unknown or null algorithm";
         return result;
     }
 
-    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, 65536);
+    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
     processor::Pipeline pipeline(std::move(algos), pool);
     pipeline.push(data, true);
     pipeline.finish();
@@ -311,7 +339,8 @@ auto compressFile(const std::string& input_path,
                   size_t stream_chunk_bytes,
                   uint32_t file_compress_opts,
                   const core::LzdpWholeFileParams* lzdp_whole_file,
-                  const core::DpflatePipelineParams* dpflate_pipeline) -> CompressResult {
+                  const core::DpflatePipelineParams* dpflate_pipeline,
+                  const core::DeflatePipelineParams* deflate_pipeline) -> CompressResult {
     CompressResult result;
 
     auto t0 = std::chrono::high_resolution_clock::now();
@@ -332,7 +361,10 @@ auto compressFile(const std::string& input_path,
             (id == core::AlgorithmID::LZDP) ? lzdp_whole_file : nullptr;
         const core::DpflatePipelineParams* df =
             (id == core::AlgorithmID::DPFlate) ? dpflate_pipeline : nullptr;
-        if (auto a = core::createAlgorithm(id, file_compress_opts, lz, chunk, df))
+        const core::DeflatePipelineParams* dfl =
+            (id == core::AlgorithmID::Deflate) ? deflate_pipeline : nullptr;
+        if (auto a = core::createAlgorithm(id, file_compress_opts, lz, chunk, df,
+                                           dfl))
             algos.push_back(std::move(a));
     }
     if (algos.empty()) {
@@ -677,7 +709,8 @@ auto compressDirectory(const std::string& dir_path,
                        size_t stream_chunk_bytes,
                        uint32_t file_compress_opts,
                        const core::LzdpWholeFileParams* lzdp_whole_file,
-                       const core::DpflatePipelineParams* dpflate_pipeline) -> CompressResult {
+                       const core::DpflatePipelineParams* dpflate_pipeline,
+                       const core::DeflatePipelineParams* deflate_pipeline) -> CompressResult {
     CompressResult result;
 
     auto t0 = std::chrono::high_resolution_clock::now();
@@ -769,7 +802,8 @@ auto compressDirectory(const std::string& dir_path,
     try {
         for (const auto& file : files) {
             writer.beginFile(file.rel_path.string(), chain, file_compress_opts,
-                             lzdp_whole_file, chunk, dpflate_pipeline);
+                             lzdp_whole_file, chunk, dpflate_pipeline,
+                             deflate_pipeline);
 
             std::ifstream input(file.abs_path, std::ios::binary);
             if (!input) continue;

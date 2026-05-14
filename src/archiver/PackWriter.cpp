@@ -20,7 +20,8 @@ auto PackWriter::beginFile(const std::string& filepath,
                            uint32_t file_compress_opts,
                            const core::LzdpWholeFileParams* lzdp_whole_file,
                            std::size_t streaming_compress_chunk_bytes,
-                           const core::DpflatePipelineParams* dpflate_pipeline)
+                           const core::DpflatePipelineParams* dpflate_pipeline,
+                           const core::DeflatePipelineParams* deflate_pipeline)
     -> void {
     if (finished_) return;
     if (file_open_) closeCurrentFile();
@@ -43,7 +44,8 @@ auto PackWriter::beginFile(const std::string& filepath,
                                                     file_compress_opts,
                                                     lzdp_whole_file,
                                                     streaming_compress_chunk_bytes,
-                                                    dpflate_pipeline);
+                                                    dpflate_pipeline,
+                                                    deflate_pipeline);
 
     file_open_ = true;
 }

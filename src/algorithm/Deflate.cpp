@@ -21,11 +21,16 @@ namespace compressor::algorithm {
  * @brief Construct a new Deflate:: Deflate object
  *
  */
-Deflate::Deflate(size_t slide_size, size_t min_match, size_t max_chain_length)
+Deflate::Deflate(size_t slide_size, size_t min_match, size_t max_chain_length,
+                 size_t lookahead_max)
     : SLIDE_SIZE(slide_size),
       WINDOW_SIZE(2 * slide_size),
       MIN_MATCH(min_match),
-      MAX_MATCH(258),
+      MAX_MATCH([&]() -> size_t {
+          const size_t cap = lookahead_max == 0 ? size_t(258)
+                                                : std::min(lookahead_max, size_t(258));
+          return std::min(std::max(cap, min_match), size_t(258));
+      }()),
       HASH_SIZE(slide_size),
       MAX_CHAIN_LENGTH(max_chain_length) {
     reset();
@@ -122,7 +127,7 @@ auto Deflate::handleFindMatches(AlgorithmStatus& status, bool is_last_chunk)
         uint16_t hash_val = getHash(cursor_);
         uint16_t match_pos = head_[hash_val];
 
-        prev_[cursor_ & (SLIDE_SIZE - 1)] = match_pos;
+        prev_[cursor_ % SLIDE_SIZE] = match_pos;
         head_[hash_val] = static_cast<uint16_t>(cursor_);
 
         size_t chain_length = MAX_CHAIN_LENGTH;
@@ -144,7 +149,7 @@ auto Deflate::handleFindMatches(AlgorithmStatus& status, bool is_last_chunk)
                 match_distance = distance;
                 if (match_length == max_possible) break;
             }
-            match_pos = prev_[match_pos & (SLIDE_SIZE - 1)];
+            match_pos = prev_[match_pos % SLIDE_SIZE];
         }
     }
 
@@ -162,7 +167,7 @@ auto Deflate::handleFindMatches(AlgorithmStatus& status, bool is_last_chunk)
             lookahead_--;
             if (lookahead_ >= MIN_MATCH) {
                 uint16_t hash_val = getHash(cursor_);
-                prev_[cursor_ & (SLIDE_SIZE - 1)] = head_[hash_val];
+                prev_[cursor_ % SLIDE_SIZE] = head_[hash_val];
                 head_[hash_val] = static_cast<uint16_t>(cursor_);
             }
         }

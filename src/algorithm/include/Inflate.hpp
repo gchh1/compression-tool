@@ -21,6 +21,11 @@ protected:
 private:
     static constexpr size_t DISTANCE_DICTIONARY_SIZE = 30;
     static constexpr size_t DISTANCE_SYMBOL_BITS = 5;
+    /// RFC1951 max lookback distance (bytes).
+    static constexpr size_t kWindowSize = 32768;
+
+    std::vector<uint8_t> window_;
+    uint64_t out_abs_{0};
 
     std::vector<uint8_t> output_buf_;
 
@@ -42,6 +47,8 @@ private:
     void decodeDistCode(uint16_t symbol, uint16_t& dist, uint8_t& extra_bits);
 
     void destroyTree(node* n);
+
+    auto appendDecodedByte(uint8_t b) -> void;
 
     static constexpr size_t LENGTH_BASES[29] = {
         3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,

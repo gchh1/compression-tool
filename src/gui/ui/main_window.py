@@ -26,12 +26,14 @@ from gui.models import (
     AlgorithmType,
     ResourceType,
     formatted_size,
+    compressed_payload_size,
     ALGORITHM_PARAMS,
     get_default_config,
     LZDP_DP_VIZ_MAX_SIZE,
     STREAMING_CHUNK_SIZE_KB,
     STREAMING_THRESHOLD_MB,
 )
+from gui.engine.file_protocol import file_record_compression_blob, strip_wcx_if_present
 from gui.config.settings import load_config, get_defaults
 from gui.config.theme import ThemeManager
 from gui.ui.table import FileTableWidget
@@ -39,14 +41,8 @@ from gui.ui.worker import CompressionWorker, ComparisonWorker, COMPARISON_ALGORI
 
 
 def _compressed_size(record: Record) -> int:
-    """Get compressed size, supporting both in-memory and file-path streaming modes."""
-    if hasattr(record, 'compressed_data') and record.compressed_data is not None:
-        return len(record.compressed_data)
-    if hasattr(record, 'compressed_path') and record.compressed_path and Path(record.compressed_path).exists():
-        return Path(record.compressed_path).stat().st_size
-    if hasattr(record, 'size'):
-        return record.size
-    return 0
+    """Stored compressed artifact size (memory or ``compressed_path``)."""
+    return compressed_payload_size(record)
 
 
 WINDOW_WIDTH = 900
@@ -1212,7 +1208,7 @@ class CompressDemoDialog(QDialog):
         status_text = self._record.status.value
         info_layout.addWidget(QLabel(f"状态: {status_text}"))
 
-        if self._record.compressed_data:
+        if compressed_payload_size(self._record) > 0:
             stored_tag = " [stored]" if getattr(self._record, 'is_stored', False) else ""
             info_layout.addWidget(QLabel(f"压缩后: {formatted_size(_compressed_size(self._record))}{stored_tag}"))
             info_layout.addWidget(QLabel(f"压缩率: {self._record.compression_ratio * 100:.1f}%"))
@@ -1561,9 +1557,20 @@ class MainWindow(QMainWindow):
             parser = get_parser(record.algorithm)
             _demo_params = getattr(record, 'compression_config_snapshot', None)
             if parser is not None:
-                logger.info("[demo] parsing compressed_data=%d raw_data=%d", len(record.compressed_data), len(record.raw_data) if record.raw_data else 0)
+                container = file_record_compression_blob(record)
+                if not container:
+                    QMessageBox.information(
+                        self,
+                        "提示",
+                        "没有可用的压缩数据（流式压缩结果保存在磁盘 .wcx 中）。",
+                    )
+                    return
+                record.load_raw_data()
+                parse_input = strip_wcx_if_present(container)
+                raw_sz = len(record.raw_data) if record.raw_data else 0
+                logger.info("[demo] parsing payload=%d raw_data=%d", len(parse_input), raw_sz)
                 pr = parser.parse(
-                    record.compressed_data, record.raw_data, compression_params=_demo_params
+                    parse_input, record.raw_data, compression_params=_demo_params
                 )
                 logger.info("[demo] parse done, tokens=%d", len(pr.tokens))
                 if is_text and len(pr.tokens) > 0:
@@ -1712,15 +1719,18 @@ class MainWindow(QMainWindow):
                 file_list = []
                 folder_root = P(record.path)
                 for f in record.files:
-                    if f.status != CompressionStatus.DONE or not f.compressed_data:
+                    if f.status != CompressionStatus.DONE:
+                        continue
+                    blob = file_record_compression_blob(f)
+                    if not blob:
                         logger.warning("[export] SKIP file %s: status=%s has_data=%s",
-                                          f.name, f.status, bool(f.compressed_data))
+                                       f.name, f.status, bool(f.compressed_data or f.compressed_path))
                         continue
                     try:
                         rel = str(P(f.path).relative_to(folder_root))
                     except ValueError:
                         rel = f.name
-                    file_list.append((rel, f.compressed_data, f.algorithm, f.size))
+                    file_list.append((rel, blob, f.algorithm, f.size))
                 if not file_list:
                     continue
                 archive_data = pack_folder_archive(record.name, file_list)
@@ -1781,7 +1791,9 @@ class MainWindow(QMainWindow):
             if not record:
                 continue
             if isinstance(record, FileRecord):
-                if record.status == CompressionStatus.DONE and record.compressed_data:
+                if record.status == CompressionStatus.DONE and (
+                    record.compressed_data or getattr(record, "compressed_path", None)
+                ):
                     decompress_tasks.append(('session', row, record))
                 elif P(record.path).suffix.lower() == UNIFIED_EXTENSION:
                     try:
@@ -1815,13 +1827,17 @@ class MainWindow(QMainWindow):
                     folder_root = P(record.path)
                     file_list = []
                     for f in record.files:
-                        if f.status != CompressionStatus.DONE or not f.compressed_data:
+                        if f.status != CompressionStatus.DONE:
+                            continue
+                        blob = file_record_compression_blob(f)
+                        if not blob:
+                            logger.warning("[decompress] folder child skip (no data): %s", f.name)
                             continue
                         try:
                             rel = str(P(f.path).relative_to(folder_root))
                         except ValueError:
                             rel = f.name
-                        file_list.append((rel, f.compressed_data, f.algorithm, f.size))
+                        file_list.append((rel, blob, f.algorithm, f.size))
                     archive_data = pack_folder_archive(record.name, file_list)
                     inner_files = unpack_folder_archive(archive_data)
                     for inner_hdr, inner_payload in inner_files:
@@ -1850,6 +1866,9 @@ class MainWindow(QMainWindow):
                         output_path = os.path.join(export_dir, original_name)
                         logger.info("[decompress] STREAMING file-to-file: %s -> %s", record.compressed_path, output_path)
                         result = engine.smart_decompress_file(record.compressed_path, output_path, record.algorithm)
+                        if not getattr(result, "success", True):
+                            em = (getattr(result, "error_message", None) or "").strip() or "解压失败"
+                            raise RuntimeError(em)
                         success += 1
                         continue
 
@@ -1959,9 +1978,9 @@ class MainWindow(QMainWindow):
             logger.warning("[view] record not done: status=%s", record.status.value)
             QMessageBox.information(self, "提示", f"该文件状态为 {record.status.value}，请先压缩")
             return None
-        if not record.compressed_data:
-            logger.warning("[view] record has no compressed_data")
-            QMessageBox.information(self, "提示", "该文件没有压缩数据")
+        if not file_record_compression_blob(record):
+            logger.warning("[view] record has no compressed artifact")
+            QMessageBox.information(self, "提示", "该文件没有可用的压缩数据（内存或磁盘 .wcx）")
             return None
         logger.info("[view] valid record: name=%s, size=%d, compressed=%d, algo=%s",
                      record.name, record.size, _compressed_size(record), record.algorithm.value)
@@ -1970,12 +1989,15 @@ class MainWindow(QMainWindow):
     def _on_view_heatmap_row(self, row: int) -> None:
         logger.info("[view] heatmap from right-click, row=%d", row)
         record = self._table.get_record(row)
-        logger.info("[view] record: type=%s, name=%s, status=%s, has_data=%s",
+        logger.info("[view] record: type=%s, name=%s, status=%s, has_artifact=%s",
                      type(record).__name__, getattr(record, 'name', '?'),
                      getattr(record, 'status', '?'),
-                     bool(getattr(record, 'compressed_data', None)))
-        if not isinstance(record, FileRecord) or record.status != CompressionStatus.DONE or not record.compressed_data:
+                     bool(file_record_compression_blob(record)))
+        if not isinstance(record, FileRecord) or record.status != CompressionStatus.DONE:
             QMessageBox.information(self, "提示", "该文件尚未压缩完成，无法查看热力图")
+            return
+        if not file_record_compression_blob(record):
+            QMessageBox.information(self, "提示", "该文件没有可用的压缩数据，无法查看热力图")
             return
         self._open_heatmap(record)
 
@@ -2007,6 +2029,10 @@ class MainWindow(QMainWindow):
         logger.info("[view] opening heatmap for %s (%d bytes, algo=%s)",
                      record.name, record.size, record.algorithm.value)
         try:
+            record.load_raw_data()
+            container = file_record_compression_blob(record) or b""
+            parse_payload = strip_wcx_if_present(container)
+
             from gui.engine.token_parser import can_parse, get_parser
             from gui.models import TEXT_EXTENSIONS, SCRIPT_EXTENSIONS
 
@@ -2019,8 +2045,11 @@ class MainWindow(QMainWindow):
                 _hm_params = getattr(record, 'compression_config_snapshot', None)
                 logger.info("[heatmap] parser=%s, calling parse", type(parser).__name__)
                 if parser is not None:
+                    if not container:
+                        QMessageBox.warning(self, "热力图错误", "无法读取压缩数据（内存或磁盘 .wcx）")
+                        return
                     pr = parser.parse(
-                        record.compressed_data, record.raw_data, compression_params=_hm_params
+                        parse_payload, record.raw_data, compression_params=_hm_params
                     )
                     logger.info("[heatmap] parse done, tokens=%d", len(pr.tokens))
                     if is_text:
@@ -2053,7 +2082,7 @@ class MainWindow(QMainWindow):
                     from gui.ui.dialogs.block_heatmap_dialog import BlockHeatmapDialog
                     dlg = BlockHeatmapDialog(
                         raw_data=record.raw_data,
-                        compressed_data=record.compressed_data,
+                        compressed_data=parse_payload,
                         filename=record.name,
                         algorithm=record.algorithm.value,
                         original_size=record.size,
@@ -2069,7 +2098,7 @@ class MainWindow(QMainWindow):
             logger.info("[view] falling back to block-based heatmap (Qt native)")
             dlg = BlockHeatmapDialog(
                 raw_data=record.raw_data,
-                compressed_data=record.compressed_data,
+                compressed_data=parse_payload,
                 filename=record.name,
                 algorithm=record.algorithm.value,
                 original_size=record.size,
@@ -2226,7 +2255,7 @@ class MainWindow(QMainWindow):
 
             resource_ratios = {}
             for f in record.files:
-                if f.status == CompressionStatus.DONE and f.compressed_data:
+                if f.status == CompressionStatus.DONE and compressed_payload_size(f) > 0:
                     resource_ratios[f.name] = f.compression_ratio
 
             from gui.windows.webpage_heatmap import generate_webpage_heatmap, open_webpage_heatmap

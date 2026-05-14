@@ -23,6 +23,22 @@ def formatted_size(size_bytes: int) -> str:
     return f"{size_bytes / (1024 * 1024 * 1024):.2f} GB"
 
 
+def compressed_payload_size(record: object) -> int:
+    """Bytes of the stored compressed artifact (memory or ``compressed_path`` on disk)."""
+    data = getattr(record, "compressed_data", None)
+    if data is not None:
+        return len(data)
+    path = getattr(record, "compressed_path", None)
+    if path:
+        try:
+            p = Path(path)
+            if p.is_file():
+                return int(p.stat().st_size)
+        except OSError:
+            return 0
+    return 0
+
+
 class ResourceType(Enum):
     AUDIO = "audio"
     BINARY = "binary"
@@ -100,19 +116,21 @@ ALGORITHM_PARAMS: dict[AlgorithmType, list[AlgorithmParamDef]] = {
         AlgorithmParamDef("huffman_length_chunk_bits", "3HfM length 槽宽（bit）", 8, 2, 20, 1, ""),
     ],
     AlgorithmType.DEFLATE: [
+        # 与 DPFlate 同款范围/步进；经典 Deflate 距离码上限 32768（与 Inflate 兼容）
+        AlgorithmParamDef("search_size", "搜索窗口大小", 4096, 256, 32768, 256, " B"),
+        AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 256, 16, 8192, 16, " B"),
+        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 127, 1, " 0 表示使用实现默认（3）"),
+        AlgorithmParamDef("max_chain_length", "哈希链搜索深度", 256, 4, 8192, 4, ""),
         AlgorithmParamDef(
-            "search_size",
-            "搜索窗口大小",
-            32768,
-            1024,
-            65536,
-            1024,
-            " B；大文件分块管线与其它算法共用同一 WCX 容器与分块策略；"
-            "该路径内载荷为经典两树 Deflate（与 Inflate 解压一致），"
-            "下列 3HfM 相关项仅在「整块内存压缩」时参与",
+            "use_flag_encoding",
+            "编码方案",
+            1,
+            0,
+            1,
+            1,
+            "",
+            choices={0: "Offset=0 兜底模式 (长纯文本占优)", 1: "1-Bit Flag 模式 (碎片化文件占优)"},
         ),
-        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 127, 1, ""),
-        AlgorithmParamDef("max_chain_length", "最大搜索链长", 256, 4, 8192, 4, ""),
         AlgorithmParamDef(
             "use_3hfmtree",
             "Huffman 树策略",
@@ -122,47 +140,9 @@ ALGORITHM_PARAMS: dict[AlgorithmType, list[AlgorithmParamDef]] = {
             1,
             "",
             choices={
-                0: "标准 Deflate（两树；分块管线与整块内存一致）",
-                1: "3HfM（仅整块内存压缩；分块管线仍为经典 Deflate，便于 Inflate 解压）",
+                0: "标准 FLATE（两树，兼容 Inflate）",
+                1: "3HfMTree（整块内存压缩走 DPFlate 内核；分块文件管线仍为经典 Deflate）",
             },
-        ),
-        AlgorithmParamDef(
-            "lookahead_size",
-            "3HfM 前瞻窗口（字节）",
-            258,
-            16,
-            8192,
-            16,
-            " 仅 use_3hfmtree=1 且整块内存压缩（分块文件管线不使用）",
-        ),
-        AlgorithmParamDef(
-            "dp_sub_match_max",
-            "3HfM DP 候选数",
-            6,
-            1,
-            64,
-            1,
-            " 仅 use_3hfmtree=1 且整块内存压缩（分块文件管线不使用）",
-        ),
-        AlgorithmParamDef(
-            "match_engine",
-            "3HfM 匹配引擎",
-            1,
-            0,
-            1,
-            1,
-            " 仅 use_3hfmtree=1（整块内存）",
-            choices={0: "KMP", 1: "HashChain"},
-        ),
-        AlgorithmParamDef(
-            "use_flag_encoding",
-            "3HfM 编码方案",
-            0,
-            0,
-            1,
-            1,
-            " 仅 use_3hfmtree=1（整块内存）",
-            choices={0: "Offset=0 兜底", 1: "1-Bit Flag"},
         ),
         AlgorithmParamDef(
             "huffman_offset_chunk_bits",
@@ -171,7 +151,7 @@ ALGORITHM_PARAMS: dict[AlgorithmType, list[AlgorithmParamDef]] = {
             2,
             20,
             1,
-            " 仅 use_3hfmtree=1（整块内存）",
+            " 仅 use_3hfmtree=1",
         ),
         AlgorithmParamDef(
             "huffman_length_chunk_bits",
@@ -180,7 +160,7 @@ ALGORITHM_PARAMS: dict[AlgorithmType, list[AlgorithmParamDef]] = {
             2,
             20,
             1,
-            " 仅 use_3hfmtree=1（整块内存）",
+            " 仅 use_3hfmtree=1",
         ),
     ],
     AlgorithmType.GZIP: [

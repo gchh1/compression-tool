@@ -477,6 +477,7 @@ src/api/CMakeFiles/api.dir/api.cpp.obj
  D:/AAA_C/compression-tool/src/archiver/include/PackWriter.hpp
  D:/AAA_C/compression-tool/src/core/include/AlgorithmFactory.hpp
  D:/AAA_C/compression-tool/src/processor/include/Pipeline.hpp
+ D:/AAA_C/compression-tool/src/processor/include/StreamChunkPolicy.hpp
  D:/AAA_C/compression-tool/src/processor/include/StreamProcessor.hpp
  D:/AAA_C/compression-tool/src/utils/include/BitReader.hpp
  D:/AAA_C/compression-tool/src/utils/include/BitWriter.hpp

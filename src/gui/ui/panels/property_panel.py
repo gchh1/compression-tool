@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QScrollArea, QFrame,
 )
 
-from gui.models import ArchiveEntry, FileRecord, formatted_size
+from gui.models import ArchiveEntry, FileRecord, formatted_size, compressed_payload_size
 from gui.config.theme import ThemeManager
 
 
@@ -115,7 +115,7 @@ class PropertyPanel(QWidget):
             self._algo_label.setText(f"策略: {rec.algorithm.value}")
             self._ratio_label.setText(
                 f"压缩率: {rec.compression_ratio * 100:.1f}%  "
-                f"({formatted_size(rec.size)} → {formatted_size(len(rec.compressed_data or []))})")
+                f"({formatted_size(rec.size)} → {formatted_size(compressed_payload_size(rec))})")
             self._time_label.setText(f"耗时: {rec.compression_time_ms:.1f} ms")
             bp = rec.block_profile
             if bp and bp.get('blocks'):

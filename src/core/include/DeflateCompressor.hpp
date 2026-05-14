@@ -11,7 +11,7 @@ namespace core {
 class DeflateCompressor : public ICompressor {
 public:
     DeflateCompressor()
-        : slide_size_(32768),
+        : slide_size_(4096),
           min_match_(3),
           max_chain_length_(256) {}
 
@@ -71,7 +71,7 @@ private:
     size_t max_chain_length_;
 
     bool use_3hfmtree_{false};
-    size_t lookahead_size_{258};
+    size_t lookahead_size_{256};
     size_t dp_sub_match_max_{6};
     int match_engine_{1};
     bool use_flag_encoding_{false};

@@ -475,6 +475,7 @@ src/api/CMakeFiles/api.dir/api.cpp.obj: D:/AAA_C/compression-tool/src/api/api.cp
   D:/AAA_C/compression-tool/src/archiver/include/PackWriter.hpp \
   D:/AAA_C/compression-tool/src/core/include/AlgorithmFactory.hpp \
   D:/AAA_C/compression-tool/src/processor/include/Pipeline.hpp \
+  D:/AAA_C/compression-tool/src/processor/include/StreamChunkPolicy.hpp \
   D:/AAA_C/compression-tool/src/processor/include/StreamProcessor.hpp \
   D:/AAA_C/compression-tool/src/utils/include/BitReader.hpp \
   D:/AAA_C/compression-tool/src/utils/include/BitWriter.hpp \
@@ -959,6 +960,8 @@ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/semaphore.h:
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_ios.tcc:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cctype:
+
+D:/AAA_C/compression-tool/src/processor/include/StreamChunkPolicy.hpp:
 
 D:/AAA_C/compression-tool/src/core/include/AlgorithmFactory.hpp:
 

@@ -20,7 +20,7 @@ from dataclasses import dataclass, field, asdict
 from pathlib import Path
 from typing import Any, Optional
 
-from gui.models import AlgorithmType, CompressionStatus, FileRecord
+from gui.models import AlgorithmType, CompressionStatus, FileRecord, compressed_payload_size
 from gui.ade.features import BaseFeatures, FileType, get_compression_decision
 
 logger = logging.getLogger(__name__)
@@ -204,8 +204,7 @@ class TrainingSampleV3:
         # Compression metrics
         sample.compression_ratio = getattr(record, 'compression_ratio', 1.0)
         sample.compression_time_ms = getattr(record, 'compression_time_ms', 0.0)
-        compressed_data = getattr(record, 'compressed_data', None)
-        sample.output_size_bytes = len(compressed_data) if compressed_data else 0
+        sample.output_size_bytes = compressed_payload_size(record)
         sample.success = getattr(record, 'status', CompressionStatus.FAILED) == CompressionStatus.DONE
         
         # Weight: penalize failed samples

@@ -151,6 +151,20 @@ class CompressionEngine:
             raise ValueError(f"Unsupported algorithm: {algorithm.value}")
 
         cfg = self._config.get(algorithm, {})
+        if algorithm == AlgorithmType.DEFLATE:
+            allowed = frozenset(
+                {
+                    "search_size",
+                    "lookahead_size",
+                    "min_match",
+                    "max_chain_length",
+                    "use_flag_encoding",
+                    "use_3hfmtree",
+                    "huffman_offset_chunk_bits",
+                    "huffman_length_chunk_bits",
+                }
+            )
+            cfg = {k: v for k, v in cfg.items() if k in allowed}
         for key, val in cfg.items():
             if key in _HUFFMAN_CFG_KEYS:
                 continue
@@ -406,11 +420,14 @@ class CompressionEngine:
         file_opts = 0
         lzdp_wf = None
         dpflate_p = None
+        deflate_p = None
         if algorithm == AlgorithmType.LZDP:
             file_opts |= _FILE_COMPRESS_LZDP_WHOLE_FILE
             lzdp_wf = self._lzdp_whole_file_params_for_file_pipeline()
         elif algorithm == AlgorithmType.DPFLATE:
             dpflate_p = self._dpflate_pipeline_params_for_file_pipeline()
+        elif algorithm == AlgorithmType.DEFLATE:
+            deflate_p = self._deflate_pipeline_params_for_file_pipeline()
         logger.info(
             "[smart_compress_file] %s -> %s via %s (chunk_bytes=%d, file_opts=%d)",
             input_path,
@@ -420,7 +437,7 @@ class CompressionEngine:
             file_opts,
         )
         return self._engine.pipeline_compress_file(
-            input_path, output_path, [algo_id], chunk_bytes, file_opts, lzdp_wf, dpflate_p
+            input_path, output_path, [algo_id], chunk_bytes, file_opts, lzdp_wf, dpflate_p, deflate_p
         )
 
     def smart_decompress_file(
@@ -525,6 +542,17 @@ class CompressionEngine:
         p.match_engine = int(c.get("match_engine", 0))
         return p
 
+    def _deflate_pipeline_params_for_file_pipeline(self):
+        """``DeflatePipelineParams`` for C++ streaming ``algorithm::Deflate``; mirrors GUI Deflate row."""
+        eng = self._engine
+        p = eng.DeflatePipelineParams()
+        c = self.get_config().get(AlgorithmType.DEFLATE, {})
+        p.search_size = int(c.get("search_size", 4096))
+        p.lookahead_size = int(c.get("lookahead_size", 256))
+        p.min_match = int(c.get("min_match", 0))
+        p.max_chain_length = int(c.get("max_chain_length", 256))
+        return p
+
     def _dpflate_pipeline_params_for_file_pipeline(self):
         """``DpflatePipelineParams`` for C++ streaming DPFlate; mirrors ``_create_compressor`` knobs."""
         eng = self._engine
@@ -551,8 +579,26 @@ class CompressionEngine:
         if algo_id is None:
             raise ValueError(f"Algorithm {algorithm.value} not supported in pipeline mode")
 
-        result = self._engine.pipeline_compress(list(data), [algo_id])
-        return result
+        cfg = _load_app_config()
+        chunk_bytes = int(_get_effective_chunk_kb(algorithm, cfg)) * 1024
+        lzdp_wf = None
+        dpflate_p = None
+        deflate_p = None
+        if algorithm == AlgorithmType.LZDP:
+            lzdp_wf = self._lzdp_whole_file_params_for_file_pipeline()
+        elif algorithm == AlgorithmType.DPFLATE:
+            dpflate_p = self._dpflate_pipeline_params_for_file_pipeline()
+        elif algorithm == AlgorithmType.DEFLATE:
+            deflate_p = self._deflate_pipeline_params_for_file_pipeline()
+
+        return self._engine.pipeline_compress(
+            list(data),
+            [algo_id],
+            lzdp_wf,
+            dpflate_p,
+            deflate_p,
+            chunk_bytes,
+        )
 
     def pipeline_decompress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE):
         if not self.available:
@@ -562,8 +608,26 @@ class CompressionEngine:
         if decomp_id is None:
             raise ValueError(f"Algorithm {algorithm.value} not supported in pipeline decompress mode")
 
-        result = self._engine.pipeline_decompress(list(data), [decomp_id])
-        return result
+        cfg = _load_app_config()
+        chunk_bytes = int(_get_effective_chunk_kb(algorithm, cfg)) * 1024
+        lzdp_wf = None
+        dpflate_p = None
+        deflate_p = None
+        if algorithm == AlgorithmType.LZDP:
+            lzdp_wf = self._lzdp_whole_file_params_for_file_pipeline()
+        elif algorithm == AlgorithmType.DPFLATE:
+            dpflate_p = self._dpflate_pipeline_params_for_file_pipeline()
+        elif algorithm == AlgorithmType.DEFLATE:
+            deflate_p = self._deflate_pipeline_params_for_file_pipeline()
+
+        return self._engine.pipeline_decompress(
+            list(data),
+            [decomp_id],
+            lzdp_wf,
+            dpflate_p,
+            deflate_p,
+            chunk_bytes,
+        )
 
     def pipeline_compress_file(
         self,
@@ -574,6 +638,7 @@ class CompressionEngine:
         file_compress_opts: int | None = None,
         lzdp_whole_file=None,
         dpflate_pipeline=None,
+        deflate_pipeline=None,
     ):
         if not self.available:
             raise RuntimeError("C++ core_engine not available")
@@ -595,6 +660,7 @@ class CompressionEngine:
 
         lzdp_wf = None
         dpflate_p = None
+        deflate_p = None
         if algorithm == AlgorithmType.LZDP:
             opts |= _FILE_COMPRESS_LZDP_WHOLE_FILE
             lzdp_wf = (
@@ -608,9 +674,15 @@ class CompressionEngine:
                 if dpflate_pipeline is not None
                 else self._dpflate_pipeline_params_for_file_pipeline()
             )
+        elif algorithm == AlgorithmType.DEFLATE:
+            deflate_p = (
+                deflate_pipeline
+                if deflate_pipeline is not None
+                else self._deflate_pipeline_params_for_file_pipeline()
+            )
 
         result = self._engine.pipeline_compress_file(
-            input_path, output_path, [algo_id], chunk, int(opts), lzdp_wf, dpflate_p
+            input_path, output_path, [algo_id], chunk, int(opts), lzdp_wf, dpflate_p, deflate_p
         )
         return result
 

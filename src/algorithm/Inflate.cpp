@@ -12,8 +12,16 @@ namespace compressor::algorithm {
 
 Inflate::Inflate() { reset(); }
 
+auto Inflate::appendDecodedByte(uint8_t b) -> void {
+    output_buf_.push_back(b);
+    window_[static_cast<size_t>(out_abs_ % kWindowSize)] = b;
+    ++out_abs_;
+}
+
 auto Inflate::reset(void) -> void {
     output_buf_.clear();
+    window_.assign(kWindowSize, 0);
+    out_abs_ = 0;
     destroyTree(lit_root_);
     destroyTree(dist_root_);
     lit_root_ = nullptr;
@@ -109,11 +117,19 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
             dist_root_ = nullptr;
 
             if (!readHuffmanTree(lit_root_, DEFLATE_SYMBOL_BITS)) {
+                if (is_last_chunk && reader_.getRemainingBits() == 0) {
+                    status.done = true;
+                    return;
+                }
                 status.need_input = true;
                 return;
             }
 
             if (!readHuffmanTree(dist_root_, DISTANCE_SYMBOL_BITS)) {
+                if (is_last_chunk && reader_.getRemainingBits() == 0) {
+                    status.done = true;
+                    return;
+                }
                 status.need_input = true;
                 return;
             }
@@ -130,7 +146,7 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
                     status.need_input = true;
                     return;
                 }
-                output_buf_.push_back(static_cast<uint8_t>(reader_.readBits(8)));
+                appendDecodedByte(static_cast<uint8_t>(reader_.readBits(8)));
                 stored_bytes_remaining_--;
             }
             for (size_t i = 0; i < output_buf_.size(); i++) {
@@ -160,7 +176,7 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
             lit_cursor_ = lit_root_;
 
             if (symbol < 256) {
-                output_buf_.push_back(static_cast<uint8_t>(symbol));
+                appendDecodedByte(static_cast<uint8_t>(symbol));
                 continue;
             }
 
@@ -220,13 +236,16 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
         }
 
         if (decode_state_ == DecodeState::COPY_MATCH) {
-            if (pending_dist_ > output_buf_.size()) {
-                status.done = false;
+            if (pending_dist_ == 0 || pending_dist_ > out_abs_) {
+                // Invalid distance or corrupt stream — finish to avoid StreamProcessor busy-loop.
+                status.done = true;
                 return;
             }
-            size_t src_start = output_buf_.size() - pending_dist_;
-            for (size_t i = 0; i < pending_length_; i++) {
-                output_buf_.push_back(output_buf_[src_start + i]);
+            const uint64_t base = out_abs_;
+            for (size_t i = 0; i < pending_length_; ++i) {
+                const uint64_t src_abs = base - static_cast<uint64_t>(pending_dist_) + i;
+                appendDecodedByte(
+                    window_[static_cast<size_t>(src_abs % kWindowSize)]);
             }
 
             decode_state_ = DecodeState::DECODE_TOKENS;

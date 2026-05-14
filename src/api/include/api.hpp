@@ -44,12 +44,25 @@ struct WCXUnpackResult {
 };
 
 /// Compress a single buffer with the given algorithm chain.
+/// Pipeline knobs match ``compressFile`` when pointers are non-null (otherwise struct defaults).
+/// @param streaming_compress_chunk_bytes  Passed to ``createAlgorithm`` / ``MemoryPool``; ``0`` clamps via
+///                                        ``processor::effective_stream_chunk_bytes``.
 auto compress(const std::vector<uint8_t>& data,
-              std::span<const AlgorithmID> chain) -> CompressResult;
+              std::span<const AlgorithmID> chain,
+              const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
+              const core::DpflatePipelineParams* dpflate_pipeline = nullptr,
+              const core::DeflatePipelineParams* deflate_pipeline = nullptr,
+              std::size_t streaming_compress_chunk_bytes = 0) -> CompressResult;
 
-/// Decompress a single buffer with the given algorithm chain.
+/// Decompress a single buffer with the given algorithm chain (same optional pipeline pointers /
+/// chunk size as ``compress`` for symmetric ``MemoryPool`` sizing; ignored by ``Inflate`` / adapters
+/// that do not read these fields).
 auto decompress(const std::vector<uint8_t>& data,
-                std::span<const AlgorithmID> chain) -> CompressResult;
+                  std::span<const AlgorithmID> chain,
+                  const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
+                  const core::DpflatePipelineParams* dpflate_pipeline = nullptr,
+                  const core::DeflatePipelineParams* deflate_pipeline = nullptr,
+                  std::size_t streaming_compress_chunk_bytes = 0) -> CompressResult;
 
 /// Pack multiple files into a compressed archive using an algorithm chain.
 auto packAndCompress(const std::vector<WebFile>& files,
@@ -83,7 +96,8 @@ auto compressFile(const std::string& input_path,
                   size_t stream_chunk_bytes = 0,
                   uint32_t file_compress_opts = core::kFileCompressOptsNone,
                   const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
-                  const core::DpflatePipelineParams* dpflate_pipeline = nullptr)
+                  const core::DpflatePipelineParams* dpflate_pipeline = nullptr,
+                  const core::DeflatePipelineParams* deflate_pipeline = nullptr)
     -> CompressResult;
 
 /// Streaming single-file decompression: read archive in chunks, write to disk.
@@ -101,7 +115,8 @@ auto compressDirectory(const std::string& dir_path,
                        size_t stream_chunk_bytes = 0,
                        uint32_t file_compress_opts = core::kFileCompressOptsNone,
                        const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
-                       const core::DpflatePipelineParams* dpflate_pipeline = nullptr)
+                       const core::DpflatePipelineParams* dpflate_pipeline = nullptr,
+                       const core::DeflatePipelineParams* deflate_pipeline = nullptr)
     -> CompressResult;
 
 /// Unpack a compressed archive to disk, preserving directory structure.

@@ -16,26 +16,24 @@
       "use_flag_encoding": 0
     },
     "dpflate": {
-      "search_size": 4095,
-      "lookahead_size": 255,
+      "search_size": 4096,
+      "lookahead_size": 256,
       "min_match": 0,
-      "dp_sub_match_max": 3,
+      "dp_sub_match_max": 6,
       "max_chain_length": 256,
       "match_engine": 1,
-      "use_flag_encoding": 0,
-      "use_3hfmtree": 1,
-      "huffman_offset_chunk_bits": 6,
-      "huffman_length_chunk_bits": 6
+      "use_flag_encoding": 1,
+      "use_3hfmtree": 0,
+      "huffman_offset_chunk_bits": 8,
+      "huffman_length_chunk_bits": 8
     },
     "deflate": {
-      "search_size": 32768,
+      "search_size": 4096,
+      "lookahead_size": 256,
       "min_match": 0,
       "max_chain_length": 256,
+      "use_flag_encoding": 1,
       "use_3hfmtree": 0,
-      "lookahead_size": 258,
-      "dp_sub_match_max": 6,
-      "match_engine": 1,
-      "use_flag_encoding": 0,
       "huffman_offset_chunk_bits": 8,
       "huffman_length_chunk_bits": 8
     },
@@ -52,7 +50,7 @@
     }
   },
   "streaming": {
-    "threshold_mb": 1.0,
+    "threshold_mb": 10.0,
     "chunk_size_kb": 512,
     "workspace_root": "",
     "per_algorithm": {

@@ -34,7 +34,8 @@ class PackWriter {
                    uint32_t file_compress_opts = core::kFileCompressOptsNone,
                    const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
                    std::size_t streaming_compress_chunk_bytes = 0,
-                   const core::DpflatePipelineParams* dpflate_pipeline = nullptr)
+                   const core::DpflatePipelineParams* dpflate_pipeline = nullptr,
+                   const core::DeflatePipelineParams* deflate_pipeline = nullptr)
         -> void;
 
     /** @brief  */

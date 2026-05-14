@@ -21,7 +21,8 @@ auto createAlgorithm(AlgorithmID id,
                      uint32_t file_compress_opts,
                      const LzdpWholeFileParams* lzdp_whole_file,
                      std::size_t streaming_compress_chunk_bytes,
-                     const DpflatePipelineParams* dpflate_pipeline)
+                     const DpflatePipelineParams* dpflate_pipeline,
+                     const DeflatePipelineParams* deflate_pipeline)
     -> std::unique_ptr<algorithm::IAlgorithm> {
     // Pipeline adapters from ChunkedStreamAdapter.hpp; short names keep the switch readable.
     using SCA = processor::StreamingCompressAdapter;          // SCA: per-chunk compress + u32 length framing
@@ -32,26 +33,22 @@ auto createAlgorithm(AlgorithmID id,
     switch (id) {
         case AlgorithmID::None:
             return nullptr;
-        // 文件流式：仅 chunked classic Deflate（LZ77+Huffman）；不使用 DPFlate / 不读 ``dpflate_pipeline``。
-        case AlgorithmID::Deflate:
-            return std::make_unique<SCA>(
-                [](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {
-                    algorithm::Deflate deflater;
-                    std::vector<uint8_t> out(data.size() + 1024);
-                    auto status = deflater.process(data, out, true);
-                    out.resize(status.bytes_produced);
-                    return out;
-                },
-                sca_chunk);
+        // File streaming: same ``AlgorithmBase`` push/pull model as ``DPFlate`` / ``LZDP_OutOfCore``
+        // (no ``StreamingCompressAdapter`` / u32 framing). Bitstream is one continuous classic Deflate
+        // stream inverted by ``Inflate`` (also unwrapped — no ``StreamingDecompressAdapter``).
+        case AlgorithmID::Deflate: {
+            const DeflatePipelineParams df_fallback{};
+            const DeflatePipelineParams& dp =
+                deflate_pipeline ? *deflate_pipeline : df_fallback;
+            const std::size_t min_m =
+                dp.min_match == 0 ? std::size_t{3} : dp.min_match;
+            const std::size_t look =
+                dp.lookahead_size == 0 ? std::size_t{258} : dp.lookahead_size;
+            return std::make_unique<algorithm::Deflate>(
+                dp.search_size, min_m, dp.max_chain_length, look);
+        }
         case AlgorithmID::Inflate:
-            return std::make_unique<SDA>(
-                [](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {
-                    algorithm::Inflate inflate;
-                    std::vector<uint8_t> out(std::max(data.size() * 4 + 65536, size_t(2097152)));
-                    auto status = inflate.process(data, out, true);
-                    out.resize(status.bytes_produced);
-                    return out;
-                });
+            return std::make_unique<algorithm::Inflate>();
         case AlgorithmID::DeltaEncode:
             return std::make_unique<algorithm::DeltaEncode>();
         case AlgorithmID::DeltaDecode:

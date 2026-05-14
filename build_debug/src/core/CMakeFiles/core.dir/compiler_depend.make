@@ -492,6 +492,7 @@ src/core/CMakeFiles/core.dir/AlgorithmFactory.cpp.obj: D:/AAA_C/compression-tool
   D:/AAA_C/compression-tool/src/algorithm/include/Zstd.hpp \
   D:/AAA_C/compression-tool/src/core/include/AlgorithmFactory.hpp \
   D:/AAA_C/compression-tool/src/processor/include/ChunkedStreamAdapter.hpp \
+  D:/AAA_C/compression-tool/src/processor/include/StreamChunkPolicy.hpp \
   D:/AAA_C/compression-tool/src/utils/include/BitReader.hpp \
   D:/AAA_C/compression-tool/src/utils/include/BitWriter.hpp
 
@@ -2931,6 +2932,7 @@ src/core/CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.obj: D:/AAA_C
   D:/AAA_C/compression-tool/src/algorithm/include/BlockProfile.hpp \
   D:/AAA_C/compression-tool/src/algorithm/include/IAlgorithm.hpp \
   D:/AAA_C/compression-tool/src/processor/include/ChunkedStreamAdapter.hpp \
+  D:/AAA_C/compression-tool/src/processor/include/StreamChunkPolicy.hpp \
   D:/AAA_C/compression-tool/src/utils/include/BitReader.hpp \
   D:/AAA_C/compression-tool/src/utils/include/BitWriter.hpp
 
@@ -2956,6 +2958,8 @@ D:/AAA_C/compression-tool/src/utils/include/BitWriter.hpp:
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/io.h:
 
 D:/AAA_C/compression-tool/src/processor/include/ChunkedStreamAdapter.hpp:
+
+D:/AAA_C/compression-tool/src/processor/include/StreamChunkPolicy.hpp:
 
 D:/AAA_C/compression-tool/src/core/include/AlgorithmFactory.hpp:
 

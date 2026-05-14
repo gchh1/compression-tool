@@ -32,8 +32,10 @@ constexpr uint16_t NULL_PTR = 0xffff;
 
 class Deflate : public AlgorithmBase {
    public:
-    Deflate(size_t slide_size = 32768, size_t min_match = 3,
-            size_t max_chain_length = 256);
+    /// ``lookahead_max`` caps LZ77 match length (clamped to 258 for valid DEFLATE length codes).
+    /// Pass 0 for 258 (full deflate match limit).
+    Deflate(size_t slide_size = 4096, size_t min_match = 3,
+            size_t max_chain_length = 256, size_t lookahead_max = 258);
 
     auto reset(void) -> void override;
 

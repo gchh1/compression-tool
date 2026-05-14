@@ -24,6 +24,7 @@ from gui.models import (
     Record,
     ResourceType,
     formatted_size,
+    compressed_payload_size,
 )
 from gui.config.theme import ThemeManager
 
@@ -335,7 +336,7 @@ class FileTableWidget(QTableWidget):
                     self.setItem(row, self.COL_ALGORITHM, QTableWidgetItem("-"))
                 
                 if record.status == CompressionStatus.DONE and record.size > 0:
-                    comp_sz = len(record.compressed_data) if getattr(record, 'compressed_data', None) else 0
+                    comp_sz = compressed_payload_size(record)
                     ratio_str = f"{record.compression_ratio * 100:.2f}%({formatted_size(comp_sz)}/{formatted_size(record.size)})"
                 else:
                     ratio_str = "--"

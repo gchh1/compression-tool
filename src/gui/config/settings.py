@@ -12,6 +12,7 @@ from gui.models import (
     STREAMING_THRESHOLD_MB,
     STREAMING_CHUNK_SIZE_KB,
     LZDP_DP_VIZ_MAX_SIZE,
+    get_default_config,
 )
 
 logger = logging.getLogger(__name__)
@@ -158,6 +159,22 @@ def get_algo_config(config: dict | None = None) -> dict[AlgorithmType, dict[str,
             if algo_type == AlgorithmType.DPFLATE and "dp_depth" in normalized:
                 # Historical key migration: dp_depth -> dp_sub_match_max
                 normalized["dp_sub_match_max"] = normalized.pop("dp_depth")
+            if algo_type == AlgorithmType.DEFLATE:
+                _def_ok = frozenset(
+                    {
+                        "search_size",
+                        "lookahead_size",
+                        "min_match",
+                        "max_chain_length",
+                        "use_flag_encoding",
+                        "use_3hfmtree",
+                        "huffman_offset_chunk_bits",
+                        "huffman_length_chunk_bits",
+                    }
+                )
+                filtered = {k: v for k, v in normalized.items() if k in _def_ok}
+                base = get_default_config().get(algo_type, {})
+                normalized = {**base, **filtered}
             result[algo_type] = normalized
         except (ValueError, TypeError):
             continue

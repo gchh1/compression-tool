@@ -167,6 +167,33 @@ def unpack_compressed_file(data: bytes) -> tuple[CompressedFileHeader, bytes]:
     return header, bytes(unpacked.payload)
 
 
+def file_record_compression_blob(record: object) -> bytes | None:
+    """Full WCX bytes for a ``FileRecord``-like object (memory or disk streaming output)."""
+    data = getattr(record, "compressed_data", None)
+    if isinstance(data, (bytes, bytearray)) and len(data) > 0:
+        return bytes(data)
+    path = getattr(record, "compressed_path", None)
+    if path:
+        try:
+            p = Path(path)
+            if p.is_file():
+                return p.read_bytes()
+        except OSError:
+            return None
+    return None
+
+
+def strip_wcx_if_present(container: bytes) -> bytes:
+    """If ``container`` is a WCMP v2 file, return inner algorithm payload; else ``container``."""
+    if len(container) >= 4 and container[:4] == MAGIC:
+        try:
+            _, payload = unpack_compressed_file(container)
+            return payload
+        except Exception:
+            return container
+    return container
+
+
 def detect_algorithm_from_file(path: str | Path) -> AlgorithmType | None:
     p = Path(path)
     try:

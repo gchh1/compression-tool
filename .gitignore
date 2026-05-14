@@ -38,7 +38,7 @@ src/logs/
 src/*.dll
 bin/
 build/PyInstaller/
-resources/level5_large
+resources/
 
 # Local backups and temp outputs
 *.backup

@@ -352,7 +352,7 @@ class CompressionWorker(QThread):
                         pass
                     if folder_ref is not None:
                         folder_ref.total_original += original_size
-                        folder_ref.total_compressed += _compressed_size(record)
+                        folder_ref.total_compressed += compressed_size
                         folder_ref.total_time_ms += record.compression_time_ms
                         folder_ref.compression_ratio = (
                             folder_ref.total_compressed / folder_ref.total_original
