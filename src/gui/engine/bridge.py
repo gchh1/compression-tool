@@ -31,8 +31,11 @@ def get_core_engine():
     if _meipass:
         _candidates.insert(0, Path(_meipass) / "core_engine")
 
+    _ext_patterns = ("core_engine.cp312-win_amd64.pyd", "core_engine.*.so")
     for _p in _candidates:
-        if _p.is_dir() and (_p / "core_engine.cp312-win_amd64.pyd").exists():
+        if not _p.is_dir():
+            continue
+        if any(tuple(_p.glob(pat)) for pat in _ext_patterns):
             sys.path.insert(0, str(_p))
             break
 

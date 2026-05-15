@@ -1393,7 +1393,15 @@ class MainWindow(QMainWindow):
     # ========== 压缩演示 ==========
     def _on_compress_demo(self, row: int) -> None:
         logger.info("[demo] START row=%d", row)
+
+        # If a .viz file exists (C++ observer output), use the new viz dialog.
         record = self._table.get_record(row)
+        if hasattr(record, 'viz_path') and record.viz_path and Path(record.viz_path).exists():
+            logger.info("[demo] using viz file: %s", record.viz_path)
+            from gui.ui.dialogs.viz_dialog import VizDialog
+            dlg = VizDialog(record.viz_path, source_path=record.path, parent=self)
+            dlg.exec()
+            return
         if not isinstance(record, FileRecord):
             QMessageBox.information(self, "提示", "压缩演示仅支持单文件")
             return
@@ -1409,6 +1417,9 @@ class MainWindow(QMainWindow):
             parser = get_parser(record.algorithm)
             _demo_params = getattr(record, 'compression_config_snapshot', None)
             if parser is not None:
+                # Streaming mode: load compressed_data from file if not in memory.
+                if not record.compressed_data and record.compressed_path and Path(record.compressed_path).exists():
+                    record.compressed_data = Path(record.compressed_path).read_bytes()
                 logger.info("[demo] parsing compressed_data=%d raw_data=%d", len(record.compressed_data), len(record.raw_data) if record.raw_data else 0)
                 pr = parser.parse(
                     record.compressed_data, record.raw_data, compression_params=_demo_params
@@ -1432,12 +1443,17 @@ class MainWindow(QMainWindow):
                             dp_viz = None
                             if len(record.raw_data) <= LZDP_DP_VIZ_MAX_SIZE:
                                 try:
-                                    from gui.engine.compressor import CompressionEngine
-                                    engine = CompressionEngine()
-                                    comp = engine.create_compressor_for_visualization(
-                                        AlgorithmType.LZDP, _demo_params
-                                    )
-                                    dp_viz = comp.get_dp_visualization(list(record.raw_data), 0)
+                                    import core_engine
+                                    params = _demo_params or {}
+                                    search_size = int(params.get("search_size", 4096))
+                                    lookahead_size = int(params.get("lookahead_size", 256))
+                                    dp_range = int(params.get("dp_top", 3))
+                                    lzdp = core_engine.LZDPViz()
+                                    lzdp.autoBitWidth(search_size, lookahead_size)
+                                    if "min_match" in params: lzdp.set_min_match(int(params["min_match"]))
+                                    if "use_flag_encoding" in params: lzdp.set_use_flag_encoding(bool(params["use_flag_encoding"]))
+                                    if "match_engine" in params: lzdp.set_match_engine(int(params["match_engine"]))
+                                    dp_viz = lzdp.get_dp_visualization(list(record.raw_data), search_size, lookahead_size, dp_range)
                                     logger.info("[demo] dp_viz OK, steps=%d path=%d", len(dp_viz.steps), len(dp_viz.optimal_path))
                                 except Exception as e:
                                     logger.warning("[demo] get_dp_visualization failed: %s", e, exc_info=True)
@@ -1471,17 +1487,17 @@ class MainWindow(QMainWindow):
                         if record.algorithm == AlgorithmType.DPFLATE:
                             if len(record.raw_data) <= LZDP_DP_VIZ_MAX_SIZE:
                                 try:
-                                    from gui.engine.compressor import CompressionEngine
-                                    engine = CompressionEngine()
-                                    comp = engine.create_compressor_for_visualization(
-                                        AlgorithmType.DPFLATE, _demo_params
-                                    )
-                                    lzdp_comp = engine.create_compressor_for_visualization(
-                                        AlgorithmType.LZDP, _demo_params
-                                    )
-                                    lzdp_comp.set_min_match(comp.get_min_match())
-                                    lzdp_comp.set_match_engine(comp.get_match_engine())
-                                    dp_viz = lzdp_comp.get_dp_visualization(list(record.raw_data), 0)
+                                    import core_engine
+                                    params = _demo_params or {}
+                                    search_size = int(params.get("search_size", 4096))
+                                    lookahead_size = int(params.get("lookahead_size", 256))
+                                    dp_range = int(params.get("dp_sub_match_max", 3))
+                                    lzdp = core_engine.LZDPViz()
+                                    lzdp.autoBitWidth(search_size, lookahead_size)
+                                    if "min_match" in params: lzdp.set_min_match(int(params["min_match"]))
+                                    if "match_engine" in params: lzdp.set_match_engine(int(params["match_engine"]))
+                                    if "use_flag_encoding" in params: lzdp.set_use_flag_encoding(bool(params["use_flag_encoding"]))
+                                    dp_viz = lzdp.get_dp_visualization(list(record.raw_data), search_size, lookahead_size, dp_range)
                                 except Exception as e:
                                     logger.warning("[demo] DPFlate get_dp_visualization failed: %s", e)
 

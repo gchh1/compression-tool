@@ -143,7 +143,7 @@ class CountMinSketch {
 
         size_t present_count = 0;
         size_t single_count = 0;
-        size_t actual_sample = std::min(sample_size, total_count_);
+        size_t actual_sample = std::min(sample_size, static_cast<size_t>(total_count_));
 
         for (size_t i = 0; i < actual_sample; ++i) {
             uint32_t count = query(static_cast<uint32_t>(i));

@@ -1,13 +1,25 @@
 {
-  "total_samples": 1,
-  "valid_samples": 1,
-  "invalid_samples": 0,
-  "last_save_time": 1778338505.0066106,
+  "total_samples": 200,
+  "valid_samples": 200,
+  "invalid_samples": 1,
+  "last_save_time": 1778835003.482859,
   "data_version": "3.0",
   "algorithm_distribution": {
-    "brotli": 1
+    "brotli": 7,
+    "lzdp": 6,
+    "deflate": 134,
+    "none": 38,
+    "gzip": 3,
+    "dpflate": 8,
+    "zstd": 3,
+    "lzss": 1
   },
   "type_distribution": {
-    "UNKNOWN": 1
+    "UNKNOWN": 106,
+    "IMAGE_PNG": 17,
+    "IMAGE_JPEG": 68,
+    "IMAGE_BMP": 2,
+    "AUDIO_WAV": 6,
+    "DOC_PDF": 1
   }
 }

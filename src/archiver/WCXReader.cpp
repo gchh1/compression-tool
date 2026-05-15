@@ -1,10 +1,12 @@
-#include "wcx_decompress_input.hpp"
+#include "WCXReader.hpp"
 
 #ifndef __EMSCRIPTEN__
 
 #include "WCXProtocol.hpp"
 
-namespace compressor::api {
+namespace compressor::archiver {
+
+using compressor::api::unpack_wcx;
 
 auto resolve_wcx_file_stream_payload_length(const std::string& /*input_path*/,
                                             std::ifstream& input,
@@ -36,6 +38,6 @@ auto resolve_wcx_directory_archive_inner_pack(const std::string& /*input_path*/,
     return std::nullopt;
 }
 
-}  // namespace compressor::api
+}  // namespace compressor::archiver
 
 #endif  // __EMSCRIPTEN__

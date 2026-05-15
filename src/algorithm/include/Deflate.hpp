@@ -70,7 +70,7 @@ class Deflate : public AlgorithmBase {
     static constexpr size_t DISTANCE_DICTIONARY_SIZE = 30;
     static constexpr size_t DISTANCE_SYMBOL_BITS = 5;
 
-    static constexpr size_t MAX_BLOCK_TOKENS = 16384;
+    static constexpr size_t MAX_BLOCK_TOKENS = 1 << 20;  // 1M tokens
 
     // ===================================
     // Deflate state
@@ -90,6 +90,16 @@ class Deflate : public AlgorithmBase {
 
     std::vector<HuffmanCode> dictionary_;
     std::vector<HuffmanCode> dist_dictionary_;
+
+    // ===================================
+    // Visualization tracking
+    // ===================================
+    uint32_t input_pos_{0};
+    uint32_t block_index_{0};
+    uint32_t block_input_start_{0};
+    uint32_t block_literal_count_{0};
+    uint32_t block_match_count_{0};
+    size_t block_output_start_{0};  // writer bytes at block start
     // ===================================
     // Private methods
     // ===================================

@@ -28,12 +28,16 @@ from gui.ui.views.visualizers.token_heatmap import ratio_to_qcolor as _ratio_to_
 LZ_DEMO_MATCH_HIGHLIGHT_ALPHA = 130
 
 
-def _lzdp_candidate_compression_ratio(c: dict) -> float:
+def _lzdp_candidate_compression_ratio(c) -> float:
     """与 LZDPTokenParser 构造 Token 时的 compressed/original 口径一致。"""
     sb = LZDPTokenParser.SEARCH_BYTELENGTH
     lb = LZDPTokenParser.LOOKAHEAD_BYTELENGTH
-    o = int(c.get("offset", 0) or 0)
-    ln = int(c.get("length", 0) or 0)
+    if isinstance(c, dict):
+        o = int(c.get("offset", 0) or 0)
+        ln = int(c.get("length", 0) or 0)
+    else:
+        o = int(getattr(c, "offset", 0) or 0)
+        ln = int(getattr(c, "length", 0) or 0)
     if o == 0 and ln == 0:
         orig = 1.0
         comp = float(sb + lb + 1)

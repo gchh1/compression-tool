@@ -115,7 +115,7 @@ class FileTableWidget(QTableWidget):
                 copy_path_action = menu.addAction("📋 复制文件路径")
                 menu.addSeparator()
                 
-                if record.status == CompressionStatus.DONE and record.compressed_data:
+                if record.status == CompressionStatus.DONE and (record.compressed_data or record.compressed_path):
                     demo_action = menu.addAction("🔧 压缩演示")
                     heatmap_action = menu.addAction("📊 压缩热力图")
                     comparison_action = menu.addAction("⚖ 算法对比")

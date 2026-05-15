@@ -9,7 +9,7 @@
 
 #include "AlgorithmFactory.hpp"
 
-namespace compressor::api::wcx {
+namespace compressor::archiver::wcx {
 
 struct HeaderView {
     bool valid{false};
@@ -42,5 +42,5 @@ auto buildHeaderBytes(uint8_t algo_code, uint32_t original_size,
                       uint32_t compressed_size,
                       const std::string& original_filename) -> std::vector<uint8_t>;
 
-}  // namespace compressor::api::wcx
+}  // namespace compressor::archiver::wcx
 

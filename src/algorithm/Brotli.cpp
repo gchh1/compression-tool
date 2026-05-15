@@ -35,6 +35,12 @@ auto BrotliCompress::reset(void) -> void {
     lookahead_ = 0;
     token_buffer_.clear();
     token_flush_idx_ = 0;
+    input_pos_ = 0;
+    block_index_ = 0;
+    block_input_start_ = 0;
+    block_literal_count_ = 0;
+    block_match_count_ = 0;
+    block_output_start_ = 0;
     state_ = BrotliState::FIND_MATCHES;
 }
 
@@ -144,7 +150,12 @@ auto BrotliCompress::handleFindMatches(AlgorithmStatus& status,
 
         token_buffer_.push_back(t);
 
+        notifyObservers(MatchEvent{input_pos_,
+                                   static_cast<uint16_t>(match_distance),
+                                   static_cast<uint16_t>(match_length), 0});
+
         for (size_t i = 1; i < match_length; ++i) {
+            input_pos_++;
             cursor_++;
             lookahead_--;
             if (lookahead_ >= MIN_MATCH) {
@@ -153,15 +164,23 @@ auto BrotliCompress::handleFindMatches(AlgorithmStatus& status,
                 head_[hash_val] = static_cast<uint16_t>(cursor_);
             }
         }
+        input_pos_++;
         cursor_++;
         lookahead_--;
+        ++block_match_count_;
     } else {
         BrotliToken t;
         t.is_literal = true;
         t.literal = window_[cursor_];
         token_buffer_.push_back(t);
+
+        notifyObservers(
+            MatchEvent{input_pos_, 0, 0, window_[cursor_]});
+
+        input_pos_++;
         cursor_++;
         lookahead_--;
+        ++block_literal_count_;
     }
 
     if (token_buffer_.size() >= MAX_BLOCK_TOKENS) {
@@ -214,11 +233,49 @@ auto BrotliCompress::handleBuildTree(AlgorithmStatus& status,
     len_dict_ = len_tree_->buildDictionary();
     dist_dict_ = dist_tree_->buildDictionary();
 
+    {
+        HuffmanTreeBuilt ev;
+        ev.block_index = block_index_;
+        ev.tree_type = 0;
+        ev.alphabet_size = BROTLI_LIT_ALPHABET;
+        for (size_t i = 0; i < BROTLI_LIT_ALPHABET && i < 286; ++i)
+            ev.code_lengths[i] = lit_dict0_[i].length;
+        notifyObservers(ev);
+    }
+    {
+        HuffmanTreeBuilt ev;
+        ev.block_index = block_index_;
+        ev.tree_type = 1;
+        ev.alphabet_size = BROTLI_LIT_ALPHABET;
+        for (size_t i = 0; i < BROTLI_LIT_ALPHABET && i < 286; ++i)
+            ev.code_lengths[i] = lit_dict1_[i].length;
+        notifyObservers(ev);
+    }
+    {
+        HuffmanTreeBuilt ev;
+        ev.block_index = block_index_;
+        ev.tree_type = 2;
+        ev.alphabet_size = BROTLI_LEN_ALPHABET;
+        for (size_t i = 0; i < BROTLI_LEN_ALPHABET && i < 286; ++i)
+            ev.code_lengths[i] = len_dict_[i].length;
+        notifyObservers(ev);
+    }
+    {
+        HuffmanTreeBuilt ev;
+        ev.block_index = block_index_;
+        ev.tree_type = 3;
+        ev.alphabet_size = BROTLI_DIST_ALPHABET;
+        for (size_t i = 0; i < BROTLI_DIST_ALPHABET && i < 286; ++i)
+            ev.code_lengths[i] = dist_dict_[i].length;
+        notifyObservers(ev);
+    }
+
     size_t total_tree_bits =
         lit_tree0_->getTreeSize() + lit_tree1_->getTreeSize() +
         len_tree_->getTreeSize() + dist_tree_->getTreeSize();
 
     if (writer_.ensureSpace(total_tree_bits + 1)) {
+        block_output_start_ = writer_.getBytesWritten();
         bool block_is_last = is_last_chunk && lookahead_ == 0;
         writer_.writeBit(block_is_last ? 1 : 0);
 
@@ -296,11 +353,28 @@ auto BrotliCompress::handleFlushTokens(AlgorithmStatus& status,
 
     token_buffer_.clear();
 
+    {
+        BlockBoundary bb;
+        bb.block_index = block_index_;
+        bb.input_start = block_input_start_;
+        bb.input_bytes = input_pos_ - block_input_start_;
+        bb.literal_count = block_literal_count_;
+        bb.match_count = block_match_count_;
+        bb.output_bytes = writer_.getBytesWritten() - block_output_start_;
+        notifyObservers(bb);
+        notifyBlockFinish();
+    }
+
     if (is_last_chunk && lookahead_ == 0) {
         writer_.flush();
         status.done = true;
         return;
     }
+
+    ++block_index_;
+    block_input_start_ = input_pos_;
+    block_literal_count_ = 0;
+    block_match_count_ = 0;
 
     state_ = BrotliState::FIND_MATCHES;
 }
@@ -315,7 +389,11 @@ auto BrotliCompress::handle(AlgorithmStatus& status, bool is_last_chunk)
     while (true) {
         (this->*handlers[static_cast<size_t>(state_)])(status, is_last_chunk);
 
-        if (status.need_input || status.need_output || status.done) {
+        if (status.need_input || status.need_output) {
+            return;
+        }
+        if (status.done) {
+            notifyCompressionFinish();
             return;
         }
     }

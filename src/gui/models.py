@@ -194,6 +194,7 @@ class FileRecord(Record):
         self.raw_data: bytes = b""
         self.compressed_data: bytes | None = None
         self.compressed_path: str | None = None
+        self.viz_path: str | None = None
 
         self.compression_ratio: float = 1.00
         self.compression_time_ms: float = 0.0

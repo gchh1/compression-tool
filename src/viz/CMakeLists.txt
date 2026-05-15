@@ -1,21 +1,19 @@
 add_library(
-    api
+    viz
     STATIC
-    api.cpp
+    BackgroundWriter.cpp
+    DiskVizObserver.cpp
 )
 
 target_include_directories(
-    api
+    viz
     PUBLIC
     include
+    ${UTILS_DIR}/include
 )
 
 target_link_libraries(
-    api
-    PUBLIC
-    archiver
-    processor
-    core
     viz
+    PUBLIC
     utils
 )

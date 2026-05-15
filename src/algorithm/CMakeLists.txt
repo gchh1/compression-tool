@@ -14,8 +14,6 @@ add_library(
     DPFlate.cpp
     Inflate.cpp
     Zstd.cpp
-
-    # LZ77.cpp
 )
 
 target_include_directories(
@@ -23,4 +21,5 @@ target_include_directories(
     PUBLIC
     include
     ${UTILS_DIR}/include
+    ${VIZ_DIR}/include
 )

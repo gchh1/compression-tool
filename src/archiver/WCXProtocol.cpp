@@ -6,7 +6,7 @@
 #include <ios>
 #include <ostream>
 
-namespace compressor::api::wcx {
+namespace compressor::archiver::wcx {
 
 namespace {
 
@@ -198,5 +198,5 @@ auto tryParseHeader(std::span<const uint8_t> data, HeaderView& out) -> bool {
     return true;
 }
 
-}  // namespace compressor::api::wcx
+}  // namespace compressor::archiver::wcx
 

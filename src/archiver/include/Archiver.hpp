@@ -6,7 +6,7 @@
 
 #include "EntryHeader.hpp"
 
-namespace compressor::core {
+namespace compressor::archiver {
 
 struct File {
     std::string filepath;
@@ -67,4 +67,4 @@ class Archiver {
     }
 };
 
-}  // namespace compressor::core
+}  // namespace compressor::archiver

@@ -108,12 +108,26 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
             lit_root_ = nullptr;
             dist_root_ = nullptr;
 
+            auto saved = reader_.savePosition();
             if (!readHuffmanTree(lit_root_, DEFLATE_SYMBOL_BITS)) {
+                reader_.restorePosition(saved);
+                if (is_last_chunk) {
+                    status.done = true;
+                    return;
+                }
                 status.need_input = true;
                 return;
             }
 
+            saved = reader_.savePosition();
             if (!readHuffmanTree(dist_root_, DISTANCE_SYMBOL_BITS)) {
+                reader_.restorePosition(saved);
+                destroyTree(lit_root_);
+                lit_root_ = nullptr;
+                if (is_last_chunk) {
+                    status.done = true;
+                    return;
+                }
                 status.need_input = true;
                 return;
             }
@@ -147,6 +161,10 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
 
         if (decode_state_ == DecodeState::DECODE_TOKENS) {
             if (!reader_.ensureBits(1)) {
+                if (is_last_chunk) {
+                    status.done = true;
+                    return;
+                }
                 status.need_input = true;
                 return;
             }
@@ -154,6 +172,10 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
             bool bit = (reader_.readBit() == 1);
             lit_cursor_ = bit ? lit_cursor_->right : lit_cursor_->left;
 
+            if (!lit_cursor_) {
+                status.done = true;
+                return;
+            }
             if (!lit_cursor_->isLeaf()) continue;
 
             uint16_t symbol = lit_cursor_->symbol;
@@ -198,7 +220,13 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
                 }
                 bool dbit = (reader_.readBit() == 1);
                 dist_cursor_ = dbit ? dist_cursor_->right : dist_cursor_->left;
+                if (!dist_cursor_) break;
                 if (dist_cursor_->isLeaf()) break;
+            }
+
+            if (!dist_cursor_) {
+                status.done = true;
+                return;
             }
 
             uint16_t dist_sym = dist_cursor_->symbol;

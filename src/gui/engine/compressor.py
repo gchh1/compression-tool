@@ -57,20 +57,6 @@ class CompressionEngine:
         cfg = cls.get_config().get(algorithm, {})
         return {str(k): int(v) for k, v in cfg.items()}
 
-    def create_compressor_for_visualization(
-        self,
-        algorithm: AlgorithmType,
-        params: dict[str, int] | None = None,
-    ):
-        """Build compressor with global config, then overlay ``params`` if provided."""
-        compressor = self._create_compressor(algorithm)
-        if params:
-            for key, val in params.items():
-                setter = getattr(compressor, f"set_{key}", None)
-                if setter:
-                    setter(int(val))
-        return compressor
-
     @classmethod
     def set_streaming_threshold(cls, mb: float, save: bool = True):
         cls._streaming_threshold_mb = mb
@@ -112,30 +98,8 @@ class CompressionEngine:
         cls._streaming_threshold_mb = STREAMING_THRESHOLD_MB
         cls._save_to_file()
 
-    def _create_compressor(self, algorithm: AlgorithmType):
-        if algorithm == AlgorithmType.LZSS:
-            comp = self._engine.LZSSCompressor()
-        elif algorithm == AlgorithmType.LZDP:
-            comp = self._engine.LZDPCompressor()
-        elif algorithm == AlgorithmType.DEFLATE:
-            comp = self._engine.DeflateCompressor()
-        elif algorithm == AlgorithmType.DPFLATE:
-            comp = self._engine.DPFlateCompressor()
-        elif algorithm == AlgorithmType.GZIP:
-            comp = self._engine.GzipCompressor()
-        elif algorithm == AlgorithmType.BROTLI:
-            comp = self._engine.BrotliCompressor()
-        elif algorithm == AlgorithmType.ZSTD:
-            comp = self._engine.ZstdCompressor()
-        else:
-            raise ValueError(f"Unsupported algorithm: {algorithm.value}")
-
-        cfg = self._config.get(algorithm, {})
-        for key, val in cfg.items():
-            setter = getattr(comp, f"set_{key}", None)
-            if setter:
-                setter(val)
-        return comp
+    def should_use_streaming(self, data_size: int) -> bool:
+        return data_size > self._streaming_threshold_mb * 1024 * 1024
 
     def compress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE):
         if algorithm == AlgorithmType.TRANSFORMER:
@@ -145,7 +109,7 @@ class CompressionEngine:
                 raise RuntimeError("PyTorch not available for Transformer compression")
             tc = TransformerCompressor()
             result = tc.compress(data)
-            cr = self._engine.CompressorResult()
+            cr = self._engine.PipelineCompressResult()
             cr.original_size = result.original_size
             cr.compressed_size = result.compressed_size
             cr.compression_ratio = result.compression_ratio
@@ -155,85 +119,21 @@ class CompressionEngine:
             cr.error_message = result.error_message or ("OK" if result.success else "Compression failed")
             return cr
 
-        if not self.available:
-            raise RuntimeError("C++ core_engine not available")
-
-        compressor = self._create_compressor(algorithm)
-        result = compressor.compress(list(data))
-
-        cr = self._engine.CompressorResult()
-        cr.original_size = result.original_size
-        cr.compressed_size = result.compressed_size
-        cr.compression_ratio = result.compression_ratio
-        cr.time_ms = result.time_ms
-        cr.data = list(result.data)
-        cr.success = result.success
-        cr.error_message = result.error_message
-        return cr
+        return self.pipeline_compress(data, algorithm)
 
     def decompress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE):
         if algorithm == AlgorithmType.TRANSFORMER:
-            cr = self._engine.CompressorResult()
+            cr = self._engine.PipelineCompressResult()
             cr.success = False
             cr.error_message = "Transformer (beta) 暂不支持解压"
             return cr
 
-        if not self.available:
-            raise RuntimeError("C++ core_engine not available")
-
-        compressor = self._create_compressor(algorithm)
-        result = compressor.decompress(list(data))
-
-        cr = self._engine.CompressorResult()
-        cr.original_size = result.original_size
-        cr.compressed_size = result.compressed_size
-        cr.time_ms = result.time_ms
-        cr.data = list(result.data)
-        cr.success = result.success
-        cr.error_message = result.error_message
-        return cr
-
-    def should_use_streaming(self, data_size: int) -> bool:
-        return data_size > self._streaming_threshold_mb * 1024 * 1024
+        return self.pipeline_decompress(data, algorithm)
 
     def smart_compress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE):
-        if algorithm == AlgorithmType.TRANSFORMER:
-            return self.compress(data, algorithm)
-
-        if not self.available:
-            raise RuntimeError("C++ core_engine not available")
-
-        if self.should_use_streaming(len(data)):
-            logger.info(
-                "[smart_compress] using streaming mode for %d bytes (threshold=%.1f MB)",
-                len(data),
-                self._streaming_threshold_mb,
-            )
-            try:
-                return self.pipeline_compress(data, algorithm)
-            except Exception as e:
-                logger.warning("[smart_compress] streaming failed, fallback to normal: %s", e)
-
         return self.compress(data, algorithm)
 
     def smart_decompress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE):
-        if algorithm == AlgorithmType.TRANSFORMER:
-            return self.decompress(data, algorithm)
-
-        if not self.available:
-            raise RuntimeError("C++ core_engine not available")
-
-        if self.should_use_streaming(len(data)):
-            logger.info(
-                "[smart_decompress] using streaming mode for %d bytes (threshold=%.1f MB)",
-                len(data),
-                self._streaming_threshold_mb,
-            )
-            try:
-                return self.pipeline_decompress(data, algorithm)
-            except Exception as e:
-                logger.warning("[smart_decompress] streaming failed, fallback to normal: %s", e)
-
         return self.decompress(data, algorithm)
 
     def smart_compress_file(
@@ -284,37 +184,6 @@ class CompressionEngine:
             input_path, output_path, [decomp_id], chunk_bytes
         )
 
-    def pack_files(self, records: list[FileRecord]) -> bytes:
-        if not self.available:
-            raise RuntimeError("C++ core_engine not available")
-
-        files = []
-        for rec in records:
-            f = self._engine.File()
-            f.filepath = rec.path
-            f.context = list(rec.raw_data)
-            files.append(f)
-
-        packed = self._engine.Archiver.pack(files)
-        return bytes(packed)
-
-    def unpack_archive(self, data: bytes) -> list[FileRecord]:
-        if not self.available:
-            raise RuntimeError("C++ core_engine not available")
-        raw_files = self._engine.Archiver.unpack(list(data))
-        records = []
-        for wf in raw_files:
-            records.append(
-                FileRecord(
-                    path=wf.filepath,
-                    name=Path(wf.filepath).name,
-                    extension=Path(wf.filepath).suffix.lower(),
-                    size=len(wf.context),
-                    raw_data=bytes(wf.context),
-                )
-            )
-        return records
-
     _ALGO_TO_PIPELINE_ID = None
 
     def _get_pipeline_id(self, algorithm: AlgorithmType):
@@ -322,6 +191,7 @@ class CompressionEngine:
             eng = self._engine
             CompressionEngine._ALGO_TO_PIPELINE_ID = {
                 AlgorithmType.DEFLATE: eng.AlgorithmID.DEFLATE,
+                AlgorithmType.GZIP: eng.AlgorithmID.DEFLATE,
                 AlgorithmType.LZSS: eng.AlgorithmID.LZSS,
                 AlgorithmType.LZDP: eng.AlgorithmID.LZDP,
                 AlgorithmType.DPFLATE: eng.AlgorithmID.DPFLATE,
@@ -333,6 +203,8 @@ class CompressionEngine:
     def _get_decompress_pipeline_id(self, algorithm: AlgorithmType):
         mapping = {
             AlgorithmType.DEFLATE: self._engine.AlgorithmID.INFLATE,
+            AlgorithmType.GZIP: self._engine.AlgorithmID.INFLATE,
+            AlgorithmType.DPFLATE: self._engine.AlgorithmID.INFLATE,
             AlgorithmType.LZSS: self._engine.AlgorithmID.LZSS_DECOMPRESS,
             AlgorithmType.LZDP: self._engine.AlgorithmID.LZMINE_DECOMPRESS,
             AlgorithmType.BROTLI: self._engine.AlgorithmID.BROTLI_DECOMPRESS,
@@ -376,6 +248,30 @@ class CompressionEngine:
             raise ValueError(f"Algorithm {algorithm.value} not supported in pipeline mode")
 
         result = self._engine.pipeline_compress_file(input_path, output_path, [algo_id])
+        return result
+
+    def pipeline_compress_file_viz(
+        self,
+        input_path: str,
+        output_path: str,
+        viz_path: str,
+        algorithm: AlgorithmType = AlgorithmType.DPFLATE,
+    ):
+        """Streaming compress + visualization (.viz) output.
+
+        Currently only DPFlate is supported for viz; Deflate/Brotli
+        are wrapped in batch-mode adapters that don't expose observers.
+        """
+        if not self.available:
+            raise RuntimeError("C++ core_engine not available")
+
+        algo_id = self._get_pipeline_id(algorithm)
+        if algo_id is None:
+            raise ValueError(f"Algorithm {algorithm.value} not supported in pipeline mode")
+
+        result = self._engine.pipeline_compress_file_viz(
+            input_path, output_path, viz_path, [algo_id],
+        )
         return result
 
     def pipeline_decompress_file(

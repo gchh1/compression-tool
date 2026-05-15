@@ -195,21 +195,21 @@ class LZDPTokenParser(TokenParser):
             return None
 
         try:
-            from gui.engine.compressor import CompressionEngine
-            eng = CompressionEngine()
-            if eng.available:
-                comp = eng.create_compressor_for_visualization(
-                    AlgorithmType.LZDP, compression_params
-                )
-            else:
-                comp = core_engine.LZDPCompressor()
-                if compression_params:
-                    for key, val in compression_params.items():
-                        setter = getattr(comp, f"set_{key}", None)
-                        if setter:
-                            setter(int(val))
-            # 0 => C++ 使用压缩器上的 dp_range_（与算法配置里「DP优化深度」一致）
-            viz = comp.get_dp_visualization(list(raw_data), 0)
+            params = compression_params or {}
+            search_size = int(params.get("search_size", 4096))
+            lookahead_size = int(params.get("lookahead_size", 256))
+            dp_range = int(params.get("dp_top", 3))
+
+            lzdp = core_engine.LZDPViz()
+            lzdp.autoBitWidth(search_size, lookahead_size)
+            if "min_match" in params:
+                lzdp.set_min_match(int(params["min_match"]))
+            if "use_flag_encoding" in params:
+                lzdp.set_use_flag_encoding(bool(params["use_flag_encoding"]))
+            if "match_engine" in params:
+                lzdp.set_match_engine(int(params["match_engine"]))
+
+            viz = lzdp.get_dp_visualization(list(raw_data), search_size, lookahead_size, dp_range)
 
             tokens: list[Token] = []
             cursor = 0

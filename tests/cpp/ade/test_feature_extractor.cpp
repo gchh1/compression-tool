@@ -463,7 +463,7 @@ TEST(extension_image_png) {
     ASSERT_TRUE(ext.is_lossless_original > 0.5f);  // PNG is lossless
 }
 
-TEST_extension_image_bmp() {
+TEST(extension_image_bmp) {
     // Minimal BMP header (54 bytes DIB header)
     std::vector<uint8_t> bmp_data(138, 0);  // File header (14) + DIB header (40) + padding
 

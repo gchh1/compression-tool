@@ -129,6 +129,7 @@ def pack_compressed_file(
     algo_map = {
         AlgorithmType.NONE: engine.AlgorithmID.NONE,
         AlgorithmType.DEFLATE: engine.AlgorithmID.DEFLATE,
+        AlgorithmType.GZIP: engine.AlgorithmID.DEFLATE,
         AlgorithmType.LZSS: engine.AlgorithmID.LZSS,
         AlgorithmType.LZDP: engine.AlgorithmID.LZDP,
         AlgorithmType.DPFLATE: engine.AlgorithmID.DPFLATE,

@@ -17,10 +17,11 @@ target_include_directories(core_engine PRIVATE
     ${CMAKE_SOURCE_DIR}/src/api/include
     ${CMAKE_SOURCE_DIR}/src/processor/include
     ${CMAKE_SOURCE_DIR}/src/utils/include
+    ${CMAKE_SOURCE_DIR}/src/viz/include
     ${CMAKE_SOURCE_DIR}/src/ade/include
 )
 
-target_link_libraries(core_engine PRIVATE core algorithm archiver api processor ade)
+target_link_libraries(core_engine PRIVATE core algorithm archiver api processor viz ade)
 
 target_compile_definitions(core_engine PRIVATE ADE_WITH_CORE)
 

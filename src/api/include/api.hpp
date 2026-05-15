@@ -27,11 +27,6 @@ struct CompressResult {
     std::optional<BlockProfile> block_profile;
 };
 
-struct WebFile {
-    std::string name;
-    std::vector<uint8_t> content;
-};
-
 struct WCXUnpackResult {
     bool success{false};
     uint8_t algo_code{0};
@@ -50,15 +45,6 @@ auto compress(const std::vector<uint8_t>& data,
 /// Decompress a single buffer with the given algorithm chain.
 auto decompress(const std::vector<uint8_t>& data,
                 std::span<const AlgorithmID> chain) -> CompressResult;
-
-/// Pack multiple files into a compressed archive using an algorithm chain.
-auto packAndCompress(const std::vector<WebFile>& files,
-                     std::span<const AlgorithmID> chain)
-    -> std::vector<uint8_t>;
-
-/// Unpack a compressed archive back into individual files.
-auto decompressAndUnpack(const std::vector<uint8_t>& data)
-    -> std::vector<WebFile>;
 
 auto pack_wcx(const std::vector<uint8_t>& compressed_data,
               AlgorithmID algorithm,
@@ -79,24 +65,23 @@ auto compressFile(const std::string& input_path,
                   std::span<const AlgorithmID> chain,
                   size_t stream_chunk_bytes = 0) -> CompressResult;
 
+/// Like compressFile, but also writes visualization events to `viz_path`.
+/// The compress algorithm must inherit from AlgorithmBase (e.g. DPFlate);
+/// algorithms wrapped in StreamingCompressAdapter (Deflate, Brotli) are
+/// not yet supported for visualization.
+/// On success, result.block_profile carries the viz data reference.
+auto compressFileWithViz(const std::string& input_path,
+                         const std::string& output_path,
+                         const std::string& viz_path,
+                         std::span<const AlgorithmID> chain,
+                         size_t stream_chunk_bytes = 0) -> CompressResult;
+
 /// Streaming single-file decompression: read archive in chunks, write to disk.
 /// Writes to `output_path + ".part"` then renames to `output_path` on success.
 auto decompressFile(const std::string& input_path,
                     const std::string& output_path,
                     std::span<const AlgorithmID> chain,
                     size_t stream_chunk_bytes = 0) -> CompressResult;
-
-/// Recursively pack and compress a directory into an archive file.
-/// Writes to `output_path + ".part"` then renames to `output_path` on success.
-auto compressDirectory(const std::string& dir_path,
-                       const std::string& output_path,
-                       std::span<const AlgorithmID> chain,
-                       size_t stream_chunk_bytes = 0) -> CompressResult;
-
-/// Unpack a compressed archive to disk, preserving directory structure.
-auto decompressAndUnpackToDisk(const std::string& input_path,
-                                const std::string& output_dir)
-    -> CompressResult;
 
 #endif  // __EMSCRIPTEN__
 

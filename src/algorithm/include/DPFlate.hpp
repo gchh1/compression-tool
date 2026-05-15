@@ -64,6 +64,12 @@ private:
     std::vector<HuffmanCode> dictionary_;
     std::vector<HuffmanCode> dist_dictionary_;
 
+    // Visualization tracking
+    uint32_t block_input_start_{0};
+    uint32_t block_literal_count_{0};
+    uint32_t block_match_count_{0};
+    size_t block_output_start_{0};
+
     static constexpr size_t DEFLATE_ALPHABET_SIZE = 286;
     static constexpr size_t DISTANCE_DICTIONARY_SIZE = 30;
     static constexpr size_t DEFLATE_SYMBOL_BITS = 9;

@@ -22,14 +22,7 @@ auto createAlgorithm(AlgorithmID id) -> std::unique_ptr<algorithm::IAlgorithm> {
         case AlgorithmID::None:
             return nullptr;
         case AlgorithmID::Deflate:
-            return std::make_unique<StreamingCompressAdapter>(
-                [](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {
-                    algorithm::Deflate deflater;
-                    std::vector<uint8_t> out(data.size() + 1024);
-                    auto status = deflater.process(data, out, true);
-                    out.resize(status.bytes_produced);
-                    return out;
-                });
+            return std::make_unique<algorithm::Deflate>();
         case AlgorithmID::Inflate:
             return std::make_unique<StreamingDecompressAdapter>(
                 [](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {
@@ -73,14 +66,7 @@ auto createAlgorithm(AlgorithmID id) -> std::unique_ptr<algorithm::IAlgorithm> {
                     return lzdp.decompress(data);
                 });
         case AlgorithmID::Brotli:
-            return std::make_unique<StreamingCompressAdapter>(
-                [](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {
-                    algorithm::BrotliCompress brotli(65536, 3, 256);
-                    std::vector<uint8_t> out(data.size() + 1024);
-                    auto status = brotli.process(data, out, true);
-                    out.resize(status.bytes_produced);
-                    return out;
-                });
+            return std::make_unique<algorithm::BrotliCompress>();
         case AlgorithmID::BrotliDecompress:
             return std::make_unique<StreamingDecompressAdapter>(
                 [](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {

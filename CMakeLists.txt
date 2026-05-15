@@ -20,6 +20,7 @@ set(TESTS_DIR ${CMAKE_SOURCE_DIR}/tests)
 set(ALGORITHM_DIR ${SRC_DIR}/algorithm)
 set(BINDINGS_DIR ${SRC_DIR}/bindings)
 set(UTILS_DIR ${SRC_DIR}/utils)
+set(VIZ_DIR ${SRC_DIR}/viz)
 
 # ========= set build option ==========
 option(BUILD_PYTHON "Build Pybind11 bindings for PyQt desktop app" ON)

@@ -1,4 +1,5 @@
 add_subdirectory(utils)
+add_subdirectory(viz)
 add_subdirectory(algorithm)
 add_subdirectory(api)
 add_subdirectory(core)

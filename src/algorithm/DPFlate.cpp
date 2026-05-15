@@ -32,6 +32,10 @@ auto DPFlate::reset(void) -> void {
     dictionary_.clear();
     dist_dictionary_.clear();
     token_flush_idx_ = 0;
+    block_input_start_ = 0;
+    block_literal_count_ = 0;
+    block_match_count_ = 0;
+    block_output_start_ = 0;
     state_ = DPFlateState::COLLECT_INPUT;
 }
 
@@ -161,12 +165,28 @@ auto DPFlate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk)
         }
     }
 
+    // Back-track: mark optimal path, build tokens, collect MatchEvents
+    std::vector<bool> chosen(in_len + 1, false);
     std::vector<Token> tokens;
+    std::vector<MatchEvent> match_events;  // built in reverse, will flip
     size_t cur = in_len;
+    chosen[cur] = true;
     while (cur > 0) {
         size_t prev_pos = dp[cur].predecessor;
         size_t len = dp[cur].match_length;
         size_t dist = dp[cur].match_offset;
+        chosen[prev_pos] = true;
+
+        if (len == 0) {
+            match_events.push_back(
+                MatchEvent{static_cast<uint32_t>(prev_pos), 0, 0,
+                           input_buffer_[prev_pos]});
+        } else {
+            match_events.push_back(
+                MatchEvent{static_cast<uint32_t>(prev_pos),
+                           static_cast<uint16_t>(dist),
+                           static_cast<uint16_t>(len), 0});
+        }
 
         Token t;
         if (len == 0) {
@@ -182,6 +202,31 @@ auto DPFlate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk)
     }
     std::reverse(tokens.begin(), tokens.end());
     token_buffer_ = std::move(tokens);
+
+    // Emit MatchEvents in forward order
+    for (auto it = match_events.rbegin(); it != match_events.rend(); ++it) {
+        if (it->offset == 0)
+            ++block_literal_count_;
+        else
+            ++block_match_count_;
+        notifyObservers(*it);
+    }
+
+    // Emit DPStateEvent for all positions
+    for (size_t pos = 0; pos <= in_len; ++pos) {
+        DPStateEvent ev;
+        ev.position = static_cast<uint32_t>(pos);
+        ev.token_count = (dp[pos].token_count == LzStyleDpCell::kUnreachable)
+                             ? UINT32_MAX
+                             : static_cast<uint32_t>(dp[pos].token_count);
+        ev.predecessor = (dp[pos].predecessor == SIZE_MAX)
+                             ? UINT32_MAX
+                             : static_cast<uint32_t>(dp[pos].predecessor);
+        ev.match_offset = static_cast<uint16_t>(dp[pos].match_offset);
+        ev.match_length = static_cast<uint16_t>(dp[pos].match_length);
+        ev.is_chosen = chosen[pos] ? 1 : 0;
+        notifyObservers(ev);
+    }
 
     std::vector<uint32_t> freq_map(DEFLATE_ALPHABET_SIZE, 0);
     std::vector<uint32_t> dist_freq(DISTANCE_DICTIONARY_SIZE, 0);
@@ -201,8 +246,28 @@ auto DPFlate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk)
     dictionary_ = huffman_tree_->buildDictionary();
     dist_dictionary_ = dist_tree_->buildDictionary();
 
+    {
+        HuffmanTreeBuilt lit_tree_ev;
+        lit_tree_ev.block_index = 0;
+        lit_tree_ev.tree_type = 0;
+        lit_tree_ev.alphabet_size = DEFLATE_ALPHABET_SIZE;
+        for (size_t i = 0; i < DEFLATE_ALPHABET_SIZE && i < 286; ++i)
+            lit_tree_ev.code_lengths[i] = dictionary_[i].length;
+        notifyObservers(lit_tree_ev);
+    }
+    {
+        HuffmanTreeBuilt dist_tree_ev;
+        dist_tree_ev.block_index = 0;
+        dist_tree_ev.tree_type = 1;
+        dist_tree_ev.alphabet_size = DISTANCE_DICTIONARY_SIZE;
+        for (size_t i = 0; i < DISTANCE_DICTIONARY_SIZE && i < 286; ++i)
+            dist_tree_ev.code_lengths[i] = dist_dictionary_[i].length;
+        notifyObservers(dist_tree_ev);
+    }
+
     if (writer_.ensureSpace(huffman_tree_->getTreeSize() +
                             dist_tree_->getTreeSize())) {
+        block_output_start_ = writer_.getBytesWritten();
         huffman_tree_->serializeTree(writer_);
         dist_tree_->serializeTree(writer_);
 
@@ -254,6 +319,18 @@ auto DPFlate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
         writer_.writeBit((eof_code.code >> i) & 1);
     }
 
+    {
+        BlockBoundary bb;
+        bb.block_index = 0;
+        bb.input_start = block_input_start_;
+        bb.input_bytes = static_cast<uint32_t>(input_buffer_.size());
+        bb.literal_count = block_literal_count_;
+        bb.match_count = block_match_count_;
+        bb.output_bytes = writer_.getBytesWritten() - block_output_start_;
+        notifyObservers(bb);
+        notifyBlockFinish();
+    }
+
     writer_.flush();
     status.done = true;
 }
@@ -263,7 +340,11 @@ auto DPFlate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
         (this->*kStateHandlers[static_cast<size_t>(state_)])(status,
                                                              is_last_chunk);
 
-        if (status.need_input || status.need_output || status.done) {
+        if (status.need_input || status.need_output) {
+            return;
+        }
+        if (status.done) {
+            notifyCompressionFinish();
             return;
         }
     }

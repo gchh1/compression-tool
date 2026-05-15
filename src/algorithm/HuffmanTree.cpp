@@ -56,20 +56,18 @@ HuffmanTree::HuffmanTree(utils::BitReader& reader, size_t dictionary_size,
                          size_t symbol_bits)
     : dictionary_size_(dictionary_size), symbol_bits_(symbol_bits) {
     auto buildTreeRecursive = [&reader, symbol_bits](auto& self) -> node* {
-        if (reader.getRemainingBits() == 0) {
-            return nullptr;
-        }
-        uint8_t bit = reader.readBit();
-        if (reader.getRemainingBits() == 0) {
-            return nullptr;
-        }
+        if (!reader.ensureBits(1)) return nullptr;
+        uint8_t bit = static_cast<uint8_t>(reader.readBit());
         if (bit == 0) {
             node* left = self(self);
+            if (!left) return nullptr;
             node* right = self(self);
+            if (!right) return nullptr;
             return new node(left, right);
         } else {
+            if (!reader.ensureBits(static_cast<uint8_t>(symbol_bits))) return nullptr;
             uint16_t symbol =
-                static_cast<uint16_t>(reader.readBits(symbol_bits));
+                static_cast<uint16_t>(reader.readBits(static_cast<uint8_t>(symbol_bits)));
             return new node(symbol, 0);
         }
     };

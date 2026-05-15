@@ -95,3 +95,26 @@ def allocate_streaming_wcx_path(source_path: str) -> Path:
     uid = uuid.uuid4().hex[:12]
     name = f"{uid}_{_safe_stem(source_path)}.wcx"
     return compressed_dir() / name
+
+
+def viz_dir() -> Path:
+    p = workspace_root() / "viz"
+    p.mkdir(parents=True, exist_ok=True)
+    return p
+
+
+def allocate_viz_path(source_path: str) -> Path:
+    """Return a unique ``.viz`` path under ``workspace/viz/``."""
+    uid = uuid.uuid4().hex[:12]
+    name = f"{uid}_{_safe_stem(source_path)}.viz"
+    return viz_dir() / name
+
+
+def sweep_viz_artifacts() -> None:
+    """Delete all ``.viz`` files under ``workspace/viz/``."""
+    vd = viz_dir()
+    for p in vd.glob("*.viz"):
+        try:
+            p.unlink(missing_ok=True)
+        except OSError as e:
+            logger.debug("[workspace] skip removing %s: %s", p, e)

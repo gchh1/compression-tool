@@ -47,6 +47,13 @@ auto Deflate::reset(void) -> void {
     token_buffer_.clear();
     token_flush_idx_ = 0;
 
+    input_pos_ = 0;
+    block_index_ = 0;
+    block_input_start_ = 0;
+    block_literal_count_ = 0;
+    block_match_count_ = 0;
+    block_output_start_ = 0;
+
     deflate_state_ = DeflateState::FIND_MATCHES;
 }
 
@@ -157,7 +164,12 @@ auto Deflate::handleFindMatches(AlgorithmStatus& status, bool is_last_chunk)
                     t.dist_extra_val);
         token_buffer_.push_back(t);
 
+        notifyObservers(MatchEvent{input_pos_,
+                                   static_cast<uint16_t>(match_distance),
+                                   static_cast<uint16_t>(match_length), 0});
+
         for (size_t i = 1; i < match_length; ++i) {
+            input_pos_++;
             cursor_++;
             lookahead_--;
             if (lookahead_ >= MIN_MATCH) {
@@ -166,15 +178,23 @@ auto Deflate::handleFindMatches(AlgorithmStatus& status, bool is_last_chunk)
                 head_[hash_val] = static_cast<uint16_t>(cursor_);
             }
         }
+        input_pos_++;
         cursor_++;
         lookahead_--;
+        ++block_match_count_;
     } else {
         Token t;
         t.is_literal = true;
         t.code = window_[cursor_];
         token_buffer_.push_back(t);
+
+        notifyObservers(
+            MatchEvent{input_pos_, 0, 0, window_[cursor_]});
+
+        input_pos_++;
         cursor_++;
         lookahead_--;
+        ++block_literal_count_;
     }
 
     if (token_buffer_.size() >= MAX_BLOCK_TOKENS) {
@@ -208,8 +228,28 @@ auto Deflate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk)
     dictionary_ = huffman_tree_->buildDictionary();
     dist_dictionary_ = dist_tree_->buildDictionary();
 
+    {
+        HuffmanTreeBuilt lit_tree_ev;
+        lit_tree_ev.block_index = block_index_;
+        lit_tree_ev.tree_type = 0;
+        lit_tree_ev.alphabet_size = DEFLATE_ALPHABET_SIZE;
+        for (size_t i = 0; i < DEFLATE_ALPHABET_SIZE && i < 286; ++i)
+            lit_tree_ev.code_lengths[i] = dictionary_[i].length;
+        notifyObservers(lit_tree_ev);
+    }
+    {
+        HuffmanTreeBuilt dist_tree_ev;
+        dist_tree_ev.block_index = block_index_;
+        dist_tree_ev.tree_type = 1;
+        dist_tree_ev.alphabet_size = DISTANCE_DICTIONARY_SIZE;
+        for (size_t i = 0; i < DISTANCE_DICTIONARY_SIZE && i < 286; ++i)
+            dist_tree_ev.code_lengths[i] = dist_dictionary_[i].length;
+        notifyObservers(dist_tree_ev);
+    }
+
     if (writer_.ensureSpace(huffman_tree_->getTreeSize() +
                             dist_tree_->getTreeSize())) {
+        block_output_start_ = writer_.getBytesWritten();
         huffman_tree_->serializeTree(writer_);
         dist_tree_->serializeTree(writer_);
 
@@ -256,17 +296,37 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
 
     token_buffer_.clear();
 
-    if (is_last_chunk && lookahead_ == 0) {
-        // 写入 EOF
+    // Always write EOF after every block so the Inflate decoder knows
+    // where the token stream ends and the next Huffman tree begins.
+    {
         const auto& eof_code = dictionary_[256];
         for (int i = eof_code.length - 1; i >= 0; i--) {
             writer_.writeBit((eof_code.code >> i) & 1);
         }
+    }
 
-        writer_.flush();  // 最终扫尾，补齐字节
+    {
+        BlockBoundary bb;
+        bb.block_index = block_index_;
+        bb.input_start = block_input_start_;
+        bb.input_bytes = input_pos_ - block_input_start_;
+        bb.literal_count = block_literal_count_;
+        bb.match_count = block_match_count_;
+        bb.output_bytes = writer_.getBytesWritten() - block_output_start_;
+        notifyObservers(bb);
+        notifyBlockFinish();
+    }
+
+    if (is_last_chunk && lookahead_ == 0) {
+        writer_.flush();
         status.done = true;
         return;
     }
+
+    ++block_index_;
+    block_input_start_ = input_pos_;
+    block_literal_count_ = 0;
+    block_match_count_ = 0;
 
     deflate_state_ = DeflateState::FIND_MATCHES;
 }
@@ -282,7 +342,11 @@ auto Deflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
         (this->*kStateHandlers[static_cast<size_t>(deflate_state_)])(
             status, is_last_chunk);
 
-        if (status.need_input || status.need_output || status.done) {
+        if (status.need_input || status.need_output) {
+            return;
+        }
+        if (status.done) {
+            notifyCompressionFinish();
             return;
         }
     }

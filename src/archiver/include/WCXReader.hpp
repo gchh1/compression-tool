@@ -9,14 +9,11 @@
 
 #include "api.hpp"
 
-namespace compressor::api {
+#include "WCXProtocol.hpp"
 
-// -----------------------------------------------------------------------------
-// WCX-only decode ingress (`wcx_decompress_input.cpp`)
-//
-// Single supported on-disk shape for decompress paths: **WCX v2 container** (WCMP).
-// There is no silent fallback to historical raw-deflate files or bare Pack bytes.
-// -----------------------------------------------------------------------------
+namespace compressor::archiver {
+
+using compressor::api::CompressResult;
 
 /// Single-file decompress: require a valid WCX header; return compressed payload
 /// span length, or set `result.error_message` and return `nullopt`.
@@ -32,6 +29,6 @@ auto resolve_wcx_directory_archive_inner_pack(const std::string& input_path,
                                               CompressResult& result)
     -> std::optional<std::vector<uint8_t>>;
 
-}  // namespace compressor::api
+}  // namespace compressor::archiver
 
 #endif  // __EMSCRIPTEN__

@@ -30,6 +30,17 @@ COMPARISON_ALGORITHMS = (
     AlgorithmType.ZSTD,
 )
 
+def _compressed_size(record: Record) -> int:
+    """Get compressed size, supporting both in-memory and file-path streaming modes."""
+    if hasattr(record, 'compressed_data') and record.compressed_data is not None:
+        return len(record.compressed_data)
+    if hasattr(record, 'compressed_path') and record.compressed_path and Path(record.compressed_path).exists():
+        return Path(record.compressed_path).stat().st_size
+    if hasattr(record, 'size'):
+        return record.size
+    return 0
+
+
 def _heuristic_params_for_record(record: FileRecord, algo) -> dict[str, int] | None:
     from gui.models import ALGORITHM_PARAMS
     bf = getattr(record, 'base_features', None)
@@ -130,8 +141,6 @@ class CompressionWorker(QThread):
             if not engine.available:
                 raise RuntimeError("C++ core_engine not available")
 
-            use_streaming = hasattr(record, 'size') and engine.should_use_streaming(record.size)
-
             if isinstance(record, FileRecord):
                 record.algorithm = self.algorithm
                 _auto_params = None
@@ -183,15 +192,43 @@ class CompressionWorker(QThread):
                         CompressionEngine.set_config(full_cfg, save=False)
                         logger.info("[compress] AUTO applied params for %s: %s",
                                    algo.value, _auto_params)
-                        use_streaming = False
 
-            if use_streaming and hasattr(record, 'path'):
+            if record.algorithm == AlgorithmType.NONE:
+                # Store-only: copy raw file to workspace without compression.
                 from gui.utils.workspace import allocate_streaming_wcx_path
+                import shutil
+                out_path = str(allocate_streaming_wcx_path(record.path))
+                shutil.copy2(record.path, out_path)
+                record.compressed_path = out_path
+                record.compressed_data = None
+                record.compression_time_ms = 0.0
+                record.compression_ratio = 1.0
+                record.is_stored = True
+                record.status = CompressionStatus.DONE
+                record.compression_config_snapshot = None
+                if folder_ref is not None:
+                    folder_ref.total_original += record.size
+                    folder_ref.total_compressed += record.size
+                self.finished_row.emit(row_idx)
+            elif hasattr(record, 'path'):
+                from gui.utils.workspace import allocate_streaming_wcx_path, allocate_viz_path
 
                 logger.info("[compress] STREAMING mode for %d bytes (file-to-file)", record.size)
                 out_path = str(allocate_streaming_wcx_path(record.path))
                 snap = CompressionEngine.snapshot_for_algorithm(record.algorithm)
-                result = engine.smart_compress_file(record.path, out_path, record.algorithm)
+
+                # Generate .viz for algorithms created directly (not batch-wrapped).
+                viz_supported = record.algorithm in (AlgorithmType.DPFLATE, AlgorithmType.DEFLATE, AlgorithmType.BROTLI)
+                viz_path = str(allocate_viz_path(record.path)) if viz_supported else None
+
+                if viz_path:
+                    result = engine.pipeline_compress_file_viz(
+                        record.path, out_path, viz_path, record.algorithm,
+                    )
+                    record.viz_path = viz_path
+                else:
+                    result = engine.smart_compress_file(record.path, out_path, record.algorithm)
+
                 logger.info("[compress] streaming compress done: %d -> %d bytes", record.size, result.compressed_size)
 
                 original_size = record.size
@@ -257,73 +294,10 @@ class CompressionWorker(QThread):
                     self.finished_row.emit(row_idx)
 
             else:
-                record.load_raw_data()
-                record.extract_features()
-                logger.info("[compress] loaded raw data: %d bytes", len(record.raw_data))
-
-                logger.info("[compress] compressing with %s ...", record.algorithm.value)
-                snap = CompressionEngine.snapshot_for_algorithm(record.algorithm)
-                result = engine.smart_compress(record.raw_data, record.algorithm)
-                logger.info("[compress] compress done: %d -> %d bytes", len(record.raw_data), result.compressed_size)
-
-                original_size = len(record.raw_data)
-                compressed_size = result.compressed_size
-
-                if compressed_size >= original_size:
-                    logger.info("[compress] EXPANSION detected: %d >= %d, falling back to stored (raw)",
-                                 compressed_size, original_size)
-                    record.compressed_data = record.raw_data
-                    record.algorithm = AlgorithmType.NONE
-                    record.compression_time_ms = result.time_ms
-                    record.compression_ratio = 1.0
-                    record.is_stored = True
-                    record.compression_config_snapshot = None
-                else:
-                    record.compressed_data = bytes(result.data)
-                    record.compression_time_ms = result.time_ms
-                    record.compression_ratio = compressed_size / original_size if original_size > 0 else 0
-                    record.is_stored = False
-                    record.compression_config_snapshot = snap
-
-                if hasattr(result, 'error_message') and result.error_message:
-                    record.status = CompressionStatus.FAILED
-                    record.error_message = result.error_message
-                    record.compression_config_snapshot = None
-                    self.error.emit(row_idx)
-                else:
-                    record.status = CompressionStatus.DONE
-                    try:
-                        from gui.ade.training import get_training_store
-                        store = get_training_store()
-                        store.add_from_record(record, record.decision_result)
-                    except Exception:
-                        pass
-                    self._save_counter += 1
-                    if self._save_counter % 10 == 0:
-                        self._flush_training_data()
-                    try:
-                        from gui.ade.explorer import SilentExplorer
-                        SilentExplorer.get().maybe_explore(
-                            record, record.algorithm,
-                            compress_time_ms=record.compression_time_ms
-                        )
-                    except Exception:
-                        pass
-                    if folder_ref is not None:
-                        folder_ref.total_original += original_size
-                        folder_ref.total_compressed += _compressed_size(record)
-                        folder_ref.total_time_ms += record.compression_time_ms
-                        folder_ref.compression_ratio = (
-                            folder_ref.total_compressed / folder_ref.total_original
-                            if folder_ref.total_original > 0 else 1.0
-                        )
-                        folder_ref.compression_time_ms = folder_ref.total_time_ms
-                        done_count = sum(1 for f in folder_ref.files if f.status == CompressionStatus.DONE)
-                        if done_count == len(folder_ref.files):
-                            folder_ref.status = CompressionStatus.DONE
-                        else:
-                            folder_ref.status = CompressionStatus.COMPRESSING
-                    self.finished_row.emit(row_idx)
+                logger.warning("[compress] no path for record, skipping")
+                record.status = CompressionStatus.FAILED
+                record.error_message = "No file path available"
+                self.error.emit(row_idx)
 
         except Exception as e:
             logger.error("[compress] CRASH row=%d file=%s: %s\n%s", row_idx, getattr(record, 'path', '?'), e, traceback.format_exc())
