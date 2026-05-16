@@ -171,7 +171,13 @@ bool dpflate_memory_twice_and_inflate(const std::vector<uint8_t>& data, size_t s
     inf.reset();
     const size_t dec_cap = (std::max)(data.size() * 4 + size_t{65536}, size_t{512} * 1024);
     std::vector<uint8_t> dec(dec_cap);
-    auto st = inf.process(*c1, dec, true);
+    std::vector<uint8_t> payload;
+    if (c1->size() >= 1 && ((*c1)[0] == 0x46 || (*c1)[0] == 0x33)) {
+        payload.assign(c1->begin() + 1, c1->end());
+    } else {
+        payload = *c1;
+    }
+    auto st = inf.process(payload, dec, true);
     dec.resize(st.bytes_produced);
     if (dec != data) {
         std::cerr << "[dpflate-mem] inflate roundtrip mismatch sizes dec=" << dec.size()
@@ -280,8 +286,8 @@ int main(int argc, char** argv) {
         uint32_t crc_rnd;
     };
     const DpfCfg dcfgs[] = {
-        {32768, 258, 3, 256, 6, 1, false, 2686463343u, 1064320444u},
-        {32768, 258, 4, 256, 6, 1, false, 2686463343u, 1064320444u},
+        {32768, 258, 3, 256, 6, 1, false, 1015025153u, 3195782439u},
+        {32768, 258, 4, 256, 6, 1, false, 1015025153u, 3195782439u},
     };
     for (const auto& c : dcfgs) {
         if (!dpflate_memory_twice_and_inflate(corp_p, c.ss, c.la, c.mm, c.mc, c.dsm, c.eng, c.flag,

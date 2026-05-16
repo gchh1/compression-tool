@@ -421,6 +421,19 @@ test_wcx_corrupt/fast:
 .PHONY : test_wcx_corrupt/fast
 
 #=============================================================================
+# Target rules for targets named test_lzss_noflag
+
+# Build rule for target.
+test_lzss_noflag: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_lzss_noflag
+.PHONY : test_lzss_noflag
+
+# fast build rule for target.
+test_lzss_noflag/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag.dir\build.make tests/CMakeFiles/test_lzss_noflag.dir/build
+.PHONY : test_lzss_noflag/fast
+
+#=============================================================================
 # Target rules for targets named test_lzdp_memory_streaming_parity
 
 # Build rule for target.
@@ -472,6 +485,136 @@ test_HuffmanTree3HM/fast:
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_HuffmanTree3HM.dir\build.make tests/CMakeFiles/test_HuffmanTree3HM.dir/build
 .PHONY : test_HuffmanTree3HM/fast
 
+#=============================================================================
+# Target rules for targets named test_algorithm_comparison
+
+# Build rule for target.
+test_algorithm_comparison: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_algorithm_comparison
+.PHONY : test_algorithm_comparison
+
+# fast build rule for target.
+test_algorithm_comparison/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_comparison.dir\build.make tests/CMakeFiles/test_algorithm_comparison.dir/build
+.PHONY : test_algorithm_comparison/fast
+
+#=============================================================================
+# Target rules for targets named test_mixed_dpflate_only
+
+# Build rule for target.
+test_mixed_dpflate_only: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_mixed_dpflate_only
+.PHONY : test_mixed_dpflate_only
+
+# fast build rule for target.
+test_mixed_dpflate_only/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_mixed_dpflate_only.dir\build.make tests/CMakeFiles/test_mixed_dpflate_only.dir/build
+.PHONY : test_mixed_dpflate_only/fast
+
+#=============================================================================
+# Target rules for targets named test_lzdp_memory_flag
+
+# Build rule for target.
+test_lzdp_memory_flag: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_lzdp_memory_flag
+.PHONY : test_lzdp_memory_flag
+
+# fast build rule for target.
+test_lzdp_memory_flag/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_memory_flag.dir\build.make tests/CMakeFiles/test_lzdp_memory_flag.dir/build
+.PHONY : test_lzdp_memory_flag/fast
+
+#=============================================================================
+# Target rules for targets named test_dpflate_3hm_stream
+
+# Build rule for target.
+test_dpflate_3hm_stream: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_dpflate_3hm_stream
+.PHONY : test_dpflate_3hm_stream
+
+# fast build rule for target.
+test_dpflate_3hm_stream/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_3hm_stream.dir\build.make tests/CMakeFiles/test_dpflate_3hm_stream.dir/build
+.PHONY : test_dpflate_3hm_stream/fast
+
+#=============================================================================
+# Target rules for targets named test_3hm_binary
+
+# Build rule for target.
+test_3hm_binary: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_3hm_binary
+.PHONY : test_3hm_binary
+
+# fast build rule for target.
+test_3hm_binary/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_3hm_binary.dir\build.make tests/CMakeFiles/test_3hm_binary.dir/build
+.PHONY : test_3hm_binary/fast
+
+#=============================================================================
+# Target rules for targets named test_lzdp_binary
+
+# Build rule for target.
+test_lzdp_binary: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_lzdp_binary
+.PHONY : test_lzdp_binary
+
+# fast build rule for target.
+test_lzdp_binary/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_binary.dir\build.make tests/CMakeFiles/test_lzdp_binary.dir/build
+.PHONY : test_lzdp_binary/fast
+
+#=============================================================================
+# Target rules for targets named test_3hm_all
+
+# Build rule for target.
+test_3hm_all: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_3hm_all
+.PHONY : test_3hm_all
+
+# fast build rule for target.
+test_3hm_all/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_3hm_all.dir\build.make tests/CMakeFiles/test_3hm_all.dir/build
+.PHONY : test_3hm_all/fast
+
+#=============================================================================
+# Target rules for targets named test_regression_baseline
+
+# Build rule for target.
+test_regression_baseline: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_regression_baseline
+.PHONY : test_regression_baseline
+
+# fast build rule for target.
+test_regression_baseline/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_regression_baseline.dir\build.make tests/CMakeFiles/test_regression_baseline.dir/build
+.PHONY : test_regression_baseline/fast
+
+#=============================================================================
+# Target rules for targets named debug_dpflate
+
+# Build rule for target.
+debug_dpflate: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 debug_dpflate
+.PHONY : debug_dpflate
+
+# fast build rule for target.
+debug_dpflate/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_dpflate.dir\build.make tests/CMakeFiles/debug_dpflate.dir/build
+.PHONY : debug_dpflate/fast
+
+#=============================================================================
+# Target rules for targets named debug_token_trace
+
+# Build rule for target.
+debug_token_trace: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 debug_token_trace
+.PHONY : debug_token_trace
+
+# fast build rule for target.
+debug_token_trace/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_token_trace.dir\build.make tests/CMakeFiles/debug_token_trace.dir/build
+.PHONY : debug_token_trace/fast
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -490,8 +633,12 @@ help:
 	@echo ... archiver
 	@echo ... bench_ade_extractor
 	@echo ... core
+	@echo ... debug_dpflate
+	@echo ... debug_token_trace
 	@echo ... generate_ade_dataset
 	@echo ... processor
+	@echo ... test_3hm_all
+	@echo ... test_3hm_binary
 	@echo ... test_Deflate
 	@echo ... test_HuffmanTree3HM
 	@echo ... test_PackWriter
@@ -499,9 +646,16 @@ help:
 	@echo ... test_ade_decision_engine
 	@echo ... test_ade_evolutionary
 	@echo ... test_ade_feature_extractor
+	@echo ... test_algorithm_comparison
+	@echo ... test_dpflate_3hm_stream
+	@echo ... test_lzdp_binary
 	@echo ... test_lzdp_dpflate_regression
 	@echo ... test_lzdp_dpflate_stream
+	@echo ... test_lzdp_memory_flag
 	@echo ... test_lzdp_memory_streaming_parity
+	@echo ... test_lzss_noflag
+	@echo ... test_mixed_dpflate_only
+	@echo ... test_regression_baseline
 	@echo ... test_roundtrip
 	@echo ... test_wcx_corrupt
 	@echo ... test_wcx_directory_archive

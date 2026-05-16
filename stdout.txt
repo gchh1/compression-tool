@@ -1,0 +1,43 @@
+============================================================
+  算法对比测试
+  语料数: 4 (large=no)
+============================================================
+
+--- Corpus: pattern (672 bytes) ---
+  LZDP         memory     pattern            orig=     672 comp=      34 ratio=  5.06% time=    18.2ms OK CRC_OK
+  LZSS         memory     pattern            orig=     672 comp=     107 ratio= 15.92% time=     0.1ms OK CRC_OK
+  DPFlate      memory     pattern            orig=     672 comp=      39 ratio=  5.80% time=     9.3ms OK CRC_OK
+  3HfMT        memory     pattern            orig=     672 comp=     683 ratio=101.64% time=     8.3ms FAIL CRC_MISMATCH
+  Deflate      memory     pattern            orig=     672 comp=      38 ratio=  5.65% time=     0.1ms OK CRC_OK
+
+--- Corpus: random (384 bytes) ---
+  LZDP         memory     random             orig=     384 comp=     389 ratio=101.30% time=     7.0ms OK CRC_OK
+  LZSS         memory     random             orig=     384 comp=     436 ratio=113.54% time=     0.2ms OK CRC_OK
+  DPFlate      memory     random             orig=     384 comp=     644 ratio=167.71% time=     5.0ms OK CRC_OK
+  3HfMT        memory     random             orig=     384 comp=    1266 ratio=329.69% time=     5.2ms FAIL CRC_MISMATCH
+  Deflate      memory     random             orig=     384 comp=     643 ratio=167.45% time=     0.2ms OK CRC_OK
+
+--- Corpus: text (22300 bytes) ---
+  LZDP         memory     text               orig=   22300 comp=     728 ratio=  3.26% time=  3191.6ms OK CRC_OK
+  LZSS         memory     text               orig=   22300 comp=    2997 ratio= 13.44% time=    17.1ms OK CRC_OK
+  DPFlate      memory     text               orig=   22300 comp=     468 ratio=  2.10% time=    86.8ms OK CRC_OK
+  3HfMT        memory     text               orig=   22300 comp=    1059 ratio=  4.75% time=    90.8ms FAIL CRC_MISMATCH
+  Deflate      memory     text               orig=   22300 comp=     476 ratio=  2.13% time=     0.4ms OK CRC_OK
+
+--- Corpus: binary_64k (65536 bytes) ---
+  LZDP         memory     binary_64k         orig=   65536 comp=   65913 ratio=100.58% time=  8991.6ms OK CRC_OK
+  LZSS         memory     binary_64k         orig=   65536 comp=   73710 ratio=112.47% time=   620.1ms OK CRC_OK
+  DPFlate      memory     binary_64k         orig=   65536 comp=   65920 ratio=100.59% time=    16.7ms OK CRC_OK
+  3HfMT        memory     binary_64k         orig=   65536 comp=   66889 ratio=102.06% time=    16.4ms FAIL CRC_MISMATCH
+  Deflate      memory     binary_64k         orig=   65536 comp=   66978 ratio=102.20% time=     5.2ms FAIL CRC_MISMATCH
+
+============================================================
+  汇总
+============================================================
+  FAIL: 3HfMT memory pattern (decompress mismatch) (CRC mismatch)
+  FAIL: 3HfMT memory random (decompress mismatch) (CRC mismatch)
+  FAIL: 3HfMT memory text (decompress mismatch) (CRC mismatch)
+  FAIL: 3HfMT memory binary_64k (decompress mismatch) (CRC mismatch)
+  FAIL: Deflate memory binary_64k (decompress mismatch) (CRC mismatch)
+
+  Pass: 15 / 20

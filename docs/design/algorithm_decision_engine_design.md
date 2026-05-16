@@ -1373,6 +1373,7 @@ class FileRecord(Record):
 | **2026-01-15** | **v2.0** | **务实修正: JSON格式、高级配置系统、GPU整合、移除不切实际承诺** | **AI Assistant** |
 | **2026-05-12** | **v2.1** | **编码方案参数补充: 新增 use_flag_encoding 到参数空间、优化器配置、L2探索、高级UI** | **AI Assistant** |
 | **2026-05-13** | **v2.2** | **3HfMTree：Stage2/`params_used`/高级配置与 L2 探索与 `flate-encoding-design.md` 对齐说明** | **AI Assistant** |
+| **2026-05-13** | **v2.3** | **§8.11 + 外链：`silent_exploration_interrupt-design.md`（用户中断协同、引擎锁、UI 开关）** | **AI Assistant** |
 
 ---
 
@@ -1843,6 +1844,17 @@ class TrainingSampleV3:
 | **SKIP 决策** | 不触发探索（不可压缩的文件不需要比较） |
 | **离线/断网环境** | 正常工作（探索是本地操作，无需外部依赖） |
 | **首次运行 (空训练集)** | ε_base 自动提升至 0.5（冷启动高探索） |
+
+### 8.11 用户中断与静默探索协同（实现规格）
+
+用户压缩/解压与后台静默探索的**优先级、配置现场保护与持久化开关**已单独成文，避免与本节 AC-UCB 策略混淆：
+
+- **详见**：[静默探索 — 用户中断协同设计](./silent_exploration_interrupt-design.md)  
+
+要点摘要：**用户操作深度**（禁止新起探索线程）+ **`CompressionEngine` 可重入锁**（串行化全局配置与 native 压/解压）+ **默认关闭** + **高级「算法配置」** 中 ☑/☐ 样式开关与 `ade.silent_explore_enabled` 持久化。
+
+- **状态机规格**（主循环监督器 S0–S5、中断模块 IM、`MASK_ON`/`ENGINE_HELD`、联合转移表与伪代码）：见该文档 **§8–§14**。  
+- **流式现场中断模块（SIM）**（L1/L2 checkpoint、`CheckpointManifest`、与 `pipeline_compress_file` 协作取消）：见 [`streaming-interrupt-checkpoint-design.md`](./streaming-interrupt-checkpoint-design.md)。
 
 ---
 

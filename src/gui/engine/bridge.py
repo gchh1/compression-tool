@@ -20,6 +20,8 @@ def get_core_engine():
     # engine/bridge.py -> engine -> gui -> src -> repo root
     _base = Path(__file__).resolve().parent.parent.parent.parent
     _candidates = [
+        _base / "build_py" / "src" / "bindings" / "pybind",
+        _base / "build_debug" / "src" / "bindings" / "pybind",
         _base / "build" / "src" / "bindings" / "pybind",
         _base / "build_pybind" / "src" / "bindings" / "pybind",
         _base / "build" / "src" / "bindings",

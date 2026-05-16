@@ -212,6 +212,7 @@ src/core/CMakeFiles/core.dir/AlgorithmFactory.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_algorithm_defs.h \
  D:/AAA_C/compression-tool/src/algorithm/include/SpillBitStream.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/TempFile.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/filesystem \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_fwd.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/chrono.h \
@@ -494,4 +495,5 @@ src/core/CMakeFiles/core.dir/AlgorithmFactory.cpp.obj: \
  D:/AAA_C/compression-tool/src/processor/include/ChunkedStreamAdapter.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/functional \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_function.h \
+ D:/AAA_C/compression-tool/src/processor/include/StreamChunkPolicy.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/Zstd.hpp

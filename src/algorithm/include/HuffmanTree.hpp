@@ -44,8 +44,23 @@ class Compare {
 /** @brief  */
 struct HuffmanCode {
     uint64_t code{0};
-    uint8_t length{0};
+    uint16_t length{0};
+    std::vector<uint8_t> bits{};
 };
+
+inline auto writeHuffmanCode(utils::BitWriter& writer, const HuffmanCode& code)
+    -> void {
+    if (!code.bits.empty()) {
+        for (uint8_t bit : code.bits) {
+            writer.writeBit(bit);
+        }
+        return;
+    }
+
+    for (int i = code.length - 1; i >= 0; --i) {
+        writer.writeBit(static_cast<uint8_t>((code.code >> i) & 1));
+    }
+}
 
 /**
  * @brief Helpful class to build and manage `HuffmanTree`. As for constructor,
@@ -101,7 +116,8 @@ class HuffmanTree {
     auto buildTree(const std::vector<uint32_t>& freqMap) -> void;
 
     /** @brief Travel the Huffman Tree by preorder to get the code */
-    auto generateCodes(node* n, uint64_t current_code, uint8_t current_length,
+    auto generateCodes(node* n, uint64_t current_code, uint16_t current_length,
+                       std::vector<uint8_t>& current_bits,
                        std::vector<HuffmanCode>& dict) const -> void;
 
     /** @brief  */

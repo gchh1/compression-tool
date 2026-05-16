@@ -57,6 +57,11 @@ auto compress(const std::vector<uint8_t>& data,
 /// Decompress a single buffer with the given algorithm chain (same optional pipeline pointers /
 /// chunk size as ``compress`` for symmetric ``MemoryPool`` sizing; ignored by ``Inflate`` / adapters
 /// that do not read these fields).
+///
+/// **GUI default “strategy 1”**: the caller already holds the full compressed payload in ``data``;
+/// this function still builds a ``processor::Pipeline`` with ``memory::MemoryPool`` (``MemoryPool.hpp``)
+/// so ``StreamProcessor`` can reuse **fixed-size output chunks** while draining decoded bytes into
+/// ``result.data`` — the pool does **not** replace storing the full input/output as contiguous vectors.
 auto decompress(const std::vector<uint8_t>& data,
                   std::span<const AlgorithmID> chain,
                   const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
@@ -100,8 +105,16 @@ auto compressFile(const std::string& input_path,
                   const core::DeflatePipelineParams* deflate_pipeline = nullptr)
     -> CompressResult;
 
-/// Streaming single-file decompression: read archive in chunks, write to disk.
-/// Writes to `output_path + ".part"` then renames to `output_path` on success.
+/// WCX single-file decompression to disk (see ``docs/design/streaming-workspace-spec.md`` / GUI engine).
+///
+/// - **Strategy 1** (typical Python default): read whole WCX (or whole payload) into memory,
+///   decompress to a full plaintext buffer, then write the file in one go after decode completes.
+///   ``MemoryPool`` is used **inside** ``decompressFile``'s ``Pipeline`` for intermediate chunks only.
+/// - **Strategy 2** (concept / pipeline): plaintext produced in streaming ``pull`` chunks and
+///   written incrementally (not "split output file in half"; that is unrelated to LZDP Phase 2
+///   **two-block** temp-A/temp-B rolling I/O in ``streaming-compression-design.md`` §3.2).
+/// - **Strategy 3** (this API when used from GUI with native flag): read WCX payload in bounded
+///   chunks from disk, push through ``Pipeline``, drain pulls to the output file.
 auto decompressFile(const std::string& input_path,
                     const std::string& output_path,
                     std::span<const AlgorithmID> chain,

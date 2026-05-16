@@ -116,6 +116,27 @@ src/algorithm/CMakeFiles/algorithm.dir/LZDP.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/execution_defs.h \
  D:/AAA_C/compression-tool/src/algorithm/include/SpillBitStream.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/TempFile.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_base.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_wait.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/gthr.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/gthr-default.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sys/types.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_off_t.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/process.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_startup.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/signal.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_signal.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/time.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sys/timeb.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_timeval.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_time.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_compat.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_unistd.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_mutex.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/filesystem \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_fwd.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/system_error \
@@ -127,7 +148,6 @@ src/algorithm/CMakeFiles/algorithm.dir/LZDP.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cwchar \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wchar.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_stdio_config.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_off_t.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stat64.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/swprintf.inl \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/wchar_s.h \
@@ -155,26 +175,11 @@ src/algorithm/CMakeFiles/algorithm.dir/LZDP.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ratio \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/limits \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ctime \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/time.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sys/timeb.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_timeval.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_time.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/parse_numbers.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_path.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/locale \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_classes.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/atomicity.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/gthr.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/gthr-default.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sys/types.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/process.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_startup.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/signal.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_signal.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_compat.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_unistd.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/atomic_word.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_classes.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_facets.h \
@@ -466,6 +471,14 @@ src/algorithm/CMakeFiles/algorithm.dir/LZDP.cpp.obj: \
  D:/AAA_C/compression-tool/src/algorithm/include/VirtualBuffer.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/iterator \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stream_iterator.h \
+ D:/AAA_C/compression-tool/src/utils/include/DebugLog.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdarg \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/fstream \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/basic_file.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++io.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fstream.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/mutex \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unique_lock.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/set \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_tree.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/node_handle.h \

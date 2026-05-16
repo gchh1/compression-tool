@@ -5,7 +5,7 @@ import math
 from collections import Counter
 from enum import Enum
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Mapping
 
 logger = logging.getLogger(__name__)
 
@@ -188,7 +188,70 @@ def get_default_config() -> dict[AlgorithmType, dict[str, int]]:
     return config
 
 
+_ALGO_SEARCH_SIZE_SYNONYM = frozenset(
+    {
+        AlgorithmType.LZSS,
+        AlgorithmType.LZDP,
+        AlgorithmType.DPFLATE,
+        AlgorithmType.DEFLATE,
+    }
+)
 
+
+def merge_decision_overrides_into_algo_config(
+    algorithm: AlgorithmType,
+    base: Mapping[str, Any] | None,
+    overrides: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    """Merge saved per-algorithm config with ADE/heuristic overrides.
+
+    Maps internal names used by Stage2 (``window_size``, ``dp_range``) to GUI keys
+    (``search_size``, ``dp_top`` / ``dp_sub_match_max``) so display matches「算法配置」.
+    """
+    merged: dict[str, Any] = dict(base or {})
+    if not overrides:
+        return merged
+    norm = dict(overrides)
+
+    if algorithm in _ALGO_SEARCH_SIZE_SYNONYM and "window_size" in norm:
+        if "search_size" not in norm:
+            norm["search_size"] = int(norm["window_size"])
+        norm.pop("window_size", None)
+
+    if "dp_range" in norm:
+        dr = int(norm["dp_range"])
+        if algorithm == AlgorithmType.LZDP and "dp_top" not in norm:
+            norm["dp_top"] = dr
+        elif algorithm == AlgorithmType.DPFLATE and "dp_sub_match_max" not in norm:
+            norm["dp_sub_match_max"] = dr
+        norm.pop("dp_range", None)
+
+    merged.update(norm)
+    return merged
+
+
+def format_algorithm_config_param_lines(
+    algorithm: AlgorithmType,
+    merged_config: Mapping[str, Any] | None,
+) -> list[str]:
+    """Human-readable lines in the same order and labels as ``AlgorithmConfigDialog``."""
+    defs = ALGORITHM_PARAMS.get(algorithm)
+    cfg = dict(merged_config or {})
+    if not defs:
+        return [f"  - {k}: {v}" for k, v in sorted(cfg.items(), key=lambda kv: kv[0])]
+    lines: list[str] = []
+    for p in defs:
+        raw = cfg.get(p.key, p.default)
+        if getattr(p, "choices", None):
+            try:
+                iv = int(raw)
+            except (TypeError, ValueError):
+                iv = int(p.default)
+            display = p.choices.get(iv, str(raw))
+        else:
+            display = f"{raw}{p.suffix}".rstrip()
+        lines.append(f"  - {p.label}: {display}")
+    return lines
 
 
 SCRIPT_EXTENSIONS = frozenset({
@@ -321,11 +384,14 @@ def get_folder_size(path: str) -> int:
 
 class FolderRecord(Record):
     """文件夹批量压缩结果汇总"""
-    def __init__(self, path:str):
+    def __init__(self, path: str):
         super().__init__(path)
 
-        self.files: list[FileRecord] = [FileRecord(str(f)) for f in Path(path).rglob('*') if f.is_file()]        
-        self.size: int = get_folder_size(path)
+        # Filled on first ``ensure_files_loaded()`` (single rglob + stat pass; avoids UI freeze
+        # from double-walking the tree in __init__).
+        self._files_loaded: bool = False
+        self.files: list[FileRecord] = []
+        self.size: int = 0
 
         self.status: CompressionStatus = CompressionStatus.PENDING
 
@@ -335,7 +401,31 @@ class FolderRecord(Record):
         self.compression_ratio: float = 1.00
         self.total_time_ms: float = 0.0
 
+    def ensure_files_loaded(self) -> None:
+        if self._files_loaded:
+            return
+        self._files_loaded = True
+        root = Path(self.path)
+        if not root.exists() or not root.is_dir():
+            self.files = []
+            self.size = 0
+            return
+        files: list[FileRecord] = []
+        total = 0
+        for f in root.rglob("*"):
+            if not f.is_file():
+                continue
+            try:
+                st = f.stat()
+            except OSError:
+                continue
+            files.append(FileRecord(str(f)))
+            total += int(st.st_size)
+        self.files = files
+        self.size = total
+
     def add_file(self, record: FileRecord) -> None:
+        self.ensure_files_loaded()
         self.files.append(record)
         self.total_original += record.size
         if record.compressed_data:
@@ -344,17 +434,21 @@ class FolderRecord(Record):
         if record.error_message:
             self.error_messages.append(f"{record.name}: {record.error_message}")
     def load_raw_data(self) -> None:
+        self.ensure_files_loaded()
         for record in self.files:
             record.load_raw_data()
     def extract_features(self) -> None:
+        self.ensure_files_loaded()
         for record in self.files:
             record.extract_features()
     @property
     def filenum(self) -> int:
+        self.ensure_files_loaded()
         return len(self.files)
 
     @property
     def success_count(self) -> int:
+        self.ensure_files_loaded()
         return sum(1 for f in self.files if f.status == CompressionStatus.DONE)
 
     @property

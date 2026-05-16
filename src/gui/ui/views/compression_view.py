@@ -117,6 +117,7 @@ class CompressPage(QWidget):
         total_size = 0
         for rec in records:
             if isinstance(rec, FolderRecord):
+                rec.ensure_files_loaded()
                 folder_count += 1
                 total_size += rec.size
             elif isinstance(rec, FileRecord):

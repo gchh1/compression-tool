@@ -14,6 +14,7 @@ add_library(
     LZSS.cpp
     DPFlate.cpp
     Inflate.cpp
+    Inflate3HM.cpp
     Zstd.cpp
 
     # LZ77.cpp

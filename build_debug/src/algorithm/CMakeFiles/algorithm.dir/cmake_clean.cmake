@@ -15,6 +15,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/algorithm.dir/HuffmanTree3HM.cpp.obj.d"
   "CMakeFiles/algorithm.dir/Inflate.cpp.obj"
   "CMakeFiles/algorithm.dir/Inflate.cpp.obj.d"
+  "CMakeFiles/algorithm.dir/Inflate3HM.cpp.obj"
+  "CMakeFiles/algorithm.dir/Inflate3HM.cpp.obj.d"
   "CMakeFiles/algorithm.dir/LZDP.cpp.obj"
   "CMakeFiles/algorithm.dir/LZDP.cpp.obj.d"
   "CMakeFiles/algorithm.dir/LZSS.cpp.obj"

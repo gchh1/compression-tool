@@ -140,24 +140,33 @@ auto HuffmanTree::calcSerializedBits(const node* n) -> size_t const {
  */
 auto HuffmanTree::buildDictionary() const -> std::vector<HuffmanCode> {
     std::vector<HuffmanCode> dict(dictionary_size_);
-    generateCodes(root_, 0, 0, dict);
+    std::vector<uint8_t> bits;
+    generateCodes(root_, 0, 0, bits, dict);
     return dict;
 }
 
 auto HuffmanTree::generateCodes(node* n, uint64_t current_code,
-                                uint8_t current_length,
+                                uint16_t current_length,
+                                std::vector<uint8_t>& current_bits,
                                 std::vector<HuffmanCode>& dict) const -> void {
     if (!n) {
         return;
     }
 
     if (n->isLeaf()) {
-        dict[n->symbol] = {current_code, current_length};
+        dict[n->symbol] = {current_code, current_length, current_bits};
         return;
     }
 
-    generateCodes(n->left, current_code << 1, current_length + 1, dict);
-    generateCodes(n->right, (current_code << 1) | 1, current_length + 1, dict);
+    current_bits.push_back(0);
+    generateCodes(n->left, current_length < 64 ? (current_code << 1) : 0,
+                  current_length + 1, current_bits, dict);
+
+    current_bits.back() = 1;
+    generateCodes(n->right,
+                  current_length < 64 ? ((current_code << 1) | 1) : 0,
+                  current_length + 1, current_bits, dict);
+    current_bits.pop_back();
 }
 
 auto HuffmanTree::serializeTree(utils::BitWriter& writer) const -> void {

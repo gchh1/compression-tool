@@ -62,7 +62,24 @@ bool lzdp_stream_roundtrip(const fs::path& work, const std::vector<uint8_t>& dat
         std::cerr << "[lzdp-stream] decompressFile: " << dr.error_message << "\n";
         return false;
     }
-    return read_all(dec) == data;
+    const auto got = read_all(dec);
+    if (got.size() != data.size()) {
+        std::cerr << "[lzdp-stream] size mismatch dec=" << got.size() << " orig=" << data.size()
+                  << "\n";
+        return false;
+    }
+    if (got != data) {
+        for (size_t i = 0; i < got.size(); ++i) {
+            if (got[i] != data[i]) {
+                std::cerr << "[lzdp-stream] byte diff at " << i << " orig=0x" << std::hex
+                          << static_cast<unsigned>(data[i]) << " dec=0x"
+                          << static_cast<unsigned>(got[i]) << std::dec << "\n";
+                break;
+            }
+        }
+        return false;
+    }
+    return true;
 }
 
 bool dpflate_stream_flate_roundtrip(const fs::path& work, const std::vector<uint8_t>& data,
@@ -147,7 +164,6 @@ int main() {
     df.match_engine = 1;
     df.use_flag_encoding = false;
     if (!dpflate_stream_flate_roundtrip(work, corp, df)) ok = false;
-
     if (!dpflate_stream_3hm_compress_ok(work, corp, df)) ok = false;
 
     fs::remove_all(work, ec);

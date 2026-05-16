@@ -49,9 +49,12 @@
       "compression_level": 3
     }
   },
+  "ade": {
+    "silent_explore_enabled": false
+  },
   "streaming": {
-    "threshold_mb": 10.0,
-    "chunk_size_kb": 512,
+    "threshold_mb": 1.0,
+    "chunk_size_kb": 200,
     "workspace_root": "",
     "per_algorithm": {
       "deflate": {

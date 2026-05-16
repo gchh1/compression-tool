@@ -122,6 +122,13 @@ class CompressionWorker(QThread):
         self._is_cancelled = True
         _core_set_streaming_compress_cancel(True)
 
+    def _compress_phase_notify(self, record: Record, message: str) -> None:
+        """Queued ``progress`` so the UI can refresh status during long non-streaming phases."""
+        if self._is_cancelled:
+            return
+        name = getattr(record, "name", "?")
+        self.progress.emit(0, f"{name}: {message}")
+
     def _flush_training_data(self):
         try:
             from gui.ade.training import get_training_store
@@ -130,6 +137,110 @@ class CompressionWorker(QThread):
                 store.save(incremental=True)
         except Exception:
             pass
+
+    def _run_streaming_compress_branch(
+        self,
+        engine,
+        record: FileRecord,
+        folder_ref: FolderRecord | None,
+        snap,
+    ) -> None:
+        """Write WCX via ``smart_compress_file``; finish record like the primary streaming path."""
+        from gui.utils.workspace import allocate_streaming_wcx_path
+
+        self._compress_phase_notify(record, "流式压缩（分块写盘）…")
+        logger.info("[compress] STREAMING mode for %d bytes (file-to-file)", record.size)
+        # === DEBUG_BLOCK_BEGIN (可删除) ===
+        if record.algorithm == AlgorithmType.LZSS:
+            try:
+                with open("lzss_gui_debug.log", "a") as f:
+                    f.write(f"[Python::streaming] LZSS file={getattr(record, 'path', 'N/A')} size={record.size}\n")
+            except Exception:
+                pass
+        # === DEBUG_BLOCK_END ===
+        out_path = str(allocate_streaming_wcx_path(record.path))
+        _core_set_streaming_compress_cancel(False)
+        from gui.ade.explorer import SilentExplorer
+
+        with SilentExplorer.user_compression_priority():
+            result = engine.smart_compress_file(record.path, out_path, record.algorithm)
+        logger.info(
+            "[compress] streaming compress returned success=%s compressed_size=%s",
+            getattr(result, "success", None),
+            getattr(result, "compressed_size", None),
+        )
+
+        em = (getattr(result, "error_message", None) or "").strip()
+        succ = getattr(result, "success", True)
+        if succ is False:
+            record.status = CompressionStatus.FAILED
+            low = em.lower()
+            if self._is_cancelled or "cancel" in low or "取消" in em:
+                record.error_message = em or "已取消"
+            else:
+                record.error_message = em or "压缩失败"
+            record.compression_config_snapshot = None
+            self.error.emit(record)
+            return
+
+        original_size = record.size
+        compressed_size = result.compressed_size
+
+        if compressed_size >= original_size:
+            logger.info("[compress] EXPANSION detected (streaming), copying raw")
+            import shutil
+
+            shutil.copy2(record.path, out_path)
+            record.compressed_path = out_path
+            record.compressed_data = None
+            record.algorithm = AlgorithmType.NONE
+            record.compression_time_ms = result.time_ms
+            record.compression_ratio = 1.0
+            record.is_stored = True
+            record.compression_config_snapshot = None
+        else:
+            record.compressed_path = out_path
+            record.compressed_data = None
+            record.compression_time_ms = result.time_ms
+            record.compression_ratio = compressed_size / original_size if original_size > 0 else 0
+            record.is_stored = False
+            record.compression_config_snapshot = snap
+
+        record.status = CompressionStatus.DONE
+        try:
+            from gui.ade.training import get_training_store
+
+            store = get_training_store()
+            store.add_from_record(record, record.decision_result)
+        except Exception:
+            pass
+        self._save_counter += 1
+        if self._save_counter % 10 == 0:
+            self._flush_training_data()
+        try:
+            from gui.ade.explorer import SilentExplorer
+
+            SilentExplorer.get().maybe_explore(
+                record, record.algorithm, compress_time_ms=record.compression_time_ms
+            )
+        except Exception:
+            pass
+        if folder_ref is not None:
+            folder_ref.total_original += original_size
+            folder_ref.total_compressed += compressed_size
+            folder_ref.total_time_ms += record.compression_time_ms
+            folder_ref.compression_ratio = (
+                folder_ref.total_compressed / folder_ref.total_original
+                if folder_ref.total_original > 0
+                else 1.0
+            )
+            folder_ref.compression_time_ms = folder_ref.total_time_ms
+            done_count = sum(1 for f in folder_ref.files if f.status == CompressionStatus.DONE)
+            if done_count == len(folder_ref.files):
+                folder_ref.status = CompressionStatus.DONE
+            else:
+                folder_ref.status = CompressionStatus.COMPRESSING
+        self.finished_row.emit(record)
 
     def single_compress(self, row_idx: int, record: Record, folder_ref: FolderRecord | None = None) -> None:
         import traceback
@@ -214,50 +325,123 @@ class CompressionWorker(QThread):
                     record.size, None
                 )
 
-            if use_streaming and hasattr(record, 'path'):
-                from gui.utils.workspace import allocate_streaming_wcx_path
-
-                logger.info("[compress] STREAMING mode for %d bytes (file-to-file)", record.size)
-                out_path = str(allocate_streaming_wcx_path(record.path))
+            if use_streaming and isinstance(record, FileRecord) and getattr(record, "path", None):
                 snap = CompressionEngine.snapshot_for_algorithm(record.algorithm)
-                _core_set_streaming_compress_cancel(False)
-                result = engine.smart_compress_file(record.path, out_path, record.algorithm)
-                logger.info(
-                    "[compress] streaming compress returned success=%s compressed_size=%s",
-                    getattr(result, "success", None),
-                    getattr(result, "compressed_size", None),
-                )
+                self._run_streaming_compress_branch(engine, record, folder_ref, snap)
 
-                em = (getattr(result, "error_message", None) or "").strip()
-                succ = getattr(result, "success", True)
-                if succ is False:
+            else:
+                if not getattr(record, "raw_data", None):
+                    self._compress_phase_notify(record, "正在读取文件…")
+                    record.load_raw_data()
+                if getattr(record, "base_features", None) is None:
+                    self._compress_phase_notify(record, "正在提取特征…")
+                    record.extract_features()
+                logger.info("[compress] loaded raw data: %d bytes", len(record.raw_data))
+
+                # === DEBUG_BLOCK_BEGIN (可删除) ===
+                if record.algorithm == AlgorithmType.LZSS:
+                    import logging as _lzss_log
+                    _lzss_log.getLogger('gui.worker.lzss').info(
+                        "[LZSS_DEBUG] single_compress LZSS path: raw_data=%d bytes, use_streaming=%s, path=%s",
+                        len(record.raw_data), use_streaming,
+                        getattr(record, 'path', 'N/A')
+                    )
+                    # Also write to file for C++ side correlation
+                    try:
+                        with open("lzss_gui_debug.log", "a") as f:
+                            f.write(f"[Python::single_compress] LZSS raw_data={len(record.raw_data)} "
+                                    f"use_streaming={use_streaming} path={getattr(record, 'path', 'N/A')}\n")
+                    except Exception:
+                        pass
+                # === DEBUG_BLOCK_END ===
+
+                logger.info("[compress] compressing with %s ...", record.algorithm.value)
+                snap = CompressionEngine.snapshot_for_algorithm(record.algorithm)
+                can_stream_fallback = (
+                    isinstance(record, FileRecord)
+                    and bool(getattr(record, "path", None))
+                    and record.algorithm != AlgorithmType.NONE
+                )
+                self._compress_phase_notify(
+                    record,
+                    "正在内存压缩（耗时随体积与算法变化；可点「取消」中止）…",
+                )
+                result = None
+                from gui.ade.explorer import SilentExplorer
+
+                try:
+                    with SilentExplorer.user_compression_priority():
+                        result = engine.smart_compress(record.raw_data, record.algorithm)
+                    logger.info(
+                        "[compress] memory smart_compress returned success=%s compressed_size=%s",
+                        getattr(result, "success", None),
+                        getattr(result, "compressed_size", None),
+                    )
+                except Exception as e:
+                    logger.exception("[compress] smart_compress raised: %s", e)
+
+                if result is None or getattr(result, "success", True) is False:
+                    if can_stream_fallback:
+                        logger.warning("[compress] memory path failed; falling back to file-to-file")
+                        self._run_streaming_compress_branch(engine, record, folder_ref, snap)
+                        return
                     record.status = CompressionStatus.FAILED
-                    low = em.lower()
-                    if self._is_cancelled or "cancel" in low or "取消" in em:
-                        record.error_message = em or "已取消"
+                    if result is not None:
+                        em_fail = (getattr(result, "error_message", None) or "").strip()
+                        record.error_message = em_fail or "压缩失败"
                     else:
-                        record.error_message = em or "压缩失败"
+                        record.error_message = "压缩失败"
                     record.compression_config_snapshot = None
                     self.error.emit(record)
                     return
 
-                original_size = record.size
+                em = (getattr(result, "error_message", None) or "").strip()
+                if em:
+                    record.status = CompressionStatus.FAILED
+                    record.error_message = em
+                    record.compression_config_snapshot = None
+                    self.error.emit(record)
+                    return
+
+                payload = result.data
+                if isinstance(payload, list) and can_stream_fallback:
+                    logger.warning(
+                        "[compress] engine returned list-shaped payload (len=%d); "
+                        "using file-to-file to avoid huge Python allocation",
+                        len(payload),
+                    )
+                    self._run_streaming_compress_branch(engine, record, folder_ref, snap)
+                    return
+
+                if isinstance(payload, bytes):
+                    coerced = payload
+                elif isinstance(payload, (bytearray, memoryview)):
+                    coerced = bytes(payload)
+                else:
+                    coerced = bytes(payload)
+
+                logger.info(
+                    "[compress] compress done: %d -> %d bytes",
+                    len(record.raw_data),
+                    result.compressed_size,
+                )
+
+                original_size = len(record.raw_data)
                 compressed_size = result.compressed_size
 
                 if compressed_size >= original_size:
-                    logger.info("[compress] EXPANSION detected (streaming), copying raw")
-                    import shutil
-                    shutil.copy2(record.path, out_path)
-                    record.compressed_path = out_path
-                    record.compressed_data = None
+                    logger.info("[compress] EXPANSION detected: %d >= %d, falling back to stored (raw)",
+                                 compressed_size, original_size)
+                    record.compressed_data = record.raw_data
+                    record.compressed_path = None
                     record.algorithm = AlgorithmType.NONE
                     record.compression_time_ms = result.time_ms
                     record.compression_ratio = 1.0
                     record.is_stored = True
                     record.compression_config_snapshot = None
                 else:
-                    record.compressed_path = out_path
-                    record.compressed_data = None
+                    record.compressed_data = coerced
+                    record.compressed_path = None
                     record.compression_time_ms = result.time_ms
                     record.compression_ratio = compressed_size / original_size if original_size > 0 else 0
                     record.is_stored = False
@@ -297,75 +481,6 @@ class CompressionWorker(QThread):
                         folder_ref.status = CompressionStatus.COMPRESSING
                 self.finished_row.emit(record)
 
-            else:
-                record.load_raw_data()
-                record.extract_features()
-                logger.info("[compress] loaded raw data: %d bytes", len(record.raw_data))
-
-                logger.info("[compress] compressing with %s ...", record.algorithm.value)
-                snap = CompressionEngine.snapshot_for_algorithm(record.algorithm)
-                result = engine.smart_compress(record.raw_data, record.algorithm)
-                logger.info("[compress] compress done: %d -> %d bytes", len(record.raw_data), result.compressed_size)
-
-                original_size = len(record.raw_data)
-                compressed_size = result.compressed_size
-
-                if compressed_size >= original_size:
-                    logger.info("[compress] EXPANSION detected: %d >= %d, falling back to stored (raw)",
-                                 compressed_size, original_size)
-                    record.compressed_data = record.raw_data
-                    record.algorithm = AlgorithmType.NONE
-                    record.compression_time_ms = result.time_ms
-                    record.compression_ratio = 1.0
-                    record.is_stored = True
-                    record.compression_config_snapshot = None
-                else:
-                    record.compressed_data = bytes(result.data)
-                    record.compression_time_ms = result.time_ms
-                    record.compression_ratio = compressed_size / original_size if original_size > 0 else 0
-                    record.is_stored = False
-                    record.compression_config_snapshot = snap
-
-                if hasattr(result, 'error_message') and result.error_message:
-                    record.status = CompressionStatus.FAILED
-                    record.error_message = result.error_message
-                    record.compression_config_snapshot = None
-                    self.error.emit(record)
-                else:
-                    record.status = CompressionStatus.DONE
-                    try:
-                        from gui.ade.training import get_training_store
-                        store = get_training_store()
-                        store.add_from_record(record, record.decision_result)
-                    except Exception:
-                        pass
-                    self._save_counter += 1
-                    if self._save_counter % 10 == 0:
-                        self._flush_training_data()
-                    try:
-                        from gui.ade.explorer import SilentExplorer
-                        SilentExplorer.get().maybe_explore(
-                            record, record.algorithm,
-                            compress_time_ms=record.compression_time_ms
-                        )
-                    except Exception:
-                        pass
-                    if folder_ref is not None:
-                        folder_ref.total_original += original_size
-                        folder_ref.total_compressed += compressed_size
-                        folder_ref.total_time_ms += record.compression_time_ms
-                        folder_ref.compression_ratio = (
-                            folder_ref.total_compressed / folder_ref.total_original
-                            if folder_ref.total_original > 0 else 1.0
-                        )
-                        folder_ref.compression_time_ms = folder_ref.total_time_ms
-                        done_count = sum(1 for f in folder_ref.files if f.status == CompressionStatus.DONE)
-                        if done_count == len(folder_ref.files):
-                            folder_ref.status = CompressionStatus.DONE
-                        else:
-                            folder_ref.status = CompressionStatus.COMPRESSING
-                    self.finished_row.emit(record)
-
         except Exception as e:
             logger.error("[compress] CRASH row=%d file=%s: %s\n%s", row_idx, getattr(record, 'path', '?'), e, traceback.format_exc())
             record.status = CompressionStatus.FAILED
@@ -380,6 +495,7 @@ class CompressionWorker(QThread):
                 if self._is_cancelled:
                     break
                 if isinstance(record, FolderRecord):
+                    record.ensure_files_loaded()
                     record.total_original = 0
                     record.total_compressed = 0
                     record.total_time_ms = 0.0
@@ -465,28 +581,34 @@ class ComparisonWorker(QThread):
         return b""
 
     def _compress_data(self, engine, data: bytes, algo: AlgorithmType):
-        return engine.smart_compress(data, algo)
+        from gui.ade.explorer import SilentExplorer
+
+        with SilentExplorer.user_compression_priority():
+            return engine.smart_compress(data, algo)
 
     def _compress_streaming_file(self, engine, record: FileRecord, algo: AlgorithmType) -> dict:
+        from gui.ade.explorer import SilentExplorer
+
         compressed_size = 4  # stream terminator
         start = time.perf_counter()
         processed = 0
         chunk_sz = self._chunk_bytes(algo)
 
-        with open(record.path, "rb") as fh:
-            while True:
-                self._check_cancelled()
-                chunk = fh.read(chunk_sz)
-                if not chunk:
-                    break
-                result = engine.compress(chunk, algo)
-                if getattr(result, "error_message", ""):
-                    raise RuntimeError(result.error_message)
-                compressed_size += int(result.compressed_size) + 4
-                processed += len(chunk)
-                self._emit_step(
-                    f"{algo.value}: {record.name} ({processed / max(1, record.size):.0%})"
-                )
+        with SilentExplorer.user_compression_priority():
+            with open(record.path, "rb") as fh:
+                while True:
+                    self._check_cancelled()
+                    chunk = fh.read(chunk_sz)
+                    if not chunk:
+                        break
+                    result = engine.compress(chunk, algo)
+                    if getattr(result, "error_message", ""):
+                        raise RuntimeError(result.error_message)
+                    compressed_size += int(result.compressed_size) + 4
+                    processed += len(chunk)
+                    self._emit_step(
+                        f"{algo.value}: {record.name} ({processed / max(1, record.size):.0%})"
+                    )
 
         elapsed_ms = (time.perf_counter() - start) * 1000.0
         return {
@@ -531,6 +653,7 @@ class ComparisonWorker(QThread):
         return results, record.name, record.size
 
     def _run_folder_comparison(self, engine, record: FolderRecord) -> tuple[list[dict], str, int]:
+        record.ensure_files_loaded()
         files = [f for f in record.files if f.size > 0]
         if not files:
             return [], record.name, 0

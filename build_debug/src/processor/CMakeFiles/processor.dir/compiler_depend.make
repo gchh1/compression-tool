@@ -458,6 +458,7 @@ src/processor/CMakeFiles/processor.dir/StreamProcessor.cpp.obj: D:/AAA_C/compres
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/char_traits.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/charconv.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/chrono.h \
+  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/codecvt.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/concept_check.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/cpp_type_traits.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/cxxabi_forced.h \
@@ -467,11 +468,13 @@ src/processor/CMakeFiles/processor.dir/StreamProcessor.cpp.obj: D:/AAA_C/compres
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_defines.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_ptr.h \
+  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fstream.tcc \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functexcept.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functional_hash.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hash_bytes.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/invoke.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ios_base.h \
+  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/istream.tcc \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/iterator_concepts.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_classes.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_classes.tcc \
@@ -537,6 +540,7 @@ src/processor/CMakeFiles/processor.dir/StreamProcessor.cpp.obj: D:/AAA_C/compres
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/compare \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/concepts \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/condition_variable \
+  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdarg \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstddef \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdint \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdio \
@@ -556,9 +560,11 @@ src/processor/CMakeFiles/processor.dir/StreamProcessor.cpp.obj: D:/AAA_C/compres
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/numeric_traits.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/string_conversions.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/type_traits.h \
+  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/fstream \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/initializer_list \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ios \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/iosfwd \
+  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/istream \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/limits \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/memory \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/mutex \
@@ -585,8 +591,10 @@ src/processor/CMakeFiles/processor.dir/StreamProcessor.cpp.obj: D:/AAA_C/compres
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/utility \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/vector \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/atomic_word.h \
+  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/basic_file.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++allocator.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++config.h \
+  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++io.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++locale.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/cpu_defines.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/ctype_base.h \
@@ -597,6 +605,7 @@ src/processor/CMakeFiles/processor.dir/StreamProcessor.cpp.obj: D:/AAA_C/compres
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/os_defines.h \
   D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/limits.h \
   D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/mm_malloc.h \
+  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdarg.h \
   D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stddef.h \
   D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdint.h \
   D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/syslimits.h \
@@ -605,6 +614,7 @@ src/processor/CMakeFiles/processor.dir/StreamProcessor.cpp.obj: D:/AAA_C/compres
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_off_t.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_secapi.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stat64.h \
+  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stdarg.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_timeval.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_startup.h \
@@ -630,6 +640,7 @@ src/processor/CMakeFiles/processor.dir/StreamProcessor.cpp.obj: D:/AAA_C/compres
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/wchar_s.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/semaphore.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/signal.h \
+  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdarg.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stddef.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdint.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdio.h \
@@ -648,8 +659,19 @@ src/processor/CMakeFiles/processor.dir/StreamProcessor.cpp.obj: D:/AAA_C/compres
   D:/AAA_C/compression-tool/src/utils/include/BitReader.hpp \
   D:/AAA_C/compression-tool/src/utils/include/BitWriter.hpp \
   D:/AAA_C/compression-tool/src/utils/include/DataChunk.hpp \
+  D:/AAA_C/compression-tool/src/utils/include/DebugLog.hpp \
   D:/AAA_C/compression-tool/src/utils/include/MemoryPool.hpp
 
+
+D:/AAA_C/compression-tool/src/utils/include/DebugLog.hpp:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/fstream:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/istream.tcc:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/basic_file.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fstream.tcc:
 
 D:/AAA_C/compression-tool/src/processor/StreamProcessor.cpp:
 
@@ -680,6 +702,8 @@ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/semaphore.h:
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/stdlib_s.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdarg.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/stdio_s.h:
 
@@ -757,7 +781,11 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_classes.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_base.h:
 
+D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stdarg.h:
+
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ostream_insert.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdarg:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/semaphore:
 
@@ -793,7 +821,11 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_facets.tcc:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_ptr.h:
 
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/istream:
+
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_uninitialized.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/codecvt.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ios_base.h:
 
@@ -935,6 +967,8 @@ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_compat.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/requires_hosted.h:
 
+D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdarg.h:
+
 D:/AAA_C/compression-tool/src/processor/include/StreamProcessor.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/atomic_word.h:
@@ -1012,6 +1046,8 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/vector.tcc:
 D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/syslimits.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/version.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++io.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/initializer_list:
 

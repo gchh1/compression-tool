@@ -226,7 +226,8 @@ Under `streaming`:
 
 1. Workspace root location: app local dir vs user profile appdata?
 2. Should completed artifacts be auto-pruned or user-managed?
-3. Do we require resumable compression jobs in v1?
+3. Do we require resumable compression jobs in v1?  
+   **Related design (2026-05)**: [`streaming-interrupt-checkpoint-design.md`](./streaming-interrupt-checkpoint-design.md) — v1 saves **pipeline administrative checkpoint** (L2) on cancel for explore yield; **does not** resume codec state (L3).
 4. For each algorithm, what is minimum tail size for correctness?
 
 ### 15.1 协议统一决策（已定）

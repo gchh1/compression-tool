@@ -24,7 +24,11 @@ set(UTILS_DIR ${SRC_DIR}/utils)
 # ========= set build option ==========
 option(BUILD_PYTHON "Build Pybind11 bindings for PyQt desktop app" ON)
 
-# ========= add subdirectories =========
+# === DEBUG_BLOCK_BEGIN (可删除) ===
+add_definitions(-DDEBUG_LOG_ENABLED=1)
+# === DEBUG_BLOCK_END ===
+
+# ========= add subdirectories ========="
 add_subdirectory("${SRC_DIR}")
 add_subdirectory("${TESTS_DIR}")
 

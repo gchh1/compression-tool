@@ -100,6 +100,7 @@ src/core/CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_relops.h \
  D:/AAA_C/compression-tool/src/utils/include/BitWriter.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/BlockProfile.hpp \
+ D:/AAA_C/compression-tool/src/processor/include/StreamChunkPolicy.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h \

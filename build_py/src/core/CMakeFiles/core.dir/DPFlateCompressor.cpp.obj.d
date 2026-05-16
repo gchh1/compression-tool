@@ -116,6 +116,16 @@ src/core/CMakeFiles/core.dir/DPFlateCompressor.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cerrno \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/charconv.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_string.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_heap.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uniform_int_dist.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_tempbuf.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algo.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algobase.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_algorithm_defs.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/execution_defs.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/chrono \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/chrono.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ratio \
@@ -168,11 +178,6 @@ src/core/CMakeFiles/core.dir/DPFlateCompressor.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ostream.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/istream.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/sstream.tcc \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_heap.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uniform_int_dist.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_tempbuf.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/shared_ptr.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/shared_ptr_base.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocated_ptr.h \
@@ -197,20 +202,28 @@ src/core/CMakeFiles/core.dir/DPFlateCompressor.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/enable_special_members.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/span \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/variant \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algobase.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unicode.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unicode-data.h \
- D:/AAA_C/compression-tool/src/algorithm/include/Inflate.hpp \
- D:/AAA_C/compression-tool/src/algorithm/include/HuffmanTree.hpp \
- D:/AAA_C/compression-tool/src/utils/include/BitReader.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstring \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/string.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/fstream \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/basic_file.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++io.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fstream.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/iostream \
+ D:/AAA_C/compression-tool/src/utils/include/BitReader.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/utility \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_relops.h \
  D:/AAA_C/compression-tool/src/utils/include/BitWriter.hpp \
- D:/AAA_C/compression-tool/src/algorithm/include/IAlgorithm.hpp \
- D:/AAA_C/compression-tool/src/algorithm/include/BlockProfile.hpp \
+ D:/AAA_C/compression-tool/src/utils/include/DebugLog.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdarg \
+ D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdarg.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdarg.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stdarg.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/mutex \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_mutex.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unique_lock.h \
  D:/AAA_C/compression-tool/src/algorithm/include/DPFlate.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/memory \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_raw_storage_iter.h \
@@ -218,18 +231,18 @@ src/core/CMakeFiles/core.dir/DPFlateCompressor.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_base.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_wait.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_mutex.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/backward/auto_ptr.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_uninitialized.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_memory_defs.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/execution_defs.h \
  D:/AAA_C/compression-tool/src/algorithm/include/Deflate.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/HuffmanTree.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/IAlgorithm.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/BlockProfile.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/HuffmanTree3HM.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/Inflate.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/SpillBitStream.hpp \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algo.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_algorithm_defs.h \
  D:/AAA_C/compression-tool/src/algorithm/include/TempFile.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/filesystem \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_fwd.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_path.h \
@@ -239,9 +252,6 @@ src/core/CMakeFiles/core.dir/DPFlateCompressor.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/windows.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sdkddkver.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/excpt.h \
- D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdarg.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdarg.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stdarg.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/windef.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/winapifamily.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/minwindef.h \
@@ -484,4 +494,24 @@ src/core/CMakeFiles/core.dir/DPFlateCompressor.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/stralign_s.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/winsvc.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/mcx.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/imm.h
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/imm.h \
+ D:/AAA_C/compression-tool/src/algorithm/include/Inflate3HM.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/LZDP.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/KMPMatcher.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/VirtualBuffer.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/iterator \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stream_iterator.h \
+ D:/AAA_C/compression-tool/src/processor/include/StreamProcessor.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/deque \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_deque.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/deque.tcc \
+ D:/AAA_C/compression-tool/src/utils/include/DataChunk.hpp \
+ D:/AAA_C/compression-tool/src/utils/include/MemoryPool.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/condition_variable \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stop_token \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_thread.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/semaphore \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/semaphore_base.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_timed_wait.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/this_thread_sleep.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/semaphore.h

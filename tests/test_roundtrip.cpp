@@ -7,6 +7,7 @@
 
 #include "Deflate.hpp"
 #include "Inflate.hpp"
+#include "Inflate3HM.hpp"
 #include "DPFlate.hpp"
 #include "LZDP.hpp"
 
@@ -115,14 +116,122 @@ int main() {
 
     {
         DPFlate myf;
-        DPFlateDecompress inf;
-        all_pass &= roundtrip_test(myf, inf, text_data, "DPFlate/text");
+        myf.set_use_flag_encoding(false);
+        myf.set_use_3hfmtree(false);
+
+        size_t out_cap = text_data.size() * 2 + 65536;
+        std::vector<uint8_t> compressed(out_cap);
+        auto cs = myf.process(text_data, compressed, true);
+        compressed.resize(cs.bytes_produced);
+
+        std::cout << "[DPFlate/text] original=" << text_data.size()
+                  << " compressed=" << compressed.size()
+                  << " ratio=" << (float)compressed.size() / text_data.size() * 100 << "%" << std::endl;
+
+        bool ok = false;
+        if (compressed.size() >= 1) {
+            uint8_t fmt = compressed[0];
+            std::vector<uint8_t> payload(compressed.begin() + 1, compressed.end());
+            if (fmt == 0x46) {
+                Inflate inf;
+                std::vector<uint8_t> dec(text_data.size() + 65536);
+                auto ds = inf.process(payload, dec, true);
+                dec.resize(ds.bytes_produced);
+                ok = (dec.size() == text_data.size() && ds.done);
+                if (!ok) {
+                    std::cerr << "[DPFlate/text] decompressed=" << dec.size() << " done=" << ds.done << std::endl;
+                    if (dec.size() != text_data.size())
+                        std::cerr << "[DPFlate/text] SIZE MISMATCH: " << dec.size() << " vs " << text_data.size() << std::endl;
+                } else {
+                    for (size_t i = 0; i < text_data.size(); i++) {
+                        if (dec[i] != text_data[i]) {
+                            std::cerr << "[DPFlate/text] DATA MISMATCH at byte " << i << std::endl;
+                            ok = false;
+                            break;
+                        }
+                    }
+                }
+            } else if (fmt == 0x33) {
+                Inflate3HM inf3;
+                std::vector<uint8_t> dec(text_data.size() + 65536);
+                auto ds = inf3.process(payload, dec, true);
+                dec.resize(ds.bytes_produced);
+                ok = (dec.size() == text_data.size() && ds.done);
+                if (!ok) {
+                    std::cerr << "[DPFlate/text 3HM] decompressed=" << dec.size() << " done=" << ds.done << std::endl;
+                } else {
+                    for (size_t i = 0; i < text_data.size(); i++) {
+                        if (dec[i] != text_data[i]) {
+                            std::cerr << "[DPFlate/text 3HM] DATA MISMATCH at byte " << i << std::endl;
+                            ok = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (ok) std::cout << "[DPFlate/text] PASS" << std::endl;
+        all_pass &= ok;
     }
 
     {
         DPFlate myf;
-        DPFlateDecompress inf;
-        all_pass &= roundtrip_test(myf, inf, random_data, "DPFlate/random");
+        myf.set_use_flag_encoding(false);
+        myf.set_use_3hfmtree(false);
+
+        size_t out_cap = random_data.size() * 2 + 65536;
+        std::vector<uint8_t> compressed(out_cap);
+        auto cs = myf.process(random_data, compressed, true);
+        compressed.resize(cs.bytes_produced);
+
+        std::cout << "[DPFlate/random] original=" << random_data.size()
+                  << " compressed=" << compressed.size()
+                  << " ratio=" << (float)compressed.size() / random_data.size() * 100 << "%" << std::endl;
+
+        bool ok = false;
+        if (compressed.size() >= 1) {
+            uint8_t fmt = compressed[0];
+            std::vector<uint8_t> payload(compressed.begin() + 1, compressed.end());
+            if (fmt == 0x46) {
+                Inflate inf;
+                std::vector<uint8_t> dec(random_data.size() + 65536);
+                auto ds = inf.process(payload, dec, true);
+                dec.resize(ds.bytes_produced);
+                ok = (dec.size() == random_data.size() && ds.done);
+                if (!ok) {
+                    std::cerr << "[DPFlate/random] decompressed=" << dec.size() << " done=" << ds.done << std::endl;
+                    if (dec.size() != random_data.size())
+                        std::cerr << "[DPFlate/random] SIZE MISMATCH: " << dec.size() << " vs " << random_data.size() << std::endl;
+                } else {
+                    for (size_t i = 0; i < random_data.size(); i++) {
+                        if (dec[i] != random_data[i]) {
+                            std::cerr << "[DPFlate/random] DATA MISMATCH at byte " << i << std::endl;
+                            ok = false;
+                            break;
+                        }
+                    }
+                }
+            } else if (fmt == 0x33) {
+                Inflate3HM inf3;
+                std::vector<uint8_t> dec(random_data.size() + 65536);
+                auto ds = inf3.process(payload, dec, true);
+                dec.resize(ds.bytes_produced);
+                ok = (dec.size() == random_data.size() && ds.done);
+                if (!ok) {
+                    std::cerr << "[DPFlate/random 3HM] decompressed=" << dec.size() << " done=" << ds.done << std::endl;
+                } else {
+                    for (size_t i = 0; i < random_data.size(); i++) {
+                        if (dec[i] != random_data[i]) {
+                            std::cerr << "[DPFlate/random 3HM] DATA MISMATCH at byte " << i << std::endl;
+                            ok = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (ok) std::cout << "[DPFlate/random] PASS" << std::endl;
+        all_pass &= ok;
     }
 
     std::cout << "\n" << (all_pass ? "ALL TESTS PASSED" : "SOME TESTS FAILED") << std::endl;

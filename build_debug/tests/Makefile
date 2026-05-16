@@ -273,6 +273,20 @@ test_wcx_corrupt/fast:
 .PHONY : test_wcx_corrupt/fast
 
 # Convenience name for target.
+tests/CMakeFiles/test_lzss_noflag.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzss_noflag.dir/rule
+.PHONY : tests/CMakeFiles/test_lzss_noflag.dir/rule
+
+# Convenience name for target.
+test_lzss_noflag: tests/CMakeFiles/test_lzss_noflag.dir/rule
+.PHONY : test_lzss_noflag
+
+# fast build rule for target.
+test_lzss_noflag/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag.dir\build.make tests/CMakeFiles/test_lzss_noflag.dir/build
+.PHONY : test_lzss_noflag/fast
+
+# Convenience name for target.
 tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/rule:
 	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/rule
 .PHONY : tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/rule
@@ -327,6 +341,242 @@ test_HuffmanTree3HM: tests/CMakeFiles/test_HuffmanTree3HM.dir/rule
 test_HuffmanTree3HM/fast:
 	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_HuffmanTree3HM.dir\build.make tests/CMakeFiles/test_HuffmanTree3HM.dir/build
 .PHONY : test_HuffmanTree3HM/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_algorithm_comparison.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_algorithm_comparison.dir/rule
+.PHONY : tests/CMakeFiles/test_algorithm_comparison.dir/rule
+
+# Convenience name for target.
+test_algorithm_comparison: tests/CMakeFiles/test_algorithm_comparison.dir/rule
+.PHONY : test_algorithm_comparison
+
+# fast build rule for target.
+test_algorithm_comparison/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_comparison.dir\build.make tests/CMakeFiles/test_algorithm_comparison.dir/build
+.PHONY : test_algorithm_comparison/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_mixed_dpflate_only.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_mixed_dpflate_only.dir/rule
+.PHONY : tests/CMakeFiles/test_mixed_dpflate_only.dir/rule
+
+# Convenience name for target.
+test_mixed_dpflate_only: tests/CMakeFiles/test_mixed_dpflate_only.dir/rule
+.PHONY : test_mixed_dpflate_only
+
+# fast build rule for target.
+test_mixed_dpflate_only/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_mixed_dpflate_only.dir\build.make tests/CMakeFiles/test_mixed_dpflate_only.dir/build
+.PHONY : test_mixed_dpflate_only/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_lzdp_memory_flag.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzdp_memory_flag.dir/rule
+.PHONY : tests/CMakeFiles/test_lzdp_memory_flag.dir/rule
+
+# Convenience name for target.
+test_lzdp_memory_flag: tests/CMakeFiles/test_lzdp_memory_flag.dir/rule
+.PHONY : test_lzdp_memory_flag
+
+# fast build rule for target.
+test_lzdp_memory_flag/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_memory_flag.dir\build.make tests/CMakeFiles/test_lzdp_memory_flag.dir/build
+.PHONY : test_lzdp_memory_flag/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_dpflate_3hm_stream.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_dpflate_3hm_stream.dir/rule
+.PHONY : tests/CMakeFiles/test_dpflate_3hm_stream.dir/rule
+
+# Convenience name for target.
+test_dpflate_3hm_stream: tests/CMakeFiles/test_dpflate_3hm_stream.dir/rule
+.PHONY : test_dpflate_3hm_stream
+
+# fast build rule for target.
+test_dpflate_3hm_stream/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_3hm_stream.dir\build.make tests/CMakeFiles/test_dpflate_3hm_stream.dir/build
+.PHONY : test_dpflate_3hm_stream/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_3hm_binary.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_3hm_binary.dir/rule
+.PHONY : tests/CMakeFiles/test_3hm_binary.dir/rule
+
+# Convenience name for target.
+test_3hm_binary: tests/CMakeFiles/test_3hm_binary.dir/rule
+.PHONY : test_3hm_binary
+
+# fast build rule for target.
+test_3hm_binary/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_3hm_binary.dir\build.make tests/CMakeFiles/test_3hm_binary.dir/build
+.PHONY : test_3hm_binary/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_lzdp_binary.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzdp_binary.dir/rule
+.PHONY : tests/CMakeFiles/test_lzdp_binary.dir/rule
+
+# Convenience name for target.
+test_lzdp_binary: tests/CMakeFiles/test_lzdp_binary.dir/rule
+.PHONY : test_lzdp_binary
+
+# fast build rule for target.
+test_lzdp_binary/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_binary.dir\build.make tests/CMakeFiles/test_lzdp_binary.dir/build
+.PHONY : test_lzdp_binary/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_3hm_all.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_3hm_all.dir/rule
+.PHONY : tests/CMakeFiles/test_3hm_all.dir/rule
+
+# Convenience name for target.
+test_3hm_all: tests/CMakeFiles/test_3hm_all.dir/rule
+.PHONY : test_3hm_all
+
+# fast build rule for target.
+test_3hm_all/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_3hm_all.dir\build.make tests/CMakeFiles/test_3hm_all.dir/build
+.PHONY : test_3hm_all/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_regression_baseline.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_regression_baseline.dir/rule
+.PHONY : tests/CMakeFiles/test_regression_baseline.dir/rule
+
+# Convenience name for target.
+test_regression_baseline: tests/CMakeFiles/test_regression_baseline.dir/rule
+.PHONY : test_regression_baseline
+
+# fast build rule for target.
+test_regression_baseline/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_regression_baseline.dir\build.make tests/CMakeFiles/test_regression_baseline.dir/build
+.PHONY : test_regression_baseline/fast
+
+# Convenience name for target.
+tests/CMakeFiles/debug_dpflate.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/debug_dpflate.dir/rule
+.PHONY : tests/CMakeFiles/debug_dpflate.dir/rule
+
+# Convenience name for target.
+debug_dpflate: tests/CMakeFiles/debug_dpflate.dir/rule
+.PHONY : debug_dpflate
+
+# fast build rule for target.
+debug_dpflate/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_dpflate.dir\build.make tests/CMakeFiles/debug_dpflate.dir/build
+.PHONY : debug_dpflate/fast
+
+# Convenience name for target.
+tests/CMakeFiles/debug_token_trace.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/debug_token_trace.dir/rule
+.PHONY : tests/CMakeFiles/debug_token_trace.dir/rule
+
+# Convenience name for target.
+debug_token_trace: tests/CMakeFiles/debug_token_trace.dir/rule
+.PHONY : debug_token_trace
+
+# fast build rule for target.
+debug_token_trace/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_token_trace.dir\build.make tests/CMakeFiles/debug_token_trace.dir/build
+.PHONY : debug_token_trace/fast
+
+debug_dpflate.obj: debug_dpflate.cpp.obj
+.PHONY : debug_dpflate.obj
+
+# target to build an object file
+debug_dpflate.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_dpflate.dir\build.make tests/CMakeFiles/debug_dpflate.dir/debug_dpflate.cpp.obj
+.PHONY : debug_dpflate.cpp.obj
+
+debug_dpflate.i: debug_dpflate.cpp.i
+.PHONY : debug_dpflate.i
+
+# target to preprocess a source file
+debug_dpflate.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_dpflate.dir\build.make tests/CMakeFiles/debug_dpflate.dir/debug_dpflate.cpp.i
+.PHONY : debug_dpflate.cpp.i
+
+debug_dpflate.s: debug_dpflate.cpp.s
+.PHONY : debug_dpflate.s
+
+# target to generate assembly for a file
+debug_dpflate.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_dpflate.dir\build.make tests/CMakeFiles/debug_dpflate.dir/debug_dpflate.cpp.s
+.PHONY : debug_dpflate.cpp.s
+
+debug_token_trace.obj: debug_token_trace.cpp.obj
+.PHONY : debug_token_trace.obj
+
+# target to build an object file
+debug_token_trace.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_token_trace.dir\build.make tests/CMakeFiles/debug_token_trace.dir/debug_token_trace.cpp.obj
+.PHONY : debug_token_trace.cpp.obj
+
+debug_token_trace.i: debug_token_trace.cpp.i
+.PHONY : debug_token_trace.i
+
+# target to preprocess a source file
+debug_token_trace.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_token_trace.dir\build.make tests/CMakeFiles/debug_token_trace.dir/debug_token_trace.cpp.i
+.PHONY : debug_token_trace.cpp.i
+
+debug_token_trace.s: debug_token_trace.cpp.s
+.PHONY : debug_token_trace.s
+
+# target to generate assembly for a file
+debug_token_trace.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_token_trace.dir\build.make tests/CMakeFiles/debug_token_trace.dir/debug_token_trace.cpp.s
+.PHONY : debug_token_trace.cpp.s
+
+test_3hm_all.obj: test_3hm_all.cpp.obj
+.PHONY : test_3hm_all.obj
+
+# target to build an object file
+test_3hm_all.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_3hm_all.dir\build.make tests/CMakeFiles/test_3hm_all.dir/test_3hm_all.cpp.obj
+.PHONY : test_3hm_all.cpp.obj
+
+test_3hm_all.i: test_3hm_all.cpp.i
+.PHONY : test_3hm_all.i
+
+# target to preprocess a source file
+test_3hm_all.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_3hm_all.dir\build.make tests/CMakeFiles/test_3hm_all.dir/test_3hm_all.cpp.i
+.PHONY : test_3hm_all.cpp.i
+
+test_3hm_all.s: test_3hm_all.cpp.s
+.PHONY : test_3hm_all.s
+
+# target to generate assembly for a file
+test_3hm_all.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_3hm_all.dir\build.make tests/CMakeFiles/test_3hm_all.dir/test_3hm_all.cpp.s
+.PHONY : test_3hm_all.cpp.s
+
+test_3hm_binary.obj: test_3hm_binary.cpp.obj
+.PHONY : test_3hm_binary.obj
+
+# target to build an object file
+test_3hm_binary.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_3hm_binary.dir\build.make tests/CMakeFiles/test_3hm_binary.dir/test_3hm_binary.cpp.obj
+.PHONY : test_3hm_binary.cpp.obj
+
+test_3hm_binary.i: test_3hm_binary.cpp.i
+.PHONY : test_3hm_binary.i
+
+# target to preprocess a source file
+test_3hm_binary.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_3hm_binary.dir\build.make tests/CMakeFiles/test_3hm_binary.dir/test_3hm_binary.cpp.i
+.PHONY : test_3hm_binary.cpp.i
+
+test_3hm_binary.s: test_3hm_binary.cpp.s
+.PHONY : test_3hm_binary.s
+
+# target to generate assembly for a file
+test_3hm_binary.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_3hm_binary.dir\build.make tests/CMakeFiles/test_3hm_binary.dir/test_3hm_binary.cpp.s
+.PHONY : test_3hm_binary.cpp.s
 
 test_Deflate.obj: test_Deflate.cpp.obj
 .PHONY : test_Deflate.obj
@@ -424,6 +674,78 @@ test_PackWriter_RoundTrip.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_PackWriter_RoundTrip.dir\build.make tests/CMakeFiles/test_PackWriter_RoundTrip.dir/test_PackWriter_RoundTrip.cpp.s
 .PHONY : test_PackWriter_RoundTrip.cpp.s
 
+test_algorithm_comparison.obj: test_algorithm_comparison.cpp.obj
+.PHONY : test_algorithm_comparison.obj
+
+# target to build an object file
+test_algorithm_comparison.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_comparison.dir\build.make tests/CMakeFiles/test_algorithm_comparison.dir/test_algorithm_comparison.cpp.obj
+.PHONY : test_algorithm_comparison.cpp.obj
+
+test_algorithm_comparison.i: test_algorithm_comparison.cpp.i
+.PHONY : test_algorithm_comparison.i
+
+# target to preprocess a source file
+test_algorithm_comparison.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_comparison.dir\build.make tests/CMakeFiles/test_algorithm_comparison.dir/test_algorithm_comparison.cpp.i
+.PHONY : test_algorithm_comparison.cpp.i
+
+test_algorithm_comparison.s: test_algorithm_comparison.cpp.s
+.PHONY : test_algorithm_comparison.s
+
+# target to generate assembly for a file
+test_algorithm_comparison.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_comparison.dir\build.make tests/CMakeFiles/test_algorithm_comparison.dir/test_algorithm_comparison.cpp.s
+.PHONY : test_algorithm_comparison.cpp.s
+
+test_dpflate_3hm_stream.obj: test_dpflate_3hm_stream.cpp.obj
+.PHONY : test_dpflate_3hm_stream.obj
+
+# target to build an object file
+test_dpflate_3hm_stream.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_3hm_stream.dir\build.make tests/CMakeFiles/test_dpflate_3hm_stream.dir/test_dpflate_3hm_stream.cpp.obj
+.PHONY : test_dpflate_3hm_stream.cpp.obj
+
+test_dpflate_3hm_stream.i: test_dpflate_3hm_stream.cpp.i
+.PHONY : test_dpflate_3hm_stream.i
+
+# target to preprocess a source file
+test_dpflate_3hm_stream.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_3hm_stream.dir\build.make tests/CMakeFiles/test_dpflate_3hm_stream.dir/test_dpflate_3hm_stream.cpp.i
+.PHONY : test_dpflate_3hm_stream.cpp.i
+
+test_dpflate_3hm_stream.s: test_dpflate_3hm_stream.cpp.s
+.PHONY : test_dpflate_3hm_stream.s
+
+# target to generate assembly for a file
+test_dpflate_3hm_stream.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_3hm_stream.dir\build.make tests/CMakeFiles/test_dpflate_3hm_stream.dir/test_dpflate_3hm_stream.cpp.s
+.PHONY : test_dpflate_3hm_stream.cpp.s
+
+test_lzdp_binary.obj: test_lzdp_binary.cpp.obj
+.PHONY : test_lzdp_binary.obj
+
+# target to build an object file
+test_lzdp_binary.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_binary.dir\build.make tests/CMakeFiles/test_lzdp_binary.dir/test_lzdp_binary.cpp.obj
+.PHONY : test_lzdp_binary.cpp.obj
+
+test_lzdp_binary.i: test_lzdp_binary.cpp.i
+.PHONY : test_lzdp_binary.i
+
+# target to preprocess a source file
+test_lzdp_binary.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_binary.dir\build.make tests/CMakeFiles/test_lzdp_binary.dir/test_lzdp_binary.cpp.i
+.PHONY : test_lzdp_binary.cpp.i
+
+test_lzdp_binary.s: test_lzdp_binary.cpp.s
+.PHONY : test_lzdp_binary.s
+
+# target to generate assembly for a file
+test_lzdp_binary.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_binary.dir\build.make tests/CMakeFiles/test_lzdp_binary.dir/test_lzdp_binary.cpp.s
+.PHONY : test_lzdp_binary.cpp.s
+
 test_lzdp_dpflate_regression.obj: test_lzdp_dpflate_regression.cpp.obj
 .PHONY : test_lzdp_dpflate_regression.obj
 
@@ -472,6 +794,30 @@ test_lzdp_dpflate_stream.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_dpflate_stream.dir\build.make tests/CMakeFiles/test_lzdp_dpflate_stream.dir/test_lzdp_dpflate_stream.cpp.s
 .PHONY : test_lzdp_dpflate_stream.cpp.s
 
+test_lzdp_memory_flag.obj: test_lzdp_memory_flag.cpp.obj
+.PHONY : test_lzdp_memory_flag.obj
+
+# target to build an object file
+test_lzdp_memory_flag.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_memory_flag.dir\build.make tests/CMakeFiles/test_lzdp_memory_flag.dir/test_lzdp_memory_flag.cpp.obj
+.PHONY : test_lzdp_memory_flag.cpp.obj
+
+test_lzdp_memory_flag.i: test_lzdp_memory_flag.cpp.i
+.PHONY : test_lzdp_memory_flag.i
+
+# target to preprocess a source file
+test_lzdp_memory_flag.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_memory_flag.dir\build.make tests/CMakeFiles/test_lzdp_memory_flag.dir/test_lzdp_memory_flag.cpp.i
+.PHONY : test_lzdp_memory_flag.cpp.i
+
+test_lzdp_memory_flag.s: test_lzdp_memory_flag.cpp.s
+.PHONY : test_lzdp_memory_flag.s
+
+# target to generate assembly for a file
+test_lzdp_memory_flag.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_memory_flag.dir\build.make tests/CMakeFiles/test_lzdp_memory_flag.dir/test_lzdp_memory_flag.cpp.s
+.PHONY : test_lzdp_memory_flag.cpp.s
+
 test_lzdp_memory_streaming_parity.obj: test_lzdp_memory_streaming_parity.cpp.obj
 .PHONY : test_lzdp_memory_streaming_parity.obj
 
@@ -495,6 +841,78 @@ test_lzdp_memory_streaming_parity.s: test_lzdp_memory_streaming_parity.cpp.s
 test_lzdp_memory_streaming_parity.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_memory_streaming_parity.dir\build.make tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/test_lzdp_memory_streaming_parity.cpp.s
 .PHONY : test_lzdp_memory_streaming_parity.cpp.s
+
+test_lzss_noflag.obj: test_lzss_noflag.cpp.obj
+.PHONY : test_lzss_noflag.obj
+
+# target to build an object file
+test_lzss_noflag.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag.dir\build.make tests/CMakeFiles/test_lzss_noflag.dir/test_lzss_noflag.cpp.obj
+.PHONY : test_lzss_noflag.cpp.obj
+
+test_lzss_noflag.i: test_lzss_noflag.cpp.i
+.PHONY : test_lzss_noflag.i
+
+# target to preprocess a source file
+test_lzss_noflag.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag.dir\build.make tests/CMakeFiles/test_lzss_noflag.dir/test_lzss_noflag.cpp.i
+.PHONY : test_lzss_noflag.cpp.i
+
+test_lzss_noflag.s: test_lzss_noflag.cpp.s
+.PHONY : test_lzss_noflag.s
+
+# target to generate assembly for a file
+test_lzss_noflag.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag.dir\build.make tests/CMakeFiles/test_lzss_noflag.dir/test_lzss_noflag.cpp.s
+.PHONY : test_lzss_noflag.cpp.s
+
+test_mixed_dpflate_only.obj: test_mixed_dpflate_only.cpp.obj
+.PHONY : test_mixed_dpflate_only.obj
+
+# target to build an object file
+test_mixed_dpflate_only.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_mixed_dpflate_only.dir\build.make tests/CMakeFiles/test_mixed_dpflate_only.dir/test_mixed_dpflate_only.cpp.obj
+.PHONY : test_mixed_dpflate_only.cpp.obj
+
+test_mixed_dpflate_only.i: test_mixed_dpflate_only.cpp.i
+.PHONY : test_mixed_dpflate_only.i
+
+# target to preprocess a source file
+test_mixed_dpflate_only.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_mixed_dpflate_only.dir\build.make tests/CMakeFiles/test_mixed_dpflate_only.dir/test_mixed_dpflate_only.cpp.i
+.PHONY : test_mixed_dpflate_only.cpp.i
+
+test_mixed_dpflate_only.s: test_mixed_dpflate_only.cpp.s
+.PHONY : test_mixed_dpflate_only.s
+
+# target to generate assembly for a file
+test_mixed_dpflate_only.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_mixed_dpflate_only.dir\build.make tests/CMakeFiles/test_mixed_dpflate_only.dir/test_mixed_dpflate_only.cpp.s
+.PHONY : test_mixed_dpflate_only.cpp.s
+
+test_regression_baseline.obj: test_regression_baseline.cpp.obj
+.PHONY : test_regression_baseline.obj
+
+# target to build an object file
+test_regression_baseline.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_regression_baseline.dir\build.make tests/CMakeFiles/test_regression_baseline.dir/test_regression_baseline.cpp.obj
+.PHONY : test_regression_baseline.cpp.obj
+
+test_regression_baseline.i: test_regression_baseline.cpp.i
+.PHONY : test_regression_baseline.i
+
+# target to preprocess a source file
+test_regression_baseline.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_regression_baseline.dir\build.make tests/CMakeFiles/test_regression_baseline.dir/test_regression_baseline.cpp.i
+.PHONY : test_regression_baseline.cpp.i
+
+test_regression_baseline.s: test_regression_baseline.cpp.s
+.PHONY : test_regression_baseline.s
+
+# target to generate assembly for a file
+test_regression_baseline.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_regression_baseline.dir\build.make tests/CMakeFiles/test_regression_baseline.dir/test_regression_baseline.cpp.s
+.PHONY : test_regression_baseline.cpp.s
 
 test_roundtrip.obj: test_roundtrip.cpp.obj
 .PHONY : test_roundtrip.obj
@@ -628,18 +1046,41 @@ help:
 	@echo ... install/strip
 	@echo ... list_install_components
 	@echo ... rebuild_cache
+	@echo ... debug_dpflate
+	@echo ... debug_token_trace
+	@echo ... test_3hm_all
+	@echo ... test_3hm_binary
 	@echo ... test_Deflate
 	@echo ... test_HuffmanTree3HM
 	@echo ... test_PackWriter
 	@echo ... test_PackWriter_RoundTrip
+	@echo ... test_algorithm_comparison
+	@echo ... test_dpflate_3hm_stream
+	@echo ... test_lzdp_binary
 	@echo ... test_lzdp_dpflate_regression
 	@echo ... test_lzdp_dpflate_stream
+	@echo ... test_lzdp_memory_flag
 	@echo ... test_lzdp_memory_streaming_parity
+	@echo ... test_lzss_noflag
+	@echo ... test_mixed_dpflate_only
+	@echo ... test_regression_baseline
 	@echo ... test_roundtrip
 	@echo ... test_wcx_corrupt
 	@echo ... test_wcx_directory_archive
 	@echo ... test_wcx_file_strict
 	@echo ... test_wcx_strict_no_compat
+	@echo ... debug_dpflate.obj
+	@echo ... debug_dpflate.i
+	@echo ... debug_dpflate.s
+	@echo ... debug_token_trace.obj
+	@echo ... debug_token_trace.i
+	@echo ... debug_token_trace.s
+	@echo ... test_3hm_all.obj
+	@echo ... test_3hm_all.i
+	@echo ... test_3hm_all.s
+	@echo ... test_3hm_binary.obj
+	@echo ... test_3hm_binary.i
+	@echo ... test_3hm_binary.s
 	@echo ... test_Deflate.obj
 	@echo ... test_Deflate.i
 	@echo ... test_Deflate.s
@@ -652,15 +1093,36 @@ help:
 	@echo ... test_PackWriter_RoundTrip.obj
 	@echo ... test_PackWriter_RoundTrip.i
 	@echo ... test_PackWriter_RoundTrip.s
+	@echo ... test_algorithm_comparison.obj
+	@echo ... test_algorithm_comparison.i
+	@echo ... test_algorithm_comparison.s
+	@echo ... test_dpflate_3hm_stream.obj
+	@echo ... test_dpflate_3hm_stream.i
+	@echo ... test_dpflate_3hm_stream.s
+	@echo ... test_lzdp_binary.obj
+	@echo ... test_lzdp_binary.i
+	@echo ... test_lzdp_binary.s
 	@echo ... test_lzdp_dpflate_regression.obj
 	@echo ... test_lzdp_dpflate_regression.i
 	@echo ... test_lzdp_dpflate_regression.s
 	@echo ... test_lzdp_dpflate_stream.obj
 	@echo ... test_lzdp_dpflate_stream.i
 	@echo ... test_lzdp_dpflate_stream.s
+	@echo ... test_lzdp_memory_flag.obj
+	@echo ... test_lzdp_memory_flag.i
+	@echo ... test_lzdp_memory_flag.s
 	@echo ... test_lzdp_memory_streaming_parity.obj
 	@echo ... test_lzdp_memory_streaming_parity.i
 	@echo ... test_lzdp_memory_streaming_parity.s
+	@echo ... test_lzss_noflag.obj
+	@echo ... test_lzss_noflag.i
+	@echo ... test_lzss_noflag.s
+	@echo ... test_mixed_dpflate_only.obj
+	@echo ... test_mixed_dpflate_only.i
+	@echo ... test_mixed_dpflate_only.s
+	@echo ... test_regression_baseline.obj
+	@echo ... test_regression_baseline.i
+	@echo ... test_regression_baseline.s
 	@echo ... test_roundtrip.obj
 	@echo ... test_roundtrip.i
 	@echo ... test_roundtrip.s

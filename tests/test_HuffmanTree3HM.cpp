@@ -68,7 +68,7 @@ void testBasicRoundTrip() {
     // 解码：从同一 buffer 读取
     BitReader reader(std::span<const uint8_t>(buffer.data(), bytes_written));
     HuffmanTree3HM decoder;
-    decoder.deserialize(reader, 64, 32, 6, 5, 5, 5);
+    decoder.deserialize(reader);
 
     // 解码 run1
     uint16_t offset = decoder.decodeOffset(reader);
@@ -137,7 +137,7 @@ void testAllLiterals() {
     // 解码
     BitReader reader(std::span<const uint8_t>(buffer.data(), bytes_written));
     HuffmanTree3HM decoder;
-    decoder.deserialize(reader, 64, 32, 6, 5, 5, 5);
+    decoder.deserialize(reader);
 
     uint16_t offset = decoder.decodeOffset(reader);
     assert(offset == 0);
@@ -211,7 +211,7 @@ void testRunTruncation() {
     // 解码
     BitReader reader(std::span<const uint8_t>(buffer.data(), bytes_written));
     HuffmanTree3HM decoder;
-    decoder.deserialize(reader, 64, 32, 6, Lb, Lb, Lb);
+    decoder.deserialize(reader);
 
     std::vector<uint8_t> output;
 
@@ -354,8 +354,7 @@ void testAsymmetricChunkBits() {
 
     BitReader reader(std::span<const uint8_t>(buffer.data(), bytes_written));
     HuffmanTree3HM decoder;
-    decoder.deserialize(reader, offset_count, length_count, offset_bits, length_bits,
-                         offset_chunk, length_chunk);
+    decoder.deserialize(reader);
 
     assert(decoder.decodeOffset(reader) == 0);
     assert(decoder.decodeRunLength(reader) == 2);

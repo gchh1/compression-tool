@@ -39,6 +39,10 @@ def _streaming_per_algorithm_defaults() -> dict[str, dict]:
 DEFAULTS = {
     "version": 1,
     "algorithms": {},
+    "ade": {
+        # 静默探索：后台线程压缩；默认关；与「用户压缩/解压」通过 user-op 深度与引擎锁解耦
+        "silent_explore_enabled": False,
+    },
     "streaming": {
         "threshold_mb": STREAMING_THRESHOLD_MB,
         "chunk_size_kb": STREAMING_CHUNK_SIZE_KB,
@@ -80,7 +84,7 @@ def load_config() -> dict:
         if "theme" not in data or not isinstance(data.get("theme"), dict):
             logger.info("[config] theme missing in config file, saving defaults")
             save_config(merged)
-        logger.info("[config] loaded from %s", config_path)
+        logger.debug("[config] loaded from %s", config_path)
         return merged
     except (json.JSONDecodeError, OSError) as e:
         logger.warning("[config] failed to load %s: %s, using defaults", config_path, e)
@@ -120,11 +124,28 @@ def _merge_with_defaults(user_data: dict) -> dict:
                 r_s[k] = v
     if "visualization" in user_data and isinstance(user_data["visualization"], dict):
         result["visualization"].update(user_data["visualization"])
+    if "ade" in user_data and isinstance(user_data["ade"], dict):
+        result.setdefault("ade", {})
+        for k, v in user_data["ade"].items():
+            if k == "silent_explore_enabled":
+                result["ade"][k] = bool(v)
+            else:
+                result["ade"][k] = v
     if "theme" in user_data and isinstance(user_data["theme"], dict):
         for key, val in user_data["theme"].items():
             if key in result["theme"]:
                 result["theme"][key] = str(val)
     return result
+
+
+def get_silent_explore_enabled(config: dict | None = None) -> bool:
+    """Persisted switch for ADE silent exploration (background compress samples)."""
+    if config is None:
+        config = load_config()
+    ade = config.get("ade")
+    if not isinstance(ade, dict):
+        return False
+    return bool(ade.get("silent_explore_enabled", False))
 
 
 def get_theme_config(config: dict | None = None) -> dict[str, str]:

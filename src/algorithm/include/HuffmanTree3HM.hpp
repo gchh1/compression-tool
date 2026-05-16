@@ -43,10 +43,23 @@ class HuffmanTree3HM {
                     size_t offset_bits, size_t length_bits,
                     size_t offset_chunk_bits, size_t length_chunk_bits);
 
-    /** @brief Serialize three trees to BitWriter (chunk widths are out-of-band) */
+    /**
+     * @brief Serialize header + three trees to BitWriter.
+     *
+     * Header (4 bytes, LSB first):
+     *   offset_bits  : 8 bits
+     *   length_bits  : 8 bits
+     *   offset_chunk_bits : 8 bits
+     *   length_chunk_bits : 8 bits
+     *
+     * Followed by literal_tree_, offset_tree_, length_tree_ in order.
+     */
     void serialize(utils::BitWriter& writer) const;
 
-    /** @brief Deserialize three trees from BitReader */
+    /** @brief Deserialize header + three trees from BitReader (self-describing) */
+    void deserialize(utils::BitReader& reader);
+
+    /** @brief Deserialize three trees from BitReader with explicit parameters */
     void deserialize(utils::BitReader& reader,
                      size_t offset_count, size_t length_count,
                      size_t offset_bits, size_t length_bits,
@@ -90,6 +103,8 @@ class HuffmanTree3HM {
 
     size_t getOffsetCount() const { return offset_count_; }
     size_t getLengthCount() const { return length_count_; }
+    size_t getOffsetBits() const { return offset_bits_; }
+    size_t getLengthBits() const { return length_bits_; }
     size_t getOffsetChunkBits() const { return offset_chunk_bits_; }
     size_t getLengthChunkBits() const { return length_chunk_bits_; }
 

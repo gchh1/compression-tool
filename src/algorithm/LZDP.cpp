@@ -1,5 +1,7 @@
 #include "LZDP.hpp"
 
+#include "DebugLog.hpp"
+
 #include <algorithm>
 #include <bit>
 #include <cstdio>
@@ -37,12 +39,12 @@ LZDP::DpCoreResult LZDP::dp_core(
     size_t core_begin, size_t core_end) {
     std::vector<std::span<const uint8_t>> segs;
     segs.emplace_back(input);
-    VirtualBuffer vb(std::move(segs));
+    VirtualBuffer<3> vb(std::move(segs));
     return dp_core(vb, search_size, lookahead_size, range, core_begin, core_end);
 }
 
 LZDP::DpCoreResult LZDP::dp_core(
-    const VirtualBuffer& input, size_t search_size,
+    const VirtualBuffer<3>& input, size_t search_size,
     size_t lookahead_size, size_t range,
     size_t core_begin, size_t core_end) {
     if (search_size > max_search_size_) {
@@ -513,6 +515,11 @@ LZDP::DPVisualization LZDP::get_dp_visualization(
 void lzdp_ooc_collect_one_index(LZDP_OutOfCore& self, size_t pos_idx, uint32_t abs_pos) {
     auto& cur = self.dp_states_[abs_pos % self.dp_slot_count_];
 
+    if (abs_pos < 20) {
+        DEBUG_LOG("[LZDP_OutOfCore] COLLECT pos=%u pos_idx=%zu cur.cost=%u cur.len=%u cur.off=%u",
+                  abs_pos, pos_idx, cur.cost, cur.length, cur.offset);
+    }
+
     // 1. Literal transition
     auto& next_lit = self.dp_states_[(abs_pos + 1) % self.dp_slot_count_];
     if (cur.cost + self.lit_cost_ < next_lit.cost) {
@@ -533,6 +540,14 @@ void lzdp_ooc_collect_one_index(LZDP_OutOfCore& self, size_t pos_idx, uint32_t a
             auto kmp_results = kmpSearch(
                 self.input_buffer_.begin() + search_start, search_len,
                 self.input_buffer_.begin() + pos_idx, look_len, self.DP_TOP, self.MIN_MATCH);
+            if (abs_pos < 30) {
+                DEBUG_LOG("[LZDP_OutOfCore] COLLECT pos=%u search_len=%zu look_len=%zu matches=%zu",
+                          abs_pos, search_len, look_len, kmp_results.size());
+                if (!kmp_results.empty()) {
+                    DEBUG_LOG("[LZDP_OutOfCore] COLLECT pos=%u first_match=(off=%zu,len=%zu)",
+                              abs_pos, kmp_results[0].offset, kmp_results[0].length);
+                }
+            }
             for (auto& kr : kmp_results) {
                 auto& nm =
                     self.dp_states_[(abs_pos + kr.length) % self.dp_slot_count_];
@@ -578,7 +593,12 @@ void lzdp_ooc_collect_one_index(LZDP_OutOfCore& self, size_t pos_idx, uint32_t a
         }
     }
 
-    // 3. Write incoming link (packed bits)
+    if (self.link_lengths_.size() <= abs_pos) {
+        self.link_lengths_.resize(static_cast<size_t>(abs_pos) + 1);
+        self.link_offsets_.resize(static_cast<size_t>(abs_pos) + 1);
+    }
+    self.link_lengths_[abs_pos] = cur.length;
+    self.link_offsets_[abs_pos] = cur.offset;
     self.spill_a_.writePackedLink(self.spill_spec_, cur.length, cur.offset);
 
     // 4. Clear state for future wrap-around
@@ -631,6 +651,10 @@ auto LZDP_OutOfCore::reset(void) -> void {
 
     total_tokens_ = 0;
     emitted_tokens_ = 0;
+    link_lengths_.clear();
+    link_offsets_.clear();
+    token_lengths_.clear();
+    token_offsets_.clear();
     emit_lzdp_raw_header_done_ = false;
     writer_.resetPendingBits();
 
@@ -699,6 +723,13 @@ auto LZDP_OutOfCore::handleCollectInput(AlgorithmStatus& status, bool is_last_ch
         }
     }
     
+    if (is_last_chunk && current_i_ == 0 &&
+        input_buffer_.size() > dp_slot_count_) {
+        dp_slot_count_ = input_buffer_.size() + 2;
+        dp_states_.assign(dp_slot_count_, DpState{});
+        dp_states_[0].cost = 0;
+    }
+
     if (processable > 0) {
         for (size_t k = 0; k < processable; ++k) {
             if ((k & size_t{4095}) == 0 && algorithm::g_cancel_callback &&
@@ -736,8 +767,17 @@ auto LZDP_OutOfCore::handleCollectInput(AlgorithmStatus& status, bool is_last_ch
         total_in_len_ = window_abs_pos_ + static_cast<uint32_t>(current_i_);
         
         DpState& cur = dp_states_[total_in_len_ % dp_slot_count_];
+        if (link_lengths_.size() <= total_in_len_) {
+            link_lengths_.resize(static_cast<size_t>(total_in_len_) + 1);
+            link_offsets_.resize(static_cast<size_t>(total_in_len_) + 1);
+        }
+        link_lengths_[total_in_len_] = cur.length;
+        link_offsets_[total_in_len_] = cur.offset;
         spill_a_.writePackedLink(spill_spec_, cur.length, cur.offset);
         spill_a_.flush();
+        
+        DEBUG_LOG("[LZDP_OutOfCore] COLLECT done: total_in_len=%u final_state=(len=%u off=%u cost=%u)",
+                  total_in_len_, cur.length, cur.offset, cur.cost);
         
         state_ = State::BACKTRACK;
     }
@@ -748,8 +788,10 @@ auto LZDP_OutOfCore::handleBacktrack(AlgorithmStatus& status, bool is_last_chunk
         throw std::runtime_error("cancelled");
     }
 
-    PackedDpLinkBackwardWindow readerA(temp_file_A_, spill_spec_);
     uint32_t cur = total_in_len_;
+    size_t bt_count = 0;
+    token_lengths_.clear();
+    token_offsets_.clear();
 
     while (cur > 0) {
         if ((cur & 0xFFFF) == 0 && algorithm::g_cancel_callback && algorithm::g_cancel_callback()) {
@@ -758,9 +800,22 @@ auto LZDP_OutOfCore::handleBacktrack(AlgorithmStatus& status, bool is_last_chunk
 
         uint16_t length = 0;
         uint16_t offset = 0;
-        readerA.readPair(cur, length, offset);
+        if (cur < link_lengths_.size()) {
+            length = link_lengths_[cur];
+            offset = link_offsets_[cur];
+        } else {
+            PackedDpLinkBackwardWindow readerA(temp_file_A_, spill_spec_);
+            readerA.readPair(cur, length, offset);
+        }
+
+        if (bt_count < 10) {
+            DEBUG_LOG("[LZDP_OutOfCore] BACKTRACK cur=%u len=%u off=%u", cur, length, offset);
+        }
+        bt_count++;
 
         spill_b_.writePackedLink(spill_spec_, length, offset);
+        token_lengths_.push_back(length);
+        token_offsets_.push_back(offset);
         total_tokens_++;
 
         if (length == 0) {
@@ -771,12 +826,15 @@ auto LZDP_OutOfCore::handleBacktrack(AlgorithmStatus& status, bool is_last_chunk
     }
 
     spill_b_.flush();
-    
+
     state_ = State::EMIT_TOKENS;
 }
 
 auto LZDP_OutOfCore::handleEmitTokens(AlgorithmStatus& status, bool is_last_chunk) -> void {
-    PackedDpLinkBackwardWindow readerB(temp_file_B_, spill_spec_);
+    if (token_lengths_.size() != total_tokens_ || token_offsets_.size() != total_tokens_) {
+        status.done = true;
+        return;
+    }
 
     if (!emit_lzdp_raw_header_done_) {
         // Two-byte header must be byte-aligned at the start of the LZDP bitstream. Pending bits
@@ -794,6 +852,8 @@ auto LZDP_OutOfCore::handleEmitTokens(AlgorithmStatus& status, bool is_last_chun
             status.need_output = true;
             return;
         }
+        DEBUG_LOG("[LZDP_OutOfCore] emit header: hdr0=0x%02x hdr1=0x%02x offset_bits=%zu length_bits=%zu use_flag=%d total_tokens=%zu",
+                  h[0], h[1], offset_bits_, length_bits_, use_flag_encoding_, total_tokens_);
         emit_lzdp_raw_header_done_ = true;
     }
 
@@ -807,10 +867,14 @@ auto LZDP_OutOfCore::handleEmitTokens(AlgorithmStatus& status, bool is_last_chun
             return;
         }
 
-        uint64_t idx = total_tokens_ - 1 - emitted_tokens_;
-        uint16_t len = 0;
-        uint16_t off = 0;
-        readerB.readPair(idx, len, off);
+        const uint64_t idx = total_tokens_ - 1 - emitted_tokens_;
+        const uint16_t len = token_lengths_[idx];
+        const uint16_t off = token_offsets_[idx];
+
+        if (emitted_tokens_ < 10) {
+            DEBUG_LOG("[LZDP_OutOfCore] EMIT token[%zu]: idx=%llu len=%u off=%u",
+                      emitted_tokens_, (unsigned long long)idx, len, off);
+        }
 
         LZDP::Triple t;
         if (len == 0) {
@@ -875,6 +939,7 @@ auto LZDPDecompress_OutOfCore::reset(void) -> void {
     length_bits_ = 0;
     output_buffer_.clear();
     output_flush_idx_ = 0;
+    lzdp_dec_iter_ = 0;
 }
 
 auto LZDPDecompress_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
@@ -904,6 +969,9 @@ auto LZDPDecompress_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chun
         use_flag_encoding_ = (hdr0 & 0x80) != 0;
         length_bits_ = static_cast<size_t>(hdr1);
 
+        DEBUG_LOG("[LZDPDecompress_OutOfCore] header: hdr0=0x%02x hdr1=0x%02x offset_bits=%zu length_bits=%zu use_flag=%d",
+                  hdr0, hdr1, offset_bits_, length_bits_, use_flag_encoding_);
+
         if (offset_bits_ < 1 || offset_bits_ > 24 || length_bits_ < 1 || length_bits_ > 24) {
             throw std::runtime_error("LZDP decompress: invalid bit widths in header");
         }
@@ -914,6 +982,14 @@ auto LZDPDecompress_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chun
     while (output_flush_idx_ == output_buffer_.size()) {
         if (algorithm::g_cancel_callback && algorithm::g_cancel_callback()) {
             throw std::runtime_error("cancelled");
+        }
+
+        ++lzdp_dec_iter_;
+        if (lzdp_dec_iter_ > 10000000) {
+            DEBUG_LOG("[LZDPDecompress_OutOfCore] SAFETY BREAK: iter=%zu out_buf_size=%zu",
+                      lzdp_dec_iter_, output_buffer_.size());
+            status.done = true;
+            return;
         }
         
         if (reader_.getRemainingBits() == 0) {
@@ -936,6 +1012,10 @@ auto LZDPDecompress_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chun
                     return;
                 }
                 const uint8_t lit = static_cast<uint8_t>(reader_.readBits(8));
+                if (lzdp_dec_iter_ < 20) {
+                    DEBUG_LOG("[LZDPDecompress_OutOfCore] DECODE iter=%zu LITERAL lit=0x%02x out_size=%zu",
+                              lzdp_dec_iter_, lit, output_buffer_.size());
+                }
                 output_buffer_.push_back(lit);
             } else {
                 if (!reader_.ensureBits(static_cast<uint8_t>(offset_bits_ + length_bits_))) {
@@ -947,6 +1027,11 @@ auto LZDPDecompress_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chun
                     static_cast<uint32_t>(reader_.readBits(static_cast<uint8_t>(offset_bits_)));
                 const uint32_t length =
                     static_cast<uint32_t>(reader_.readBits(static_cast<uint8_t>(length_bits_)));
+
+                if (lzdp_dec_iter_ < 20) {
+                    DEBUG_LOG("[LZDPDecompress_OutOfCore] DECODE iter=%zu MATCH off=%u len=%u out_size=%zu",
+                              lzdp_dec_iter_, offset, length, output_buffer_.size());
+                }
 
                 const size_t out_size = output_buffer_.size();
                 if (out_size < static_cast<size_t>(offset)) {
@@ -974,6 +1059,11 @@ auto LZDPDecompress_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chun
                 static_cast<uint32_t>(reader_.readBits(static_cast<uint8_t>(offset_bits_)));
             const uint32_t length =
                 static_cast<uint32_t>(reader_.readBits(static_cast<uint8_t>(length_bits_)));
+
+            if (lzdp_dec_iter_ < 20) {
+                DEBUG_LOG("[LZDPDecompress_OutOfCore] DECODE iter=%zu off=%u len=%u out_size=%zu",
+                          lzdp_dec_iter_, offset, length, output_buffer_.size());
+            }
 
             if (offset == 0) {
                 for (size_t k = 0; k < length; k++) {
@@ -1005,16 +1095,11 @@ auto LZDPDecompress_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chun
     }
 
     if (output_flush_idx_ < output_buffer_.size()) {
-        size_t available = output_buffer_.size() - output_flush_idx_;
-        if (writer_.ensureSpace(available)) {
-            for (size_t i = 0; i < available; ++i) {
-                uint8_t byte = output_buffer_[output_flush_idx_ + i];
-                for (int j = 7; j >= 0; j--) {
-                    writer_.writeBit((byte >> j) & 1);
-                }
-            }
-            output_flush_idx_ = output_buffer_.size();
-            writer_.flush();
+        const size_t available = output_buffer_.size() - output_flush_idx_;
+        if (writer_.ensureSpace(available * 8)) {
+            const size_t n = writer_.writeBytes(output_buffer_.data() + output_flush_idx_,
+                                                  available);
+            output_flush_idx_ += n;
             // Do not shrink ``output_buffer_`` here: LZ match offsets are relative to the
             // full decoded stream; dropping prefix bytes would break copies without a
             // sliding-window base offset (see lzdp-file-pipeline-design).
@@ -1022,6 +1107,8 @@ auto LZDPDecompress_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chun
             status.need_output = true;
         }
     } else if (is_last_chunk && reader_.getRemainingBits() == 0) {
+        DEBUG_LOG("[LZDPDecompress_OutOfCore] done: output_buffer_size=%zu output_flush_idx=%zu",
+                  output_buffer_.size(), output_flush_idx_);
         status.done = true;
     }
 }

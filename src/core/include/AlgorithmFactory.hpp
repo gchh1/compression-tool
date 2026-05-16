@@ -57,6 +57,8 @@ enum class AlgorithmID {
     DeltaDecode,
     LZSS,
     LZSSDecompress,
+    LZSS_NoFlag,
+    LZSSDecompress_NoFlag,
     LZDP,
     LZDPDecompress,
     DPFlate,
@@ -89,6 +91,7 @@ inline AlgorithmID getDecompressorID(AlgorithmID comp) {
     static const std::unordered_map<AlgorithmID, AlgorithmID> map = {
         {AlgorithmID::Deflate, AlgorithmID::Inflate},
         {AlgorithmID::LZSS, AlgorithmID::LZSSDecompress},
+        {AlgorithmID::LZSS_NoFlag, AlgorithmID::LZSSDecompress_NoFlag},
         {AlgorithmID::LZDP, AlgorithmID::LZDPDecompress},
         /// DPFlate emits a Deflate-style Huffman bitstream; ``Inflate`` inverts it
         /// (see ``DPFlate.hpp`` ``using DPFlateDecompress = Inflate``).

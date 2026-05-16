@@ -422,6 +422,8 @@ _Python3_INCLUDE_DIR:INTERNAL=D:/Python/include
 //Python3 Properties
 _Python3_INTERPRETER_PROPERTIES:INTERNAL=Python;3;12;4;64;<none>;cp312-win_amd64;;D:\Python\Lib;D:\Python\Lib;D:\Python\Lib\site-packages;D:\Python\Lib\site-packages
 _Python3_INTERPRETER_SIGNATURE:INTERNAL=49227ad3b909b81e5c68a8b8dec86852
+//Interpreter reason failure
+_Python3_Interpreter_REASON_FAILURE:INTERNAL=
 //Path to a library.
 _Python3_LIBRARY_DEBUG:INTERNAL=_Python3_LIBRARY_DEBUG-NOTFOUND
 //Path to a library.

@@ -248,28 +248,20 @@ auto BrotliCompress::handleFlushTokens(AlgorithmStatus& status,
         if (token.is_literal) {
             writer_.writeBit(0);  // type: literal
             size_t ctx = prev_was_match ? 1 : 0;
-            const auto& code =
-                (ctx == 0) ? lit_dict0_[token.literal] : lit_dict1_[token.literal];
-            for (int i = code.length - 1; i >= 0; i--) {
-                writer_.writeBit((code.code >> i) & 1);
-            }
+            writeHuffmanCode(
+                writer_, (ctx == 0) ? lit_dict0_[token.literal]
+                                    : lit_dict1_[token.literal]);
             prev_was_match = false;
         } else {
             writer_.writeBit(1);  // type: match
-            const auto& len_code = len_dict_[token.length_code];
-            for (int i = len_code.length - 1; i >= 0; i--) {
-                writer_.writeBit((len_code.code >> i) & 1);
-            }
+            writeHuffmanCode(writer_, len_dict_[token.length_code]);
 
             if (token.length_extra_bits > 0) {
                 writer_.writeBits(token.length_extra_val,
                                   token.length_extra_bits);
             }
 
-            const auto& d_code = dist_dict_[token.dist_code];
-            for (int i = d_code.length - 1; i >= 0; i--) {
-                writer_.writeBit((d_code.code >> i) & 1);
-            }
+            writeHuffmanCode(writer_, dist_dict_[token.dist_code]);
 
             if (token.dist_extra_bits > 0) {
                 writer_.writeBits(token.dist_extra_val, token.dist_extra_bits);
@@ -283,15 +275,9 @@ auto BrotliCompress::handleFlushTokens(AlgorithmStatus& status,
     // Write EOF: literal type bit + EOF symbol from appropriate context
     writer_.writeBit(0);
     if (prev_was_match) {
-        const auto& eof_code = lit_dict1_[256];
-        for (int i = eof_code.length - 1; i >= 0; i--) {
-            writer_.writeBit((eof_code.code >> i) & 1);
-        }
+        writeHuffmanCode(writer_, lit_dict1_[256]);
     } else {
-        const auto& eof_code = lit_dict0_[256];
-        for (int i = eof_code.length - 1; i >= 0; i--) {
-            writer_.writeBit((eof_code.code >> i) & 1);
-        }
+        writeHuffmanCode(writer_, lit_dict0_[256]);
     }
 
     token_buffer_.clear();

@@ -84,6 +84,17 @@ auto createAlgorithm(AlgorithmID id,
                 [](const std::vector<uint8_t>& data) {
                     return algorithm::LZSS::decompress(data);
                 });
+        case AlgorithmID::LZSS_NoFlag:
+            return std::make_unique<SCA>(
+                [](const std::vector<uint8_t>& data) {
+                    return algorithm::LZSS::compress(data, 4096, 3, false);
+                },
+                sca_chunk);
+        case AlgorithmID::LZSSDecompress_NoFlag:
+            return std::make_unique<SDA>(
+                [](const std::vector<uint8_t>& data) {
+                    return algorithm::LZSS::decompress(data, 3, false);
+                });
         case AlgorithmID::LZDP: {
             // Streaming path: ``LZDP_OutOfCore`` — chunked plaintext window, forward DP with packed
             // link spill (temp A), backtrack to temp B, then emit bitstream (see

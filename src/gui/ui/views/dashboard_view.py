@@ -221,6 +221,7 @@ class DashboardView(QScrollArea):
         all_files: list[FileRecord] = []
         for rec in records:
             if isinstance(rec, FolderRecord):
+                rec.ensure_files_loaded()
                 all_files.extend(rec.files)
             elif isinstance(rec, FileRecord):
                 all_files.append(rec)

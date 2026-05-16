@@ -123,9 +123,9 @@ public:
         size_t core_begin = 0,
         size_t core_end = SIZE_MAX);
 
-    /// VirtualBuffer 重载 — 零拷贝"假"拼接，用于流式分块场景
+    /// VirtualBuffer 重载 — 零拷贝环形槽位拼接，用于流式分块场景
     DpCoreResult dp_core(
-        const VirtualBuffer& vb,
+        const VirtualBuffer<3>& vb,
         size_t search_size,
         size_t lookahead_size,
         size_t range = 3,
@@ -203,7 +203,11 @@ private:
     TempFileBitAppender spill_a_{&temp_file_A_};
     TempFileBitAppender spill_b_{&temp_file_B_};
     PackedDpLinkSpec spill_spec_{};
-    
+    std::vector<uint16_t> link_lengths_;
+    std::vector<uint16_t> link_offsets_;
+    std::vector<uint16_t> token_lengths_;
+    std::vector<uint16_t> token_offsets_;
+
     uint64_t total_tokens_{0};
     uint64_t emitted_tokens_{0};
     /// Emit the same 2-byte prefix as ``LZDP::compress_dp`` / ``decompress`` (not bit-packed only).
@@ -249,6 +253,7 @@ private:
     size_t length_bits_{0};
     std::vector<uint8_t> output_buffer_;
     size_t output_flush_idx_{0};
+    size_t lzdp_dec_iter_{0};
 };
 
 } // namespace algorithm

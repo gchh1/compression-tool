@@ -19,10 +19,19 @@
 #endif
 
 #include "BitWriter.hpp"
+#include "DebugLog.hpp"
 #include "HuffmanTree.hpp"
 #include "KMPMatcher.hpp"
 
 namespace compressor::algorithm {
+
+// === DEBUG_BLOCK_BEGIN (可删除) ===
+static auto dbg_temp_file_size_bytes(const TempFile& tf) -> unsigned long long {
+    std::error_code ec;
+    const auto sz = std::filesystem::file_size(tf.path_, ec);
+    return ec ? 0ULL : static_cast<unsigned long long>(sz);
+}
+// === DEBUG_BLOCK_END ===
 
 DPFlate::DPFlate(size_t search_size, size_t lookahead_size, size_t min_match,
                  size_t dp_top, size_t dp_sub_match_max)
@@ -54,6 +63,10 @@ auto DPFlate::reset(void) -> void {
 
     total_tokens_ = 0;
     emitted_tokens_ = 0;
+    token_lengths_.clear();
+    token_offsets_.clear();
+    link_lengths_.clear();
+    link_offsets_.clear();
 
     huff_reset_entropy_tables();
 
@@ -176,6 +189,12 @@ void dpflate_collect_input_one_index(DPFlate& self, size_t pos_idx, uint32_t abs
         }
     }
 
+    if (self.link_lengths_.size() <= abs_pos) {
+        self.link_lengths_.resize(static_cast<size_t>(abs_pos) + 1);
+        self.link_offsets_.resize(static_cast<size_t>(abs_pos) + 1);
+    }
+    self.link_lengths_[abs_pos] = cur.length;
+    self.link_offsets_[abs_pos] = cur.offset;
     self.spill_a_.writePackedLink(self.spill_spec_, cur.length, cur.offset);
 
     cur.cost = UINT32_MAX;
@@ -185,6 +204,17 @@ void dpflate_collect_input_one_index(DPFlate& self, size_t pos_idx, uint32_t abs
 
 auto DPFlate::handleCollectInput(AlgorithmStatus& status, bool is_last_chunk) -> void {
     size_t remain = reader_.getRemainSize();
+    // === DEBUG_BLOCK_BEGIN (可删除) ===
+    static int dbg_collect_cnt = 0;
+    if (++dbg_collect_cnt <= 50) {
+        DEBUG_LOG("[DPFlate] handleCollectInput enter: input_buffer=%zu remain=%zu current_i=%zu "
+                  "window_abs=%llu is_last=%d dp_slots=%zu search=%zu lookahead=%zu",
+                  input_buffer_.size(), remain, current_i_,
+                  static_cast<unsigned long long>(window_abs_pos_), is_last_chunk,
+                  dp_slot_count_, SEARCH_SIZE, LOOKAHEAD_SIZE);
+    }
+    // === DEBUG_BLOCK_END ===
+
     if (remain > 0) {
         size_t old_len = input_buffer_.size();
         input_buffer_.resize(old_len + remain);
@@ -211,6 +241,16 @@ auto DPFlate::handleCollectInput(AlgorithmStatus& status, bool is_last_chunk) ->
     }
     
     if (processable > 0) {
+        // === DEBUG_BLOCK_BEGIN (可删除) ===
+        static int dbg_processable_cnt = 0;
+        if (++dbg_processable_cnt <= 50) {
+            DEBUG_LOG("[DPFlate] handleCollectInput processable=%zu buffer=%zu current_i=%zu "
+                      "tempA_before=%llu prev_buf=%zu",
+                      processable, input_buffer_.size(), current_i_,
+                      dbg_temp_file_size_bytes(temp_file_A_), prev_buf_.size());
+        }
+        // === DEBUG_BLOCK_END ===
+
         for (size_t k = 0; k < processable; ++k) {
             if ((k & size_t{4095}) == 0 && algorithm::g_cancel_callback &&
                 algorithm::g_cancel_callback()) {
@@ -248,8 +288,24 @@ auto DPFlate::handleCollectInput(AlgorithmStatus& status, bool is_last_chunk) ->
         total_in_len_ = window_abs_pos_ + static_cast<uint32_t>(current_i_);
         
         DpState& cur = dp_states_[total_in_len_ % dp_slot_count_];
+        if (link_lengths_.size() <= total_in_len_) {
+            link_lengths_.resize(static_cast<size_t>(total_in_len_) + 1);
+            link_offsets_.resize(static_cast<size_t>(total_in_len_) + 1);
+        }
+        link_lengths_[total_in_len_] = cur.length;
+        link_offsets_[total_in_len_] = cur.offset;
         spill_a_.writePackedLink(spill_spec_, cur.length, cur.offset);
         spill_a_.flush();
+
+        // === DEBUG_BLOCK_BEGIN (可删除) ===
+        static int dbg_collect_done_cnt = 0;
+        if (++dbg_collect_done_cnt <= 50) {
+            DEBUG_LOG("[DPFlate] handleCollectInput final: total_in_len=%u final_link=(len=%u off=%u) "
+                      "tempA=%llu input_buffer=%zu",
+                      total_in_len_, cur.length, cur.offset,
+                      dbg_temp_file_size_bytes(temp_file_A_), input_buffer_.size());
+        }
+        // === DEBUG_BLOCK_END ===
         
         state_ = DPFlateState::BACKTRACK;
     }
@@ -261,10 +317,19 @@ auto DPFlate::handleBacktrack(AlgorithmStatus& status, bool is_last_chunk) -> vo
         throw std::runtime_error("cancelled");
     }
 
-    PackedDpLinkBackwardWindow readerA(temp_file_A_, spill_spec_);
     uint32_t cur = total_in_len_;
     size_t literal_run_len_3hm = 0;
 
+    // === DEBUG_BLOCK_BEGIN (可删除) ===
+    static int dbg_backtrack_enter_cnt = 0;
+    if (++dbg_backtrack_enter_cnt <= 50) {
+        DEBUG_LOG("[DPFlate] handleBacktrack enter: total_in_len=%u tempA=%llu links=%zu use_3hm=%d",
+                  total_in_len_, dbg_temp_file_size_bytes(temp_file_A_), link_lengths_.size(),
+                  use_3hfmtree_);
+    }
+    // === DEBUG_BLOCK_END ===
+
+    uint64_t backtrack_out_bytes = 0;
     while (cur > 0) {
         if ((cur & 0xFFFF) == 0 && algorithm::g_cancel_callback && algorithm::g_cancel_callback()) {
             throw std::runtime_error("cancelled");
@@ -272,9 +337,26 @@ auto DPFlate::handleBacktrack(AlgorithmStatus& status, bool is_last_chunk) -> vo
 
         uint16_t length = 0;
         uint16_t offset = 0;
-        readerA.readPair(cur, length, offset);
+        if (cur < link_lengths_.size()) {
+            length = link_lengths_[cur];
+            offset = link_offsets_[cur];
+        } else {
+            PackedDpLinkBackwardWindow readerA(temp_file_A_, spill_spec_);
+            readerA.readPair(cur, length, offset);
+        }
+        backtrack_out_bytes += (length == 0) ? 1ULL : static_cast<uint64_t>(length);
+
+        // === DEBUG_BLOCK_BEGIN (可删除) ===
+        static int dbg_backtrack_token_cnt = 0;
+        if (++dbg_backtrack_token_cnt <= 50) {
+            DEBUG_LOG("[DPFlate] handleBacktrack token: cur=%u len=%u off=%u tokens=%llu",
+                      cur, length, offset, static_cast<unsigned long long>(total_tokens_));
+        }
+        // === DEBUG_BLOCK_END ===
 
         spill_b_.writePackedLink(spill_spec_, length, offset);
+        token_lengths_.push_back(length);
+        token_offsets_.push_back(offset);
         total_tokens_++;
 
         huff_backtrack_accumulate_token(length, offset, literal_run_len_3hm);
@@ -290,14 +372,42 @@ auto DPFlate::handleBacktrack(AlgorithmStatus& status, bool is_last_chunk) -> vo
 
     spill_b_.flush();
 
+    // === DEBUG_BLOCK_BEGIN (可删除) ===
+    static int dbg_backtrack_done_cnt = 0;
+    if (++dbg_backtrack_done_cnt <= 50) {
+        DEBUG_LOG("[DPFlate] handleBacktrack done: total_tokens=%llu out_bytes=%llu "
+                  "expected=%u tempA=%llu tempB=%llu",
+                  static_cast<unsigned long long>(total_tokens_),
+                  static_cast<unsigned long long>(backtrack_out_bytes), total_in_len_,
+                  dbg_temp_file_size_bytes(temp_file_A_),
+                  dbg_temp_file_size_bytes(temp_file_B_));
+    }
+    // === DEBUG_BLOCK_END ===
+
     state_ = DPFlateState::BUILD_TREE;
 }
 
 auto DPFlate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk) -> void {
     (void)is_last_chunk;
+    // === DEBUG_BLOCK_BEGIN (可删除) ===
+    static int dbg_build_enter_cnt = 0;
+    if (++dbg_build_enter_cnt <= 50) {
+        DEBUG_LOG("[DPFlate] handleBuildTree enter: use_3hm=%d writer_bytes=%zu total_tokens=%llu",
+                  use_3hfmtree_, writer_.getBytesWritten(),
+                  static_cast<unsigned long long>(total_tokens_));
+    }
+    // === DEBUG_BLOCK_END ===
+
     if (huff_build_tree_and_write_trees(status)) {
         state_ = DPFlateState::EMIT_TOKENS;
         emitted_tokens_ = 0;
+        // === DEBUG_BLOCK_BEGIN (可删除) ===
+        static int dbg_build_done_cnt = 0;
+        if (++dbg_build_done_cnt <= 50) {
+            DEBUG_LOG("[DPFlate] handleBuildTree done: writer_bytes=%zu need_output=%d",
+                      writer_.getBytesWritten(), status.need_output);
+        }
+        // === DEBUG_BLOCK_END ===
     }
 }
 
@@ -467,10 +577,21 @@ bool DPFlate::huff_build_tree_and_write_trees(AlgorithmStatus& st) {
             literal_freq_3hm_, offset_freq_3hm_, length_freq_3hm_, offset_count_3hm_,
             length_count_3hm_, offset_bits_3hm(), length_bits_3hm(), huffman_offset_chunk_bits_,
             huffman_length_chunk_bits_);
-        if (!writer_.ensureSpace(huffman_tree_3hm_->getTreeSize())) {
+        // === DEBUG_BLOCK_BEGIN (可删除) ===
+        static int dbg_3hm_tree_cnt = 0;
+        if (++dbg_3hm_tree_cnt <= 50) {
+            DEBUG_LOG("[DPFlate] huff_build_tree_and_write_trees 3HM: offset_bits=%zu length_bits=%zu "
+                      "offset_chunk=%zu length_chunk=%zu offset_count=%zu length_count=%zu tree_bits=%zu",
+                      offset_bits_3hm(), length_bits_3hm(), huffman_offset_chunk_bits_,
+                      huffman_length_chunk_bits_, offset_count_3hm_, length_count_3hm_,
+                      huffman_tree_3hm_->getTreeSize());
+        }
+        // === DEBUG_BLOCK_END ===
+        if (!writer_.ensureSpace(8 + huffman_tree_3hm_->getTreeSize())) {
             st.need_output = true;
             return false;
         }
+        writer_.writeBits(0x33, 8);
         huffman_tree_3hm_->serialize(writer_);
         return true;
     }
@@ -480,33 +601,66 @@ bool DPFlate::huff_build_tree_and_write_trees(AlgorithmStatus& st) {
         std::make_unique<HuffmanTree>(dist_freq_, DISTANCE_DICTIONARY_SIZE, DISTANCE_SYMBOL_BITS);
     dictionary_ = huffman_tree_->buildDictionary();
     dist_dictionary_ = dist_tree_->buildDictionary();
-    if (!writer_.ensureSpace(huffman_tree_->getTreeSize() + dist_tree_->getTreeSize())) {
+    // === DEBUG_BLOCK_BEGIN (可删除) ===
+    static int dbg_flate_tree_cnt = 0;
+    if (++dbg_flate_tree_cnt <= 50) {
+        DEBUG_LOG("[DPFlate] huff_build_tree_and_write_trees FLATE: main_tree_bits=%zu "
+                  "dist_tree_bits=%zu total_tokens=%llu",
+                  huffman_tree_->getTreeSize(), dist_tree_->getTreeSize(),
+                  static_cast<unsigned long long>(total_tokens_));
+    }
+    // === DEBUG_BLOCK_END ===
+    if (!writer_.ensureSpace(8 + huffman_tree_->getTreeSize() + dist_tree_->getTreeSize())) {
         st.need_output = true;
         return false;
     }
+    writer_.writeBits(0x46, 8);
     huffman_tree_->serializeTree(writer_);
     dist_tree_->serializeTree(writer_);
     return true;
 }
 
 bool DPFlate::huff_emit_token_stream(AlgorithmStatus& st) {
-    PackedDpLinkBackwardWindow readerB(temp_file_B_, spill_spec_);
+    if (token_lengths_.size() != total_tokens_ || token_offsets_.size() != total_tokens_) {
+        st.done = true;
+        return false;
+    }
+    // === DEBUG_BLOCK_BEGIN (可删除) ===
+    static int dbg_emit_enter_cnt = 0;
+    if (++dbg_emit_enter_cnt <= 50) {
+        DEBUG_LOG("[DPFlate] handleEmitTokens enter: total_tokens=%llu emitted=%llu writer_bytes=%zu use_3hm=%d",
+                  static_cast<unsigned long long>(total_tokens_),
+                  static_cast<unsigned long long>(emitted_tokens_),
+                  writer_.getBytesWritten(), use_3hfmtree_);
+    }
+    // === DEBUG_BLOCK_END ===
+
     if (use_3hfmtree_) {
         std::vector<uint8_t> literal_run;
         const size_t max_run = length_count_3hm_ - 1;
+
         while (emitted_tokens_ < total_tokens_) {
             if ((emitted_tokens_ & 0xFFFF) == 0 && algorithm::g_cancel_callback &&
                 algorithm::g_cancel_callback()) {
                 throw std::runtime_error("cancelled");
             }
-            if (!writer_.ensureSpace(6)) {
+            if (!writer_.ensureSpace(64)) {
                 st.need_output = true;
                 return false;
             }
             const uint64_t idx = total_tokens_ - 1 - emitted_tokens_;
-            uint16_t raw_len = 0;
-            uint16_t raw_off = 0;
-            readerB.readPair(idx, raw_len, raw_off);
+            const uint16_t raw_len = token_lengths_[idx];
+            const uint16_t raw_off = token_offsets_[idx];
+
+            // === DEBUG_BLOCK_BEGIN (可删除) ===
+            static int dbg_emit_3hm_token_cnt = 0;
+            if (++dbg_emit_3hm_token_cnt <= 50) {
+                DEBUG_LOG("[DPFlate] handleEmitTokens 3HM token: idx=%llu len=%u off=%u literal_run=%zu writer_bytes=%zu",
+                          static_cast<unsigned long long>(idx), raw_len, raw_off,
+                          literal_run.size(), writer_.getBytesWritten());
+            }
+            // === DEBUG_BLOCK_END ===
+
             if (raw_len == 0) {
                 literal_run.push_back(static_cast<uint8_t>(raw_off));
             } else {
@@ -529,7 +683,7 @@ bool DPFlate::huff_emit_token_stream(AlgorithmStatus& st) {
             emitted_tokens_++;
         }
         if (!literal_run.empty()) {
-            if (!writer_.ensureSpace(6)) {
+            if (!writer_.ensureSpace(64)) {
                 st.need_output = true;
                 return false;
             }
@@ -547,6 +701,14 @@ bool DPFlate::huff_emit_token_stream(AlgorithmStatus& st) {
             literal_run.clear();
         }
         writer_.flush();
+        // === DEBUG_BLOCK_BEGIN (可删除) ===
+        static int dbg_emit_3hm_done_cnt = 0;
+        if (++dbg_emit_3hm_done_cnt <= 50) {
+            DEBUG_LOG("[DPFlate] handleEmitTokens 3HM done: emitted=%llu writer_bytes=%zu",
+                      static_cast<unsigned long long>(emitted_tokens_),
+                      writer_.getBytesWritten());
+        }
+        // === DEBUG_BLOCK_END ===
         st.done = true;
         return true;
     }
@@ -556,14 +718,21 @@ bool DPFlate::huff_emit_token_stream(AlgorithmStatus& st) {
             algorithm::g_cancel_callback()) {
             throw std::runtime_error("cancelled");
         }
-        if (!writer_.ensureSpace(6)) {
+        if (!writer_.ensureSpace(48)) {
             st.need_output = true;
             return false;
         }
         const uint64_t idx = total_tokens_ - 1 - emitted_tokens_;
-        uint16_t raw_len = 0;
-        uint16_t raw_off = 0;
-        readerB.readPair(idx, raw_len, raw_off);
+        const uint16_t raw_len = token_lengths_[idx];
+        const uint16_t raw_off = token_offsets_[idx];
+        // === DEBUG_BLOCK_BEGIN (可删除) ===
+        static int dbg_emit_flate_token_cnt = 0;
+        if (++dbg_emit_flate_token_cnt <= 50) {
+            DEBUG_LOG("[DPFlate] handleEmitTokens FLATE token: idx=%llu len=%u off=%u writer_bytes=%zu",
+                      static_cast<unsigned long long>(idx), raw_len, raw_off,
+                      writer_.getBytesWritten());
+        }
+        // === DEBUG_BLOCK_END ===
         Token token;
         if (raw_len == 0) {
             token.is_literal = true;
@@ -573,33 +742,32 @@ bool DPFlate::huff_emit_token_stream(AlgorithmStatus& st) {
             getLengthCode(raw_len, token.code, token.length_extra_bits, token.length_extra_val);
             getDistCode(raw_off, token.dist_code, token.dist_extra_bits, token.dist_extra_val);
         }
-        const auto& main_code = dictionary_[token.code];
-        for (int i = main_code.length - 1; i >= 0; i--) {
-            writer_.writeBit((main_code.code >> i) & 1);
-        }
+        writeHuffmanCode(writer_, dictionary_[token.code]);
         if (!token.is_literal) {
             for (int i = 0; i < token.length_extra_bits; i++) {
                 writer_.writeBit((token.length_extra_val >> i) & 1);
             }
-            const auto& dist_code = dist_dictionary_[token.dist_code];
-            for (int i = dist_code.length - 1; i >= 0; i--) {
-                writer_.writeBit((dist_code.code >> i) & 1);
-            }
+            writeHuffmanCode(writer_, dist_dictionary_[token.dist_code]);
             for (int i = 0; i < token.dist_extra_bits; i++) {
                 writer_.writeBit((token.dist_extra_val >> i) & 1);
             }
         }
         emitted_tokens_++;
     }
-    if (!writer_.ensureSpace(6)) {
+    if (!writer_.ensureSpace(16)) {
         st.need_output = true;
         return false;
     }
-    const auto& eof_code = dictionary_[256];
-    for (int i = eof_code.length - 1; i >= 0; i--) {
-        writer_.writeBit((eof_code.code >> i) & 1);
-    }
+    writeHuffmanCode(writer_, dictionary_[256]);
     writer_.flush();
+    // === DEBUG_BLOCK_BEGIN (可删除) ===
+    static int dbg_emit_flate_done_cnt = 0;
+    if (++dbg_emit_flate_done_cnt <= 50) {
+        DEBUG_LOG("[DPFlate] handleEmitTokens FLATE done: emitted=%llu writer_bytes=%zu",
+                  static_cast<unsigned long long>(emitted_tokens_),
+                  writer_.getBytesWritten());
+    }
+    // === DEBUG_BLOCK_END ===
     st.done = true;
     return true;
 }

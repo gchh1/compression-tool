@@ -54,7 +54,6 @@ public:
     size_t offset_bits_3hm() const {
         size_t v = SEARCH_SIZE;
         if (v == 0) return 1;
-        v--;
         size_t bits = 0;
         while (v > 0) { bits++; v >>= 1; }
         return bits == 0 ? 1 : bits;
@@ -64,7 +63,6 @@ public:
     size_t length_bits_3hm() const {
         size_t v = LOOKAHEAD_SIZE;
         if (v == 0) return 1;
-        v--;
         size_t bits = 0;
         while (v > 0) { bits++; v >>= 1; }
         return bits == 0 ? 1 : bits;
@@ -143,9 +141,15 @@ private:
     TempFileBitAppender spill_a_{&temp_file_A_};
     TempFileBitAppender spill_b_{&temp_file_B_};
     PackedDpLinkSpec spill_spec_{}; ///< packed DP link 位布局规格
-    
+    /// Collect 阶段按绝对下标镜像的 DP 链节（backtrack 优先读此，避免 temp A 随机读错位）
+    std::vector<uint16_t> link_lengths_;
+    std::vector<uint16_t> link_offsets_;
+
     uint64_t total_tokens_{0};
     uint64_t emitted_tokens_{0};
+    /// Backtrack 顺序写入的 token（emit 从内存读，避免 temp B 随机读位错位）
+    std::vector<uint16_t> token_lengths_;
+    std::vector<uint16_t> token_offsets_;
     
     std::vector<uint32_t> freq_map_; ///< FLATE 主树频率（286 符号空间）
     std::vector<uint32_t> dist_freq_; ///< FLATE 距离树频率（30 符号空间）

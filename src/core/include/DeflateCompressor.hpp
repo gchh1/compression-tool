@@ -74,7 +74,7 @@ private:
     size_t lookahead_size_{256};
     size_t dp_sub_match_max_{6};
     int match_engine_{1};
-    bool use_flag_encoding_{false};
+    bool use_flag_encoding_{true};
     size_t huffman_offset_chunk_bits_{8};
     size_t huffman_length_chunk_bits_{8};
 };

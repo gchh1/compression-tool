@@ -34,8 +34,21 @@ private:
     node* lit_cursor_{nullptr};
     node* dist_cursor_{nullptr};
 
-    enum class DecodeState { READ_TREES, READ_BLOCK_HEADER, DECODE_TOKENS, COPY_MATCH, STORED_COPY };
+    enum class DecodeState {
+        READ_TREES,
+        READ_BLOCK_HEADER,
+        DECODE_TOKENS,
+        COPY_MATCH,
+        STORED_COPY,
+        /// After symbol 256 or STORED block: stream literals to writer; may span
+        /// multiple ``process`` calls when the output span fills (``need_output``).
+        FLUSH_TO_WRITER
+    };
     DecodeState decode_state_{DecodeState::READ_TREES};
+    DecodeState post_flush_state_{DecodeState::READ_TREES};
+
+    size_t output_flush_pos_{0};
+    bool done_after_flush_{false};
 
     uint16_t pending_length_{0};
     uint16_t pending_dist_{0};

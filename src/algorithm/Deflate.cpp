@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "BitWriter.hpp"
+#include "DebugLog.hpp"
 #include "Deflate.hpp"
 #include "HuffmanTree.hpp"
 
@@ -22,7 +23,7 @@ namespace compressor::algorithm {
  *
  */
 Deflate::Deflate(size_t slide_size, size_t min_match, size_t max_chain_length,
-                 size_t lookahead_max)
+                 size_t lookahead_max, bool use_flag_encoding)
     : SLIDE_SIZE(slide_size),
       WINDOW_SIZE(2 * slide_size),
       MIN_MATCH(min_match),
@@ -32,7 +33,10 @@ Deflate::Deflate(size_t slide_size, size_t min_match, size_t max_chain_length,
           return std::min(std::max(cap, min_match), size_t(258));
       }()),
       HASH_SIZE(slide_size),
-      MAX_CHAIN_LENGTH(max_chain_length) {
+      MAX_CHAIN_LENGTH(max_chain_length),
+      use_flag_encoding_(use_flag_encoding) {
+    offset_bits_ = static_cast<size_t>(std::bit_width(std::max(SLIDE_SIZE, size_t{1})));
+    length_bits_ = static_cast<size_t>(std::bit_width(std::max(MAX_MATCH, size_t{1})));
     reset();
 }
 
@@ -51,6 +55,8 @@ auto Deflate::reset(void) -> void {
 
     token_buffer_.clear();
     token_flush_idx_ = 0;
+
+    nonflag_header_emitted_ = false;
 
     deflate_state_ = DeflateState::FIND_MATCHES;
 }
@@ -160,6 +166,8 @@ auto Deflate::handleFindMatches(AlgorithmStatus& status, bool is_last_chunk)
                       t.length_extra_val);
         getDistCode(match_distance, t.dist_code, t.dist_extra_bits,
                     t.dist_extra_val);
+        t.match_len = static_cast<uint16_t>(match_length);
+        t.match_dist = static_cast<uint16_t>(match_distance);
         token_buffer_.push_back(t);
 
         for (size_t i = 1; i < match_length; ++i) {
@@ -191,6 +199,12 @@ auto Deflate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk)
     -> void {
     if (token_buffer_.empty() && !is_last_chunk) {
         deflate_state_ = DeflateState::FIND_MATCHES;
+        return;
+    }
+
+    if (!use_flag_encoding_) {
+        token_flush_idx_ = 0;
+        deflate_state_ = DeflateState::FLUSH_TOKENS;
         return;
     }
 
@@ -227,18 +241,86 @@ auto Deflate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk)
 
 auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
     -> void {
+    if (!use_flag_encoding_) {
+        if (!nonflag_header_emitted_) {
+            if (!writer_.ensureSpace(24)) {
+                status.need_output = true;
+                return;
+            }
+            writer_.writeBits(0x4E, 8);
+            writer_.writeBits(static_cast<uint32_t>(offset_bits_), 8);
+            writer_.writeBits(static_cast<uint32_t>(length_bits_), 8);
+            nonflag_header_emitted_ = true;
+        }
+
+        while (token_flush_idx_ < token_buffer_.size()) {
+            size_t lit_run = 0;
+            size_t run_start = token_flush_idx_;
+
+            while (token_flush_idx_ < token_buffer_.size() &&
+                   token_buffer_[token_flush_idx_].is_literal) {
+                lit_run++;
+                token_flush_idx_++;
+            }
+
+            if (lit_run > 0) {
+                size_t max_lit_per_chunk = (size_t{1} << length_bits_) - 1;
+                size_t lit_pos = 0;
+                while (lit_pos < lit_run) {
+                    size_t chunk = std::min(lit_run - lit_pos, max_lit_per_chunk);
+                    if (!writer_.ensureSpace(static_cast<size_t>(offset_bits_ + length_bits_ + chunk * 8))) {
+                        token_flush_idx_ = run_start + lit_pos;
+                        status.need_output = true;
+                        return;
+                    }
+                    writer_.writeBits(0, static_cast<uint8_t>(offset_bits_));
+                    writer_.writeBits(static_cast<uint32_t>(chunk), static_cast<uint8_t>(length_bits_));
+                    for (size_t i = 0; i < chunk; i++) {
+                        writer_.writeBits(token_buffer_[run_start + lit_pos + i].code, 8);
+                    }
+                    lit_pos += chunk;
+                }
+            }
+
+            if (token_flush_idx_ < token_buffer_.size()) {
+                const auto& token = token_buffer_[token_flush_idx_];
+                if (!writer_.ensureSpace(static_cast<size_t>(offset_bits_ + length_bits_))) {
+                    status.need_output = true;
+                    return;
+                }
+                writer_.writeBits(token.match_dist, static_cast<uint8_t>(offset_bits_));
+                writer_.writeBits(token.match_len, static_cast<uint8_t>(length_bits_));
+                token_flush_idx_++;
+            }
+        }
+
+        token_buffer_.clear();
+
+        if (is_last_chunk && lookahead_ == 0) {
+            if (!writer_.ensureSpace(static_cast<size_t>(offset_bits_ + length_bits_))) {
+                status.need_output = true;
+                return;
+            }
+            writer_.writeBits(0, static_cast<uint8_t>(offset_bits_));
+            writer_.writeBits(0, static_cast<uint8_t>(length_bits_));
+            writer_.flush();
+            status.done = true;
+            return;
+        }
+
+        deflate_state_ = DeflateState::FIND_MATCHES;
+        return;
+    }
+
     while (token_flush_idx_ < token_buffer_.size()) {
-        if (!writer_.ensureSpace(6)) {
+        if (!writer_.ensureSpace(48)) {
             status.need_output = true;
             return;
         }
 
         const auto& token = token_buffer_[token_flush_idx_];
 
-        const auto& main_code = dictionary_[token.code];
-        for (int i = main_code.length - 1; i >= 0; i--) {
-            writer_.writeBit((main_code.code >> i) & 1);
-        }
+        writeHuffmanCode(writer_, dictionary_[token.code]);
 
         if (!token.is_literal) {
             if (token.length_extra_bits > 0) {
@@ -246,10 +328,7 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
                                   token.length_extra_bits);
             }
 
-            const auto& dist_code = dist_dictionary_[token.dist_code];
-            for (int i = dist_code.length - 1; i >= 0; i--) {
-                writer_.writeBit((dist_code.code >> i) & 1);
-            }
+            writeHuffmanCode(writer_, dist_dictionary_[token.dist_code]);
 
             if (token.dist_extra_bits > 0) {
                 writer_.writeBits(token.dist_extra_val, token.dist_extra_bits);
@@ -259,16 +338,19 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
         token_flush_idx_++;
     }
 
+    DEBUG_LOG("[Deflate] handleFlushTokens: writing block EOF, tokens_flushed=%zu", token_flush_idx_);
+    if (!writer_.ensureSpace(16)) {
+        status.need_output = true;
+        return;
+    }
+    writeHuffmanCode(writer_, dictionary_[256]);
+
     token_buffer_.clear();
+    token_flush_idx_ = 0;
 
     if (is_last_chunk && lookahead_ == 0) {
-        // 写入 EOF
-        const auto& eof_code = dictionary_[256];
-        for (int i = eof_code.length - 1; i >= 0; i--) {
-            writer_.writeBit((eof_code.code >> i) & 1);
-        }
-
-        writer_.flush();  // 最终扫尾，补齐字节
+        writer_.flush();
+        DEBUG_LOG("[Deflate] handleFlushTokens: EOF written, done");
         status.done = true;
         return;
     }
@@ -283,7 +365,18 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
  * @return std::vector<Token>
  */
 auto Deflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
+    static int handle_call = 0;
+    ++handle_call;
+    int inner_iter = 0;
     while (true) {
+        ++inner_iter;
+        if (inner_iter > 100000000) {
+            DEBUG_LOG("[Deflate] SAFETY BREAK: inner_iter=%d state=%d",
+                      inner_iter, (int)deflate_state_);
+            status.done = true;
+            return;
+        }
+
         (this->*kStateHandlers[static_cast<size_t>(deflate_state_)])(
             status, is_last_chunk);
 

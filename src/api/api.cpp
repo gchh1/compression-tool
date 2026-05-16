@@ -5,6 +5,7 @@
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
@@ -13,12 +14,14 @@
 #include <vector>
 
 #include "DataChunk.hpp"
+#include "DebugLog.hpp"
 #include "MemoryPool.hpp"
 #include "PackReader.hpp"
 #include "PackWriter.hpp"
 #include "Pipeline.hpp"
 #include "StreamChunkPolicy.hpp"
 #include "WCXProtocol.hpp"
+#include "Inflate3HM.hpp"
 
 #ifndef __EMSCRIPTEN__
 #include <filesystem>
@@ -72,6 +75,10 @@ class VectorReader : public archiver::IDataReader {
 /// caller drains via ``pull()``; ``MemoryPool::acquire()`` blocks when the pool is empty, so
 /// the count must cover worst-case in-flight publishes (not merely pipeline stage count).
 constexpr size_t kStreamingPipelinePoolChunks = 32;
+/// If the declared WCX payload is no larger than this, read the full payload before decoding
+/// (compressed side is usually small). Decompressed bytes still flow through ``pull()`` in
+/// pool-sized chunks and are written incrementally to the staged output file.
+constexpr uint64_t kDecompressWholePayloadMaxBytes = 256ULL * 1024 * 1024;
 
 #ifndef __EMSCRIPTEN__
 auto staged_part_path(const std::string& final_path) -> fs::path {
@@ -86,13 +93,31 @@ void remove_path_best_effort(const fs::path& p) {
 auto commit_staged_to_final(const fs::path& part_path, const fs::path& final_path,
                             std::string& err_out) -> bool {
     std::error_code ec;
+    // Try rename first (atomic on same volume)
+    fs::rename(part_path, final_path, ec);
+    if (!ec) return true;
+    // rename failed; try manual copy + remove as fallback
+    ec.clear();
     fs::remove(final_path, ec);
     ec.clear();
-    fs::rename(part_path, final_path, ec);
-    if (ec) {
-        err_out = ec.message();
+    std::ifstream src(part_path.string(), std::ios::binary);
+    if (!src) {
+        err_out = "cannot open source for copy";
         return false;
     }
+    std::ofstream dst(final_path.string(), std::ios::binary | std::ios::trunc);
+    if (!dst) {
+        err_out = "cannot open destination for copy";
+        return false;
+    }
+    dst << src.rdbuf();
+    if (!dst.good()) {
+        err_out = "copy write failed";
+        return false;
+    }
+    src.close();
+    dst.close();
+    fs::remove(part_path, ec);
     return true;
 }
 #endif
@@ -196,6 +221,8 @@ auto decompress(const std::vector<uint8_t>& data,
         return result;
     }
 
+    // memory::MemoryPool: fixed-size slots for Pipeline / StreamProcessor while draining pulls
+    // into ``result.data``; full input ``data`` is already resident (GUI strategy 1).
     auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
     processor::Pipeline pipeline(std::move(algos), pool);
     pipeline.push(data, true);
@@ -544,17 +571,6 @@ auto decompressFile(const std::string& input_path,
         return result;
     }
 
-    std::vector<std::unique_ptr<algorithm::IAlgorithm>> algos;
-    for (auto id : chain)
-        if (auto a = core::createAlgorithm(id, core::kFileCompressOptsNone, nullptr, 0)) algos.push_back(std::move(a));
-    if (algos.empty()) {
-        result.error_message = "Unknown or null algorithm";
-        return result;
-    }
-
-    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
-    processor::Pipeline pipeline(std::move(algos), pool);
-
     std::ifstream input(input_path, std::ios::binary);
     if (!input) {
         result.error_message = "Cannot open input file";
@@ -587,6 +603,50 @@ auto decompressFile(const std::string& input_path,
         return result;
     }
 
+    uint8_t payload_lead_byte = 0;
+    if (payload_size > 0) {
+        char lead{};
+        input.read(&lead, 1);
+        payload_lead_byte = static_cast<uint8_t>(lead);
+        input.seekg(static_cast<std::streamoff>(payload_begin));
+    }
+    const bool payload_is_3hm = (payload_lead_byte == 0x33);
+
+    std::vector<std::unique_ptr<algorithm::IAlgorithm>> algos;
+    for (auto id : chain) {
+        if (id == core::AlgorithmID::Inflate && payload_is_3hm) {
+            algos.push_back(std::make_unique<algorithm::Inflate3HM>());
+            continue;
+        }
+        if (auto a = core::createAlgorithm(id, core::kFileCompressOptsNone, nullptr, 0)) {
+            algos.push_back(std::move(a));
+        }
+    }
+    if (algos.empty()) {
+        result.error_message = "Unknown or null algorithm";
+        return result;
+    }
+
+    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
+    processor::Pipeline pipeline(std::move(algos), pool);
+
+    if (const char* ev = std::getenv("WEBCOMPRESS_DECOMPRESS_DEBUG")) {
+        if (ev[0] != '\0' && ev[0] != '0') {
+            const bool whole_in = (payload_size <= kDecompressWholePayloadMaxBytes);
+            std::fprintf(stderr,
+                         "[decompress][native] begin input=%s output=%s "
+                         "file_on_disk=%llu payload_bytes=%llu payload_begin=%llu "
+                         "declared_original=%llu pool_chunk=%zu mode=%s\n",
+                         input_path.c_str(), output_path.c_str(),
+                         static_cast<unsigned long long>(file_on_disk),
+                         static_cast<unsigned long long>(payload_size),
+                         static_cast<unsigned long long>(payload_begin),
+                         static_cast<unsigned long long>(result.original_size),
+                         chunk, whole_in ? "whole_payload" : "stream_payload");
+            std::fflush(stderr);
+        }
+    }
+
     const fs::path path_final(output_path);
     const fs::path path_part = staged_part_path(output_path);
     remove_path_best_effort(path_part);
@@ -598,6 +658,12 @@ auto decompressFile(const std::string& input_path,
     }
 
     auto abort_decompress_file = [&](const std::string& msg) -> CompressResult {
+        if (const char* ev = std::getenv("WEBCOMPRESS_DECOMPRESS_DEBUG")) {
+            if (ev[0] != '\0' && ev[0] != '0') {
+                std::fprintf(stderr, "[decompress][native] abort msg=%s\n", msg.c_str());
+                std::fflush(stderr);
+            }
+        }
         CompressResult r;
         input.close();
         output.close();
@@ -614,41 +680,10 @@ auto decompressFile(const std::string& input_path,
     uint64_t bytes_read = 0;
     uint64_t total_written = 0;
 
-    try {
-        while (bytes_read < payload_size) {
-            if (detail_stream_cancel::is_cancel_requested()) {
-                return abort_decompress_file("cancelled");
-            }
-            size_t to_read = std::min(chunk,
-                                      static_cast<size_t>(payload_size -
-                                                          bytes_read));
-            input.read(reinterpret_cast<char*>(buf.data()),
-                       static_cast<std::streamsize>(to_read));
-            size_t actual = static_cast<size_t>(input.gcount());
-            if (actual == 0) break;
-
-            bool is_last = (bytes_read + actual >= payload_size);
-            pipeline.push(std::span<const uint8_t>(buf.data(), actual), is_last);
-            bytes_read += actual;
-
-            while (true) {
-                if (detail_stream_cancel::is_cancel_requested()) {
-                    return abort_decompress_file("cancelled");
-                }
-                auto out_chunk = pipeline.pull();
-                if (out_chunk.empty()) break;
-                auto v = out_chunk.view();
-                output.write(reinterpret_cast<const char*>(v.data()),
-                             static_cast<std::streamsize>(v.size()));
-                total_written += v.size();
-            }
-        }
-
-        pipeline.finish();
-
+    auto drain_pulls = [&]() {
         while (true) {
             if (detail_stream_cancel::is_cancel_requested()) {
-                return abort_decompress_file("cancelled");
+                throw std::runtime_error("cancelled");
             }
             auto out_chunk = pipeline.pull();
             if (out_chunk.empty()) break;
@@ -656,6 +691,79 @@ auto decompressFile(const std::string& input_path,
             output.write(reinterpret_cast<const char*>(v.data()),
                          static_cast<std::streamsize>(v.size()));
             total_written += v.size();
+        }
+    };
+
+    try {
+        if (payload_size <= kDecompressWholePayloadMaxBytes) {
+            std::vector<uint8_t> payload(static_cast<size_t>(payload_size));
+            if (payload_size > 0) {
+                input.read(reinterpret_cast<char*>(payload.data()),
+                             static_cast<std::streamsize>(payload_size));
+                const auto got = static_cast<uint64_t>(input.gcount());
+                if (got != payload_size) {
+                    result.error_message = "WCX payload truncated";
+                    output.close();
+                    remove_path_best_effort(path_part);
+                    auto t1 = std::chrono::high_resolution_clock::now();
+                    result.time_ms =
+                        std::chrono::duration<double, std::milli>(t1 - t0).count();
+                    return result;
+                }
+            }
+            bytes_read = payload_size;
+            // Strip DPFlate format byte (0x46=FLATE, 0x33=3HfMT) if present;
+            // the Inflate algorithm expects a raw Deflate bitstream.
+            size_t payload_offset = 0;
+            if (payload_size > 0) {
+                const uint8_t fmt = payload[0];
+                if (fmt == 0x46 || fmt == 0x33) {
+                    payload_offset = 1;
+                }
+            }
+            pipeline.push(std::span<const uint8_t>(payload.data() + payload_offset,
+                                                   payload.size() - payload_offset), true);
+            drain_pulls();
+            pipeline.finish();
+            drain_pulls();
+        } else {
+            bool fmt_byte_skipped = false;
+            while (bytes_read < payload_size) {
+                if (detail_stream_cancel::is_cancel_requested()) {
+                    return abort_decompress_file("cancelled");
+                }
+                size_t to_read = std::min(chunk,
+                                          static_cast<size_t>(payload_size -
+                                                              bytes_read));
+                input.read(reinterpret_cast<char*>(buf.data()),
+                           static_cast<std::streamsize>(to_read));
+                size_t actual = static_cast<size_t>(input.gcount());
+                if (actual == 0) break;
+
+                size_t push_offset = 0;
+                size_t push_size = actual;
+                if (!fmt_byte_skipped && actual > 0) {
+                    const uint8_t fmt = buf[0];
+                    if (fmt == 0x46 || fmt == 0x33) {
+                        push_offset = 1;
+                        push_size = actual - 1;
+                    }
+                    fmt_byte_skipped = true;
+                }
+
+                bool is_last = (bytes_read + actual >= payload_size);
+                if (push_size > 0) {
+                    pipeline.push(std::span<const uint8_t>(buf.data() + push_offset, push_size), is_last);
+                } else if (is_last) {
+                    pipeline.push(std::span<const uint8_t>{}, true);
+                }
+                bytes_read += actual;
+
+                drain_pulls();
+            }
+
+            pipeline.finish();
+            drain_pulls();
         }
     } catch (const std::exception& e) {
         return abort_decompress_file(e.what());
@@ -700,6 +808,22 @@ auto decompressFile(const std::string& input_path,
             ? static_cast<double>(total_written) / result.original_size
             : 0.0;
     result.success = true;
+    if (const char* ev = std::getenv("WEBCOMPRESS_DECOMPRESS_DEBUG")) {
+        if (ev[0] != '\0' && ev[0] != '0') {
+            std::fprintf(stderr,
+                         "[decompress][native] ok written=%llu declared_original=%llu "
+                         "ratio=%.6f time_ms=%.2f\n",
+                         static_cast<unsigned long long>(total_written),
+                         static_cast<unsigned long long>(result.original_size),
+                         result.compression_ratio, result.time_ms);
+            if (result.original_size > 0 &&
+                total_written != static_cast<uint64_t>(result.original_size)) {
+                std::fprintf(stderr,
+                             "[decompress][native] WARN written != declared_original_size\n");
+            }
+            std::fflush(stderr);
+        }
+    }
     return result;
 }
 

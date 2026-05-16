@@ -3,10 +3,12 @@ from __future__ import annotations
 import logging
 import math
 import os
+import time
+from functools import partial
 from pathlib import Path
 
-from PyQt6.QtCore import Qt, QMimeData, QUrl, QThread, pyqtSignal
-from PyQt6.QtGui import QAction, QDragEnterEvent, QDropEvent, QBrush, QColor
+from PyQt6.QtCore import Qt, QMimeData, QUrl, QThread, QTimer, pyqtSignal
+from PyQt6.QtGui import QAction, QDragEnterEvent, QDropEvent, QBrush, QColor, QCloseEvent
 from PyQt6.QtWidgets import (
     QMainWindow, QFileDialog, QMessageBox, QToolBar, QWidget,
     QStatusBar, QProgressBar, QLabel, QVBoxLayout, QHBoxLayout,
@@ -29,6 +31,8 @@ from gui.models import (
     compressed_payload_size,
     ALGORITHM_PARAMS,
     get_default_config,
+    merge_decision_overrides_into_algo_config,
+    format_algorithm_config_param_lines,
     LZDP_DP_VIZ_MAX_SIZE,
     STREAMING_CHUNK_SIZE_KB,
     STREAMING_THRESHOLD_MB,
@@ -38,6 +42,8 @@ from gui.config.settings import load_config, get_defaults
 from gui.config.theme import ThemeManager
 from gui.ui.table import FileTableWidget
 from gui.ui.worker import CompressionWorker, ComparisonWorker, COMPARISON_ALGORITHMS
+from gui.utils.interaction_log import log_ui, log_ui_flush, preview_paths
+from gui.utils.logging import flush_logging
 
 
 def _compressed_size(record: Record) -> int:
@@ -799,6 +805,30 @@ class AlgorithmConfigDialog(QDialog):
         body = QWidget()
         root.addWidget(body, 1)
         layout = QVBoxLayout(body)
+        from gui.config.theme import ThemeManager
+        from gui.config.settings import get_silent_explore_enabled, load_config as _cfg_for_ade
+
+        self._silent_explore_btn = _streaming_follow_toggle_button(
+            "启用静默探索（后台对比压缩）",
+            checked=get_silent_explore_enabled(_cfg_for_ade()),
+        )
+        self._silent_explore_btn.setToolTip(
+            "关闭：不启动后台静默压缩采样。\n"
+            "开启：在部分压缩完成后可能异步试运行其他算法；正在压缩/解压时不会新起静默任务，避免与用户操作争用引擎配置。"
+        )
+        ade_row = QHBoxLayout()
+        ade_row.addWidget(self._silent_explore_btn, 0)
+        ade_hint = QLabel(
+            "说明：用户压缩/解压相当于更高优先级「中断」——进行中的主路径会阻止新起静默探索；"
+            "引擎全局配置在内部加锁串行，保护静默探索的 set_config / 恢复现场。"
+        )
+        ade_hint.setWordWrap(True)
+        ade_hint.setStyleSheet(
+            f"color: {ThemeManager.hex('text_muted')}; font-size: 11px; padding-left: 8px;"
+        )
+        ade_row.addWidget(ade_hint, 1)
+        layout.addLayout(ade_row)
+
         try:
             from gui.engine.compressor import CompressionEngine
             from gui.config.theme import ThemeManager
@@ -921,6 +951,7 @@ class AlgorithmConfigDialog(QDialog):
                 }
 
                 if algo in (
+                    AlgorithmType.DEFLATE,
                     AlgorithmType.LZSS,
                     AlgorithmType.LZDP,
                     AlgorithmType.DPFLATE,
@@ -1044,17 +1075,37 @@ class AlgorithmConfigDialog(QDialog):
             return bool(int(v))
         return default
 
+    def _read_algo_combo_int(self, algo: AlgorithmType, key: str, default: int = 0) -> int:
+        w = self._spinboxes.get(algo, {}).get(key)
+        if isinstance(w, QComboBox):
+            v = w.currentData()
+            if v is None:
+                return default
+            return int(v)
+        return default
+
     def _refresh_encoding_preview(self, algo: AlgorithmType) -> None:
         lbl = self._encoding_preview_labels.get(algo)
         if lbl is None:
             return
         from gui.ui.helpers import (
+            format_deflate_preview,
             format_lzdp_preview,
             format_lzss_preview,
             format_dpflate_lz_reference_preview,
         )
         try:
-            if algo == AlgorithmType.LZDP:
+            if algo == AlgorithmType.DEFLATE:
+                lbl.setText(format_deflate_preview(
+                    self._read_algo_widget_int(algo, "search_size", 4096),
+                    self._read_algo_widget_int(algo, "lookahead_size", 256),
+                    self._read_algo_widget_int(algo, "min_match", 0),
+                    self._read_algo_flag_encoding(algo, True),
+                    bool(self._read_algo_combo_int(algo, "use_3hfmtree", 0)),
+                    self._read_algo_widget_int(algo, "huffman_offset_chunk_bits", 8),
+                    self._read_algo_widget_int(algo, "huffman_length_chunk_bits", 8),
+                ))
+            elif algo == AlgorithmType.LZDP:
                 lbl.setText(format_lzdp_preview(
                     self._read_algo_widget_int(algo, "search_size", 4096),
                     self._read_algo_widget_int(algo, "lookahead_size", 256),
@@ -1097,6 +1148,7 @@ class AlgorithmConfigDialog(QDialog):
     def _on_reset(self) -> None:
         from gui.models import STREAMING_THRESHOLD_MB, STREAMING_CHUNK_SIZE_KB
         from gui.engine.compressor import CompressionEngine
+        from gui.config.settings import get_defaults
 
         CompressionEngine.reset_to_defaults()
         defaults = CompressionEngine.get_config()
@@ -1120,6 +1172,10 @@ class AlgorithmConfigDialog(QDialog):
         if self._streaming_chunk_spin:
             self._streaming_chunk_spin.setValue(STREAMING_CHUNK_SIZE_KB)
         dpa = get_defaults()["streaming"]["per_algorithm"]
+        if hasattr(self, "_silent_explore_btn"):
+            self._silent_explore_btn.setChecked(
+                bool(get_defaults().get("ade", {}).get("silent_explore_enabled", False))
+            )
         for algo, pack in self._per_algo_stream_widgets.items():
             follow_cb = pack["follow"]
             chunk_sb = pack["chunk"]
@@ -1160,6 +1216,8 @@ class AlgorithmConfigDialog(QDialog):
         from gui.config.settings import load_config, save_config
 
         full = load_config()
+        full.setdefault("ade", {})
+        full["ade"]["silent_explore_enabled"] = bool(self._silent_explore_btn.isChecked())
         if "streaming" not in full:
             full["streaming"] = {}
         if self._streaming_chunk_spin:
@@ -1183,6 +1241,12 @@ class AlgorithmConfigDialog(QDialog):
                 pa_out[algo.value] = ent
             full["streaming"]["per_algorithm"] = pa_out
         save_config(full)
+        try:
+            from gui.ade.explorer import SilentExplorer
+
+            SilentExplorer.get().set_enabled(bool(full["ade"]["silent_explore_enabled"]))
+        except Exception:
+            pass
 
         self.accept()
 
@@ -1266,7 +1330,22 @@ class MainWindow(QMainWindow):
         self._table.request_folder_summary.connect(self._on_folder_summary)
         self._table.request_decision_detail.connect(self._on_view_decision_detail)
 
+        try:
+            from gui.ade.explorer import SilentExplorer
+
+            SilentExplorer.apply_enabled_from_settings()
+        except Exception:
+            pass
+
         self.setStyleSheet(ThemeManager.main_window_sheet())
+        log_ui_flush(
+            "main_window.ready",
+            geometry=f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}",
+        )
+
+    def closeEvent(self, event: QCloseEvent) -> None:
+        log_ui_flush("main_window.closeEvent")
+        super().closeEvent(event)
 
     def refresh_theme(self):
         self.setStyleSheet(ThemeManager.main_window_sheet())
@@ -1372,32 +1451,77 @@ class MainWindow(QMainWindow):
 
     # ========== 文件操作 ==========
     def _on_add_files(self) -> None:
+        log_ui("file_dialog.open", kind="open_files")
+        flush_logging()
         paths, _ = QFileDialog.getOpenFileNames(self, "选择文件", "", "所有文件 (*)")
+        log_ui("file_dialog.closed", kind="open_files", accepted=bool(paths), count=len(paths))
+        flush_logging()
         if paths:
             logger.info("[add] adding %d files", len(paths))
-            self._add_paths(paths)
+            self._add_paths(paths, source="file_dialog")
 
     def _on_add_folder(self) -> None:
+        log_ui("file_dialog.open", kind="open_directory")
+        flush_logging()
         folder = QFileDialog.getExistingDirectory(self, "选择文件夹")
+        log_ui("file_dialog.closed", kind="open_directory", accepted=bool(folder), path=folder or "")
+        flush_logging()
         if folder:
             logger.info("[add] adding folder: %s", folder)
-            self._add_paths([folder])
+            self._add_paths([folder], source="folder_dialog")
 
-    def _add_paths(self, paths: list[str]) -> None:
-        files, dirs = self._table.add_paths(paths)
+    def _apply_added_status(self, msg: str, source: str) -> None:
+        try:
+            self._statusbar.set_status_text(msg)
+            log_ui("add_paths.status_applied", source=source, msg=msg)
+        except Exception as e:
+            logger.exception("[ui] add_paths status bar failed: %s", e)
+        flush_logging()
+
+    def _add_paths(self, paths: list[str], *, source: str = "unspecified") -> None:
+        t0 = time.perf_counter()
+        rows_before = self._table.rowCount()
+        log_ui_flush(
+            "add_paths.begin",
+            source=source,
+            path_count=len(paths),
+            rows_before=rows_before,
+            preview=preview_paths(paths),
+        )
+        try:
+            files, dirs = self._table.add_paths(paths)
+        except Exception as e:
+            logger.exception("[add] add_paths failed source=%s: %s", source, e)
+            log_ui_flush("add_paths.error", source=source, error=str(e))
+            raise
+        dt_ms = (time.perf_counter() - t0) * 1000.0
+        rows_after = self._table.rowCount()
         logger.info("[add] added %d files, %d dirs from %d paths", files, dirs, len(paths))
+        log_ui_flush(
+            "add_paths.end",
+            source=source,
+            files_added=files,
+            dirs_added=dirs,
+            path_count=len(paths),
+            rows_after=rows_after,
+            elapsed_ms=f"{dt_ms:.1f}",
+        )
         parts = []
         if files > 0:
             parts.append(f"{files} 个文件")
         if dirs > 0:
             parts.append(f"{dirs} 个文件夹")
         if parts:
-            self._statusbar.set_status_text(f"已添加 {', '.join(parts)}")
+            msg = f"已添加 {', '.join(parts)}"
+            QTimer.singleShot(0, partial(self._apply_added_status, msg, source))
 
     def _on_clear(self) -> None:
+        n = self._table.rowCount()
+        log_ui_flush("table.clear_requested", rows_before=n)
         self._table.clear_all()
         self._statusbar.set_status_text("已清空列表")
         self._update_select_button()
+        log_ui_flush("table.clear_done", rows_after=self._table.rowCount())
 
     def _on_toggle_select_all(self) -> None:
         self._table.select_all(checked=not self._table.is_all_selected)
@@ -1417,10 +1541,13 @@ class MainWindow(QMainWindow):
         urls = event.mimeData().urls()
         paths = [url.toLocalFile() for url in urls if url.isLocalFile()]
         if paths:
-            self._add_paths(paths)
+            log_ui("drop.accept", url_count=len(urls), local_paths=len(paths))
+            flush_logging()
+            self._add_paths(paths, source="drop")
 
     # ========== 压缩操作 ==========
     def _on_compress(self) -> None:
+        log_ui_flush("compress.enter")
         logger.info("[compress] _on_compress called")
         if self._worker and self._worker.isRunning():
             logger.warning("[compress] worker already running")
@@ -1440,10 +1567,17 @@ class MainWindow(QMainWindow):
                          i, type(r).__name__, getattr(r, 'name', '?'), getattr(r, 'status', '?'))
         tasks = list(zip(selected, records))
 
+        log_ui_flush(
+            "compress.dispatch",
+            algo=algo.value,
+            task_count=len(tasks),
+            rows=str(selected)[:200],
+        )
         for row, record in tasks:
             if isinstance(record, FileRecord):
                 record.status = CompressionStatus.COMPRESSING
             elif isinstance(record, FolderRecord):
+                record.ensure_files_loaded()
                 record.status = CompressionStatus.COMPRESSING
                 for f in record.files:
                     f.status = CompressionStatus.COMPRESSING
@@ -1454,17 +1588,20 @@ class MainWindow(QMainWindow):
 
         self._worker = CompressionWorker(tasks, self._algo_selector.current_algorithm)
         self._worker.row_started.connect(self._on_compress_row_started)
+        self._worker.progress.connect(self._on_compress_worker_progress)
         self._worker.finished_row.connect(self._on_compress_row_finished)
         self._worker.error.connect(self._table.mark_error_record)
         self._worker.finished.connect(self._on_compression_finished)
 
-        file_count = sum(len(r.files) if isinstance(r, FolderRecord) else 1 for r in records)
+        file_count = sum(r.filenum if isinstance(r, FolderRecord) else 1 for r in records)
         self._statusbar.set_status_text(f"正在压缩 {file_count} 个文件...")
         self._statusbar.set_progress_value(0)
         self._worker.start()
+        log_ui_flush("compress.worker_started", task_count=len(tasks), file_count=file_count)
 
     def _on_cancel_compress(self) -> None:
         if self._worker and self._worker.isRunning():
+            log_ui_flush("compress.cancel_requested")
             logger.info("[compress] cancelling worker")
             self._worker.cancel()
             self._statusbar.set_status_text("正在取消压缩...")
@@ -1494,6 +1631,11 @@ class MainWindow(QMainWindow):
             )
         except Exception as e:
             logger.error("[_on_compress_row_started] CRASH: %s", e, exc_info=True)
+
+    def _on_compress_worker_progress(self, percent: int, text: str) -> None:
+        """Mid-job phase text from the worker thread (e.g. read / features / in-memory compress)."""
+        if text:
+            self._statusbar.set_status_text(text)
 
     def _on_compress_row_finished(self, record: object) -> None:
         try:
@@ -1537,6 +1679,9 @@ class MainWindow(QMainWindow):
         finally:
             self._compress_action.setEnabled(True)
             self._cancel_compress_action.setEnabled(False)
+            w = self._worker
+            cancelled = bool(w and getattr(w, "_is_cancelled", False))
+            log_ui_flush("compress.finished_ui", cancelled=cancelled)
 
     # ========== 压缩演示 ==========
     def _on_compress_demo(self, row: int) -> None:
@@ -1592,11 +1737,14 @@ class MainWindow(QMainWindow):
                             if len(record.raw_data) <= LZDP_DP_VIZ_MAX_SIZE:
                                 try:
                                     from gui.engine.compressor import CompressionEngine
+                                    from gui.ade.explorer import SilentExplorer
+
                                     engine = CompressionEngine()
-                                    comp = engine.create_compressor_for_visualization(
-                                        AlgorithmType.LZDP, _demo_params
-                                    )
-                                    dp_viz = comp.get_dp_visualization(list(record.raw_data), 0)
+                                    with SilentExplorer.user_compression_priority():
+                                        comp = engine.create_compressor_for_visualization(
+                                            AlgorithmType.LZDP, _demo_params
+                                        )
+                                        dp_viz = comp.get_dp_visualization(list(record.raw_data), 0)
                                     logger.info("[demo] dp_viz OK, steps=%d path=%d", len(dp_viz.steps), len(dp_viz.optimal_path))
                                 except Exception as e:
                                     logger.warning("[demo] get_dp_visualization failed: %s", e, exc_info=True)
@@ -1631,16 +1779,19 @@ class MainWindow(QMainWindow):
                             if len(record.raw_data) <= LZDP_DP_VIZ_MAX_SIZE:
                                 try:
                                     from gui.engine.compressor import CompressionEngine
+                                    from gui.ade.explorer import SilentExplorer
+
                                     engine = CompressionEngine()
-                                    comp = engine.create_compressor_for_visualization(
-                                        AlgorithmType.DPFLATE, _demo_params
-                                    )
-                                    lzdp_comp = engine.create_compressor_for_visualization(
-                                        AlgorithmType.LZDP, _demo_params
-                                    )
-                                    lzdp_comp.set_min_match(comp.get_min_match())
-                                    lzdp_comp.set_match_engine(comp.get_match_engine())
-                                    dp_viz = lzdp_comp.get_dp_visualization(list(record.raw_data), 0)
+                                    with SilentExplorer.user_compression_priority():
+                                        comp = engine.create_compressor_for_visualization(
+                                            AlgorithmType.DPFLATE, _demo_params
+                                        )
+                                        lzdp_comp = engine.create_compressor_for_visualization(
+                                            AlgorithmType.LZDP, _demo_params
+                                        )
+                                        lzdp_comp.set_min_match(comp.get_min_match())
+                                        lzdp_comp.set_match_engine(comp.get_match_engine())
+                                        dp_viz = lzdp_comp.get_dp_visualization(list(record.raw_data), 0)
                                 except Exception as e:
                                     logger.warning("[demo] DPFlate get_dp_visualization failed: %s", e)
 
@@ -1664,10 +1815,47 @@ class MainWindow(QMainWindow):
         dlg.exec()
 
     def _decompress_payload(self, engine, header, payload) -> bytes:
+        from gui.engine.decompress_log import log_decompress, summarize_result
+
         if header.algorithm == AlgorithmType.NONE:
+            log_decompress(
+                "gui_payload_skip",
+                reason="stored_none",
+                payload_bytes=len(payload),
+            )
             return payload
-        result = engine.smart_decompress(payload, header.algorithm)
-        return bytes(result.data)
+        log_decompress(
+            "gui_payload_begin",
+            algo=header.algorithm.value,
+            header_original=header.original_size,
+            header_compressed=header.compressed_size,
+            payload_bytes=len(payload),
+        )
+        from gui.ade.explorer import SilentExplorer
+
+        with SilentExplorer.user_compression_priority():
+            result = engine.smart_decompress(payload, header.algorithm)
+        fields = summarize_result(result)
+        log_decompress("gui_payload_engine", **fields)
+        if not getattr(result, "success", True):
+            em = (getattr(result, "error_message", None) or "").strip() or "解压失败"
+            log_decompress(
+                "gui_payload_fail",
+                level=logging.ERROR,
+                err=em,
+                **fields,
+            )
+            raise RuntimeError(em)
+        out = bytes(result.data)
+        if header.original_size and len(out) != int(header.original_size):
+            log_decompress(
+                "gui_payload_size_mismatch",
+                level=logging.WARNING,
+                expected=int(header.original_size),
+                actual=len(out),
+                algo=header.algorithm.value,
+            )
+        return out
 
     # ========== 导出操作 ==========
     def _on_export(self) -> None:
@@ -1701,8 +1889,10 @@ class MainWindow(QMainWindow):
 
         export_dir = QFileDialog.getExistingDirectory(self, "选择导出目录")
         if not export_dir:
+            log_ui_flush("export.aborted", reason="no_export_dir")
             return
 
+        log_ui_flush("export.begin", rows=str(selected), export_dir=export_dir)
         logger.info("[export] rows=%s", selected)
         exported = 0
         for row in selected:
@@ -1714,6 +1904,7 @@ class MainWindow(QMainWindow):
                 logger.warning("[export] SKIP row=%d: status=%s (need DONE)", row, getattr(record, 'status', None))
                 continue
             if isinstance(record, FolderRecord):
+                record.ensure_files_loaded()
                 logger.info("[export] FolderRecord: %d files, %d done",
                              len(record.files), record.success_count)
                 file_list = []
@@ -1761,6 +1952,7 @@ class MainWindow(QMainWindow):
                 exported += 1
 
         logger.info("[export] done: exported=%d", exported)
+        log_ui_flush("export.done", exported=exported, export_dir=export_dir if exported else "")
         if exported > 0:
             self._statusbar.set_status_text(f"已导出 {exported} 个文件到 {export_dir}")
         else:
@@ -1785,6 +1977,8 @@ class MainWindow(QMainWindow):
                 QMessageBox.warning(self, "提示", "请先选中要解压的文件！")
                 return
 
+        log_ui_flush("decompress.selection", rows=str(selected))
+
         decompress_tasks: list[tuple[str, int, Record]] = []
         for row in selected:
             record = self._table.get_record(row)
@@ -1798,15 +1992,23 @@ class MainWindow(QMainWindow):
                 elif P(record.path).suffix.lower() == UNIFIED_EXTENSION:
                     try:
                         from gui.engine.file_protocol import unpack_compressed_file
+
                         record.load_raw_data()
                         header, _ = unpack_compressed_file(record.raw_data)
+                        record.algorithm = header.algorithm
                         decompress_tasks.append(('disk', row, record))
-                    except Exception:
-                        pass
+                    except Exception as ex:
+                        logger.warning(
+                            "[decompress] skip row %s (%s): not a valid WCX — %s",
+                            row,
+                            record.path,
+                            ex,
+                        )
             elif isinstance(record, FolderRecord) and record.status == CompressionStatus.DONE and record.success_count > 0:
                 decompress_tasks.append(('folder_session', row, record))
 
         if not decompress_tasks:
+            log_ui_flush("decompress.aborted", reason="no_tasks", rows=str(selected))
             QMessageBox.warning(self, "提示", "选中的文件中没有可解压的压缩文件\n（需为已压缩文件或 .wcx 格式）")
             return
 
@@ -1818,94 +2020,154 @@ class MainWindow(QMainWindow):
 
         export_dir = QFileDialog.getExistingDirectory(self, "选择解压输出目录")
         if not export_dir:
+            log_ui_flush("decompress.aborted", reason="no_export_dir")
             return
 
+        from gui.engine.decompress_log import log_decompress
+
+        log_ui_flush(
+            "decompress.batch_start",
+            task_count=len(decompress_tasks),
+            export_dir=export_dir,
+        )
+        log_decompress("gui_batch_begin", task_count=len(decompress_tasks), export_dir=export_dir)
+
+        from gui.ade.explorer import SilentExplorer
+
         success = 0
-        for task_type, row, record in decompress_tasks:
-            try:
-                if task_type == 'folder_session':
-                    folder_root = P(record.path)
-                    file_list = []
-                    for f in record.files:
-                        if f.status != CompressionStatus.DONE:
-                            continue
-                        blob = file_record_compression_blob(f)
-                        if not blob:
-                            logger.warning("[decompress] folder child skip (no data): %s", f.name)
-                            continue
-                        try:
-                            rel = str(P(f.path).relative_to(folder_root))
-                        except ValueError:
-                            rel = f.name
-                        file_list.append((rel, blob, f.algorithm, f.size))
-                    archive_data = pack_folder_archive(record.name, file_list)
-                    inner_files = unpack_folder_archive(archive_data)
-                    for inner_hdr, inner_payload in inner_files:
-                        output_data = self._decompress_payload(engine, inner_hdr, inner_payload)
-                        rel_path = inner_hdr.original_filename or f"unnamed_{success}"
-                        out_path = os.path.join(export_dir, rel_path)
-                        out_parent = os.path.dirname(out_path)
-                        if out_parent:
-                            os.makedirs(out_parent, exist_ok=True)
-                        with open(out_path, 'wb') as f:
-                            f.write(output_data)
-                        success += 1
-                    continue
-
-                if task_type == 'session':
-                    header = CompressedFileHeader(
-                        algorithm=record.algorithm,
-                        original_size=record.size,
-                        compressed_size=_compressed_size(record),
-                        original_filename=record.name,
-                        is_folder=False,
+        SilentExplorer.begin_user_operation()
+        try:
+            for task_type, row, record in decompress_tasks:
+                try:
+                    log_decompress(
+                        "gui_item_begin",
+                        task_type=task_type,
+                        name=getattr(record, "name", "?"),
+                        row=row,
                     )
-
-                    if hasattr(record, 'compressed_path') and record.compressed_path:
-                        original_name = header.original_filename or record.name
-                        output_path = os.path.join(export_dir, original_name)
-                        logger.info("[decompress] STREAMING file-to-file: %s -> %s", record.compressed_path, output_path)
-                        result = engine.smart_decompress_file(record.compressed_path, output_path, record.algorithm)
-                        if not getattr(result, "success", True):
-                            em = (getattr(result, "error_message", None) or "").strip() or "解压失败"
-                            raise RuntimeError(em)
-                        success += 1
+                    if task_type == 'folder_session':
+                        record.ensure_files_loaded()
+                        folder_root = P(record.path)
+                        file_list = []
+                        for f in record.files:
+                            if f.status != CompressionStatus.DONE:
+                                continue
+                            blob = file_record_compression_blob(f)
+                            if not blob:
+                                logger.warning("[decompress] folder child skip (no data): %s", f.name)
+                                continue
+                            try:
+                                rel = str(P(f.path).relative_to(folder_root))
+                            except ValueError:
+                                rel = f.name
+                            file_list.append((rel, blob, f.algorithm, f.size))
+                        archive_data = pack_folder_archive(record.name, file_list)
+                        inner_files = unpack_folder_archive(archive_data)
+                        for inner_hdr, inner_payload in inner_files:
+                            output_data = self._decompress_payload(engine, inner_hdr, inner_payload)
+                            rel_path = inner_hdr.original_filename or f"unnamed_{success}"
+                            out_path = os.path.join(export_dir, rel_path)
+                            out_parent = os.path.dirname(out_path)
+                            if out_parent:
+                                os.makedirs(out_parent, exist_ok=True)
+                            with open(out_path, 'wb') as f:
+                                f.write(output_data)
+                            success += 1
                         continue
 
-                    payload = record.compressed_data or b''
-                else:
-                    record.load_raw_data()
-                    header, payload = unpack_compressed_file(record.raw_data)
+                    if task_type == 'session':
+                        header = CompressedFileHeader(
+                            algorithm=record.algorithm,
+                            original_size=record.size,
+                            compressed_size=_compressed_size(record),
+                            original_filename=record.name,
+                            is_folder=False,
+                        )
 
-                if header.is_folder:
-                    folder_out = os.path.join(export_dir, header.original_filename or f"folder_{success}")
-                    inner_files = unpack_folder_archive(record.raw_data)
-                    for inner_hdr, inner_payload in inner_files:
-                        output_data = self._decompress_payload(engine, inner_hdr, inner_payload)
-                        rel_path = inner_hdr.original_filename or f"unnamed_{success}"
-                        out_path = os.path.join(folder_out, rel_path)
-                        out_parent = os.path.dirname(out_path)
-                        if out_parent:
-                            os.makedirs(out_parent, exist_ok=True)
-                        with open(out_path, 'wb') as f:
-                            f.write(output_data)
-                        success += 1
-                    continue
+                        if hasattr(record, 'compressed_path') and record.compressed_path:
+                            original_name = header.original_filename or record.name
+                            output_path = os.path.join(export_dir, original_name)
+                            logger.info("[decompress] STREAMING file-to-file: %s -> %s", record.compressed_path, output_path)
+                            result = engine.smart_decompress_file(record.compressed_path, output_path, record.algorithm)
+                            from gui.engine.decompress_log import summarize_result
 
-                output_data = self._decompress_payload(engine, header, payload)
-                original_name = header.original_filename or record.name
-                output_path = os.path.join(export_dir, original_name)
-                with open(output_path, 'wb') as f:
-                    f.write(output_data)
-                success += 1
-                logger.info("解压成功: %s -> %s", record.name, output_path)
+                            out_sz = os.path.getsize(output_path) if os.path.isfile(output_path) else -1
+                            log_decompress(
+                                "gui_file_session_verify",
+                                **summarize_result(result),
+                                output_path=output_path,
+                                output_file_bytes=out_sz,
+                                header_declared_original=header.original_size,
+                            )
+                            if not getattr(result, "success", True):
+                                em = (getattr(result, "error_message", None) or "").strip() or "解压失败"
+                                raise RuntimeError(em)
+                            if (
+                                header.original_size
+                                and out_sz >= 0
+                                and int(header.original_size) != out_sz
+                            ):
+                                log_decompress(
+                                    "gui_size_mismatch_file",
+                                    level=logging.WARNING,
+                                    expected=int(header.original_size),
+                                    got=out_sz,
+                                    name=record.name,
+                                    path=output_path,
+                                )
+                            success += 1
+                            continue
 
-            except Exception as e:
-                logger.error("解压失败 %s: %s", record.name, e, exc_info=True)
-                QMessageBox.warning(self, "解压失败", f"文件 {record.name} 解压失败:\n{e}")
+                        payload = record.compressed_data or b''
+                    else:
+                        record.load_raw_data()
+                        header, payload = unpack_compressed_file(record.raw_data)
+
+                    if header.is_folder:
+                        folder_out = os.path.join(export_dir, header.original_filename or f"folder_{success}")
+                        inner_files = unpack_folder_archive(record.raw_data)
+                        for inner_hdr, inner_payload in inner_files:
+                            output_data = self._decompress_payload(engine, inner_hdr, inner_payload)
+                            rel_path = inner_hdr.original_filename or f"unnamed_{success}"
+                            out_path = os.path.join(folder_out, rel_path)
+                            out_parent = os.path.dirname(out_path)
+                            if out_parent:
+                                os.makedirs(out_parent, exist_ok=True)
+                            with open(out_path, 'wb') as f:
+                                f.write(output_data)
+                            success += 1
+                        continue
+
+                    output_data = self._decompress_payload(engine, header, payload)
+                    original_name = header.original_filename or record.name
+                    output_path = os.path.join(export_dir, original_name)
+                    with open(output_path, 'wb') as f:
+                        f.write(output_data)
+                    success += 1
+                    logger.info("解压成功: %s -> %s", record.name, output_path)
+
+                except Exception as e:
+                    from gui.engine.decompress_log import log_decompress as _ld
+
+                    _ld(
+                        "gui_item_error",
+                        level=logging.ERROR,
+                        name=getattr(record, "name", "?"),
+                        err=str(e),
+                    )
+                    logger.error("解压失败 %s: %s", record.name, e, exc_info=True)
+                    QMessageBox.warning(self, "解压失败", f"文件 {record.name} 解压失败:\n{e}")
+        finally:
+            SilentExplorer.end_user_operation()
 
         if success > 0:
+            from gui.engine.decompress_log import log_decompress as _ld2
+
+            _ld2("gui_batch_end", success_count=success, export_dir=export_dir)
+            log_ui_flush("decompress.batch_done", success_count=success, export_dir=export_dir)
             self._statusbar.set_status_text(f"已解压 {success} 个文件到 {export_dir}")
+        else:
+            log_ui_flush("decompress.batch_done", success_count=0, export_dir=export_dir)
 
     # ========== 关于 ==========
     def _on_about(self) -> None:
@@ -1959,32 +2221,33 @@ class MainWindow(QMainWindow):
 
     # ========== 视图：网页可视化 ==========
 
-    def _get_selected_done_record(self) -> FileRecord | None:
-        rows = self._table.selected_rows
-        logger.info("[view] _get_selected_done_record called, selected_rows=%s", rows)
-        if not rows:
-            logger.warning("[view] no rows selected")
-            QMessageBox.information(self, "提示", "请先勾选一个已压缩的文件（点击行左侧的☐）")
-            return None
-        record = self._table.get_record(rows[0])
-        logger.info("[view] got record: type=%s, name=%s, status=%s",
-                     type(record).__name__, getattr(record, 'name', '?'),
-                     getattr(record, 'status', '?'))
-        if not isinstance(record, FileRecord):
-            logger.warning("[view] record is not FileRecord: %s", type(record).__name__)
-            QMessageBox.information(self, "提示", "请选中一个文件（不支持文件夹）")
-            return None
-        if record.status != CompressionStatus.DONE:
-            logger.warning("[view] record not done: status=%s", record.status.value)
-            QMessageBox.information(self, "提示", f"该文件状态为 {record.status.value}，请先压缩")
-            return None
-        if not file_record_compression_blob(record):
-            logger.warning("[view] record has no compressed artifact")
-            QMessageBox.information(self, "提示", "该文件没有可用的压缩数据（内存或磁盘 .wcx）")
-            return None
-        logger.info("[view] valid record: name=%s, size=%d, compressed=%d, algo=%s",
-                     record.name, record.size, _compressed_size(record), record.algorithm.value)
-        return record
+    # 非右键入口（未接线；可视化仅表格右键 request_* → *_row）
+    # def _get_selected_done_record(self) -> FileRecord | None:
+    #     rows = self._table.selected_rows
+    #     logger.info("[view] _get_selected_done_record called, selected_rows=%s", rows)
+    #     if not rows:
+    #         logger.warning("[view] no rows selected")
+    #         QMessageBox.information(self, "提示", "请先勾选一个已压缩的文件（点击行左侧的☐）")
+    #         return None
+    #     record = self._table.get_record(rows[0])
+    #     logger.info("[view] got record: type=%s, name=%s, status=%s",
+    #                  type(record).__name__, getattr(record, 'name', '?'),
+    #                  getattr(record, 'status', '?'))
+    #     if not isinstance(record, FileRecord):
+    #         logger.warning("[view] record is not FileRecord: %s", type(record).__name__)
+    #         QMessageBox.information(self, "提示", "请选中一个文件（不支持文件夹）")
+    #         return None
+    #     if record.status != CompressionStatus.DONE:
+    #         logger.warning("[view] record not done: status=%s", record.status.value)
+    #         QMessageBox.information(self, "提示", f"该文件状态为 {record.status.value}，请先压缩")
+    #         return None
+    #     if not file_record_compression_blob(record):
+    #         logger.warning("[view] record has no compressed artifact")
+    #         QMessageBox.information(self, "提示", "该文件没有可用的压缩数据（内存或磁盘 .wcx）")
+    #         return None
+    #     logger.info("[view] valid record: name=%s, size=%d, compressed=%d, algo=%s",
+    #                  record.name, record.size, _compressed_size(record), record.algorithm.value)
+    #     return record
 
     def _on_view_heatmap_row(self, row: int) -> None:
         logger.info("[view] heatmap from right-click, row=%d", row)
@@ -2001,11 +2264,11 @@ class MainWindow(QMainWindow):
             return
         self._open_heatmap(record)
 
-    def _on_view_heatmap(self) -> None:
-        logger.info("[view] heatmap from menu")
-        record = self._get_selected_done_record()
-        if record:
-            self._open_heatmap(record)
+    # def _on_view_heatmap(self) -> None:
+    #     logger.info("[view] heatmap from menu")
+    #     record = self._get_selected_done_record()
+    #     if record:
+    #         self._open_heatmap(record)
 
     def _on_view_comparison_row(self, row: int) -> None:
         logger.info("[view] comparison from right-click, row=%d", row)
@@ -2113,23 +2376,24 @@ class MainWindow(QMainWindow):
             logger.error("[view] heatmap failed: %s", e, exc_info=True)
             QMessageBox.warning(self, "热力图错误", f"生成热力图失败:\n{e}")
 
-    def _on_view_comparison(self) -> None:
-        logger.info("[view] comparison from menu")
-        rows = self._table.selected_rows
-        if not rows:
-            QMessageBox.information(self, "提示", "请先勾选一个已压缩的文件（点击行左侧的☐）")
-            return
-        record = self._table.get_record(rows[0])
-        if isinstance(record, FolderRecord):
-            self._run_folder_comparison(record)
-            return
-        if not isinstance(record, FileRecord):
-            QMessageBox.information(self, "提示", "请选中一个文件或文件夹")
-            return
-        if record.status != CompressionStatus.DONE:
-            QMessageBox.information(self, "提示", f"该文件状态为 {record.status.value}，请先压缩")
-            return
-        self._run_comparison(record)
+    # 一下内容请不要删除
+    # def _on_view_comparison(self) -> None:
+    #     logger.info("[view] comparison from menu")
+    #     rows = self._table.selected_rows
+    #     if not rows:
+    #         QMessageBox.information(self, "提示", "请先勾选一个已压缩的文件（点击行左侧的☐）")
+    #         return
+    #     record = self._table.get_record(rows[0])
+    #     if isinstance(record, FolderRecord):
+    #         self._run_folder_comparison(record)
+    #         return
+    #     if not isinstance(record, FileRecord):
+    #         QMessageBox.information(self, "提示", "请选中一个文件或文件夹")
+    #         return
+    #     if record.status != CompressionStatus.DONE:
+    #         QMessageBox.information(self, "提示", f"该文件状态为 {record.status.value}，请先压缩")
+    #         return
+    #     self._run_comparison(record)
 
     def _start_comparison_worker(self, record: Record, title: str) -> None:
         if self._comparison_worker and self._comparison_worker.isRunning():
@@ -2209,11 +2473,12 @@ class MainWindow(QMainWindow):
             self._statusbar.set_progress_value(0)
         self._comparison_worker = None
 
-    def _on_view_network(self) -> None:
-        logger.info("[view] network sim from menu")
-        record = self._get_selected_done_record()
-        if record:
-            self._run_network_sim(record)
+    # 一下内容请不要删除
+    # def _on_view_network(self) -> None:
+    #     logger.info("[view] network sim from menu")
+    #     record = self._get_selected_done_record()
+    #     if record:
+    #         self._run_network_sim(record)
 
     def _run_network_sim(self, record: FileRecord) -> None:
         logger.info("[view] running network sim for %s (orig=%d, comp=%d, time=%.1fms)",
@@ -2240,6 +2505,7 @@ class MainWindow(QMainWindow):
         if not isinstance(record, FolderRecord):
             QMessageBox.information(self, "提示", "网页资源热力图仅支持文件夹")
             return
+        record.ensure_files_loaded()
         try:
             html_file = None
             for f in record.files:
@@ -2336,6 +2602,7 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "导出错误", f"导出报告失败:\n{e}")
 
     def _generate_folder_summary_html(self, record: FolderRecord) -> str:
+        record.ensure_files_loaded()
         import json
         rows_html = ""
         for f in record.files:
@@ -2604,6 +2871,14 @@ class DecisionDetailDialog(QDialog):
             return bytes(s).decode("utf-8", errors="replace")
         return str(s)
 
+    def _params_display_for_decision(self, algorithm: AlgorithmType, params: dict | None) -> str:
+        """与「高级设置 → 算法配置」同一套标签、顺序、枚举文案与单位后缀。"""
+        from gui.engine.compressor import CompressionEngine
+
+        base = CompressionEngine.get_config().get(algorithm, {})
+        merged = merge_decision_overrides_into_algo_config(algorithm, base, params)
+        return "\n".join(format_algorithm_config_param_lines(algorithm, merged))
+
     def _setup_ui(self):
         layout = QVBoxLayout(self)
 
@@ -2678,12 +2953,12 @@ class DecisionDetailDialog(QDialog):
             decision_form.addRow("推荐算法:", QLabel(algo_name))
             decision_form.addRow("置信度:", QLabel(f"{confidence_pct:.1f}%"))
             decision_form.addRow("决策原因:", QLabel(self._label_text(decision_result.reason) or "无"))
-            
-            if decision_result.params:
-                params_text = "\n".join([f"  - {k}: {v}" for k, v in decision_result.params.items()])
-                decision_form.addRow("使用参数:", QLabel(params_text))
-            else:
-                decision_form.addRow("使用参数:", QLabel("默认参数"))
+            params_lbl = QLabel(
+                self._params_display_for_decision(decision_result.algorithm, decision_result.params)
+            )
+            params_lbl.setWordWrap(True)
+            params_lbl.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+            decision_form.addRow("使用参数:", params_lbl)
         else:
             de = DecisionEngine.get()
             try:
@@ -2695,11 +2970,10 @@ class DecisionDetailDialog(QDialog):
                     decision_form.addRow("推荐算法:", QLabel(algo_name))
                     decision_form.addRow("置信度:", QLabel(f"{confidence_pct:.1f}%"))
                     decision_form.addRow("决策原因:", QLabel(self._label_text(new_decision.reason) or "无"))
-                    if new_decision.params:
-                        params_text = "\n".join([f"  - {k}: {v}" for k, v in new_decision.params.items()])
-                        decision_form.addRow("使用参数:", QLabel(params_text))
-                    else:
-                        decision_form.addRow("使用参数:", QLabel("默认参数"))
+                    np_lbl = QLabel(self._params_display_for_decision(new_decision.algorithm, new_decision.params))
+                    np_lbl.setWordWrap(True)
+                    np_lbl.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+                    decision_form.addRow("使用参数:", np_lbl)
                 else:
                     decision_form.addRow("状态:", QLabel("ADE 未初始化或无法决策"))
             except Exception as e:

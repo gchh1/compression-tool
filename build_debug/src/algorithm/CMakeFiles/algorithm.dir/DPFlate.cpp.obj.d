@@ -477,4 +477,12 @@ src/algorithm/CMakeFiles/algorithm.dir/DPFlate.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/winsvc.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/mcx.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/imm.h \
+ D:/AAA_C/compression-tool/src/utils/include/DebugLog.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdarg \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/fstream \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/basic_file.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++io.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fstream.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/mutex \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unique_lock.h \
  D:/AAA_C/compression-tool/src/algorithm/include/KMPMatcher.hpp

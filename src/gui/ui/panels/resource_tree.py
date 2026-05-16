@@ -65,6 +65,7 @@ class ResourceTree(QWidget):
         files: list = []
         for rec in records:
             if isinstance(rec, FolderRecord):
+                rec.ensure_files_loaded()
                 dirs[rec.path] = list(rec.files)
             else:
                 files.append(rec)

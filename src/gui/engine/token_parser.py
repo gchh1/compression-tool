@@ -196,11 +196,16 @@ class LZDPTokenParser(TokenParser):
 
         try:
             from gui.engine.compressor import CompressionEngine
+            from gui.ade.explorer import SilentExplorer
+
             eng = CompressionEngine()
             if eng.available:
-                comp = eng.create_compressor_for_visualization(
-                    AlgorithmType.LZDP, compression_params
-                )
+                with SilentExplorer.user_compression_priority():
+                    comp = eng.create_compressor_for_visualization(
+                        AlgorithmType.LZDP, compression_params
+                    )
+                    # 0 => C++ 使用压缩器上的 dp_range_（与算法配置里「DP优化深度」一致）
+                    viz = comp.get_dp_visualization(list(raw_data), 0)
             else:
                 comp = core_engine.LZDPCompressor()
                 if compression_params:
@@ -208,8 +213,8 @@ class LZDPTokenParser(TokenParser):
                         setter = getattr(comp, f"set_{key}", None)
                         if setter:
                             setter(int(val))
-            # 0 => C++ 使用压缩器上的 dp_range_（与算法配置里「DP优化深度」一致）
-            viz = comp.get_dp_visualization(list(raw_data), 0)
+                with SilentExplorer.user_compression_priority():
+                    viz = comp.get_dp_visualization(list(raw_data), 0)
 
             tokens: list[Token] = []
             cursor = 0

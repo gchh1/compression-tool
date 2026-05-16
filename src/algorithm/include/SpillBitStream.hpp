@@ -26,7 +26,6 @@ struct PackedDpLinkSpec {
     static auto calcBitWidth(size_t v) -> uint8_t {
         int bits = 0;
         if (v == 0) return 1;
-        --v;
         while (v > 0) {
             ++bits;
             v >>= 1;
@@ -118,7 +117,7 @@ public:
 private:
     void flushChunk() {
         if (!bw_.has_value()) return;
-        size_t n = bw_->flush();
+        const size_t n = bw_->drainFullBytes();
         if (n > 0 && tf_) tf_->write(buf_.data(), n);
         bw_->changeSource(std::span<uint8_t>(buf_.data(), buf_.size()));
     }
@@ -135,18 +134,26 @@ public:
         : tf_(tf), spec_(spec) {}
 
     void readPair(uint64_t idx, uint16_t& length, uint16_t& raw_offset) {
-        if (idx < buf_first_idx_ || idx >= buf_first_idx_ + buf_num_records_ || buf_num_records_ == 0) {
-            const uint64_t load_end = idx + 1;
+        const size_t record_bytes =
+            static_cast<size_t>((spec_.record_bits + 7) / 8) + 1;
+
+        auto load_window = [&](uint64_t center_idx) {
+            const uint64_t load_end = center_idx + 1;
             const uint64_t load_start =
                 (load_end > kMaxRecords) ? (load_end - kMaxRecords) : 0;
             const uint64_t byte0 = (load_start * spec_.record_bits) / 8;
             const uint64_t bit1 = load_end * spec_.record_bits;
-            const uint64_t byte1 = (bit1 + 7) / 8;
+            const uint64_t byte1 = (bit1 + 7) / 8 + 1;
             buf_.resize(static_cast<size_t>(byte1 - byte0));
             tf_.readAt(byte0, buf_.data(), buf_.size());
             buf_byte0_ = byte0;
             buf_first_idx_ = load_start;
             buf_num_records_ = static_cast<size_t>(load_end - load_start);
+        };
+
+        if (idx < buf_first_idx_ || idx >= buf_first_idx_ + buf_num_records_ ||
+            buf_num_records_ == 0) {
+            load_window(idx);
         }
 
         const uint64_t global_bit = idx * spec_.record_bits;
@@ -154,9 +161,25 @@ public:
         const size_t byte_in_buf = static_cast<size_t>(local_bit / 8);
         const auto skip = static_cast<uint8_t>(local_bit % 8);
 
-        if (byte_in_buf >= buf_.size()) {
-            length = 0;
-            raw_offset = 0;
+        if (byte_in_buf + record_bytes > buf_.size()) {
+            load_window(idx);
+            const uint64_t reloaded_global_bit = idx * spec_.record_bits;
+            const uint64_t reloaded_local_bit = reloaded_global_bit - buf_byte0_ * 8;
+            const size_t reloaded_byte_in_buf =
+                static_cast<size_t>(reloaded_local_bit / 8);
+            const auto reloaded_skip =
+                static_cast<uint8_t>(reloaded_local_bit % 8);
+
+            if (reloaded_byte_in_buf + record_bytes > buf_.size()) {
+                length = 0;
+                raw_offset = 0;
+                return;
+            }
+
+            compressor::utils::BitReader br(std::span<const uint8_t>(
+                buf_.data() + reloaded_byte_in_buf, buf_.size() - reloaded_byte_in_buf));
+            if (reloaded_skip > 0) br.readBits(reloaded_skip);
+            spec_.readRecord(br, length, raw_offset);
             return;
         }
 

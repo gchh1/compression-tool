@@ -232,9 +232,19 @@ src/api/CMakeFiles/api.dir/api.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unicode-data.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/iostream \
  D:/AAA_C/compression-tool/src/utils/include/DataChunk.hpp \
+ D:/AAA_C/compression-tool/src/utils/include/DebugLog.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdarg \
+ D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdarg.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdarg.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stdarg.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/fstream \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/basic_file.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++io.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fstream.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/mutex \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unique_lock.h \
  D:/AAA_C/compression-tool/src/utils/include/MemoryPool.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/condition_variable \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unique_lock.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stop_token \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_thread.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/semaphore \
@@ -242,7 +252,6 @@ src/api/CMakeFiles/api.dir/api.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_timed_wait.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/this_thread_sleep.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/semaphore.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/mutex \
  D:/AAA_C/compression-tool/src/archiver/include/PackReader.hpp \
  D:/AAA_C/compression-tool/src/archiver/include/EntryHeader.hpp \
  D:/AAA_C/compression-tool/src/archiver/include/IDataReader.hpp \
@@ -254,10 +263,9 @@ src/api/CMakeFiles/api.dir/api.cpp.obj: \
  D:/AAA_C/compression-tool/src/processor/include/StreamProcessor.hpp \
  D:/AAA_C/compression-tool/src/processor/include/StreamChunkPolicy.hpp \
  D:/AAA_C/compression-tool/src/api/include/WCXProtocol.hpp \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/fstream \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/basic_file.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++io.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fstream.tcc \
+ D:/AAA_C/compression-tool/src/algorithm/include/Inflate3HM.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/HuffmanTree3HM.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/HuffmanTree.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/filesystem \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_fwd.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_path.h \

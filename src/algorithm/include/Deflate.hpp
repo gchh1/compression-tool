@@ -25,6 +25,9 @@ struct Token {
     uint8_t dist_code;
     uint8_t dist_extra_bits;
     uint16_t dist_extra_val;
+
+    uint16_t match_len{0};
+    uint16_t match_dist{0};
 };
 
 /** @brief  */
@@ -35,9 +38,13 @@ class Deflate : public AlgorithmBase {
     /// ``lookahead_max`` caps LZ77 match length (clamped to 258 for valid DEFLATE length codes).
     /// Pass 0 for 258 (full deflate match limit).
     Deflate(size_t slide_size = 4096, size_t min_match = 3,
-            size_t max_chain_length = 256, size_t lookahead_max = 258);
+            size_t max_chain_length = 256, size_t lookahead_max = 258,
+            bool use_flag_encoding = true);
 
     auto reset(void) -> void override;
+
+    void set_use_flag_encoding(bool v) { use_flag_encoding_ = v; }
+    bool get_use_flag_encoding() const { return use_flag_encoding_; }
 
    protected:
     auto handle(AlgorithmStatus& algorithm_status, bool is_last_chunk)
@@ -92,6 +99,11 @@ class Deflate : public AlgorithmBase {
 
     std::vector<HuffmanCode> dictionary_;
     std::vector<HuffmanCode> dist_dictionary_;
+
+    bool use_flag_encoding_{true};
+    size_t offset_bits_{0};
+    size_t length_bits_{0};
+    bool nonflag_header_emitted_{false};
     // ===================================
     // Private methods
     // ===================================

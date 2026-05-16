@@ -258,35 +258,49 @@ class FileTableWidget(QTableWidget):
             return -1
 
     def add_folder(self, path: str) -> int:
-        record = FolderRecord(path)
-        row = self.rowCount()
-        self.insertRow(row)
+        try:
+            record = FolderRecord(path)
+            row = self.rowCount()
+            self.insertRow(row)
 
-        check_item = QTableWidgetItem("☐")
-        check_item.setData(self.Check_Role, False)
-        self.setItem(row, self.COL_CHECK, check_item)
+            check_item = QTableWidgetItem("☐")
+            check_item.setData(self.Check_Role, False)
+            self.setItem(row, self.COL_CHECK, check_item)
 
-        name_item = QTableWidgetItem(f"[{record.name}]")
-        name_item.setData(self.Record_Role, record)
-        name_item.setForeground(Qt.GlobalColor.gray)
-        self.setItem(row, self.COL_NAME, name_item)
-        self.setItem(row, self.COL_SIZE, QTableWidgetItem(f"{record.filenum} 文件 / {formatted_size(record.size)}"))
-        self.setItem(row, self.COL_TYPE, QTableWidgetItem("Folder"))
-        self.setItem(row, self.COL_STATUS, QTableWidgetItem(CompressionStatus.PENDING.value))
-        self.setItem(row, self.COL_ALGORITHM, QTableWidgetItem("-"))
-        self.setItem(row, self.COL_RATIO, QTableWidgetItem("--"))
-        return row
+            name_item = QTableWidgetItem(f"[{record.name}]")
+            name_item.setData(self.Record_Role, record)
+            name_item.setForeground(Qt.GlobalColor.gray)
+            self.setItem(row, self.COL_NAME, name_item)
+            self.setItem(row, self.COL_SIZE, QTableWidgetItem(f"{record.filenum} 文件 / {formatted_size(record.size)}"))
+            self.setItem(row, self.COL_TYPE, QTableWidgetItem("Folder"))
+            self.setItem(row, self.COL_STATUS, QTableWidgetItem(CompressionStatus.PENDING.value))
+            self.setItem(row, self.COL_ALGORITHM, QTableWidgetItem("-"))
+            self.setItem(row, self.COL_RATIO, QTableWidgetItem("--"))
+            return row
+        except Exception as e:
+            logger.exception("add_folder crash: path=%s, err=%s", path, e)
+            return -1
 
     def add_paths(self, paths: list[str]) -> tuple[int, int]:
         count_files = 0
         count_dirs = 0
-        for path in paths:
-            if os.path.isdir(path):
-                self.add_folder(path)
-                count_dirs += 1
-            elif os.path.isfile(path):
-                self.add_file(path)
-                count_files += 1
+        sm = self.selectionModel()
+        self.blockSignals(True)
+        if sm is not None:
+            sm.blockSignals(True)
+        try:
+            for path in paths:
+                if os.path.isdir(path):
+                    if self.add_folder(path) >= 0:
+                        count_dirs += 1
+                elif os.path.isfile(path):
+                    if self.add_file(path) >= 0:
+                        count_files += 1
+        finally:
+            self.blockSignals(False)
+            if sm is not None:
+                sm.blockSignals(False)
+        self._sync_checkboxes_from_selection()
         return count_files, count_dirs
 
     def update_row(self, row: int) -> None:
@@ -368,8 +382,10 @@ class FileTableWidget(QTableWidget):
                 continue
             if top is record:
                 return r
-            if isinstance(top, FolderRecord) and record in top.files:
-                return r
+            if isinstance(top, FolderRecord):
+                top.ensure_files_loaded()
+                if record in top.files:
+                    return r
         return None
 
     def mark_error(self, row: int) -> None:

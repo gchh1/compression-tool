@@ -65,7 +65,7 @@ class BitWriter {
      * @return false
      */
     auto ensureSpace(size_t count) const -> bool {
-        return byte_pos_ + (buffer_idx_ + count) / 8 <= write_.size();
+        return byte_pos_ + (buffer_idx_ + count + 7) / 8 <= write_.size();
     }
 
     /// Drop pending fractional bits (does not advance ``byte_pos_``). Call when starting a new
@@ -155,7 +155,18 @@ class BitWriter {
      *
      * @return size_t How many `bytes` we write into
      */
+    /// Write out all full bytes from the bit buffer; leave fractional bits pending.
+    auto drainFullBytes() -> size_t {
+        while (buffer_idx_ >= 8) {
+            write_[byte_pos_++] = static_cast<uint8_t>(buffer_);
+            buffer_ >>= 8;
+            buffer_idx_ -= 8;
+        }
+        return byte_pos_;
+    }
+
     auto flush() -> size_t {
+        drainFullBytes();
         while (buffer_idx_ > 0) {
             write_[byte_pos_++] = static_cast<uint8_t>(buffer_);
             if (buffer_idx_ >= 8) {

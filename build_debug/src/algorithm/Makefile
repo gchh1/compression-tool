@@ -366,6 +366,30 @@ Inflate.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/Inflate.cpp.s
 .PHONY : Inflate.cpp.s
 
+Inflate3HM.obj: Inflate3HM.cpp.obj
+.PHONY : Inflate3HM.obj
+
+# target to build an object file
+Inflate3HM.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/Inflate3HM.cpp.obj
+.PHONY : Inflate3HM.cpp.obj
+
+Inflate3HM.i: Inflate3HM.cpp.i
+.PHONY : Inflate3HM.i
+
+# target to preprocess a source file
+Inflate3HM.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/Inflate3HM.cpp.i
+.PHONY : Inflate3HM.cpp.i
+
+Inflate3HM.s: Inflate3HM.cpp.s
+.PHONY : Inflate3HM.s
+
+# target to generate assembly for a file
+Inflate3HM.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/Inflate3HM.cpp.s
+.PHONY : Inflate3HM.cpp.s
+
 LZDP.obj: LZDP.cpp.obj
 .PHONY : LZDP.obj
 
@@ -475,6 +499,9 @@ help:
 	@echo ... Inflate.obj
 	@echo ... Inflate.i
 	@echo ... Inflate.s
+	@echo ... Inflate3HM.obj
+	@echo ... Inflate3HM.i
+	@echo ... Inflate3HM.s
 	@echo ... LZDP.obj
 	@echo ... LZDP.i
 	@echo ... LZDP.s
