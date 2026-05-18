@@ -39,10 +39,6 @@ class StreamProcessor {
 
     auto isFinished() const -> bool { return finished_; }
 
-    auto getBlockProfile() -> std::optional<algorithm::BlockProfile> {
-        return algo_ ? algo_->getBlockProfile() : std::nullopt;
-    }
-
    private:
     std::unique_ptr<IAlgorithm> algo_;
 

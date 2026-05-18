@@ -8,13 +8,10 @@
 #include <vector>
 
 #include "AlgorithmFactory.hpp"
-#include "BlockProfile.hpp"
 
 namespace compressor::api {
 
 using AlgorithmID = core::AlgorithmID;
-using BlockInfo = algorithm::BlockInfo;
-using BlockProfile = algorithm::BlockProfile;
 
 struct CompressResult {
     std::vector<uint8_t> data;
@@ -24,7 +21,6 @@ struct CompressResult {
     double time_ms{0.0};
     bool success{false};
     std::string error_message;
-    std::optional<BlockProfile> block_profile;
 };
 
 struct WCXUnpackResult {
@@ -69,7 +65,6 @@ auto compressFile(const std::string& input_path,
 /// The compress algorithm must inherit from AlgorithmBase (e.g. DPFlate);
 /// algorithms wrapped in StreamingCompressAdapter (Deflate, Brotli) are
 /// not yet supported for visualization.
-/// On success, result.block_profile carries the viz data reference.
 auto compressFileWithViz(const std::string& input_path,
                          const std::string& output_path,
                          const std::string& viz_path,

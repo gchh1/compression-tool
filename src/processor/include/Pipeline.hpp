@@ -35,9 +35,6 @@ class Pipeline {
 
     auto isFinished() const -> bool;
 
-    // Collect block-level profiling data from the compression algorithm.
-    auto getBlockProfile() -> std::optional<algorithm::BlockProfile>;
-
    private:
     std::vector<std::unique_ptr<StreamProcessor>> stages_;
     bool finished_{false};

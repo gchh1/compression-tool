@@ -9,7 +9,6 @@ from PyQt6.QtWidgets import (
     QFrame, QSplitter,
 )
 
-from gui.ui.views.visualizers.block import BlockProfilerPanel
 from gui.ui.views.visualizers.huffman import HuffmanTreePanel
 from gui.models import FileRecord, FolderRecord
 
@@ -74,7 +73,6 @@ class AnalysisView(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._records: list[FileRecord] = []
-        self._current_profile: dict | None = None
         self._setup_ui()
 
     def _setup_ui(self) -> None:
@@ -101,10 +99,6 @@ class AnalysisView(QWidget):
 
         content = QWidget()
         content_layout = QVBoxLayout(content)
-
-        # Block profiling
-        self._block_panel = BlockProfilerPanel()
-        content_layout.addWidget(self._block_panel)
 
         # Heatmap
         heatmap_label = QLabel("压缩热力图 (每 block 压缩比)")
@@ -135,10 +129,8 @@ class AnalysisView(QWidget):
                 all_files.append(rec)
 
         for f in all_files:
-            if hasattr(f, 'block_profile') and f.block_profile:
+            if f.status.value == "done":
                 self._file_selector.addItem(f"✅ {f.name}", f)
-            elif f.status.value == "done":
-                self._file_selector.addItem(f"⚠ {f.name} (无 profile)", f)
             else:
                 self._file_selector.addItem(f"⏳ {f.name}", f)
 
@@ -153,26 +145,8 @@ class AnalysisView(QWidget):
         if rec is None:
             return
 
-        bp = getattr(rec, 'block_profile', None)
-        if bp and bp.get('blocks'):
-            self._current_profile = bp
-            blocks = bp['blocks']
-            self._block_panel.set_blocks(blocks)
-            if blocks:
-                self._huffman_panel.set_block(blocks[0])
-
-            # Heatmap ratios
-            ratios = []
-            for b in blocks:
-                raw_bits = max(b.get('output_bytes', 1), 1) * 8
-                cb = b.get('ll_tree_bits', 0) + b.get('dist_tree_bits', 0)
-                cb += b.get('literal_count', 0) * 8 + b.get('match_count', 0) * 16
-                ratios.append(cb / raw_bits)
-            self._heatmap.set_ratios(ratios)
-        else:
-            self._block_panel.set_blocks([])
-            self._huffman_panel.set_block({})
-            self._heatmap.set_ratios([])
+        self._huffman_panel.set_block({})
+        self._heatmap.set_ratios([])
 
     def update_from_profile(self, rec: FileRecord) -> None:
         """Update directly after compression completes."""

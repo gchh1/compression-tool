@@ -12,7 +12,7 @@
 #include <vector>
 
 #include "DataChunk.hpp"
-#include "DiskVizObserver.hpp"  // compressor::viz
+#include "DiskVizObserver.hpp"
 #include "IAlgorithm.hpp"
 #include "MemoryPool.hpp"
 #include "Pipeline.hpp"
@@ -120,8 +120,6 @@ auto compress(const std::vector<uint8_t>& data,
         auto v = chunk.view();
         result.data.insert(result.data.end(), v.begin(), v.end());
     }
-
-    result.block_profile = pipeline.getBlockProfile();
 
     auto t1 = std::chrono::high_resolution_clock::now();
     result.time_ms =
@@ -323,8 +321,6 @@ auto compressFile(const std::string& input_path,
                      static_cast<std::streamsize>(v.size()));
         total_written += v.size();
     }
-
-    result.block_profile = pipeline.getBlockProfile();
 
     // Patch compressed_size in WCX header at byte offset 10.
     auto comp_u32 = static_cast<uint32_t>(std::min<uint64_t>(total_written, UINT32_MAX));

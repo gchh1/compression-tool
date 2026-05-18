@@ -17,7 +17,6 @@
 
 #include "BitReader.hpp"
 #include "BitWriter.hpp"
-#include "BlockProfile.hpp"
 #include "VizEvent.hpp"  // compressor::viz types + IVizObserver
 
 #include <vector>
@@ -47,10 +46,6 @@ class IAlgorithm {
         -> AlgorithmStatus = 0;
 
     virtual auto reset(void) -> void = 0;
-
-    virtual auto getBlockProfile() -> std::optional<BlockProfile> {
-        return std::nullopt;
-    }
 };
 
 // Bring viz types into algorithm namespace for backward compatibility

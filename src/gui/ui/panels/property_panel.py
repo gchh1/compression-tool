@@ -117,11 +117,6 @@ class PropertyPanel(QWidget):
                 f"压缩率: {rec.compression_ratio * 100:.1f}%  "
                 f"({formatted_size(rec.size)} → {formatted_size(len(rec.compressed_data or []))})")
             self._time_label.setText(f"耗时: {rec.compression_time_ms:.1f} ms")
-            bp = rec.block_profile
-            if bp and bp.get('blocks'):
-                self._blocks_label.setText(f"Blocks: {len(bp['blocks'])}")
-            else:
-                self._blocks_label.setText("")
         elif rec.status == CompressionStatus.FAILED:
             self._status_label.setText("状态: ❌ 压缩失败")
             self._algo_label.setText("")
