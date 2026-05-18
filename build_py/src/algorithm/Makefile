@@ -246,6 +246,54 @@ DPFlate.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/DPFlate.cpp.s
 .PHONY : DPFlate.cpp.s
 
+DPFlateBin64kDebug.obj: DPFlateBin64kDebug.cpp.obj
+.PHONY : DPFlateBin64kDebug.obj
+
+# target to build an object file
+DPFlateBin64kDebug.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/DPFlateBin64kDebug.cpp.obj
+.PHONY : DPFlateBin64kDebug.cpp.obj
+
+DPFlateBin64kDebug.i: DPFlateBin64kDebug.cpp.i
+.PHONY : DPFlateBin64kDebug.i
+
+# target to preprocess a source file
+DPFlateBin64kDebug.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/DPFlateBin64kDebug.cpp.i
+.PHONY : DPFlateBin64kDebug.cpp.i
+
+DPFlateBin64kDebug.s: DPFlateBin64kDebug.cpp.s
+.PHONY : DPFlateBin64kDebug.s
+
+# target to generate assembly for a file
+DPFlateBin64kDebug.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/DPFlateBin64kDebug.cpp.s
+.PHONY : DPFlateBin64kDebug.cpp.s
+
+DPFlateTrace.obj: DPFlateTrace.cpp.obj
+.PHONY : DPFlateTrace.obj
+
+# target to build an object file
+DPFlateTrace.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/DPFlateTrace.cpp.obj
+.PHONY : DPFlateTrace.cpp.obj
+
+DPFlateTrace.i: DPFlateTrace.cpp.i
+.PHONY : DPFlateTrace.i
+
+# target to preprocess a source file
+DPFlateTrace.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/DPFlateTrace.cpp.i
+.PHONY : DPFlateTrace.cpp.i
+
+DPFlateTrace.s: DPFlateTrace.cpp.s
+.PHONY : DPFlateTrace.s
+
+# target to generate assembly for a file
+DPFlateTrace.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/DPFlateTrace.cpp.s
+.PHONY : DPFlateTrace.cpp.s
+
 Deflate.obj: Deflate.cpp.obj
 .PHONY : Deflate.obj
 
@@ -414,6 +462,30 @@ LZDP.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/LZDP.cpp.s
 .PHONY : LZDP.cpp.s
 
+LZDPStreamDebug.obj: LZDPStreamDebug.cpp.obj
+.PHONY : LZDPStreamDebug.obj
+
+# target to build an object file
+LZDPStreamDebug.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/LZDPStreamDebug.cpp.obj
+.PHONY : LZDPStreamDebug.cpp.obj
+
+LZDPStreamDebug.i: LZDPStreamDebug.cpp.i
+.PHONY : LZDPStreamDebug.i
+
+# target to preprocess a source file
+LZDPStreamDebug.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/LZDPStreamDebug.cpp.i
+.PHONY : LZDPStreamDebug.cpp.i
+
+LZDPStreamDebug.s: LZDPStreamDebug.cpp.s
+.PHONY : LZDPStreamDebug.s
+
+# target to generate assembly for a file
+LZDPStreamDebug.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/LZDPStreamDebug.cpp.s
+.PHONY : LZDPStreamDebug.cpp.s
+
 LZSS.obj: LZSS.cpp.obj
 .PHONY : LZSS.obj
 
@@ -484,6 +556,12 @@ help:
 	@echo ... DPFlate.obj
 	@echo ... DPFlate.i
 	@echo ... DPFlate.s
+	@echo ... DPFlateBin64kDebug.obj
+	@echo ... DPFlateBin64kDebug.i
+	@echo ... DPFlateBin64kDebug.s
+	@echo ... DPFlateTrace.obj
+	@echo ... DPFlateTrace.i
+	@echo ... DPFlateTrace.s
 	@echo ... Deflate.obj
 	@echo ... Deflate.i
 	@echo ... Deflate.s
@@ -505,6 +583,9 @@ help:
 	@echo ... LZDP.obj
 	@echo ... LZDP.i
 	@echo ... LZDP.s
+	@echo ... LZDPStreamDebug.obj
+	@echo ... LZDPStreamDebug.i
+	@echo ... LZDPStreamDebug.s
 	@echo ... LZSS.obj
 	@echo ... LZSS.i
 	@echo ... LZSS.s

@@ -42,6 +42,25 @@ DEFAULTS = {
     "ade": {
         # 静默探索：后台线程压缩；默认关；与「用户压缩/解压」通过 user-op 深度与引擎锁解耦
         "silent_explore_enabled": False,
+        # JSONL 新增有效样本达到该数后触发 NN 参数回归补充训练（与 bandit warmup 无关）
+        "retrain_min_new_samples": 50,
+        # 静默探索专用 I/O（与用户主路径 streaming.* 独立；小文件走内存压测，不强制分块读盘）
+        "explore_streaming_threshold_mb": float(STREAMING_THRESHOLD_MB),
+        "explore_streaming_chunk_size_kb": int(STREAMING_CHUNK_SIZE_KB),
+        # SilentExplorer AC-UCB tunables (editable in 决策引擎管理 → 配置)
+        "explorer": {
+            "epsilon_base": 0.25,
+            "alpha_ucb": 1.41,
+            "max_concurrent": 2,
+            "timeout_seconds": 30.0,
+            "budget_ratio": 0.30,
+            "min_file_size_bytes": 1024,
+            "max_file_size_for_l2": 100 * 1024 * 1024,
+            "warmup_samples": 50,
+            "ucb_gap_threshold": 0.05,
+            "l1_min_samples": 3,
+            "l2_min_samples": 5,
+        },
     },
     "streaming": {
         "threshold_mb": STREAMING_THRESHOLD_MB,
@@ -60,10 +79,16 @@ for algo, params in ALGORITHM_PARAMS.items():
 
 
 def _get_config_path() -> Path:
-    if getattr(sys, 'frozen', False):
+    if getattr(sys, "frozen", False):
         base = Path(sys.executable).parent.parent / "config"
     else:
-        base = Path(__file__).resolve().parent.parent.parent.parent / "config"
+        repo = Path(__file__).resolve().parent.parent.parent.parent
+        # Dev runs often use ``Package/bin`` layout; share the same JSON as the shipped app.
+        pkg_cfg = repo / "Package" / "config"
+        if (pkg_cfg / CONFIG_FILENAME).is_file():
+            base = pkg_cfg
+        else:
+            base = repo / "config"
     base.mkdir(parents=True, exist_ok=True)
     return base / CONFIG_FILENAME
 
@@ -129,6 +154,21 @@ def _merge_with_defaults(user_data: dict) -> dict:
         for k, v in user_data["ade"].items():
             if k == "silent_explore_enabled":
                 result["ade"][k] = bool(v)
+            elif k == "explore_streaming_threshold_mb":
+                try:
+                    result["ade"][k] = max(0.0, float(v))
+                except (TypeError, ValueError):
+                    pass
+            elif k == "explore_streaming_chunk_size_kb":
+                try:
+                    result["ade"][k] = max(64, int(v))
+                except (TypeError, ValueError):
+                    pass
+            elif k == "explorer" and isinstance(v, dict):
+                slot = result["ade"].setdefault(
+                    "explorer", json.loads(json.dumps(DEFAULTS["ade"]["explorer"]))
+                )
+                slot.update(v)
             else:
                 result["ade"][k] = v
     if "theme" in user_data and isinstance(user_data["theme"], dict):
@@ -146,6 +186,80 @@ def get_silent_explore_enabled(config: dict | None = None) -> bool:
     if not isinstance(ade, dict):
         return False
     return bool(ade.get("silent_explore_enabled", False))
+
+
+def get_ade_explore_streaming_threshold_mb(config: dict | None = None) -> float:
+    """File size above this (MB) uses file-to-file chunked compress during silent explore."""
+    if config is None:
+        config = load_config()
+    ade = config.get("ade")
+    if not isinstance(ade, dict):
+        return float(DEFAULTS["ade"]["explore_streaming_threshold_mb"])
+    try:
+        return max(0.0, float(ade.get(
+            "explore_streaming_threshold_mb",
+            DEFAULTS["ade"]["explore_streaming_threshold_mb"],
+        )))
+    except (TypeError, ValueError):
+        return float(STREAMING_THRESHOLD_MB)
+
+
+def get_ade_explore_streaming_chunk_kb(config: dict | None = None) -> int:
+    """Read/chunk size (KB) for silent explore streaming path only."""
+    if config is None:
+        config = load_config()
+    ade = config.get("ade")
+    if not isinstance(ade, dict):
+        return int(DEFAULTS["ade"]["explore_streaming_chunk_size_kb"])
+    try:
+        return max(64, int(ade.get(
+            "explore_streaming_chunk_size_kb",
+            DEFAULTS["ade"]["explore_streaming_chunk_size_kb"],
+        )))
+    except (TypeError, ValueError):
+        return int(STREAMING_CHUNK_SIZE_KB)
+
+
+def get_ade_explorer_tunables(config: dict | None = None) -> dict:
+    """Merged SilentExplorer tunables from defaults + ``ade.explorer`` in config."""
+    from gui.ade.explorer import SilentExplorer
+
+    out: dict = dict(SilentExplorer.DEFAULT_TUNABLES)
+    if config is None:
+        config = load_config()
+    raw = config.get("ade", {}).get("explorer") if isinstance(config.get("ade"), dict) else None
+    if isinstance(raw, dict):
+        for key in out:
+            if key in raw:
+                out[key] = raw[key]
+    try:
+        out["epsilon_base"] = max(0.02, min(0.60, float(out["epsilon_base"])))
+        out["alpha_ucb"] = max(0.1, min(5.0, float(out["alpha_ucb"])))
+        out["max_concurrent"] = max(1, min(8, int(out["max_concurrent"])))
+        out["timeout_seconds"] = max(1.0, min(600.0, float(out["timeout_seconds"])))
+        out["budget_ratio"] = max(0.05, min(1.0, float(out["budget_ratio"])))
+        out["min_file_size_bytes"] = max(0, int(out["min_file_size_bytes"]))
+        out["max_file_size_for_l2"] = max(1024, int(out["max_file_size_for_l2"]))
+        out["warmup_samples"] = max(1, int(out["warmup_samples"]))
+        out["ucb_gap_threshold"] = max(0.0, min(1.0, float(out["ucb_gap_threshold"])))
+        out["l1_min_samples"] = max(1, int(out["l1_min_samples"]))
+        out["l2_min_samples"] = max(1, int(out["l2_min_samples"]))
+    except (TypeError, ValueError):
+        pass
+    return out
+
+
+def get_ade_retrain_min_new_samples(config: dict | None = None) -> int:
+    """Min new JSONL samples before supplemental param-regressor retrain."""
+    if config is None:
+        config = load_config()
+    ade = config.get("ade")
+    if not isinstance(ade, dict):
+        return int(DEFAULTS["ade"]["retrain_min_new_samples"])
+    try:
+        return max(1, int(ade.get("retrain_min_new_samples", 50)))
+    except (TypeError, ValueError):
+        return 50
 
 
 def get_theme_config(config: dict | None = None) -> dict[str, str]:

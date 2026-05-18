@@ -22,7 +22,7 @@
 
 ## 二、代码与文档侧**已做**事项（事实清单）
 
-### 2.1 LZDP 流式内核（`LZDP_OutOfCore`）与 DPFlate
+### 2.1 LZDP 流式内核（`LZDP_Streaming`）与 DPFlate
 
 - **HashChain**：由错误的 `prev_[abs_pos % SEARCH_SIZE]` 改为按缓冲区下标的 `prev_buf_`，与 `compress_dp` 的 `prev[pos]` 语义对齐；仅在**窗口左移**后调用 `reseedHashChainPrefix`（避免每批全量重播的 O(n²)）；`reseed` 与 DP 内层增加**取消检查**频率。  
   - 路径：`src/algorithm/LZDP.cpp`、`src/algorithm/include/LZDP.hpp`；`src/algorithm/DPFlate.cpp`、`src/algorithm/include/DPFlate.hpp`。
@@ -32,7 +32,7 @@
 - **流式比特流与解压**（多次迭代）：  
   - 发射阶段补充与内存版一致的 **2 字节明文头**；解压端按**字节**累积读取头（跨 chunk）。  
   - **Flag 路径**：字面/匹配控制位与 `compress_dp` 对齐（字面=1，匹配=0）；非 flag 单字面补 **offset=0 + run 长度=1** 再跟 8 比特字面。  
-  - **`BitWriter`**：增加 `resetPendingBits()`；`LZDP_OutOfCore::reset` 与**写头前**调用，避免残留分数比特导致头错位 → `invalid bit widths` 与体积膨胀。  
+  - **`BitWriter`**：增加 `resetPendingBits()`；`LZDP_Streaming::reset` 与**写头前**调用，避免残留分数比特导致头错位 → `invalid bit widths` 与体积膨胀。  
   - 路径：`src/utils/include/BitWriter.hpp`、`src/algorithm/LZDP.cpp`。
 
 ### 2.2 GUI / 取消
@@ -52,14 +52,14 @@
 ## 三、**未**在需求方预期下闭环或需接手验证的项
 
 1. **非流式 vs 流式「结果一致」**  
-   - 文档与实现均承认：内存 `compress_dp`（**token 数**）与 `LZDP_OutOfCore`（**位代价启发式**）**不承诺**比特级或压缩率一致。  
+   - 文档与实现均承认：内存 `compress_dp`（**token 数**）与 `LZDP_Streaming`（**位代价启发式**）**不承诺**比特级或压缩率一致。  
    - 若产品目标是「流式 ≡ 内存」，需**单独立项**（统一前向目标函数或在外存复现同一递推）。
 
 2. **架构「解耦」**  
    - **未**把分块衔接抽成独立模块；仍为 `handleCollectInput` 内 `match_engine` 分支。**概念上**可分离，**工程上**未重构。
 
 3. **取消 / 磁盘 I/O / 「是否假流式」**  
-   - 路径上：`compressFile` 分块读入 + `LZDP_OutOfCore` 仍为**真流式管线**（非整文件缓冲明文）；磁盘指标低**多为** CPU 瓶颈与缓存，**未**对用户环境做对比日志验收。  
+   - 路径上：`compressFile` 分块读入 + `LZDP_Streaming` 仍为**真流式管线**（非整文件缓冲明文）；磁盘指标低**多为** CPU 瓶颈与缓存，**未**对用户环境做对比日志验收。  
    - AUTO + ADE 带参时 **`forced_no_stream`** 仍会走内存路径（`src/gui/ui/worker.py`），易被误判为「没流式」。
 
 4. **大文件 WCX 损坏与压缩率**  
@@ -85,7 +85,7 @@
 | 主题 | 路径 |
 |------|------|
 | 流式压缩入口 | `src/api/api.cpp` · `compressFile` |
-| LZDP 外存状态机 | `src/algorithm/LZDP.cpp` · `LZDP_OutOfCore` / `LZDPDecompress_OutOfCore` |
+| LZDP 外存状态机 | `src/algorithm/LZDP.cpp` · `LZDP_Streaming` / `LZDPDecompress_Streaming` |
 | 工厂 | `src/core/AlgorithmFactory.cpp` |
 | GUI 流式 vs 内存 | `src/gui/ui/worker.py` · `single_compress`（`use_streaming`、`forced_no_stream`） |
 | 引擎文件管线 | `src/gui/engine/compressor.py` · `smart_compress_file` |

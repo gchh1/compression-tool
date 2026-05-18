@@ -131,10 +131,13 @@ class CompressionWorker(QThread):
 
     def _flush_training_data(self):
         try:
+            from gui.ade.retrain import maybe_supplemental_retrain
             from gui.ade.training import get_training_store
+
             store = get_training_store()
             if store._dirty:
                 store.save(incremental=True)
+            maybe_supplemental_retrain()
         except Exception:
             pass
 
@@ -218,13 +221,28 @@ class CompressionWorker(QThread):
         if self._save_counter % 10 == 0:
             self._flush_training_data()
         try:
+            from gui.ade.explore_log import log_explore
             from gui.ade.explorer import SilentExplorer
 
-            SilentExplorer.get().maybe_explore(
+            ex = SilentExplorer.get()
+            triggered = ex.maybe_explore(
                 record, record.algorithm, compress_time_ms=record.compression_time_ms
             )
-        except Exception:
-            pass
+            logger.info(
+                "[compress] maybe_explore enabled=%s triggered=%s file=%s",
+                ex.enabled,
+                triggered,
+                getattr(record, "name", "") or "",
+            )
+            if triggered:
+                log_explore(
+                    "hook_after_compress",
+                    file=getattr(record, "name", "") or "",
+                    greedy=getattr(record.algorithm, "value", record.algorithm),
+                    compress_time_ms=round(float(record.compression_time_ms or 0), 2),
+                )
+        except Exception as e:
+            logger.warning("[compress] maybe_explore failed: %s", e)
         if folder_ref is not None:
             folder_ref.total_original += original_size
             folder_ref.total_compressed += compressed_size
@@ -330,6 +348,22 @@ class CompressionWorker(QThread):
                 self._run_streaming_compress_branch(engine, record, folder_ref, snap)
 
             else:
+                # Same threshold as above: avoid whole-file RAM + single pipeline.push when
+                # file-to-file streaming is available (chunked push must match compressFile).
+                if (
+                    isinstance(record, FileRecord)
+                    and bool(getattr(record, "path", None))
+                    and record.algorithm != AlgorithmType.NONE
+                    and engine.should_use_streaming(record.size, record.algorithm)
+                ):
+                    logger.info(
+                        "[compress] redirect to STREAMING (path present, size=%d)",
+                        record.size,
+                    )
+                    snap = CompressionEngine.snapshot_for_algorithm(record.algorithm)
+                    self._run_streaming_compress_branch(engine, record, folder_ref, snap)
+                    return
+
                 if not getattr(record, "raw_data", None):
                     self._compress_phase_notify(record, "正在读取文件…")
                     record.load_raw_data()
@@ -458,13 +492,29 @@ class CompressionWorker(QThread):
                 if self._save_counter % 10 == 0:
                     self._flush_training_data()
                 try:
+                    from gui.ade.explore_log import log_explore
                     from gui.ade.explorer import SilentExplorer
-                    SilentExplorer.get().maybe_explore(
+
+                    ex = SilentExplorer.get()
+                    triggered = ex.maybe_explore(
                         record, record.algorithm,
-                        compress_time_ms=record.compression_time_ms
+                        compress_time_ms=record.compression_time_ms,
                     )
-                except Exception:
-                    pass
+                    logger.info(
+                        "[compress] maybe_explore enabled=%s triggered=%s file=%s",
+                        ex.enabled,
+                        triggered,
+                        getattr(record, "name", "") or "",
+                    )
+                    if triggered:
+                        log_explore(
+                            "hook_after_compress",
+                            file=getattr(record, "name", "") or "",
+                            greedy=getattr(record.algorithm, "value", record.algorithm),
+                            compress_time_ms=round(float(record.compression_time_ms or 0), 2),
+                        )
+                except Exception as e:
+                    logger.warning("[compress] maybe_explore failed: %s", e)
                 if folder_ref is not None:
                     folder_ref.total_original += original_size
                     folder_ref.total_compressed += compressed_size

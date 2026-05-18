@@ -4,10 +4,12 @@ import logging
 import sys
 from pathlib import Path
 
-# Add src/ to sys.path automatically if running directly
-_src_dir = Path(__file__).resolve().parent.parent
-if str(_src_dir) not in sys.path:
-    sys.path.insert(0, str(_src_dir))
+# Package root is repo ``src/`` (``import gui...``). Dev: ``src/gui/main.py`` -> parent.parent.
+# Frozen onefile: modules are in the bundle; only add path when running from source tree.
+if not getattr(sys, "frozen", False):
+    _src_dir = Path(__file__).resolve().parent.parent
+    if str(_src_dir) not in sys.path:
+        sys.path.insert(0, str(_src_dir))
 
 from gui.utils.logging import setup_logging, flush_logging
 from gui.utils.resources import resolve_icon_path
@@ -90,6 +92,22 @@ def run_gui():
     from gui.utils.workspace import ensure_workspace_layout
 
     ensure_workspace_layout()
+
+    from gui.engine.compressor import CompressionEngine
+
+    CompressionEngine.reload_from_file()
+
+    try:
+        from gui.ade.explorer import SilentExplorer
+        from gui.config.settings import get_silent_explore_enabled
+
+        SilentExplorer.apply_tunables_from_settings()
+        if get_silent_explore_enabled():
+            logging.getLogger("gui.explore").info(
+                "[explore] silent exploration enabled (see ade.silent_explore_enabled)"
+            )
+    except Exception as e:
+        logger.debug("[main] silent explorer init: %s", e)
 
     from gui.utils.workspace import cleanup_workspace_on_app_quit
 

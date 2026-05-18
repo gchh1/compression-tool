@@ -139,6 +139,8 @@ target_link_libraries(
     test_lzdp_dpflate_stream
     PRIVATE
     api
+    algorithm
+    processor
 )
 
 add_executable(
@@ -194,6 +196,73 @@ target_link_libraries(
     test_dpflate_3hm_stream
     PRIVATE
     api
+    algorithm
+)
+
+add_executable(
+    test_dpflate_bin64k_3k_stream
+    test_dpflate_bin64k_3k_stream.cpp
+)
+
+target_link_libraries(
+    test_dpflate_bin64k_3k_stream
+    PRIVATE
+    algorithm
+    processor
+)
+
+add_executable(
+    test_dpflate_stream_trace
+    test_dpflate_stream_trace.cpp
+)
+
+target_link_libraries(
+    test_dpflate_stream_trace
+    PRIVATE
+    algorithm
+    processor
+)
+
+add_executable(
+    test_cartesian_stream_matrix
+    test_cartesian_stream_matrix.cpp
+)
+
+target_link_libraries(
+    test_cartesian_stream_matrix
+    PRIVATE
+    api
+    algorithm
+    processor
+    core
+)
+
+add_executable(
+    test_small_stream_7k_67k
+    test_small_stream_7k_67k.cpp
+)
+
+target_link_libraries(
+    test_small_stream_7k_67k
+    PRIVATE
+    api
+    algorithm
+    processor
+    core
+)
+
+add_executable(
+    test_lzdp_cartesian_stream_matrix
+    test_lzdp_cartesian_stream_matrix.cpp
+)
+
+target_link_libraries(
+    test_lzdp_cartesian_stream_matrix
+    PRIVATE
+    api
+    algorithm
+    processor
+    core
 )
 
 add_executable(
@@ -260,4 +329,57 @@ target_link_libraries(
     debug_token_trace
     PRIVATE
     algorithm
+)
+
+add_executable(
+    test_algorithm_new_lzdp
+    test_algorithm_new_lzdp.cpp
+)
+
+target_include_directories(
+    test_algorithm_new_lzdp
+    PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/core_new/include
+    ${CMAKE_SOURCE_DIR}/src/algorithm_new/include
+)
+
+target_link_libraries(
+    test_algorithm_new_lzdp
+    PRIVATE
+    core_new
+    algorithm_new
+)
+
+add_executable(
+    test_algorithm_new_phase1
+    test_algorithm_new_phase1.cpp
+)
+
+target_include_directories(
+    test_algorithm_new_phase1
+    PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/algorithm_new/include
+)
+
+target_link_libraries(
+    test_algorithm_new_phase1
+    PRIVATE
+    algorithm_new
+)
+
+add_executable(
+    test_algorithm_new_phase2
+    test_algorithm_new_phase2.cpp
+)
+
+target_include_directories(
+    test_algorithm_new_phase2
+    PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/algorithm_new/include
+)
+
+target_link_libraries(
+    test_algorithm_new_phase2
+    PRIVATE
+    algorithm_new
 )

@@ -829,3 +829,9 @@
 [DeflateCompressor] decompress 3HfMT: format_byte=0x33
 [DeflateCompressor] decompress 3HfMT: calling inflate_to_end with payload_size=6996
 [DeflateCompressor] decompress 3HfMT done: dec_size=2097152 success=1 done=1
+[DeflateCompressor] decompress start: compressed_size=472335 use_3hfmtree=0
+[DeflateCompressor] decompress standard Deflate path
+[DeflateCompressor] decompress standard done: dec_size=2996683 success=1 done=1 bytes_consumed=472334 bytes_produced=2996683
+[DeflateCompressor] decompress start: compressed_size=472308 use_3hfmtree=0
+[DeflateCompressor] decompress standard Deflate path
+[DeflateCompressor] decompress standard done: dec_size=2996683 success=1 done=1 bytes_consumed=472307 bytes_produced=2996683

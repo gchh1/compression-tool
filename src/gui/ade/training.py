@@ -27,6 +27,42 @@ logger = logging.getLogger(__name__)
 
 DATA_VERSION = "3.0"
 FEATURE_DIM = 20
+
+V3_ALGORITHM_ID_TO_TYPE: dict[int, AlgorithmType] = {
+    0: AlgorithmType.NONE,
+    1: AlgorithmType.DEFLATE,
+    2: AlgorithmType.LZSS,
+    3: AlgorithmType.LZDP,
+    4: AlgorithmType.DPFLATE,
+    5: AlgorithmType.BROTLI,
+    6: AlgorithmType.ZSTD,
+    7: AlgorithmType.GZIP,
+    8: AlgorithmType.HUFFMAN,
+    9: AlgorithmType.TRANSFORMER,
+}
+
+
+def v3_algorithm_id_to_param_slot(v3_id: int) -> int | None:
+    """Map JSONL ``algorithm_id`` to param-regressor one-hot slot (0..5)."""
+    if 1 <= v3_id <= 6:
+        return v3_id - 1
+    return None
+
+
+def algorithm_type_from_v3(sample: "TrainingSampleV3") -> AlgorithmType | None:
+    """Resolve algorithm arm label (required for per-algorithm param learning)."""
+    if sample.algorithm_id in V3_ALGORITHM_ID_TO_TYPE:
+        algo = V3_ALGORITHM_ID_TO_TYPE[sample.algorithm_id]
+        if algo not in (AlgorithmType.NONE, AlgorithmType.AUTO, AlgorithmType.TRANSFORMER):
+            return algo
+    if sample.algorithm_used:
+        try:
+            algo = AlgorithmType(sample.algorithm_used)
+            if algo not in (AlgorithmType.NONE, AlgorithmType.AUTO, AlgorithmType.TRANSFORMER):
+                return algo
+        except ValueError:
+            pass
+    return None
 FEATURE_NAMES = [
     'file_size_log2', 'magic_confidence', 'printable_ratio',
     'shannon_entropy', 'min_entropy', 'unique_byte_ratio',
@@ -41,13 +77,16 @@ FEATURE_NAMES = [
 @dataclass
 class TrainingSampleV3:
     """
-    Training sample with 20-dim BaseFeatures vector
-    
-    Compatible with ML training pipelines:
-    - features_vector: flat list of 20 floats (direct ML input)
-    - features_dict: named features (for analysis/debugging)
-    - label: algorithm that produced best compression
-    - metrics: compression quality metrics
+    Training sample with 20-dim BaseFeatures vector.
+
+  Label semantics (RF + NN + EA stack):
+    - **Context**: ``features_vector`` (20-dim BaseFeatures), file metadata.
+    - **Algorithm arm** (required for param opt): ``algorithm_used`` / ``algorithm_id``.
+    - **Algorithm-specific knobs**: ``params_used`` (schema depends on ``algorithm_used``).
+    - **Reward / quality**: ``compression_ratio`` (primary), ``compression_time_ms``,
+      ``output_size_bytes`` (codec payload, not full WCX).
+
+  ADE does **not** store streaming I/O flags or chunk sizes; those live in engine settings only.
     """
     sample_id: str = ""
     timestamp: float = 0.0
@@ -249,6 +288,8 @@ class TrainingDataStore:
             'valid_samples': 0,
             'invalid_samples': 0,
             'last_save_time': 0.0,
+            'last_retrain_total_samples': 0,
+            'last_retrain_time': 0.0,
             'data_version': DATA_VERSION,
             'algorithm_distribution': {},
             'type_distribution': {},
@@ -453,18 +494,33 @@ class TrainingDataStore:
     
     def get_label_vector(self, samples: list[TrainingSampleV3] | None = None) -> list[int]:
         """
-        Extract algorithm labels for ML training
-        
-        Args:
-            samples: Optional subset of samples
-            
-        Returns:
-            List of algorithm IDs
+        Extract algorithm arm IDs for RF / classifier training.
         """
         if samples is None:
             samples = self.load(validate=True)
-        
+
         return [s.algorithm_id for s in samples if s.is_valid and s.algorithm_id >= 0]
+
+    def get_ratio_vector(self, samples: list[TrainingSampleV3] | None = None) -> list[float]:
+        """Compression ratio rewards (lower is better) aligned with ``get_label_vector`` order."""
+        if samples is None:
+            samples = self.load(validate=True)
+        return [
+            float(s.compression_ratio)
+            for s in samples
+            if s.is_valid and s.algorithm_id >= 0
+        ]
+
+    def get_param_regression_rows(
+        self, samples: list[TrainingSampleV3] | None = None
+    ) -> list[TrainingSampleV3]:
+        """Rows suitable for NN param regression: arm label + params + ratio."""
+        if samples is None:
+            samples = self.load(validate=True)
+        return [
+            s for s in samples
+            if s.is_valid and s.algorithm_id >= 0 and bool(s.params_used)
+        ]
     
     def get_weight_vector(self, samples: list[TrainingSampleV3] | None = None) -> list[float]:
         """
@@ -481,9 +537,32 @@ class TrainingDataStore:
         
         return [s.sample_weight for s in samples if s.is_valid]
     
+    def count_persisted_exploration_samples(self) -> int:
+        """Count JSONL rows with ``is_exploration=true`` (full file scan)."""
+        if not self._data_file.is_file():
+            return 0
+        n = 0
+        try:
+            with open(self._data_file, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        row = json.loads(line)
+                        if row.get("is_exploration"):
+                            n += 1
+                    except json.JSONDecodeError:
+                        continue
+        except OSError as e:
+            logger.warning("[TrainingDataStore] count exploration failed: %s", e)
+        return n
+
     def get_stats(self) -> dict[str, Any]:
         """Get current statistics"""
-        return dict(self._stats)
+        out = dict(self._stats)
+        out["exploration_samples"] = self.count_persisted_exploration_samples()
+        return out
     
     def export_csv(self, output_path: str | Path) -> int:
         """

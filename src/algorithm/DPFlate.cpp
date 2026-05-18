@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <cstring>
 #include <memory>
+#include <new>
 #include <vector>
 #include <filesystem>
 #include <stdexcept>
@@ -20,6 +21,9 @@
 
 #include "BitWriter.hpp"
 #include "DebugLog.hpp"
+#include "DPFlateBin64kDebug.hpp"
+#include "DPFlateTrace.hpp"
+#include "TopMatch.hpp"
 #include "HuffmanTree.hpp"
 #include "KMPMatcher.hpp"
 
@@ -40,33 +44,37 @@ DPFlate::DPFlate(size_t search_size, size_t lookahead_size, size_t min_match,
       MIN_MATCH(min_match),
       DP_TOP(dp_top),
       DP_SUB_MATCH_MAX(dp_sub_match_max) {
+    DPFlateBin64kDebug::init_once();
+    DPFLATE_BIN64K_LOG("CTOR", "search=%zu look=%zu min_match=%zu", search_size, lookahead_size,
+                        min_match);
     reset();
 }
 
 auto DPFlate::reset(void) -> void {
-    input_buffer_.clear();
+    DPFLATE_BIN64K_LOG("RESET", "enter use_3hm=%d", use_3hfmtree_ ? 1 : 0);
+    temp_file_A_.recreate();
+    temp_file_B_.recreate();
+    temp_tokens_a_.rebind(&temp_file_A_);
+    temp_tokens_b_.rebind(&temp_file_B_);
 
-    dp_slot_count_ = std::max(size_t{64}, 2 * LOOKAHEAD_SIZE + 2);
-    dp_states_.assign(dp_slot_count_, DpState{});
-    dp_states_[0].cost = 0;
+    input_buffer_.clear();
+    DPFLATE_BIN64K_LOG("RESET", "input_buffer.clear cap=%zu", input_buffer_.capacity());
+
+    streaming_dp_.reset(LOOKAHEAD_SIZE);
+    DPFLATE_BIN64K_LOG("RESET", "streaming_dp.reset lookahead=%zu", LOOKAHEAD_SIZE);
 
     head_.assign(std::max(SEARCH_SIZE, size_t{1}), UINT32_MAX);
     prev_buf_.clear();
+    DPFLATE_BIN64K_LOG("RESET", "head.assign size=%zu prev_buf.clear", head_.size());
 
     window_abs_pos_ = 0;
     current_i_ = 0;
     total_in_len_ = 0;
 
-    spill_spec_ = PackedDpLinkSpec::fromWindow(SEARCH_SIZE, LOOKAHEAD_SIZE);
-    spill_a_.rebind(&temp_file_A_);
-    spill_b_.rebind(&temp_file_B_);
-
     total_tokens_ = 0;
     emitted_tokens_ = 0;
-    token_lengths_.clear();
-    token_offsets_.clear();
-    link_lengths_.clear();
-    link_offsets_.clear();
+    emit_literal_run_3hm_.clear();
+    DPFLATE_BIN64K_LOG("RESET", "emit_literal_run_3hm.clear");
 
     huff_reset_entropy_tables();
 
@@ -92,6 +100,15 @@ auto DPFlate::reset(void) -> void {
     }
 
     state_ = DPFlateState::COLLECT_INPUT;
+    if (use_3hfmtree_) {
+        if (const char* only = std::getenv("WEBCOMPRESS_DPFLATE_BIN64K_ONLY");
+            only && only[0] == '1') {
+            DPFlateBin64kDebug::arm_session(64u * 1024u, true);
+        }
+    }
+    DPFLATE_TRACE_EVENT("RESET", "search=%zu look=%zu min_match=%zu use_3hm=%d use_flag=%d",
+                        SEARCH_SIZE, LOOKAHEAD_SIZE, MIN_MATCH, use_3hfmtree_ ? 1 : 0,
+                        use_flag_encoding_ ? 1 : 0);
 }
 
 auto DPFlate::hashBucket3(size_t pos_idx) const -> size_t {
@@ -108,6 +125,8 @@ auto DPFlate::hashBucket3(size_t pos_idx) const -> size_t {
 }
 
 auto DPFlate::reseedHashChainPrefix(size_t end_exclusive) -> void {
+    DPFLATE_BIN64K_LOG("RESEED_HASH", "end_exclusive=%zu head=%zu prev=%zu buf=%zu", end_exclusive,
+                        head_.size(), prev_buf_.size(), input_buffer_.size());
     std::fill(head_.begin(), head_.end(), UINT32_MAX);
     const size_t n = std::min(end_exclusive, input_buffer_.size());
     for (size_t i = 0; i + 2 < n; ++i) {
@@ -123,14 +142,18 @@ auto DPFlate::reseedHashChainPrefix(size_t end_exclusive) -> void {
 
 /**
  * COLLECT_INPUT 的「DP Core」单步：对绝对位置 ``abs_pos`` 做字面量/匹配松弛，写 temp A 链节并清空环形槽。
- * 与 ``LZDP_OutOfCore`` 的 Phase1 同构；缩写见 ``docs/缩写对照表.md``。
+ * 与 ``LZDP_Streaming`` 的 Phase1 同构；缩写见 ``docs/缩写对照表.md``。
  */
 void dpflate_collect_input_one_index(DPFlate& self, size_t pos_idx, uint32_t abs_pos) {
-    auto& cur = self.dp_states_[abs_pos % self.dp_slot_count_];
+    auto& cur = self.streaming_dp_.cell_at(abs_pos);
+    // Snapshot before further cell_at() calls — next_.resize() invalidates ``cur``.
+    const uint32_t cur_cost = cur.cost;
+    const uint16_t link_len = cur.length;
+    const uint16_t link_off = cur.offset;
 
-    auto& next_lit = self.dp_states_[(abs_pos + 1) % self.dp_slot_count_];
-    if (cur.cost + self.lit_cost_ < next_lit.cost) {
-        next_lit.cost = cur.cost + self.lit_cost_;
+    auto& next_lit = self.streaming_dp_.cell_at(abs_pos + 1);
+    if (cur_cost + self.lit_cost_ < next_lit.cost) {
+        next_lit.cost = cur_cost + self.lit_cost_;
         next_lit.length = 0;
         next_lit.offset = self.input_buffer_[pos_idx];
     }
@@ -147,63 +170,76 @@ void dpflate_collect_input_one_index(DPFlate& self, size_t pos_idx, uint32_t abs
                 self.input_buffer_.begin() + search_start, search_len,
                 self.input_buffer_.begin() + pos_idx, look_len, self.DP_TOP, self.MIN_MATCH);
             for (auto& kr : kmp_results) {
-                auto& nm = self.dp_states_[(abs_pos + kr.length) % self.dp_slot_count_];
-                if (cur.cost + self.match_cost_ < nm.cost) {
-                    nm.cost = cur.cost + self.match_cost_;
+                if (kr.offset == 0) {
+                    continue;
+                }
+                auto& nm = self.streaming_dp_.cell_at(
+                    abs_pos + static_cast<uint32_t>(kr.length));
+                if (cur_cost + self.match_cost_ < nm.cost) {
+                    nm.cost = cur_cost + self.match_cost_;
                     nm.length = static_cast<uint16_t>(kr.length);
                     nm.offset = static_cast<uint16_t>(kr.offset);
                 }
             }
-        } else {
-            if (pos_idx + 2 < self.input_buffer_.size()) {
-                const size_t slot = self.hashBucket3(pos_idx);
-                self.prev_buf_[pos_idx] = self.head_[slot];
-                self.head_[slot] = static_cast<uint32_t>(pos_idx);
+        } else if (pos_idx + 2 < self.input_buffer_.size()) {
+            const size_t slot = self.hashBucket3(pos_idx);
+            self.prev_buf_[pos_idx] = self.head_[slot];
+            self.head_[slot] = static_cast<uint32_t>(pos_idx);
 
-                uint32_t match_buf_idx = self.prev_buf_[pos_idx];
-                size_t chain_length = self.DP_TOP * 8;
-                while (match_buf_idx != UINT32_MAX && chain_length-- > 0) {
-                    const size_t dist = pos_idx - match_buf_idx;
-                    if (dist > self.SEARCH_SIZE || dist == 0) {
-                        break;
-                    }
+            TopMatch top_matches(self.DP_TOP);
+            uint32_t match_buf_idx = self.prev_buf_[pos_idx];
+            size_t chain_length = self.DP_TOP * 8;
+            while (match_buf_idx != UINT32_MAX && chain_length-- > 0) {
+                const size_t dist = pos_idx - match_buf_idx;
+                if (dist > self.SEARCH_SIZE || dist == 0) {
+                    break;
+                }
 
-                    size_t match_len = 0;
-                    while (match_len < look_len &&
-                           self.input_buffer_[pos_idx + match_len] ==
-                               self.input_buffer_[match_buf_idx + match_len]) {
-                        match_len++;
-                    }
+                size_t match_len = 0;
+                while (match_len < look_len &&
+                       self.input_buffer_[pos_idx + match_len] ==
+                           self.input_buffer_[match_buf_idx + match_len]) {
+                    match_len++;
+                }
 
-                    if (match_len >= self.MIN_MATCH) {
-                        auto& nm = self.dp_states_[(abs_pos + match_len) % self.dp_slot_count_];
-                        if (cur.cost + self.match_cost_ < nm.cost) {
-                            nm.cost = cur.cost + self.match_cost_;
-                            nm.length = static_cast<uint16_t>(match_len);
-                            nm.offset = static_cast<uint16_t>(dist);
-                        }
-                    }
-                    match_buf_idx = self.prev_buf_[match_buf_idx];
+                if (match_len >= self.MIN_MATCH) {
+                    top_matches.insert(static_cast<uint16_t>(dist),
+                                       static_cast<uint16_t>(match_len));
+                }
+                match_buf_idx = self.prev_buf_[match_buf_idx];
+            }
+            for (const auto& e : top_matches.entries()) {
+                auto& nm = self.streaming_dp_.cell_at(
+                    abs_pos + static_cast<uint32_t>(e.length));
+                if (cur_cost + self.match_cost_ < nm.cost) {
+                    nm.cost = cur_cost + self.match_cost_;
+                    nm.length = e.length;
+                    nm.offset = e.offset;
                 }
             }
         }
     }
 
-    if (self.link_lengths_.size() <= abs_pos) {
-        self.link_lengths_.resize(static_cast<size_t>(abs_pos) + 1);
-        self.link_offsets_.resize(static_cast<size_t>(abs_pos) + 1);
+    self.temp_tokens_a_.writeAt(abs_pos, link_len, link_off);
+    if ((abs_pos & 0x3FFFu) == 0 || (abs_pos != 0 && (abs_pos % 3072u) == 0)) {
+        DPFLATE_BIN64K_LOG("COLLECT_IDX", "abs_pos=%u len=%u off=%u buf=%zu", abs_pos, link_len,
+                            link_off, self.input_buffer_.size());
+        if (pos_idx < self.input_buffer_.size()) {
+            DPFlateBin64kDebug::log_hex("COLLECT_BYTE", "at_abs", &self.input_buffer_[pos_idx], 1);
+        }
     }
-    self.link_lengths_[abs_pos] = cur.length;
-    self.link_offsets_[abs_pos] = cur.offset;
-    self.spill_a_.writePackedLink(self.spill_spec_, cur.length, cur.offset);
-
-    cur.cost = UINT32_MAX;
-    cur.length = 0;
-    cur.offset = 0;
 }
 
 auto DPFlate::handleCollectInput(AlgorithmStatus& status, bool is_last_chunk) -> void {
     size_t remain = reader_.getRemainSize();
+    DPFlateBin64kDebug::try_arm_from_buffer(use_3hfmtree_, input_buffer_.size() + remain,
+                                            window_abs_pos_, is_last_chunk);
+    DPFLATE_BIN64K_LOG("COLLECT_ENTER", "remain=%zu buf=%zu cur_i=%zu win_abs=%u is_last=%d",
+                        remain, input_buffer_.size(), current_i_, window_abs_pos_,
+                        is_last_chunk ? 1 : 0);
+    DPFLATE_TRACE_EVENT("COLLECT_ENTER", "remain=%zu buf=%zu cur_i=%zu win_abs=%u is_last=%d",
+                        remain, input_buffer_.size(), current_i_, window_abs_pos_,
+                        is_last_chunk ? 1 : 0);
     // === DEBUG_BLOCK_BEGIN (可删除) ===
     static int dbg_collect_cnt = 0;
     if (++dbg_collect_cnt <= 50) {
@@ -211,21 +247,32 @@ auto DPFlate::handleCollectInput(AlgorithmStatus& status, bool is_last_chunk) ->
                   "window_abs=%llu is_last=%d dp_slots=%zu search=%zu lookahead=%zu",
                   input_buffer_.size(), remain, current_i_,
                   static_cast<unsigned long long>(window_abs_pos_), is_last_chunk,
-                  dp_slot_count_, SEARCH_SIZE, LOOKAHEAD_SIZE);
+                  LOOKAHEAD_SIZE, SEARCH_SIZE, LOOKAHEAD_SIZE);
     }
     // === DEBUG_BLOCK_END ===
 
     if (remain > 0) {
         size_t old_len = input_buffer_.size();
         input_buffer_.resize(old_len + remain);
+        DPFLATE_BIN64K_LOG("COLLECT_READ", "input_buffer.resize %zu->%zu cap=%zu", old_len,
+                            input_buffer_.size(), input_buffer_.capacity());
         size_t copied = reader_.readBytes(input_buffer_.data() + old_len, remain);
         if (copied < remain) {
             input_buffer_.resize(old_len + copied);
+            DPFLATE_BIN64K_LOG("COLLECT_READ", "input_buffer.shrink after read copied=%zu",
+                                copied);
+        }
+        if (copied > 0) {
+            DPFlateBin64kDebug::log_hex("BUF_IN", "read_tail", input_buffer_.data() + old_len,
+                                        copied);
         }
     }
 
     if (prev_buf_.size() != input_buffer_.size()) {
+        const size_t old_prev = prev_buf_.size();
         prev_buf_.resize(input_buffer_.size(), UINT32_MAX);
+        DPFLATE_BIN64K_LOG("COLLECT_PREV", "prev_buf.resize %zu->%zu cap=%zu", old_prev,
+                            prev_buf_.size(), prev_buf_.capacity());
     }
 
     size_t processable = 0;
@@ -241,6 +288,21 @@ auto DPFlate::handleCollectInput(AlgorithmStatus& status, bool is_last_chunk) ->
     }
     
     if (processable > 0) {
+        DPFLATE_BIN64K_LOG("COLLECT_PROC", "processable=%zu cur_i=%zu win_abs=%u", processable,
+                            current_i_, window_abs_pos_);
+        if (!input_buffer_.empty()) {
+            DPFlateBin64kDebug::log_hex("BUF_IN", "buf_head", input_buffer_.data(),
+                                        input_buffer_.size());
+        }
+        if (!prev_buf_.empty()) {
+            DPFlateBin64kDebug::log_u32_slice("BUF_PREV", "prev_head", prev_buf_.data(),
+                                              std::min(prev_buf_.size(), size_t{16}), 0);
+        }
+        if (!head_.empty()) {
+            DPFlateBin64kDebug::log_u32_slice("BUF_HEAD", "head_slots", head_.data(),
+                                              std::min(head_.size(), size_t{8}), 0);
+        }
+        streaming_dp_.debug_dump_cells("before_batch");
         // === DEBUG_BLOCK_BEGIN (可删除) ===
         static int dbg_processable_cnt = 0;
         if (++dbg_processable_cnt <= 50) {
@@ -261,7 +323,15 @@ auto DPFlate::handleCollectInput(AlgorithmStatus& status, bool is_last_chunk) ->
 
             dpflate_collect_input_one_index(*this, pos_idx, abs_pos);
         }
+        streaming_dp_.debug_dump_cells("after_batch");
         current_i_ += processable;
+        const uint32_t commit_until_abs =
+            window_abs_pos_ + static_cast<uint32_t>(current_i_);
+        streaming_dp_.rotate(commit_until_abs);
+        DPFLATE_TRACE_EVENT(
+            "COLLECT_BATCH", "processable=%zu cur_i=%zu win_abs=%u buf=%zu is_last=%d",
+            processable, current_i_, window_abs_pos_, input_buffer_.size(),
+            is_last_chunk ? 1 : 0);
         if (algorithm::g_cancel_callback && algorithm::g_cancel_callback()) {
             throw std::runtime_error("cancelled");
         }
@@ -273,40 +343,69 @@ auto DPFlate::handleCollectInput(AlgorithmStatus& status, bool is_last_chunk) ->
         size_t keep_start_idx = keep_start_abs - window_abs_pos_;
         
         if (keep_start_idx > 0) {
+            DPFLATE_BIN64K_LOG("COLLECT_SLIDE", "keep_start_abs=%zu keep_start_idx=%zu buf=%zu",
+                                keep_start_abs, keep_start_idx, input_buffer_.size());
+            streaming_dp_.prune_before(static_cast<uint32_t>(keep_start_abs));
             std::vector<uint8_t> new_buf(input_buffer_.begin() + keep_start_idx, input_buffer_.end());
             std::vector<uint32_t> new_prev(prev_buf_.begin() + keep_start_idx, prev_buf_.end());
+            DPFLATE_BIN64K_LOG("COLLECT_SLIDE", "new_buf.size=%zu new_prev.size=%zu (iterator copy)",
+                                new_buf.size(), new_prev.size());
             input_buffer_ = std::move(new_buf);
             prev_buf_ = std::move(new_prev);
+            DPFLATE_BIN64K_LOG("COLLECT_SLIDE",
+                                "moved input_buffer=%zu prev_buf=%zu cap_in=%zu cap_prev=%zu",
+                                input_buffer_.size(), prev_buf_.size(), input_buffer_.capacity(),
+                                prev_buf_.capacity());
+            if (!input_buffer_.empty()) {
+                DPFlateBin64kDebug::log_hex("BUF_IN", "after_slide", input_buffer_.data(),
+                                            input_buffer_.size());
+            }
+            if (!prev_buf_.empty()) {
+                DPFlateBin64kDebug::log_u32_slice("BUF_PREV", "after_slide", prev_buf_.data(),
+                                                  std::min(prev_buf_.size(), size_t{16}), 0);
+            }
             window_abs_pos_ = static_cast<uint32_t>(keep_start_abs);
             current_i_ -= keep_start_idx;
             if (match_engine_ == 1) {
                 reseedHashChainPrefix(current_i_);
             }
         }
+        DPFLATE_TRACE_SNAPSHOT(*this, "COLLECT_PAUSE");
         status.need_input = true;
     } else {
         total_in_len_ = window_abs_pos_ + static_cast<uint32_t>(current_i_);
-        
-        DpState& cur = dp_states_[total_in_len_ % dp_slot_count_];
-        if (link_lengths_.size() <= total_in_len_) {
-            link_lengths_.resize(static_cast<size_t>(total_in_len_) + 1);
-            link_offsets_.resize(static_cast<size_t>(total_in_len_) + 1);
+        DPFlateBin64kDebug::arm_session(total_in_len_, use_3hfmtree_);
+        DPFLATE_BIN64K_LOG("COLLECT_DONE", "total_in_len=%u buf=%zu", total_in_len_,
+                            input_buffer_.size());
+        streaming_dp_.rotate(total_in_len_);
+
+        StreamingDpCell& end_cell = streaming_dp_.cell_at(total_in_len_);
+        temp_tokens_a_.writeAt(total_in_len_, end_cell.length, end_cell.offset);
+        temp_file_A_.flush();
+        DPFLATE_BIN64K_LOG("COLLECT_DONE", "tempA_bytes=%llu end_link len=%u off=%u",
+                            dbg_temp_file_size_bytes(temp_file_A_), end_cell.length, end_cell.offset);
+        for (uint32_t probe : {0u, 16384u, 32768u, 49152u, total_in_len_}) {
+            uint16_t pl = 0;
+            uint16_t po = 0;
+            temp_tokens_a_.readAt(probe, pl, po);
+            DPFLATE_BIN64K_LOG("TEMP_A_PROBE", "index=%u len=%u off=%u", probe, pl, po);
         }
-        link_lengths_[total_in_len_] = cur.length;
-        link_offsets_[total_in_len_] = cur.offset;
-        spill_a_.writePackedLink(spill_spec_, cur.length, cur.offset);
-        spill_a_.flush();
+        if (!input_buffer_.empty()) {
+            DPFlateBin64kDebug::log_hex("BUF_IN", "collect_done", input_buffer_.data(),
+                                        input_buffer_.size());
+        }
 
         // === DEBUG_BLOCK_BEGIN (可删除) ===
         static int dbg_collect_done_cnt = 0;
         if (++dbg_collect_done_cnt <= 50) {
             DEBUG_LOG("[DPFlate] handleCollectInput final: total_in_len=%u final_link=(len=%u off=%u) "
                       "tempA=%llu input_buffer=%zu",
-                      total_in_len_, cur.length, cur.offset,
+                      total_in_len_, end_cell.length, end_cell.offset,
                       dbg_temp_file_size_bytes(temp_file_A_), input_buffer_.size());
         }
         // === DEBUG_BLOCK_END ===
-        
+
+        DPFLATE_TRACE_SNAPSHOT(*this, "COLLECT_DONE");
         state_ = DPFlateState::BACKTRACK;
     }
 }
@@ -323,13 +422,15 @@ auto DPFlate::handleBacktrack(AlgorithmStatus& status, bool is_last_chunk) -> vo
     // === DEBUG_BLOCK_BEGIN (可删除) ===
     static int dbg_backtrack_enter_cnt = 0;
     if (++dbg_backtrack_enter_cnt <= 50) {
-        DEBUG_LOG("[DPFlate] handleBacktrack enter: total_in_len=%u tempA=%llu links=%zu use_3hm=%d",
-                  total_in_len_, dbg_temp_file_size_bytes(temp_file_A_), link_lengths_.size(),
-                  use_3hfmtree_);
+        DEBUG_LOG("[DPFlate] handleBacktrack enter: total_in_len=%u tempA=%llu use_3hm=%d",
+                  total_in_len_, dbg_temp_file_size_bytes(temp_file_A_), use_3hfmtree_);
     }
     // === DEBUG_BLOCK_END ===
 
+    DPFLATE_BIN64K_LOG("BACKTRACK", "enter total_in_len=%u", total_in_len_);
     uint64_t backtrack_out_bytes = 0;
+    uint64_t backtrack_literal_tokens = 0;
+    uint64_t backtrack_match_tokens = 0;
     while (cur > 0) {
         if ((cur & 0xFFFF) == 0 && algorithm::g_cancel_callback && algorithm::g_cancel_callback()) {
             throw std::runtime_error("cancelled");
@@ -337,14 +438,17 @@ auto DPFlate::handleBacktrack(AlgorithmStatus& status, bool is_last_chunk) -> vo
 
         uint16_t length = 0;
         uint16_t offset = 0;
-        if (cur < link_lengths_.size()) {
-            length = link_lengths_[cur];
-            offset = link_offsets_[cur];
+        temp_tokens_a_.readAt(cur, length, offset);
+        if (length == 0) {
+            ++backtrack_literal_tokens;
         } else {
-            PackedDpLinkBackwardWindow readerA(temp_file_A_, spill_spec_);
-            readerA.readPair(cur, length, offset);
+            ++backtrack_match_tokens;
         }
         backtrack_out_bytes += (length == 0) ? 1ULL : static_cast<uint64_t>(length);
+        if ((cur & 0x3FFFu) == 0) {
+            DPFLATE_BIN64K_LOG("BACKTRACK_STEP", "cur=%u len=%u off=%u tokens=%llu", cur, length,
+                                offset, static_cast<unsigned long long>(total_tokens_));
+        }
 
         // === DEBUG_BLOCK_BEGIN (可删除) ===
         static int dbg_backtrack_token_cnt = 0;
@@ -354,9 +458,7 @@ auto DPFlate::handleBacktrack(AlgorithmStatus& status, bool is_last_chunk) -> vo
         }
         // === DEBUG_BLOCK_END ===
 
-        spill_b_.writePackedLink(spill_spec_, length, offset);
-        token_lengths_.push_back(length);
-        token_offsets_.push_back(offset);
+        temp_tokens_b_.append(length, offset);
         total_tokens_++;
 
         huff_backtrack_accumulate_token(length, offset, literal_run_len_3hm);
@@ -370,7 +472,15 @@ auto DPFlate::handleBacktrack(AlgorithmStatus& status, bool is_last_chunk) -> vo
 
     huff_backtrack_finalize_literals(literal_run_len_3hm);
 
-    spill_b_.flush();
+    temp_file_B_.flush();
+    DPFLATE_BIN64K_LOG(
+        "BACKTRACK",
+        "done tokens=%llu literal_tok=%llu match_tok=%llu tempB_bytes=%llu out_bytes=%llu",
+        static_cast<unsigned long long>(total_tokens_),
+        static_cast<unsigned long long>(backtrack_literal_tokens),
+        static_cast<unsigned long long>(backtrack_match_tokens),
+        dbg_temp_file_size_bytes(temp_file_B_),
+        static_cast<unsigned long long>(backtrack_out_bytes));
 
     // === DEBUG_BLOCK_BEGIN (可删除) ===
     static int dbg_backtrack_done_cnt = 0;
@@ -384,6 +494,7 @@ auto DPFlate::handleBacktrack(AlgorithmStatus& status, bool is_last_chunk) -> vo
     }
     // === DEBUG_BLOCK_END ===
 
+    DPFLATE_TRACE_SNAPSHOT(*this, "BACKTRACK_DONE");
     state_ = DPFlateState::BUILD_TREE;
 }
 
@@ -408,6 +519,7 @@ auto DPFlate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk) -> vo
                       writer_.getBytesWritten(), status.need_output);
         }
         // === DEBUG_BLOCK_END ===
+        DPFLATE_TRACE_SNAPSHOT(*this, "BUILD_TREE_DONE");
     }
 }
 
@@ -482,6 +594,9 @@ void DPFlate::getDistCode(size_t dist, uint8_t& code, uint8_t& extra_bits,
 }
 
 void DPFlate::huff_reset_entropy_tables() {
+    DPFLATE_BIN64K_LOG("HUFF_RESET", "assign freq_map=%zu dist_freq=%zu 3hm off=%zu len=%zu",
+                        DEFLATE_ALPHABET_SIZE, DISTANCE_DICTIONARY_SIZE, offset_count_3hm_,
+                        length_count_3hm_);
     freq_map_.assign(DEFLATE_ALPHABET_SIZE, 0);
     dist_freq_.assign(DISTANCE_DICTIONARY_SIZE, 0);
     huffman_tree_.reset();
@@ -495,6 +610,8 @@ void DPFlate::huff_reset_entropy_tables() {
     length_count_3hm_ = static_cast<size_t>(1) << huffman_length_chunk_bits_;
     offset_freq_3hm_.assign(offset_count_3hm_, 0);
     length_freq_3hm_.assign(length_count_3hm_, 0);
+    DPFLATE_BIN64K_LOG("HUFF_RESET", "literal_freq_3hm=%zu offset_freq_3hm=%zu length_freq_3hm=%zu",
+                        literal_freq_3hm_.size(), offset_freq_3hm_.size(), length_freq_3hm_.size());
 }
 
 void DPFlate::huff_backtrack_accumulate_token(uint16_t length, uint16_t offset,
@@ -621,7 +738,7 @@ bool DPFlate::huff_build_tree_and_write_trees(AlgorithmStatus& st) {
 }
 
 bool DPFlate::huff_emit_token_stream(AlgorithmStatus& st) {
-    if (token_lengths_.size() != total_tokens_ || token_offsets_.size() != total_tokens_) {
+    if (total_tokens_ == 0) {
         st.done = true;
         return false;
     }
@@ -636,8 +753,9 @@ bool DPFlate::huff_emit_token_stream(AlgorithmStatus& st) {
     // === DEBUG_BLOCK_END ===
 
     if (use_3hfmtree_) {
-        std::vector<uint8_t> literal_run;
         const size_t max_run = length_count_3hm_ - 1;
+        DPFLATE_BIN64K_LOG("EMIT_3HM", "enter total_tokens=%llu max_run=%zu",
+                            static_cast<unsigned long long>(total_tokens_), max_run);
 
         while (emitted_tokens_ < total_tokens_) {
             if ((emitted_tokens_ & 0xFFFF) == 0 && algorithm::g_cancel_callback &&
@@ -649,58 +767,75 @@ bool DPFlate::huff_emit_token_stream(AlgorithmStatus& st) {
                 return false;
             }
             const uint64_t idx = total_tokens_ - 1 - emitted_tokens_;
-            const uint16_t raw_len = token_lengths_[idx];
-            const uint16_t raw_off = token_offsets_[idx];
+            uint16_t raw_len = 0;
+            uint16_t raw_off = 0;
+            temp_tokens_b_.readBySeqIndex(idx, raw_len, raw_off);
 
             // === DEBUG_BLOCK_BEGIN (可删除) ===
             static int dbg_emit_3hm_token_cnt = 0;
             if (++dbg_emit_3hm_token_cnt <= 50) {
                 DEBUG_LOG("[DPFlate] handleEmitTokens 3HM token: idx=%llu len=%u off=%u literal_run=%zu writer_bytes=%zu",
                           static_cast<unsigned long long>(idx), raw_len, raw_off,
-                          literal_run.size(), writer_.getBytesWritten());
+                          emit_literal_run_3hm_.size(), writer_.getBytesWritten());
             }
             // === DEBUG_BLOCK_END ===
 
             if (raw_len == 0) {
-                literal_run.push_back(static_cast<uint8_t>(raw_off));
+                emit_literal_run_3hm_.push_back(static_cast<uint8_t>(raw_off));
+                if ((emit_literal_run_3hm_.size() & 0x3FFFu) == 0) {
+                    DPFLATE_BIN64K_LOG("EMIT_3HM", "literal_run.push_back size=%zu cap=%zu",
+                                        emit_literal_run_3hm_.size(),
+                                        emit_literal_run_3hm_.capacity());
+                }
             } else {
-                if (!literal_run.empty()) {
-                    size_t remaining = literal_run.size();
+                if (!emit_literal_run_3hm_.empty()) {
+                    DPFLATE_BIN64K_LOG("EMIT_3HM", "literal_run.flush size=%zu before match",
+                                        emit_literal_run_3hm_.size());
+                    size_t remaining = emit_literal_run_3hm_.size();
                     size_t run_pos = 0;
                     while (remaining > 0) {
                         const size_t chunk = (remaining > max_run) ? max_run : remaining;
                         huffman_tree_3hm_->encodeRunHeader(static_cast<uint16_t>(chunk), writer_);
                         for (size_t i = 0; i < chunk; ++i) {
-                            huffman_tree_3hm_->encodeLiteral(literal_run[run_pos + i], writer_);
+                            huffman_tree_3hm_->encodeLiteral(emit_literal_run_3hm_[run_pos + i], writer_);
                         }
                         run_pos += chunk;
                         remaining -= chunk;
                     }
-                    literal_run.clear();
+                    emit_literal_run_3hm_.clear();
+                    DPFLATE_BIN64K_LOG("EMIT_3HM", "literal_run.clear after flush");
                 }
                 huffman_tree_3hm_->encodeMatch(raw_off, raw_len, writer_);
             }
+            if ((emitted_tokens_ & 0x3FFFu) == 0) {
+                DPFLATE_BIN64K_LOG("EMIT_3HM", "progress emitted=%llu writer=%zu",
+                                    static_cast<unsigned long long>(emitted_tokens_),
+                                    writer_.getBytesWritten());
+            }
             emitted_tokens_++;
         }
-        if (!literal_run.empty()) {
+        if (!emit_literal_run_3hm_.empty()) {
+            DPFLATE_BIN64K_LOG("EMIT_3HM", "literal_run.tail size=%zu", emit_literal_run_3hm_.size());
             if (!writer_.ensureSpace(64)) {
                 st.need_output = true;
                 return false;
             }
-            size_t remaining = literal_run.size();
+            size_t remaining = emit_literal_run_3hm_.size();
             size_t run_pos = 0;
             while (remaining > 0) {
                 const size_t chunk = (remaining > max_run) ? max_run : remaining;
                 huffman_tree_3hm_->encodeRunHeader(static_cast<uint16_t>(chunk), writer_);
                 for (size_t i = 0; i < chunk; ++i) {
-                    huffman_tree_3hm_->encodeLiteral(literal_run[run_pos + i], writer_);
+                    huffman_tree_3hm_->encodeLiteral(emit_literal_run_3hm_[run_pos + i], writer_);
                 }
                 run_pos += chunk;
                 remaining -= chunk;
             }
-            literal_run.clear();
+            emit_literal_run_3hm_.clear();
+            DPFLATE_BIN64K_LOG("EMIT_3HM", "literal_run.clear tail done");
         }
         writer_.flush();
+        DPFLATE_BIN64K_LOG("EMIT_3HM", "done writer_bytes=%zu", writer_.getBytesWritten());
         // === DEBUG_BLOCK_BEGIN (可删除) ===
         static int dbg_emit_3hm_done_cnt = 0;
         if (++dbg_emit_3hm_done_cnt <= 50) {
@@ -709,6 +844,7 @@ bool DPFlate::huff_emit_token_stream(AlgorithmStatus& st) {
                       writer_.getBytesWritten());
         }
         // === DEBUG_BLOCK_END ===
+        DPFLATE_TRACE_SNAPSHOT(*this, "EMIT_DONE");
         st.done = true;
         return true;
     }
@@ -723,8 +859,9 @@ bool DPFlate::huff_emit_token_stream(AlgorithmStatus& st) {
             return false;
         }
         const uint64_t idx = total_tokens_ - 1 - emitted_tokens_;
-        const uint16_t raw_len = token_lengths_[idx];
-        const uint16_t raw_off = token_offsets_[idx];
+        uint16_t raw_len = 0;
+        uint16_t raw_off = 0;
+        temp_tokens_b_.readBySeqIndex(idx, raw_len, raw_off);
         // === DEBUG_BLOCK_BEGIN (可删除) ===
         static int dbg_emit_flate_token_cnt = 0;
         if (++dbg_emit_flate_token_cnt <= 50) {
@@ -768,6 +905,7 @@ bool DPFlate::huff_emit_token_stream(AlgorithmStatus& st) {
                   writer_.getBytesWritten());
     }
     // === DEBUG_BLOCK_END ===
+    DPFLATE_TRACE_SNAPSHOT(*this, "EMIT_DONE");
     st.done = true;
     return true;
 }

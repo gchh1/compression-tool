@@ -18,6 +18,7 @@
 | ------ | ------------------------------------------------------- |
 | 文件大小范围 | 64KB \~ 2MB                                             |
 | 流式分块大小 | **严格 300KB**（`chunk_size = 300 * 1024`）                 |
+| 小流式压力档 | **67 KiB** 语料 × **7 KiB** chunk（`test_small_stream_7k_67k`；约 10 次 push） |
 | 语料类型   | pattern（重复模式）、random（随机）、text（文本）、binary（二进制）、mixed（混合） |
 
 ### 2.2 验收条件
@@ -226,8 +227,8 @@ target_compile_definitions(algorithm PRIVATE DEBUG_LOG_ENABLED=1)
 
 | #  | 算法   | 树选择 | 比较内容      | Flag 编码 | 有效性 | 完成与否 | 备注                                          |
 | -- | ---- | --- | --------- | ------- | --- | ---- | ------------------------------------------- |
-| D1 | LZDP | N/A | 流式压缩内容校验  | 禁用      | ✅   | ✅    | pattern/random OK（`LZDPDecompress_OutOfCore` writeBytes 修复） |
-| D2 | LZDP | N/A | 流式压缩内容校验  | 启用      | ✅   | ✅    | 同 D1；`test_lzdp_dpflate_stream` PASS          |
+| D1 | LZDP | N/A | 流式压缩内容校验  | 禁用      | ✅   | ✅    | **条件 A**：内存≡流式（`cal_path_cost` + 非 flag 字面量游程发射）；`test_lzdp_cartesian_stream_matrix` |
+| D2 | LZDP | N/A | 流式压缩内容校验  | 启用      | ✅   | ✅    | 同 D1（flag 启用） |
 | D3 | LZDP | N/A | 非流式压缩内容校验 | 禁用      | ✅   | ✅    | 全部语料 PASS                                   |
 | D4 | LZDP | N/A | 非流式压缩内容校验 | 启用      | ✅   | ✅    | `test_lzdp_memory_flag` pattern/random/text/binary\_64k PASS |
 | D5 | LZDP | N/A | 解压后与原文件校验 | 禁用      | ✅   | ✅    | 同 D3                                        |
@@ -254,23 +255,57 @@ target_compile_definitions(algorithm PRIVATE DEBUG_LOG_ENABLED=1)
 
 | #   | 算法      | 树选择   | 比较内容      | Flag 编码 | 有效性 | 完成与否 | 备注                                                          |
 | --- | ------- | ----- | --------- | ------- | --- | ---- | ----------------------------------------------------------- |
-| P1  | DPFlate | FLATE | 流式压缩内容校验  | 禁用      | ✅   | ✅    | pattern/random OK                                           |
-| P2  | DPFlate | FLATE | 流式压缩内容校验  | 启用      | ✅   | ✅    | pattern/random OK                                           |
+| P1  | DPFlate | FLATE | 流式压缩内容校验  | 禁用      | ✅   | ✅    | **条件 A**：`test_lzdp_dpflate_stream` pattern 语料 WCX payload 与 `DPFlateCompressor` 逐字节一致（300KiB chunk；2026-05-17） |
+| P2  | DPFlate | FLATE | 流式压缩内容校验  | 启用      | ✅   | ✅    | **条件 A**：同上（flag 启用，pattern 语料；2026-05-17） |
 | P3  | DPFlate | FLATE | 非流式压缩内容校验 | 禁用      | ✅   | ✅    | mixed\_2mb 已修复（backtrack 内存链镜像 + drainFullBytes）       |
 | P4  | DPFlate | FLATE | 非流式压缩内容校验 | 启用      | ✅   | ✅    | 同 P3                                                        |
 | P5  | DPFlate | FLATE | 解压后与原文件校验 | 禁用      | ✅   | ✅    | 同 P3                                                        |
 | P6  | DPFlate | FLATE | 解压后与原文件校验 | 启用      | ✅   | ✅    | 同 P4                                                        |
-| P7  | DPFlate | 3HfMT | 流式压缩内容校验  | 禁用      | ✅   | ✅    | `decompressFile` 0x33→Inflate3HM；`test_dpflate_3hm_stream` 300KiB chunk 至 6MiB PASS |
-| P8  | DPFlate | 3HfMT | 流式压缩内容校验  | 启用      | ✅   | ✅    | 同 P7（flag 启用）                                               |
+| P7  | DPFlate | 3HfMT | 流式压缩内容校验  | 禁用      | ✅   | ✅    | `test_dpflate_3hm_stream` + `test_dpflate_bin64k_3k_stream`（2026-05-17） |
+| P8  | DPFlate | 3HfMT | 流式压缩内容校验  | 启用      | ✅   | ✅    | 同 P7（flag 启用） |
 | P9  | DPFlate | 3HfMT | 非流式压缩内容校验 | 禁用      | ✅   | ✅    | mixed\_2mb OK；memory-only 35/35 PASS                         |
 | P10 | DPFlate | 3HfMT | 非流式压缩内容校验 | 启用      | ✅   | ✅    | 同 P9（memory flag 路径）                                        |
 | P11 | DPFlate | 3HfMT | 解压后与原文件校验 | 禁用      | ✅   | ✅    | 同 P9                                                        |
 | P12 | DPFlate | 3HfMT | 解压后与原文件校验 | 启用      | ✅   | ✅    | 同 P10                                                       |
 
+##### P7 / P8 验收细目（§2.2 条件 A + B，chunk=300KiB，`test_dpflate_3hm_stream` / `test_lzdp_dpflate_stream`）
+
+> P7 = flag 禁用；P8 = flag 启用。仅覆盖「流式压缩内容校验」行；P9–P12（非流式 / 解压）已 ✅。
+
+| 语料 | 大小 | P7 条件 A（流式 WCX payload ≡ 内存） | P7 条件 B（流式压缩→解压≡原文） | P8 条件 A | P8 条件 B |
+| ---- | ---- | ----------------------------------- | ------------------------------ | --------- | --------- |
+| pattern | 672 B | ✅ `test_lzdp_dpflate_stream` | ✅ `test_dpflate_3hm_stream` | ✅ | ✅ |
+| random | 384 B | ✅ `test_lzdp_dpflate_stream` | ✅ | ✅ | ✅ |
+| text | ~22 KB | ✅ `test_lzdp_dpflate_stream` | ✅ | ✅ | ✅ |
+| binary\_64k | 64 KB | ✅ `test_dpflate_bin64k_3k_stream` mem==stream | ✅ `test_dpflate_3hm_stream` | ✅ | ✅ |
+| repeat\_1mb | 1 MiB | ✅ `test_lzdp_dpflate_stream` | ✅ `test_dpflate_3hm_stream` | ✅ | ✅ |
+| repeat\_3mb | 3 MiB | ✅ | ✅ | ✅ | ✅ |
+| repeat\_6mb | 6 MiB | ✅ | ✅ | ✅ | ✅ |
+
+**P7/P8 行完成定义**：上表全部语料 **条件 A、B 均为 ✅** 后，矩阵中 P7/P8 的「完成与否」方可标 ✅（**已满足，2026-05-17**）。
+
 **有效组合数**：36（全部组合均有效）
-**已完成组合数**：36（✅ 全部有效组合已覆盖）
+**已完成组合数**：36
 **有缺陷组合数**：0
 **未测试组合数**：0
+
+##### P7/P8 流式分块笛卡尔子矩阵（chunk × 语料大小）
+
+| 维度 | 取值 |
+| ---- | ---- |
+| **流式 chunk** | 30 / 57 / 97 / 113 KiB（30720 / 58368 / 99328 / 115712 B） |
+| **语料大小** | 256 / 522 / 1025 / 2000 KiB |
+| **校验** | **A**：`Pipeline::push` 精确分块 payload ≡ `DPFlateCompressor`；**B**：`compressFile`→`decompressFile`（`WEBCOMPRESS_STREAM_CHUNK_MIN_BYTES=30720` + 输出池 ≥256KiB） |
+| **测试** | `test_cartesian_stream_matrix`（P7 flag=0 + P8 flag=1，4×4×2×2 = 64 格；`CARTESIAN_QUICK=1` / `CARTESIAN_SKIP_B=1` 可缩短） |
+
+##### D1 / D2 流式分块笛卡尔子矩阵（chunk × 语料大小）
+
+| 维度 | 取值 |
+| ---- | ---- |
+| **流式 chunk** | 30 / 57 / 97 / 113 KiB |
+| **语料大小** | 256 / 522 / 1025 / 2000 KiB |
+| **校验** | **A**：`LZDPCompressor`（`compress_dp`）裸流 ≡ 精确 `Pipeline::push`（§2.2 流式≡非流式）；**B**：`compressFile`→`decompressFile` |
+| **测试** | `test_lzdp_cartesian_stream_matrix`；调试 `WEBCOMPRESS_LZDP_STREAM_DEBUG` → `Package/logs/lzdp_stream_containers.log` |
 
 #### 发现的缺陷汇总
 
@@ -280,10 +315,26 @@ target_compile_definitions(algorithm PRIVATE DEBUG_LOG_ENABLED=1)
 | BUG-02 | ✅ 已修复 | Deflate memory decompress 在 binary\_64k 上 CRC 不匹配，mixed\_2mb 崩溃         | F2, F3         |
 | BUG-03 | ✅ 已修复 | DPFlate memory mixed\_2mb：`TempFileBitAppender::flushChunk` 按字节填充破坏 packed link 索引；backtrack 改读 `link_lengths_`/`link_offsets_` 镜像 | P3–P6          |
 | BUG-04 | ✅ 已修复 | 3HfMT mixed\_2mb：与 BUG-03 同源（backtrack 读 temp A 错位）；memory 链镜像后 OK | P9–P12         |
-| BUG-05 | ✅ 已修复 | LZDP 流式 decompress：`LZDPDecompress_OutOfCore` 用 MSB-first writeBit 写明文，改为 writeBytes | D1, D2         |
+| BUG-05 | ✅ 已修复 | LZDP 流式 decompress：`LZDPDecompress_Streaming` 用 MSB-first writeBit 写明文，改为 writeBytes | D1, D2         |
 | BUG-06 | ✅ 已修复 | 3HfMT(DPFlate) 流式 decompress：`decompressFile` 链为 Inflate 时未识别 0x33 前缀，改为 Inflate3HM | P7, P8         |
 | BUG-07 | 🟡 中等 | 3HfMT huffman\_chunk\_bits=11/13/15 解压损坏或堆损坏                            | test\_3hm\_all |
 | BUG-08 | 🟢 低  | LZDP 流式 text 语料解压崩溃                                                     | D1             |
+| BUG-10 | ✅ 已修复 | LZDP/DPFlate COLLECT：HashChain 用 ``TopMatch``（``TopMatch.hpp``，同 ``algorithm_new``）；LZDP 另含 `cal_path_cost` + 非 flag 游程 | D1–D2, P7–P8   |
+| BUG-09 | ✅ 已修复 | 根因：(1) `cell_at` 悬空引用写坏 temp A；(2) `rotate()` 用 `assign` 清空未提交 `next_`；(3) Pipeline **输出池** 与 3KiB 输入块同大导致 EMIT AV。修复后 `test_dpflate_3hm_stream` **6MiB ALL PASS**；`test_dpflate_bin64k_3k_stream`（64KiB + 精确 3KiB push）**PASS** | P7, P8         |
+
+**BUG-09 容器转换调试（binary\_64k 专用，单文件）**
+
+```powershell
+$env:WEBCOMPRESS_DPFLATE_BIN64K_DEBUG = "D:\AAA_C\compression-tool\Package\logs\dpflate_bin64k_containers.log"
+$env:WEBCOMPRESS_DPFLATE_BIN64K_TARGET = "65536"   # 3KiB 多 chunk 流式时预 ARM
+cd build_py\bin
+.\test_dpflate_bin64k_3k_stream.exe   # 64KiB，Pipeline 每次 push 3072 B
+.\test_dpflate_3hm_stream.exe       # compressFile，chunk≥64KiB
+```
+
+- 环境变量：`WEBCOMPRESS_DPFLATE_BIN64K_DEBUG=1` 或绝对路径；`WEBCOMPRESS_DPFLATE_BIN64K_DUMP_MAX=64` 控制 hex 长度；`WEBCOMPRESS_DPFLATE_BIN64K_TARGET=65536` / `ONLY=1` 预 ARM。
+- 记录：`BUF_IN`/`BUF_PREV`/`BUF_HEAD` hex、`STREAMING_DP_DUMP`、`TEMP_A_BYTES`、`PIPE_CHUNK`、`BACKTRACK`（含 `literal_tok`/`match_tok` 计数）等。
+- 实现：`DPFlateBin64kDebug.*`、`StreamingDpChunk.hpp`（砖块 `rotate`）、`StreamChunkPolicy.hpp`（`pipeline_output_pool_chunk_bytes` ≥256KiB）、`TempTokenIO.hpp`。
 
 #### 测试优先级与执行顺序
 
@@ -292,7 +343,8 @@ target_compile_definitions(algorithm PRIVATE DEBUG_LOG_ENABLED=1)
 | 优先级 | 组合                                     | 说明                                                     | 预估工作量           |
 | --- | -------------------------------------- | ------------------------------------------------------ | --------------- |
 | ~~P0~~ | ~~P2, P4, P6~~                           | ✅ 已完成（表内 P2/P4/P6 已打勾）                                  | —               |
-| ~~P1~~ | ~~P7, P8, P10, P12~~                     | ✅ 已完成（流式 `test_dpflate_3hm_stream`）                        | —               |
+| ~~P1~~ | ~~P10, P12~~（3HfMT 内存/解压）          | ✅ 已完成                                                       | —               |
+| ~~**P1b**~~ | ~~**P7, P8**（3HfMT 流式 §2.2 A+B）~~       | ✅ 已完成 — BUG-09 修复 + `test_dpflate_bin64k_3k_stream`           | —               |
 | ~~P2~~ | ~~D2~~                                   | ✅ 已完成（D1/D2 流式已打勾）                                     | —               |
 | P3  | F4-F9 (Deflate + 3HfMT × 全部)           | ✅ 已完成；`test_deflate` 64KB-2MB memory path PASS；流式未测试 | —               |
 | P3b | F1b-F3b (Deflate FLATE 非 flag)         | ✅ 已完成；`test_deflate` 64KB-2MB memory path PASS | —               |
@@ -303,7 +355,7 @@ target_compile_definitions(algorithm PRIVATE DEBUG_LOG_ENABLED=1)
 #### 建议执行计划（小文件优先，全表格跑通后才能进入大文件测试）
 
 1. ~~**第1步**：DPFlate FLATE + flag (P2, P4, P6)~~ — ✅ 已完成
-2. ~~**第2步**：DPFlate 3HfMT memory + 流式 (P7–P12)~~ — ✅ 已完成（`test_dpflate_3hm_stream.cpp`）
+2. ~~**第2步**：DPFlate 3HfMT — P9–P12 内存/解压 ✅；P7/P8 流式 `test_dpflate_3hm_stream` / `test_dpflate_bin64k_3k_stream` ✅~~
 3. ~~**第3步**：LZDP 流式 + flag (D2)~~ — ✅ 已完成
 4. ~~**第4步**：新增 Deflate + 3HfMT 完整测试 (F4-F9)~~ — ✅ 已完成（`test_deflate.cpp`）
 5. ~~**第5步**：新增 Deflate FLATE 非 flag 编码测试 (F1b-F3b)~~ — ✅ 已完成（`test_deflate.cpp`）
@@ -460,7 +512,93 @@ target_compile_definitions(algorithm PRIVATE DEBUG_LOG_ENABLED=1)
 3. **mixed\_2mb DPFlate FLATE + 3HfMT 已修复** — 根因是 `TempFileBitAppender::flushChunk` 字节填充 + backtrack 读 temp A 错位；collect 阶段 `link_lengths_`/`link_offsets_` 镜像 + `drainFullBytes()`。
 4. **DeflateCompressor + 3HfMT 仍需专项测试** — ACCESS\_VIOLATION 历史问题尚未重新验证（Deflate\_3HM 测试仍注释）。
 5. **memory-only 全矩阵（5 语料 × 7 算法）35/35 PASS** — 含 `mixed_2mb`（2026-05-15，`test_algorithm_comparison --memory-only`，约 9 分钟）。
-6. **LZDP 流式 CRC 已修复** — ``LZDPDecompress_OutOfCore`` 曾用 MSB-first ``writeBit`` 写明文，与 LSB-first ``BitWriter`` 不一致；改为 ``writeBytes``。3HfMT/DPFlate\_3HM 流式仍待修。
+6. **LZDP 流式 CRC 已修复** — ``LZDPDecompress_Streaming`` 曾用 MSB-first ``writeBit`` 写明文，与 LSB-first ``BitWriter`` 不一致；改为 ``writeBytes``。3HfMT/DPFlate\_3HM 流式仍待修。
 7. **3HfMT huffman\_chunk\_bits ≥11 解压损坏** — 非字节对齐 Huffman 编码在较大 chunk 时解压器有 bug。
 8. **进度日志机制有效** — 成功定位每个崩溃/失败的精确位置。
+
+### 7.6 2026-05-17 LZDP/DPFlate 流式 DP 双分块 + memory `cal_cost` 复测
+
+**代码变更（仅 `src/algorithm/`、`src/core/`、测试）**
+
+- `StreamingDpTwoChunk`（`StreamingDpChunk.hpp`）：`LZDP_Streaming` / `DPFlate` COLLECT 用 `cur`/`next` 双缓冲，避免环形槽覆盖有效未来 DP 状态。
+- `LZDP::dp_core`：字面量/匹配松弛改为 `cal_cost(literal_count, match_count)`。
+- `LZDPCompressor` / 回归测试：`LZDP(search, look)` 误作位宽 → 改为 `LZDP` + `autoBitWidth(search, look)`（与 `LZDP_Streaming` 的 `calcBitWidth` 一致）。
+
+**定向测试（`build_py/bin`）**
+
+| 测试 | 覆盖 | 结果 |
+| --- | --- | --- |
+| `test_lzdp_dpflate_regression` | D3–D6 内存 CRC + DPFlate 内存 | **PASS**（LZDP 黄金 CRC 未变） |
+| `test_lzdp_dpflate_stream` | D1–D2 流式往返 | **PASS** |
+| `test_lzdp_memory_streaming_parity` | 内存 vs 流式可观测性 | **PASS** |
+| `test_lzdp_memory_flag` | D4/D6 flag 内存 | **PASS**（依赖 `LZDPCompressor` autoBitWidth 修复） |
+| `test_dpflate_3hm_stream` | P7/P8，300KiB chunk | **PASS**（至 6MiB；BUG-09 修复后） |
+| `test_cartesian_stream_matrix` | P7/P8 子矩阵 30–113KiB × 256–2000KiB | **PASS**（条件 A+B；见 §5.5） |
+| `test_lzdp_cartesian_stream_matrix` | D1/D2 子矩阵 30–113KiB × 256–2000KiB | **PASS**（A mem==stream + B 往返） |
+| `test_small_stream_7k_67k` | P1/P7/P8、D1/D2；BUG-01/07；**7 KiB** chunk × **67 KiB** | **ALL PASS**（2026-05-17） |
+| `test_algorithm_comparison --memory-only` | D3–D6 / P3–P12 内存 | **部分**：pattern→binary\_64k 全部 LZDP/DPFlate/3HfMT **OK**；**LZDP mixed\_2mb OK**；在 **DPFlate mixed\_2mb 压缩入口** 崩溃中断（待单独排查） |
+
+**结论**
+
+- 小语料内存/流式 LZDP、DPFlate FLATE 路径在修复后回归通过。
+- P7/P8：`test_dpflate_3hm_stream` 至 6MiB **ALL PASS**；小 chunk 压力见 `test_dpflate_bin64k_3k_stream`。
+
+### 7.8 2026-05-17 BUG-09 闭环（砖块 rotate + 输出池 + 3KiB 测试）
+
+**根因与修复**
+
+| # | 问题 | 修复 |
+|---|------|------|
+| 1 | `dpflate_collect_input_one_index` 持有 `cell_at` 引用后 `next_.resize()` 悬空 | 快照 `cur_cost`/`link_len`/`link_off` 再松弛 |
+| 2 | `rotate()` 仅 COLLECT_DONE 调用且 `assign` 清空 `next_` | 砖块 `rotate(commit)`：每批 COLLECT 后丢弃已提交前缀；保留 forward 格 |
+| 3 | Pipeline `MemoryPool` 槽 = 3KiB 输入块 | `pipeline_output_pool_chunk_bytes()` 输出池 ≥256KiB |
+
+**测试**
+
+```text
+test_dpflate_3hm_stream      ALL PASS（pattern…repeat_6mb，300KiB compressFile chunk）
+test_dpflate_bin64k_3k_stream ALL PASS（65536B，22×3072B push，payload=66889 mem==stream）
+```
+
+**日志判读**：`BACKTRACK done literal_tok=65536 match_tok=0` 表示该随机 64KiB 语料 DP 链以字面量为主（非 temp A 空洞）；`writer_bytes=66889` 四次运行一致即 payload 对齐。
+
+### 7.10 2026-05-17 D1/D2 LZDP 笛卡尔子矩阵 + 流式调试
+
+| 项 | 说明 |
+| --- | --- |
+| 调试 | `WEBCOMPRESS_LZDP_STREAM_DEBUG` → `LZDPStreamDebug`（COLLECT / rotate / BACKTRACK / EMIT，同 DPFlate 砖块日志风格） |
+| 条件 A | 内存 `compress_dp` ≡ 流式 `Pipeline` 精确分块（`cal_path_cost` + HashChain Top-K 与内存对齐，2026-05-17） |
+| 测试 | `test_lzdp_cartesian_stream_matrix`（4×4×2×2）；`test_lzdp_dpflate_stream` D1 pipe==file |
+
+### 7.9 2026-05-17 P7/P8 笛卡尔子矩阵 + 全量复测
+
+| 测试 | 结果 | 备注 |
+| --- | --- | --- |
+| `test_dpflate_3hm_stream` | **ALL PASS** | P7+P8，pattern…repeat\_6mb，300KiB chunk，~272s |
+| `test_cartesian_stream_matrix` | **ALL PASS** | 4×4×2×2=64 格（30/57/97/113 KiB × 256–2000 KiB，条件 A+B），~18.5min |
+| `test_lzdp_dpflate_stream` | **PASS** | 含 binary\_64k 条件 A |
+| `api.cpp` | 输出池 | `MemoryPool` 槽改用 `pipeline_output_pool_chunk_bytes(chunk)` |
+
+### 7.7 2026-05-17 DPFlate 流式修复（temp record + pipeline `is_last`）
+
+**实现**
+
+- `TempTokenIO.hpp`：`TempTokenRecord`（4 字节 `length`/`offset`）+ `TempTokenStore`；`DPFlate` COLLECT 写 temp A、BACKTRACK 读 A 写 B、EMIT 按序读 B；3HfM `emit_literal_run_3hm_` 成员化跨 `need_output`。
+- `StreamProcessor.cpp`：`final_flag = is_last`（不再要求 `in_chunks_.empty()`），使末块 plaintext 首次 `process()` 即带 `is_last_chunk=true`，与非流式 `compress_to_end` 分块语义一致。
+
+**定向测试（`build_py/bin`）**
+
+| 测试 | 覆盖 | 结果 |
+| --- | --- | --- |
+| `test_lzdp_dpflate_regression` | DPFlate/LZDP 内存 | **PASS** |
+| `test_lzdp_dpflate_stream` | D2 + P1/P2/P7/P8 **条件 A**（pattern）+ FLATE/3HfM 往返 | **PASS** |
+| `test_lzdp_memory_streaming_parity` | LZDP 流式不变性 | **PASS** |
+| `test_dpflate_3hm_stream` | P7/P8 条件 B 往返（300KiB chunk，至 6MiB） | **PASS**（2026-05-17 复测） |
+| `test_dpflate_bin64k_3k_stream` | 64KiB + 精确 3KiB Pipeline push，mem≡stream payload | **PASS** |
+| `test_lzdp_dpflate_stream` | P7/P8 条件 A（pattern/random/text/binary\_64k） | **PASS** |
+
+**矩阵更新（条件 A）**
+
+- P1–P2（FLATE）：pattern 语料流式 WCX payload ≡ 内存 `DPFlateCompressor` 输出。
+- P7–P8（3HfMT）：pattern/random/text/binary\_64k/repeat\_6mb **条件 B** PASS；64KiB + 3KiB 精确 push 见 `test_dpflate_bin64k_3k_stream`。
 

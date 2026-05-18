@@ -66,10 +66,10 @@ int main() {
     const std::vector<uint8_t> data = make_pattern_corpus();
 
     compressor::algorithm::LZDP lz;
+    lz.autoBitWidth(wf.search_size, wf.lookahead_size);
     lz.set_min_match(wf.min_match);
     lz.set_match_engine(wf.match_engine);
     lz.set_use_flag_encoding(wf.use_flag_encoding);
-    lz.autoBitWidth(wf.search_size, wf.lookahead_size);
     const std::vector<uint8_t> mem_bytes = [&]() {
         auto dp_result = lz.dp_core(data, wf.search_size, wf.lookahead_size, wf.dp_top);
         return lz.encode_triples(dp_result.triples, lz.get_offset_bits(), lz.get_length_bits(), lz.get_use_flag_encoding());
@@ -134,7 +134,9 @@ int main() {
                 std::memcmp(mem_bytes.data(), unpacked.payload.data(), mem_sz) == 0) {
                 std::cout << "  (byte-identical payload)" << std::endl;
             } else {
-                std::cout << "  (differ — expected per design doc §2)" << std::endl;
+                std::cerr << "[parity] FAIL: memory vs streaming WCX payload differ (mem="
+                          << mem_sz << " stream=" << pl_sz << ")" << std::endl;
+                ok = false;
             }
 
             try {

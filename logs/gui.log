@@ -1,3 +1,18 @@
 15:07:32 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\logs\gui.log
 15:07:32 [INFO] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\config\webcompress_settings.json
 15:07:32 [INFO] gui.config.theme: [theme] theme applied
+19:16:58 [INFO] root: ==== gui session start 2026-05-17 19:16:58 ====
+19:16:58 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\logs\gui.log (append mode, per-line flush)
+19:16:58 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\config\webcompress_settings.json
+19:16:58 [INFO] gui.config.theme: [theme] theme applied
+19:16:58 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\config\webcompress_settings.json
+19:16:58 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\config\webcompress_settings.json
+19:16:58 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\config\webcompress_settings.json
+19:16:58 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\config\webcompress_settings.json
+19:16:58 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\config\webcompress_settings.json
+19:16:58 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\config\webcompress_settings.json
+19:16:58 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\config\webcompress_settings.json
+19:16:58 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\config\webcompress_settings.json
+19:16:58 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\config\webcompress_settings.json
+19:16:58 [INFO] gui.ui: [ui] main_window.ready geometry=900x700
+19:16:58 [INFO] gui.main: [ui] MainWindow shown, entering event loop

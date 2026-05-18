@@ -7,15 +7,21 @@
 #include <string>
 #include <cstdio>
 
+#include "BitUtils.hpp"
 #include "Deflate.hpp"
 #include "HuffmanTree.hpp"
 #include "HuffmanTree3HM.hpp"
 #include "IAlgorithm.hpp"
 #include "Inflate.hpp"
-#include "SpillBitStream.hpp"
+#include "StreamingDpChunk.hpp"
+#include "TempTokenIO.hpp"
 #include "TempFile.hpp"
 
 namespace compressor::algorithm {
+
+class DPFlate;
+
+void dpflate_trace_snapshot(DPFlate& enc, const char* phase);
 
 /**
  * DPFlate：DP（Dynamic Programming）匹配决策 + FLATE 风格或 3HfMTree 熵编码。
@@ -52,20 +58,12 @@ public:
 
     /** @brief Number of bits needed to represent the maximum offset (SEARCH_SIZE) */
     size_t offset_bits_3hm() const {
-        size_t v = SEARCH_SIZE;
-        if (v == 0) return 1;
-        size_t bits = 0;
-        while (v > 0) { bits++; v >>= 1; }
-        return bits == 0 ? 1 : bits;
+        return utils::calcBitWidth(SEARCH_SIZE);
     }
 
     /** @brief Number of bits needed to represent the maximum length (LOOKAHEAD_SIZE) */
     size_t length_bits_3hm() const {
-        size_t v = LOOKAHEAD_SIZE;
-        if (v == 0) return 1;
-        size_t bits = 0;
-        while (v > 0) { bits++; v >>= 1; }
-        return bits == 0 ? 1 : bits;
+        return utils::calcBitWidth(LOOKAHEAD_SIZE);
     }
 
 protected:
@@ -74,7 +72,7 @@ protected:
 
 private:
     /**
-     * COLLECT_INPUT：单字节 push-DP 步进 + 向 temp A 写 packed link（与 ``LZDP_OutOfCore`` 同构的 Phase1 形态）。
+     * COLLECT_INPUT：单字节 push-DP 步进 + 向 temp A 写固定字节 ``TempTokenRecord``（与 ``LZDP_Streaming`` 同构的 Phase1 形态）。
      * 见 ``docs/design/streaming-compression-design.md`` §5.4 / §3.1；缩写见 ``docs/缩写对照表.md``。
      */
     friend void dpflate_collect_input_one_index(DPFlate& self, size_t pos_idx, uint32_t abs_pos);
@@ -122,13 +120,7 @@ private:
 
     std::vector<uint8_t> input_buffer_;
     
-    struct DpState {
-        uint32_t cost{UINT32_MAX};
-        uint16_t length{0};
-        uint16_t offset{0};
-    };
-    std::vector<DpState> dp_states_; ///< 环形 DP 列（大小 ``dp_slot_count_``）
-    size_t dp_slot_count_{0};        ///< DP 槽数量（覆盖最大回溯长度）
+    StreamingDpTwoChunk streaming_dp_;
     std::vector<uint32_t> head_;     ///< HashChain 桶头
     std::vector<uint32_t> prev_buf_; ///< HashChain 前向链
     
@@ -136,20 +128,15 @@ private:
     size_t current_i_{0};        ///< 当前在 ``input_buffer_`` 内的处理下标
     uint32_t total_in_len_{0};   ///< 输入总长度（字节，末块确定）
     
-    TempFile temp_file_A_; ///< temp A：前向 DP packed link（OOC）
-    TempFile temp_file_B_; ///< temp B：回溯后 token 流（OOC）
-    TempFileBitAppender spill_a_{&temp_file_A_};
-    TempFileBitAppender spill_b_{&temp_file_B_};
-    PackedDpLinkSpec spill_spec_{}; ///< packed DP link 位布局规格
-    /// Collect 阶段按绝对下标镜像的 DP 链节（backtrack 优先读此，避免 temp A 随机读错位）
-    std::vector<uint16_t> link_lengths_;
-    std::vector<uint16_t> link_offsets_;
+    TempFile temp_file_A_; ///< temp A：前向 DP link，按 abs_pos 索引
+    TempFile temp_file_B_; ///< temp B：回溯反序 token 流（固定 4 字节 record）
+    TempTokenStore temp_tokens_a_{&temp_file_A_};
+    TempTokenStore temp_tokens_b_{&temp_file_B_};
 
     uint64_t total_tokens_{0};
     uint64_t emitted_tokens_{0};
-    /// Backtrack 顺序写入的 token（emit 从内存读，避免 temp B 随机读位错位）
-    std::vector<uint16_t> token_lengths_;
-    std::vector<uint16_t> token_offsets_;
+    /// 3HfM emit：跨 ``need_output`` 保留的字面量游程
+    std::vector<uint8_t> emit_literal_run_3hm_;
     
     std::vector<uint32_t> freq_map_; ///< FLATE 主树频率（286 符号空间）
     std::vector<uint32_t> dist_freq_; ///< FLATE 距离树频率（30 符号空间）
@@ -176,6 +163,8 @@ private:
 
     void getLengthCode(size_t length, uint16_t& code, uint8_t& extra_bits, uint16_t& extra_val);
     void getDistCode(size_t dist, uint8_t& code, uint8_t& extra_bits, uint16_t& extra_val);
+
+    friend void dpflate_trace_snapshot(DPFlate& enc, const char* phase);
 };
 
 using DPFlateDecompress = Inflate;

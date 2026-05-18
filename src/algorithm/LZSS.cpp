@@ -220,10 +220,10 @@ std::vector<uint8_t> LZSS::decompress(const std::vector<uint8_t>& input,
 }
 
 // ============================================================================
-// LZSS_OutOfCore — 流式压缩状态机
+// LZSS_Streaming — 流式压缩状态机
 // ============================================================================
 
-LZSS_OutOfCore::LZSS_OutOfCore(size_t search_size, size_t min_match_length,
+LZSS_Streaming::LZSS_Streaming(size_t search_size, size_t min_match_length,
                                  bool use_flag_encoding)
     : search_size_(search_size),
       min_match_length_(min_match_length),
@@ -231,7 +231,7 @@ LZSS_OutOfCore::LZSS_OutOfCore(size_t search_size, size_t min_match_length,
     reset();
 }
 
-auto LZSS_OutOfCore::reset(void) -> void {
+auto LZSS_Streaming::reset(void) -> void {
     state_ = State::COLLECT_INPUT;
     input_buffer_.clear();
     total_in_len_ = 0;
@@ -240,7 +240,7 @@ auto LZSS_OutOfCore::reset(void) -> void {
     header_emitted_ = false;
 }
 
-auto LZSS_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
+auto LZSS_Streaming::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
     while (true) {
         switch (state_) {
             case State::COLLECT_INPUT:
@@ -259,7 +259,7 @@ auto LZSS_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chunk) -> void
     }
 }
 
-auto LZSS_OutOfCore::handleCollectInput(AlgorithmStatus& status, bool is_last_chunk) -> void {
+auto LZSS_Streaming::handleCollectInput(AlgorithmStatus& status, bool is_last_chunk) -> void {
     // 1. 读入数据
     size_t remain = reader_.getRemainSize();
     if (remain > 0) {
@@ -291,7 +291,7 @@ auto LZSS_OutOfCore::handleCollectInput(AlgorithmStatus& status, bool is_last_ch
     state_ = State::EMIT_TOKENS;
 }
 
-auto LZSS_OutOfCore::handleEmitTokens(AlgorithmStatus& status, bool is_last_chunk) -> void {
+auto LZSS_Streaming::handleEmitTokens(AlgorithmStatus& status, bool is_last_chunk) -> void {
     // 1. 发头 4 字节
     if (!header_emitted_) {
         if (!writer_.ensureSpace(32)) {

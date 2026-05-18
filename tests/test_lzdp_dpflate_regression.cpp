@@ -96,10 +96,10 @@ bool lzdp_memory_twice_and_decompress(const std::vector<uint8_t>& data, size_t s
                                       size_t look, size_t min_m, size_t dp_top, bool flag,
                                       int match_eng, uint32_t expected_crc) {
     compressor::algorithm::LZDP lz;
+    lz.autoBitWidth(search, look);
     lz.set_min_match(min_m);
     lz.set_use_flag_encoding(flag);
     lz.set_match_engine(match_eng);
-    lz.autoBitWidth(search, look);
     auto enc1 = [&]() {
         auto dp = lz.dp_core(data, search, look, dp_top);
         return lz.encode_triples(dp.triples, lz.get_offset_bits(), lz.get_length_bits(),
@@ -208,10 +208,10 @@ int main(int argc, char** argv) {
         };
         for (const auto& c : lzcfgs) {
             compressor::algorithm::LZDP lz;
+            lz.autoBitWidth(c.ss, c.la);
             lz.set_min_match(c.mm);
             lz.set_use_flag_encoding(c.flag);
             lz.set_match_engine(c.eng);
-            lz.autoBitWidth(c.ss, c.la);
             for (int k = 0; k < 2; ++k) {
                 const std::vector<uint8_t>& data = (k == 0) ? corp_p : corp_r;
                 auto dp = lz.dp_core(data, c.ss, c.la, c.top);

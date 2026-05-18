@@ -178,6 +178,11 @@ class LZDPTokenParser(TokenParser):
             dp_result = self._parse_via_dp(raw_data, compression_params)
             if dp_result is not None:
                 return dp_result
+        from gui.engine.file_protocol import prepare_token_parse_payload
+
+        compressed_data = prepare_token_parse_payload(
+            compressed_data, AlgorithmType.LZDP
+        )
         return self._parse_reverse(compressed_data)
 
     def _parse_via_dp(
@@ -205,7 +210,7 @@ class LZDPTokenParser(TokenParser):
                         AlgorithmType.LZDP, compression_params
                     )
                     # 0 => C++ 使用压缩器上的 dp_range_（与算法配置里「DP优化深度」一致）
-                    viz = comp.get_dp_visualization(list(raw_data), 0)
+                    viz = comp.get_dp_visualization(raw_data, 0)
             else:
                 comp = core_engine.LZDPCompressor()
                 if compression_params:
@@ -214,7 +219,7 @@ class LZDPTokenParser(TokenParser):
                         if setter:
                             setter(int(val))
                 with SilentExplorer.user_compression_priority():
-                    viz = comp.get_dp_visualization(list(raw_data), 0)
+                    viz = comp.get_dp_visualization(raw_data, 0)
 
             tokens: list[Token] = []
             cursor = 0
@@ -422,6 +427,11 @@ class DeflateTokenParser(TokenParser):
         raw_data: bytes | None = None,
         compression_params: dict[str, int] | None = None,
     ) -> ParseResult:
+        from gui.engine.file_protocol import prepare_token_parse_payload
+
+        compressed_data = prepare_token_parse_payload(
+            compressed_data, AlgorithmType.DPFLATE
+        )
         reader = _LSBBitReader(compressed_data)
         tokens: list[Token] = []
         cursor = 0
@@ -637,3 +647,92 @@ def get_parser(algorithm: AlgorithmType) -> TokenParser | None:
 
 def can_parse(algorithm: AlgorithmType) -> bool:
     return algorithm in _PARSER_MAP
+
+
+def _memory_compress_bytes_for_demo(
+    algorithm: AlgorithmType,
+    raw_data: bytes,
+    compression_params: dict[str, int] | None,
+) -> bytes:
+    """Memory one-shot compress for demo/heatmap (same params as ``compression_config_snapshot``)."""
+    from gui.engine.compressor import CompressionEngine
+    from gui.ade.explorer import SilentExplorer
+
+    eng = CompressionEngine()
+    if not eng.available:
+        raise RuntimeError("C++ core_engine 不可用，无法运行压缩演示")
+    with SilentExplorer.user_compression_priority():
+        comp = eng.create_compressor_for_visualization(algorithm, compression_params)
+        cr = comp.compress(raw_data)
+    if getattr(cr, "success", True) is False:
+        em = (getattr(cr, "error_message", None) or "").strip() or "内存压缩失败"
+        raise RuntimeError(em)
+    data = cr.data
+    if isinstance(data, list):
+        return bytes(data)
+    if isinstance(data, (bytes, bytearray)):
+        return bytes(data)
+    return bytes(data)
+
+
+def parse_for_demo(
+    algorithm: AlgorithmType,
+    raw_data: bytes,
+    compression_params: dict[str, int] | None = None,
+) -> ParseResult:
+    """演示专用：始终在原始文件上重跑内存 DP / 压缩，不解析流式 WCX 产物。"""
+    parser = get_parser(algorithm)
+    if parser is None:
+        return ParseResult(algorithm=algorithm.value if algorithm else "")
+
+    if algorithm == AlgorithmType.LZDP:
+        dp_result = LZDPTokenParser()._parse_via_dp(raw_data, compression_params)
+        return dp_result if dp_result is not None else ParseResult(algorithm="lzdp")
+
+    compressed = _memory_compress_bytes_for_demo(algorithm, raw_data, compression_params)
+    from gui.engine.file_protocol import prepare_token_parse_payload
+
+    payload = prepare_token_parse_payload(compressed, algorithm)
+    return parser.parse(payload, raw_data, compression_params=compression_params)
+
+
+def fetch_demo_dp_visualization(
+    algorithm: AlgorithmType,
+    raw_data: bytes,
+    compression_params: dict[str, int] | None = None,
+):
+    """``get_dp_visualization`` for LZDP / DPFlate LZ layer (memory path only)."""
+    if algorithm not in (AlgorithmType.LZDP, AlgorithmType.DPFLATE):
+        return None
+    if len(raw_data) > LZDP_DP_VIZ_MAX_SIZE:
+        logger.info(
+            "[demo] raw_data too large (%d) for dp_viz, max=%d",
+            len(raw_data),
+            LZDP_DP_VIZ_MAX_SIZE,
+        )
+        return None
+    try:
+        from gui.engine.compressor import CompressionEngine
+        from gui.ade.explorer import SilentExplorer
+
+        with SilentExplorer.user_compression_priority():
+            eng = CompressionEngine()
+            if not eng.available:
+                return None
+            if algorithm == AlgorithmType.LZDP:
+                comp = eng.create_compressor_for_visualization(
+                    AlgorithmType.LZDP, compression_params
+                )
+                return comp.get_dp_visualization(raw_data, 0)
+            comp = eng.create_compressor_for_visualization(
+                AlgorithmType.DPFLATE, compression_params
+            )
+            lzdp_comp = eng.create_compressor_for_visualization(
+                AlgorithmType.LZDP, compression_params
+            )
+            lzdp_comp.set_min_match(comp.get_min_match())
+            lzdp_comp.set_match_engine(comp.get_match_engine())
+            return lzdp_comp.get_dp_visualization(raw_data, 0)
+    except Exception as e:
+        logger.warning("[fetch_demo_dp_visualization] failed: %s", e, exc_info=True)
+        return None

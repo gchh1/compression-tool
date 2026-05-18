@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <cstdlib>
 
 namespace compressor::processor {
 
@@ -13,23 +14,45 @@ namespace compressor::processor {
  *
  * Same value is used for: ``MemoryPool`` slot size and ``compressFile`` / directory
  * reads; ``StreamingCompressAdapter`` segment size (Deflate, LZSS, …); and the
- * natural ``process()`` read span for ``LZDP_OutOfCore`` / ``DPFlate`` COLLECT_INPUT
+ * natural ``process()`` read span for ``LZDP_Streaming`` / ``DPFlate`` COLLECT_INPUT
  * (one pipeline push per disk chunk — not independent per-algorithm sizes).
  */
 inline constexpr std::size_t kStreamChunkMinBytes = 64 * 1024;
 inline constexpr std::size_t kStreamChunkMaxBytes = 128 * 1024 * 1024;
 inline constexpr std::size_t kStreamChunkDefaultBytes = 1 << 20;
 
+[[nodiscard]] inline std::size_t stream_chunk_floor_bytes() noexcept {
+    static const std::size_t floor = []() noexcept -> std::size_t {
+        if (const char* env = std::getenv("WEBCOMPRESS_STREAM_CHUNK_MIN_BYTES")) {
+            char* end = nullptr;
+            const unsigned long v = std::strtoul(env, &end, 10);
+            if (end != env && v >= 64ul && v <= kStreamChunkMinBytes) {
+                return static_cast<std::size_t>(v);
+            }
+        }
+        return kStreamChunkMinBytes;
+    }();
+    return floor;
+}
+
 [[nodiscard]] inline std::size_t effective_stream_chunk_bytes(
     std::size_t requested) noexcept {
     if (requested == 0) {
         return kStreamChunkDefaultBytes;
     }
-    return std::min(kStreamChunkMaxBytes,
-                    std::max(kStreamChunkMinBytes, requested));
+    const std::size_t floor = stream_chunk_floor_bytes();
+    return std::min(kStreamChunkMaxBytes, std::max(floor, requested));
 }
 
 /// Default ``StreamingCompressAdapter`` segment / legacy name (same as default clamp).
 inline constexpr std::size_t DEFAULT_STREAM_CHUNK_SIZE = kStreamChunkDefaultBytes;
+
+/// ``MemoryPool`` slot size for pipeline **output** (EMIT / Huffman). May exceed plaintext chunk.
+inline constexpr std::size_t kPipelineOutputPoolMinBytes = 256u * 1024u;
+
+[[nodiscard]] inline std::size_t pipeline_output_pool_chunk_bytes(
+    std::size_t plaintext_chunk_bytes) noexcept {
+    return std::max(plaintext_chunk_bytes, kPipelineOutputPoolMinBytes);
+}
 
 }  // namespace compressor::processor

@@ -62,6 +62,28 @@ class DecisionEngine:
             logger.warning("[decision] ADE init failed: %s", e)
             self._ade = None
 
+    def reload_rf_model(self) -> bool:
+        """Reload ``default_model.bin`` after user-initiated RF training."""
+        if self._ade is None:
+            return False
+        try:
+            from gui.ade.rf_train import resolve_rf_model_output_path
+
+            path = resolve_rf_model_output_path()
+            if path.is_file() and self._ade.load_model(str(path)):
+                self._mode = DecisionMode.ML_HYBRID
+                self._ade.set_mode(1)
+                logger.info("[decision] reloaded RF model from %s", path)
+                return True
+            if self._ade.try_load_default_model():
+                self._mode = DecisionMode.ML_HYBRID
+                self._ade.set_mode(1)
+                logger.info("[decision] reloaded RF model from default search paths")
+                return True
+        except Exception as e:
+            logger.warning("[decision] reload_rf_model failed: %s", e)
+        return False
+
     def _try_load_model_from_project(self) -> bool:
         import sys
         candidates = []
@@ -324,7 +346,21 @@ class DecisionEngine:
         algorithm = decision.algorithm if decision else getattr(record, 'algorithm', AlgorithmType.LZDP)
 
         predicted_params = decision.params if decision and decision.params else None
-        actual_params = decision.params if decision and decision.params else ALGORITHM_PARAMS.get(algorithm, {})
+        actual_params: dict[str, int] = {}
+        if decision and decision.params:
+            actual_params = dict(decision.params)
+        elif getattr(record, "compression_config_snapshot", None):
+            snap = record.compression_config_snapshot or {}
+            key = algorithm.value if isinstance(algorithm, AlgorithmType) else str(algorithm)
+            raw = snap.get(key) or snap.get(algorithm, {})
+            if isinstance(raw, dict):
+                actual_params = {str(k): int(v) for k, v in raw.items()}
+        if not actual_params:
+            from gui.engine.compressor import CompressionEngine
+            cfg = CompressionEngine.get_config().get(algorithm, {})
+            actual_params = {str(k): int(v) for k, v in cfg.items()}
+        if not actual_params and algorithm in ALGORITHM_PARAMS:
+            actual_params = {p.key: p.default for p in ALGORITHM_PARAMS[algorithm]}
 
         try:
             param_sample = regressor.collect_sample(
@@ -343,21 +379,9 @@ class DecisionEngine:
             return None
 
     def auto_retrain_param_regressor(self, min_samples: int = 50) -> dict[str, Any] | None:
-        regressor = ParameterRegressor.get()
-        if len(regressor._training_data) < min_samples:
-            logger.info("[decision] not enough samples for retrain: %d/%d",
-                       len(regressor._training_data), min_samples)
-            return None
+        from gui.ade.retrain import maybe_supplemental_retrain
 
-        try:
-            metrics = regressor.train(epochs=30, lr=0.001, batch_size=16)
-            regressor.save_model()
-
-            logger.info("[decision] param regressor retrained: %s", metrics)
-            return metrics
-        except Exception as e:
-            logger.error("[decision] param regressor retrain failed: %s", e)
-            return None
+        return maybe_supplemental_retrain(min_new_samples=min_samples)
 
     def train(self, records: list[FileRecord]) -> None:
         for rec in records:

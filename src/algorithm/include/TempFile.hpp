@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <atomic>
 #include <cstddef>
+#include <new>
 #include <cstdint>
 #include <filesystem>
 #include <string>
@@ -72,6 +73,7 @@ inline auto next_temp_suffix() -> uint64_t {
 /// files are created under ``<workspace>/tmp/``. Otherwise the OS temp directory is used.
 struct TempFile {
     std::string path_;
+    std::uint64_t file_size_{0};
 
 #ifdef _WIN32
     std::wstring wpath_;
@@ -137,9 +139,24 @@ struct TempFile {
     }
 
     void write(const void* data, size_t size) {
+        if (size == 0) {
+            return;
+        }
+        writeAt(file_size_, data, size);
+    }
+
+    void recreate() {
+        this->~TempFile();
+        new (this) TempFile();
+    }
+
+    void writeAt(std::uint64_t offset, const void* data, size_t size) {
         if (size == 0) return;
 #ifdef _WIN32
         if (hFile_ == INVALID_HANDLE_VALUE) return;
+        LARGE_INTEGER li{};
+        li.QuadPart = static_cast<LONGLONG>(offset);
+        if (!SetFilePointerEx(hFile_, li, nullptr, FILE_BEGIN)) return;
         const auto* p = static_cast<const std::uint8_t*>(data);
         size_t off = 0;
         while (off < size) {
@@ -151,8 +168,18 @@ struct TempFile {
             }
             off += written;
         }
+        const std::uint64_t end = offset + size;
+        if (end > file_size_) {
+            file_size_ = end;
+        }
 #else
-        if (fp_) std::fwrite(data, 1, size, fp_);
+        if (!fp_) return;
+        fseeko(fp_, static_cast<off_t>(offset), SEEK_SET);
+        std::fwrite(data, 1, size, fp_);
+        const std::uint64_t end = offset + size;
+        if (end > file_size_) {
+            file_size_ = end;
+        }
 #endif
     }
 

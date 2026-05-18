@@ -131,9 +131,9 @@ class SilentExplorer:
     }
 
     def __init__(self, config: dict | None = None):
-        from gui.config.settings import get_silent_explore_enabled
+        from gui.config.settings import get_ade_explorer_tunables, get_silent_explore_enabled
 
-        cfg = {**self.DEFAULT_TUNABLES, **(config or {})}
+        cfg = {**get_ade_explorer_tunables(), **(config or {})}
         persisted = bool(get_silent_explore_enabled())
         if os.environ.get("WEBCOMPRESS_SILENT_EXPLORE", "").strip().lower() in ("1", "true", "yes"):
             persisted = True
@@ -190,10 +190,26 @@ class SilentExplorer:
 
     @classmethod
     def apply_enabled_from_settings(cls) -> None:
-        """从磁盘配置刷新单例开关（应用算法配置对话框后调用）。"""
-        from gui.config.settings import get_silent_explore_enabled
+        """从磁盘配置刷新单例开关与探索器可调参数。"""
+        cls.apply_tunables_from_settings()
+
+    @classmethod
+    def apply_tunables_from_settings(cls) -> None:
+        from gui.config.settings import get_ade_explorer_tunables, get_silent_explore_enabled
 
         inst = cls.get()
+        t = get_ade_explorer_tunables()
+        inst.epsilon_base = float(t["epsilon_base"])
+        inst.alpha_ucb = float(t["alpha_ucb"])
+        inst.max_concurrent = int(t["max_concurrent"])
+        inst.timeout_seconds = float(t["timeout_seconds"])
+        inst.budget_ratio = float(t["budget_ratio"])
+        inst.min_file_size = int(t["min_file_size_bytes"])
+        inst.max_file_size_l2 = int(t["max_file_size_for_l2"])
+        inst.warmup_samples = int(t["warmup_samples"])
+        inst.ucb_gap_threshold = float(t["ucb_gap_threshold"])
+        inst.l1_min_samples = int(t["l1_min_samples"])
+        inst.l2_min_samples = int(t["l2_min_samples"])
         persisted = bool(get_silent_explore_enabled())
         if os.environ.get("WEBCOMPRESS_SILENT_EXPLORE", "").strip().lower() in ("1", "true", "yes"):
             persisted = True
@@ -232,19 +248,48 @@ class SilentExplorer:
         Returns:
             True if exploration was triggered
         """
+        from gui.ade.explore_log import log_explore
+
+        file_name = getattr(record, "name", "") or ""
+
         if not self.enabled:
+            log_explore("skip", reason="disabled", file=file_name, level=logging.DEBUG)
             return False
 
         if self.user_operations_active():
+            log_explore("skip", reason="user_ops_active", file=file_name)
             return False
 
         if record.base_features is None:
+            try:
+                if not getattr(record, "raw_data", None):
+                    record.load_raw_data()
+                record.extract_features()
+            except Exception as e:
+                log_explore(
+                    "skip",
+                    reason="feature_extract_failed",
+                    file=file_name,
+                    error=str(e),
+                )
+                return False
+        if record.base_features is None:
+            log_explore("skip", reason="no_base_features", file=file_name)
             return False
 
         if record.size < self.min_file_size:
+            log_explore(
+                "skip",
+                reason="file_too_small",
+                file=file_name,
+                size=record.size,
+                min_size=self.min_file_size,
+                level=logging.DEBUG,
+            )
             return False
 
         if greedy_algo == AlgorithmType.NONE:
+            log_explore("skip", reason="greedy_none", file=file_name, level=logging.DEBUG)
             return False
 
         cluster_id = self.cluster_space.assign(record.base_features.vector)
@@ -255,14 +300,35 @@ class SilentExplorer:
 
         if not should:
             self._record_arm_result(cluster_id, greedy_algo, record.compression_ratio)
+            log_explore(
+                "skip",
+                reason="policy",
+                file=file_name,
+                cluster_id=cluster_id,
+                greedy=greedy_algo.value,
+            )
             return False
 
         if self._active_threads >= self.max_concurrent:
-            logger.debug("[explorer] max concurrent reached (%d), skip", self.max_concurrent)
+            log_explore(
+                "skip",
+                reason="max_concurrent",
+                file=file_name,
+                active=self._active_threads,
+                max=self.max_concurrent,
+            )
             return False
 
         budget_ok = self._check_budget(compress_time_ms)
         if not budget_ok:
+            log_explore(
+                "skip",
+                reason="budget",
+                file=file_name,
+                explore_time_s=round(self._total_explore_time, 3),
+                compress_time_s=round(self._total_compress_time, 3),
+                budget_ratio=self.budget_ratio,
+            )
             return False
 
         target_params = self._pick_explore_params(explore_type, target_algo, record)
@@ -270,16 +336,27 @@ class SilentExplorer:
 
         ucb_gap = self._compute_ucb_gap(cluster_id, greedy_algo)
 
+        safe_name = (file_name or "file")[:48].replace("/", "_")
         thread = threading.Thread(
             target=self._execute_explore_async,
             args=(record, target_algo, target_params, explore_type,
                   parent_decision, cluster_id, ucb_gap),
             daemon=True,
+            name=f"silent-explore-{safe_name}",
         )
         thread.start()
 
-        logger.info("[explorer] launched %s -> %s (cluster=%d, type=%s)",
-                    parent_decision, target_algo.value, cluster_id, explore_type)
+        log_explore(
+            "launched",
+            file=file_name,
+            parent=parent_decision,
+            target=target_algo.value,
+            explore_type=explore_type,
+            cluster_id=cluster_id,
+            ucb_gap=round(ucb_gap, 6),
+            params=target_params,
+            size=getattr(record, "size", 0),
+        )
         return True
 
     def _should_explore(
@@ -380,8 +457,16 @@ class SilentExplorer:
                     new_val = max(pick.min_val, min(pick.max_val, old_val + delta))
                     new_val = max(pick.step, new_val)
                     params[pick.key] = new_val
-                    logger.debug("[explorer] L2 perturb: %s.%s %d->%d",
-                                algo.value, pick.key, old_val, new_val)
+                    from gui.ade.explore_log import log_explore as _log_explore
+
+                    _log_explore(
+                        "l2_perturb",
+                        algorithm=algo.value,
+                        param=pick.key,
+                        old=old_val,
+                        new=new_val,
+                        level=logging.DEBUG,
+                    )
 
         return params
 
@@ -424,12 +509,25 @@ class SilentExplorer:
         cluster_id: int,
         ucb_gap: float,
     ) -> None:
+        from gui.ade.explore_log import log_explore, summarize_stream_result
+
         self._active_threads += 1
         t_start = time.perf_counter()
         success = False
+        job_id = ""
+        file_name = getattr(record, "name", "") or ""
 
         try:
+            log_explore(
+                "async_start",
+                file=file_name,
+                target=target_algo.value,
+                explore_type=explore_type,
+                cluster_id=cluster_id,
+                parent=parent_decision,
+            )
             if SilentExplorer.user_operations_active():
+                log_explore("async_skip", reason="user_ops_active", file=file_name)
                 return
             from gui.engine.compressor import CompressionEngine
             from gui.ade.training import get_training_store, TrainingSampleV3
@@ -438,10 +536,12 @@ class SilentExplorer:
                 record.load_raw_data()
 
             if not record.raw_data:
+                log_explore("async_skip", reason="no_raw_data", file=file_name)
                 return
 
             engine = CompressionEngine()
             if not engine.available:
+                log_explore("async_skip", reason="engine_unavailable", file=file_name)
                 return
 
             original_config = CompressionEngine.get_config()
@@ -450,13 +550,56 @@ class SilentExplorer:
             full_config = dict(original_config)
             full_config[target_algo] = algo_config
 
+            from gui.ade.checkpoint import new_job_id
+            from gui.ade.streaming_explore import run_explore_stream_with_optional_cancel
+
+            job_id = new_job_id("silent")
+            log_explore(
+                "stream_dispatch",
+                job_id=job_id,
+                file=file_name,
+                algorithm=target_algo.value,
+                params=target_params,
+            )
+
             try:
                 CompressionEngine.set_config(full_config, save=False)
-                result = engine.compress(record.raw_data, target_algo)
+                stream_res = run_explore_stream_with_optional_cancel(
+                    record,
+                    target_algo,
+                    job_id=job_id,
+                    cancel_after_bytes=0,
+                    cancel_reason="user_irq",
+                    dispatch_meta={
+                        "cluster_id": cluster_id,
+                        "explore_type": explore_type,
+                        "parent_decision": parent_decision,
+                        "ucb_gap": ucb_gap,
+                    },
+                    explore_config_snapshot={target_algo.value: target_params},
+                )
             finally:
                 CompressionEngine.set_config(original_config, save=False)
 
             elapsed_ms = (time.perf_counter() - t_start) * 1000
+
+            if stream_res.cancelled:
+                log_explore(
+                    "stream_cancelled",
+                    job_id=job_id,
+                    file=file_name,
+                    **summarize_stream_result(stream_res),
+                )
+                return
+
+            if not stream_res.success:
+                log_explore(
+                    "stream_failed",
+                    job_id=job_id,
+                    file=file_name,
+                    **summarize_stream_result(stream_res),
+                )
+                return
 
             store = get_training_store()
             sample = TrainingSampleV3.from_file_record(record, None)
@@ -469,30 +612,85 @@ class SilentExplorer:
             sample.algorithm_used = target_algo.value
             sample.algorithm_id = list(AlgorithmType).index(target_algo) if target_algo in list(AlgorithmType) else 0
             sample.params_used = target_params
-            sample.compression_ratio = result.compression_ratio
+            sample.compression_ratio = stream_res.compression_ratio
             sample.compression_time_ms = elapsed_ms
-            sample.output_size_bytes = result.compressed_size
-            sample.success = result.success
+            sample.output_size_bytes = stream_res.payload_bytes
+            sample.success = True
 
-            if sample.compression_ratio < record.compression_ratio:
+            greedy_ratio = float(getattr(record, "compression_ratio", 1.0) or 1.0)
+            is_discovery = sample.compression_ratio < greedy_ratio
+            if is_discovery:
                 self.discovery_count += 1
-                logger.info("[explorer] DISCOVERY! %s %.4f vs greedy %.4f (+%.1f%%)",
-                            target_algo.value, sample.compression_ratio,
-                            record.compression_ratio,
-                            (record.compression_ratio - sample.compression_ratio) / record.compression_ratio * 100)
+                improve_pct = (
+                    (greedy_ratio - sample.compression_ratio) / greedy_ratio * 100
+                    if greedy_ratio > 0
+                    else 0.0
+                )
+                log_explore(
+                    "discovery",
+                    job_id=job_id,
+                    file=file_name,
+                    target=target_algo.value,
+                    explore_ratio=round(sample.compression_ratio, 6),
+                    greedy_ratio=round(greedy_ratio, 6),
+                    improve_pct=round(improve_pct, 2),
+                )
 
-            store.add_sample(sample)
+            added = store.add_sample(sample)
+            log_explore(
+                "sample_saved",
+                job_id=job_id,
+                file=file_name,
+                sample_id=sample.sample_id,
+                added=added,
+                algorithm=target_algo.value,
+                explore_type=explore_type,
+                ratio=round(sample.compression_ratio, 6),
+                payload_bytes=sample.output_size_bytes,
+                elapsed_ms=round(elapsed_ms, 2),
+            )
 
-            self._record_arm_result(cluster_id, target_algo, result.compression_ratio)
+            self._record_arm_result(cluster_id, target_algo, stream_res.compression_ratio)
             success = True
             self.explore_count += 1
+            end_fields = summarize_stream_result(stream_res)
+            end_fields.pop("job_id", None)
+            log_explore(
+                "async_done",
+                job_id=job_id,
+                file=file_name,
+                success=True,
+                **end_fields,
+            )
 
         except Exception as e:
+            log_explore(
+                "async_error",
+                job_id=job_id or None,
+                file=file_name,
+                error=str(e),
+                level=logging.WARNING,
+            )
             logger.debug("[explorer] async failed: %s", e)
         finally:
             self._active_threads -= 1
             elapsed_ms = (time.perf_counter() - t_start) * 1000
             self._total_explore_time += elapsed_ms / 1000.0
+            if not success:
+                log_explore(
+                    "async_done",
+                    job_id=job_id or None,
+                    file=file_name,
+                    success=False,
+                    elapsed_ms=round(elapsed_ms, 2),
+                    level=logging.DEBUG,
+                )
+            try:
+                from gui.utils.logging import flush_logging
+
+                flush_logging()
+            except Exception:
+                pass
 
     def _record_arm_result(
         self, cluster_id: int, algo: AlgorithmType, ratio: float

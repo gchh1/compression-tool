@@ -13,6 +13,9 @@ add_library(
     LZDP.cpp
     LZSS.cpp
     DPFlate.cpp
+    DPFlateBin64kDebug.cpp
+    LZDPStreamDebug.cpp
+    DPFlateTrace.cpp
     Inflate.cpp
     Inflate3HM.cpp
     Zstd.cpp

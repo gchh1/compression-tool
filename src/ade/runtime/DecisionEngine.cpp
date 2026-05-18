@@ -474,6 +474,14 @@ auto AlgorithmDecisionEngine::load_model(std::istream& is) -> bool {
     return ok;
 }
 
+auto AlgorithmDecisionEngine::predict_padded(const std::vector<float>& padded_features) const
+    -> int {
+    if (!rf_trained_) {
+        return static_cast<int>(AlgorithmID::NONE);
+    }
+    return rf_.predict(padded_features);
+}
+
 auto AlgorithmDecisionEngine::features_to_vector(const FeatureVectorV3& features)
     -> std::vector<float> {
     return features.to_padded_array(constants::MAX_PADDED_DIMENSIONS);

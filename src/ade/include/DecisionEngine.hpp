@@ -107,6 +107,9 @@ public:
     auto save_model(std::ostream& os) const -> bool;
     auto load_model(std::istream& is) -> bool;
 
+    /// Predict algorithm label from 33-dim padded feature vector (requires trained RF).
+    auto predict_padded(const std::vector<float>& padded_features) const -> int;
+
     static auto features_to_vector(const FeatureVectorV3& features) -> std::vector<float>;
     static auto sample_from_result(const ExtractionResult& result,
                                    AlgorithmID correct_algorithm) -> TrainingSample;

@@ -41,7 +41,7 @@
 - **目标**: 移除 `streaming.per_algorithm.lzdp.streaming_mode` 与 GUI「legacy 分帧」选项；`createAlgorithm(LZDP)` 改为 **`WholeFileFramedCompressAdapter`** + 与 **`LZDPCompressor::compress` 相同** 的 `algorithm::LZDP` 分支，保证 **同参数下文件管线与内存压缩比特级一致**。
 - **改动文件**（摘要）: `AlgorithmFactory.cpp`；`compressor.py`；`settings.py`；`models.py`；`main_window.py`；`pybind_module.cpp` 文档串；`Package/config/webcompress_settings.json`；`streaming-workspace-spec.md`、`lzdp-dpflate-work-report.md`；新增 `docs/design/lzdp-file-pipeline-design.md`。
 - **验证**: C++ 构建与 `test_roundtrip`；配置加载时剔除 `lzdp.streaming_mode`。
-- **风险**: 超大文件峰值内存与 **整文件明文缓冲** 同量级；`LZDP_OutOfCore` 不再用于产品路径（源码保留）。
+- **风险**: 超大文件峰值内存与 **整文件明文缓冲** 同量级；`LZDP_Streaming` 不再用于产品路径（源码保留）。
 
 #### [2026-05-11 16:22] C++ 流式文件接口接入 WCX 头（占位+回填）
 

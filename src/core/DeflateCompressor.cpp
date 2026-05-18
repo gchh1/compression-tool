@@ -212,7 +212,7 @@ auto DeflateCompressor::decompress(std::vector<uint8_t> compressed_data)
         if (!use_flag_encoding_ && compressed_data.size() >= 1 && compressed_data[0] == 0x4E) {
             deflate_comp_log("[DeflateCompressor] decompress non-flag Deflate path");
             std::vector<uint8_t> payload(compressed_data.begin() + 1, compressed_data.end());
-            algorithm::LZDPDecompress_OutOfCore lzdp_dec;
+            algorithm::LZDPDecompress_Streaming lzdp_dec;
             std::vector<uint8_t> out;
             auto status = inflate_to_end(lzdp_dec, payload, out);
             result.data = std::move(out);

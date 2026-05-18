@@ -174,6 +174,32 @@ algorithm/fast:
 .PHONY : algorithm/fast
 
 #=============================================================================
+# Target rules for targets named algorithm_new
+
+# Build rule for target.
+algorithm_new: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 algorithm_new
+.PHONY : algorithm_new
+
+# fast build rule for target.
+algorithm_new/fast:
+	$(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/build
+.PHONY : algorithm_new/fast
+
+#=============================================================================
+# Target rules for targets named core_new
+
+# Build rule for target.
+core_new: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 core_new
+.PHONY : core_new
+
+# fast build rule for target.
+core_new/fast:
+	$(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/build
+.PHONY : core_new/fast
+
+#=============================================================================
 # Target rules for targets named api
 
 # Build rule for target.
@@ -434,6 +460,19 @@ test_lzss_noflag/fast:
 .PHONY : test_lzss_noflag/fast
 
 #=============================================================================
+# Target rules for targets named test_deflate
+
+# Build rule for target.
+test_deflate: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_deflate
+.PHONY : test_deflate
+
+# fast build rule for target.
+test_deflate/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate.dir\build.make tests/CMakeFiles/test_deflate.dir/build
+.PHONY : test_deflate/fast
+
+#=============================================================================
 # Target rules for targets named test_lzdp_memory_streaming_parity
 
 # Build rule for target.
@@ -510,6 +549,97 @@ test_mixed_dpflate_only: cmake_check_build_system
 test_mixed_dpflate_only/fast:
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_mixed_dpflate_only.dir\build.make tests/CMakeFiles/test_mixed_dpflate_only.dir/build
 .PHONY : test_mixed_dpflate_only/fast
+
+#=============================================================================
+# Target rules for targets named test_lzdp_memory_flag
+
+# Build rule for target.
+test_lzdp_memory_flag: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_lzdp_memory_flag
+.PHONY : test_lzdp_memory_flag
+
+# fast build rule for target.
+test_lzdp_memory_flag/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_memory_flag.dir\build.make tests/CMakeFiles/test_lzdp_memory_flag.dir/build
+.PHONY : test_lzdp_memory_flag/fast
+
+#=============================================================================
+# Target rules for targets named test_dpflate_3hm_stream
+
+# Build rule for target.
+test_dpflate_3hm_stream: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_dpflate_3hm_stream
+.PHONY : test_dpflate_3hm_stream
+
+# fast build rule for target.
+test_dpflate_3hm_stream/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_3hm_stream.dir\build.make tests/CMakeFiles/test_dpflate_3hm_stream.dir/build
+.PHONY : test_dpflate_3hm_stream/fast
+
+#=============================================================================
+# Target rules for targets named test_dpflate_bin64k_3k_stream
+
+# Build rule for target.
+test_dpflate_bin64k_3k_stream: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_dpflate_bin64k_3k_stream
+.PHONY : test_dpflate_bin64k_3k_stream
+
+# fast build rule for target.
+test_dpflate_bin64k_3k_stream/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_bin64k_3k_stream.dir\build.make tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/build
+.PHONY : test_dpflate_bin64k_3k_stream/fast
+
+#=============================================================================
+# Target rules for targets named test_dpflate_stream_trace
+
+# Build rule for target.
+test_dpflate_stream_trace: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_dpflate_stream_trace
+.PHONY : test_dpflate_stream_trace
+
+# fast build rule for target.
+test_dpflate_stream_trace/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_stream_trace.dir\build.make tests/CMakeFiles/test_dpflate_stream_trace.dir/build
+.PHONY : test_dpflate_stream_trace/fast
+
+#=============================================================================
+# Target rules for targets named test_cartesian_stream_matrix
+
+# Build rule for target.
+test_cartesian_stream_matrix: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_cartesian_stream_matrix
+.PHONY : test_cartesian_stream_matrix
+
+# fast build rule for target.
+test_cartesian_stream_matrix/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_cartesian_stream_matrix.dir/build
+.PHONY : test_cartesian_stream_matrix/fast
+
+#=============================================================================
+# Target rules for targets named test_small_stream_7k_67k
+
+# Build rule for target.
+test_small_stream_7k_67k: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_small_stream_7k_67k
+.PHONY : test_small_stream_7k_67k
+
+# fast build rule for target.
+test_small_stream_7k_67k/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_small_stream_7k_67k.dir\build.make tests/CMakeFiles/test_small_stream_7k_67k.dir/build
+.PHONY : test_small_stream_7k_67k/fast
+
+#=============================================================================
+# Target rules for targets named test_lzdp_cartesian_stream_matrix
+
+# Build rule for target.
+test_lzdp_cartesian_stream_matrix: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_lzdp_cartesian_stream_matrix
+.PHONY : test_lzdp_cartesian_stream_matrix
+
+# fast build rule for target.
+test_lzdp_cartesian_stream_matrix/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/build
+.PHONY : test_lzdp_cartesian_stream_matrix/fast
 
 #=============================================================================
 # Target rules for targets named test_3hm_binary
@@ -590,6 +720,45 @@ debug_token_trace/fast:
 .PHONY : debug_token_trace/fast
 
 #=============================================================================
+# Target rules for targets named test_algorithm_new_lzdp
+
+# Build rule for target.
+test_algorithm_new_lzdp: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_algorithm_new_lzdp
+.PHONY : test_algorithm_new_lzdp
+
+# fast build rule for target.
+test_algorithm_new_lzdp/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzdp.dir\build.make tests/CMakeFiles/test_algorithm_new_lzdp.dir/build
+.PHONY : test_algorithm_new_lzdp/fast
+
+#=============================================================================
+# Target rules for targets named test_algorithm_new_phase1
+
+# Build rule for target.
+test_algorithm_new_phase1: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_algorithm_new_phase1
+.PHONY : test_algorithm_new_phase1
+
+# fast build rule for target.
+test_algorithm_new_phase1/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase1.dir\build.make tests/CMakeFiles/test_algorithm_new_phase1.dir/build
+.PHONY : test_algorithm_new_phase1/fast
+
+#=============================================================================
+# Target rules for targets named test_algorithm_new_phase2
+
+# Build rule for target.
+test_algorithm_new_phase2: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_algorithm_new_phase2
+.PHONY : test_algorithm_new_phase2
+
+# fast build rule for target.
+test_algorithm_new_phase2/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase2.dir\build.make tests/CMakeFiles/test_algorithm_new_phase2.dir/build
+.PHONY : test_algorithm_new_phase2/fast
+
+#=============================================================================
 # Target rules for targets named core_engine
 
 # Build rule for target.
@@ -616,11 +785,13 @@ help:
 	@echo ... rebuild_cache
 	@echo ... ade
 	@echo ... algorithm
+	@echo ... algorithm_new
 	@echo ... api
 	@echo ... archiver
 	@echo ... bench_ade_extractor
 	@echo ... core
 	@echo ... core_engine
+	@echo ... core_new
 	@echo ... debug_dpflate
 	@echo ... debug_token_trace
 	@echo ... generate_ade_dataset
@@ -635,14 +806,25 @@ help:
 	@echo ... test_ade_evolutionary
 	@echo ... test_ade_feature_extractor
 	@echo ... test_algorithm_comparison
+	@echo ... test_algorithm_new_lzdp
+	@echo ... test_algorithm_new_phase1
+	@echo ... test_algorithm_new_phase2
+	@echo ... test_cartesian_stream_matrix
+	@echo ... test_deflate
+	@echo ... test_dpflate_3hm_stream
+	@echo ... test_dpflate_bin64k_3k_stream
+	@echo ... test_dpflate_stream_trace
 	@echo ... test_lzdp_binary
+	@echo ... test_lzdp_cartesian_stream_matrix
 	@echo ... test_lzdp_dpflate_regression
 	@echo ... test_lzdp_dpflate_stream
+	@echo ... test_lzdp_memory_flag
 	@echo ... test_lzdp_memory_streaming_parity
 	@echo ... test_lzss_noflag
 	@echo ... test_mixed_dpflate_only
 	@echo ... test_regression_baseline
 	@echo ... test_roundtrip
+	@echo ... test_small_stream_7k_67k
 	@echo ... test_wcx_corrupt
 	@echo ... test_wcx_directory_archive
 	@echo ... test_wcx_file_strict

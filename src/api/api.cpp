@@ -165,7 +165,8 @@ auto compress(const std::vector<uint8_t>& data,
         return result;
     }
 
-    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
+    const std::size_t pool_slot = processor::pipeline_output_pool_chunk_bytes(chunk);
+    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, pool_slot);
     processor::Pipeline pipeline(std::move(algos), pool);
     pipeline.push(data, true);
     pipeline.finish();
@@ -223,7 +224,8 @@ auto decompress(const std::vector<uint8_t>& data,
 
     // memory::MemoryPool: fixed-size slots for Pipeline / StreamProcessor while draining pulls
     // into ``result.data``; full input ``data`` is already resident (GUI strategy 1).
-    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
+    const std::size_t pool_slot = processor::pipeline_output_pool_chunk_bytes(chunk);
+    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, pool_slot);
     processor::Pipeline pipeline(std::move(algos), pool);
     pipeline.push(data, true);
     pipeline.finish();
@@ -250,7 +252,8 @@ auto decompress(const std::vector<uint8_t>& data,
 auto packAndCompress(const std::vector<WebFile>& files,
                      std::span<const AlgorithmID> chain)
     -> std::vector<uint8_t> {
-    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, 65536);
+    const std::size_t pool_slot = processor::pipeline_output_pool_chunk_bytes(65536);
+    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, pool_slot);
     archiver::PackWriter writer(pool);
 
     std::vector<uint8_t> result;
@@ -399,7 +402,8 @@ auto compressFile(const std::string& input_path,
         return result;
     }
 
-    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
+    const std::size_t pool_slot = processor::pipeline_output_pool_chunk_bytes(chunk);
+    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, pool_slot);
     processor::Pipeline pipeline(std::move(algos), pool);
 
     std::ifstream input(input_path, std::ios::binary);
@@ -429,6 +433,22 @@ auto compressFile(const std::string& input_path,
         return result;
     }
 
+    std::vector<uint8_t> buf(chunk);
+    uint64_t bytes_read = 0;
+    uint64_t total_written = 0;
+
+    const size_t simulate_cancel_after = [&]() -> size_t {
+        const char* env = std::getenv("WEBCOMPRESS_SIMULATE_CANCEL_AFTER_BYTES");
+        if (!env || !env[0]) {
+            return 0;
+        }
+        try {
+            return static_cast<size_t>(std::stoull(env));
+        } catch (...) {
+            return 0;
+        }
+    }();
+
     auto abort_compress_file = [&](const std::string& msg) -> CompressResult {
         CompressResult r;
         input.close();
@@ -439,12 +459,11 @@ auto compressFile(const std::string& input_path,
             std::chrono::duration<double, std::milli>(t1 - t0).count();
         r.error_message = msg;
         r.success = false;
+        r.bytes_processed = static_cast<size_t>(bytes_read);
+        r.compressed_size = static_cast<size_t>(total_written);
+        r.cancelled = (msg == "cancelled");
         return r;
     };
-
-    std::vector<uint8_t> buf(chunk);
-    uint64_t bytes_read = 0;
-    uint64_t total_written = 0;
 
     try {
         while (bytes_read < result.original_size) {
@@ -462,6 +481,10 @@ auto compressFile(const std::string& input_path,
             bool is_last = (bytes_read + actual >= result.original_size);
             pipeline.push(std::span<const uint8_t>(buf.data(), actual), is_last);
             bytes_read += actual;
+
+            if (simulate_cancel_after > 0 && bytes_read >= simulate_cancel_after) {
+                return abort_compress_file("cancelled");
+            }
 
             // Drain output
             while (true) {
@@ -627,7 +650,8 @@ auto decompressFile(const std::string& input_path,
         return result;
     }
 
-    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
+    const std::size_t pool_slot = processor::pipeline_output_pool_chunk_bytes(chunk);
+    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, pool_slot);
     processor::Pipeline pipeline(std::move(algos), pool);
 
     if (const char* ev = std::getenv("WEBCOMPRESS_DECOMPRESS_DEBUG")) {
@@ -892,7 +916,8 @@ auto compressDirectory(const std::string& dir_path,
         return result;
     }
 
-    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
+    const std::size_t pool_slot = processor::pipeline_output_pool_chunk_bytes(chunk);
+    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, pool_slot);
     archiver::PackWriter writer(pool);
 
     const std::string original_filename = fs::path(dir_path).filename().string();

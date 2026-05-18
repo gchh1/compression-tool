@@ -116,6 +116,30 @@ class CompressedFileHeader:
         return self.fixed_header_size() + len(self.original_filename.encode("utf-8"))
 
 
+def _pack_compressed_file_python_mirror(
+    compressed_data: bytes,
+    algorithm: AlgorithmType,
+    original_size: int,
+    original_filename: str = "",
+    is_folder: bool = False,
+) -> bytes:
+    """Last-resort mirror of C++ ``wcx::buildHeaderBytes`` when ``core_engine`` is absent.
+
+    Not a separate protocol — byte layout must stay in sync with ``WCXProtocol.cpp``.
+    """
+    if algorithm not in ALGO_CODE_MAP:
+        raise RuntimeError(f"WCX pack: algorithm not supported: {algorithm}")
+    payload = bytes(compressed_data)
+    header = CompressedFileHeader(
+        algorithm=algorithm,
+        original_size=int(original_size),
+        compressed_size=len(payload),
+        original_filename=original_filename or "",
+        is_folder=bool(is_folder),
+    )
+    return header.to_bytes() + payload
+
+
 def pack_compressed_file(
     compressed_data: bytes,
     algorithm: AlgorithmType,
@@ -123,29 +147,72 @@ def pack_compressed_file(
     original_filename: str = "",
     is_folder: bool = False,
 ) -> bytes:
+    """Wrap codec payload in WCMP v2 via C++ ``api::pack_wcx`` (canonical wire format).
+
+  Python callers (GUI export, ADE after streaming completes, folder archive) invoke this
+  at **completion** time only; streaming jobs hold raw/framed payload until then.
+    """
     engine = get_core_engine()
-    if engine is None or not hasattr(engine, "pack_wcx"):
-        raise RuntimeError("WCX container write requires core_engine.pack_wcx")
-    algo_map = {
-        AlgorithmType.NONE: engine.AlgorithmID.NONE,
-        AlgorithmType.DEFLATE: engine.AlgorithmID.DEFLATE,
-        AlgorithmType.LZSS: engine.AlgorithmID.LZSS,
-        AlgorithmType.LZDP: engine.AlgorithmID.LZDP,
-        AlgorithmType.DPFLATE: engine.AlgorithmID.DPFLATE,
-        AlgorithmType.BROTLI: engine.AlgorithmID.BROTLI,
-        AlgorithmType.ZSTD: engine.AlgorithmID.ZSTD,
-    }
-    algo_id = algo_map.get(algorithm)
-    if algo_id is None:
-        raise RuntimeError(f"WCX pack: algorithm not supported by core_engine: {algorithm}")
-    packed = engine.pack_wcx(
-        compressed_data,
-        algo_id,
-        int(original_size),
-        original_filename,
-        bool(is_folder),
+    if engine is not None and hasattr(engine, "pack_wcx"):
+        algo_map = {
+            AlgorithmType.NONE: engine.AlgorithmID.NONE,
+            AlgorithmType.DEFLATE: engine.AlgorithmID.DEFLATE,
+            AlgorithmType.LZSS: engine.AlgorithmID.LZSS,
+            AlgorithmType.LZDP: engine.AlgorithmID.LZDP,
+            AlgorithmType.DPFLATE: engine.AlgorithmID.DPFLATE,
+            AlgorithmType.BROTLI: engine.AlgorithmID.BROTLI,
+            AlgorithmType.ZSTD: engine.AlgorithmID.ZSTD,
+        }
+        algo_id = algo_map.get(algorithm)
+        if algo_id is None:
+            raise RuntimeError(f"WCX pack: algorithm not supported by core_engine: {algorithm}")
+        packed = engine.pack_wcx(
+            compressed_data,
+            algo_id,
+            int(original_size),
+            original_filename,
+            bool(is_folder),
+        )
+        return bytes(packed)
+    logger.warning(
+        "[file_protocol] core_engine.pack_wcx unavailable; using Python mirror of WCX v2"
     )
-    return bytes(packed)
+    return _pack_compressed_file_python_mirror(
+        compressed_data, algorithm, original_size, original_filename, is_folder
+    )
+
+
+def finalize_codec_payload_to_wcx(
+    payload: bytes,
+    algorithm: AlgorithmType,
+    original_size: int,
+    original_filename: str = "",
+    *,
+    is_folder: bool = False,
+) -> bytes:
+    """Wrap a finished streaming/memory codec payload into WCX (ADE / export completion hook).
+
+    Streaming jobs should keep raw or u32-framed bytes until success/cancel is resolved, then call
+    this once so ``pack_wcx`` runs in C++ with the canonical ``WCXProtocol`` layout.
+    """
+    return pack_compressed_file(
+        payload, algorithm, int(original_size), original_filename, is_folder
+    )
+
+
+def wcx_bytes_for_file_record(record: object) -> bytes | None:
+    """Full ``.wcx`` bytes for export: pass through disk/memory WCX or wrap raw payload."""
+    blob = file_record_compression_blob(record)
+    if not blob:
+        return None
+    if len(blob) >= 4 and blob[:4] == MAGIC:
+        return blob
+    algo = getattr(record, "algorithm", AlgorithmType.NONE)
+    if getattr(record, "is_stored", False):
+        algo = AlgorithmType.NONE
+    name = getattr(record, "name", "") or ""
+    orig = int(getattr(record, "size", 0) or 0)
+    return pack_compressed_file(blob, algo, orig, name, is_folder=False)
 
 
 def unpack_compressed_file(data: bytes) -> tuple[CompressedFileHeader, bytes]:
@@ -192,6 +259,53 @@ def strip_wcx_if_present(container: bytes) -> bytes:
         except Exception:
             return container
     return container
+
+
+def deframe_u32_be_chunk_stream(payload: bytes) -> bytes:
+    """Concatenate ``(be_u32 len || chunk)* || 0`` wire format from ``compressFile`` / pipeline."""
+    if not is_u32_be_chunk_framed_stream_payload(payload):
+        return payload
+    out = bytearray()
+    pos = 0
+    n = len(payload)
+    while pos + 4 <= n:
+        sz = int.from_bytes(payload[pos : pos + 4], "big")
+        pos += 4
+        if sz == 0:
+            break
+        out.extend(payload[pos : pos + sz])
+        pos += sz
+    return bytes(out)
+
+
+def dpflate_format_byte(payload: bytes) -> int | None:
+    """Leading DPFlate stream tag: ``0x46`` = FLATE/Inflate, ``0x33`` = 3HfMT."""
+    if not payload:
+        return None
+    b = payload[0]
+    if b in (0x46, 0x33):
+        return b
+    return None
+
+
+def prepare_token_parse_payload(
+    payload: bytes, algorithm: AlgorithmType | None = None
+) -> bytes:
+    """Normalize WCX inner bytes for GUI token parsers (deframe + codec prefix strip)."""
+    payload = deframe_u32_be_chunk_stream(payload)
+    if algorithm in (AlgorithmType.DPFLATE, AlgorithmType.DEFLATE):
+        fb = dpflate_format_byte(payload)
+        if fb in (0x46, 0x33):
+            return payload[1:]
+    return payload
+
+
+def compression_blob_for_visualization(record: object) -> tuple[bytes, bytes]:
+    """Return ``(inner_after_wcx, parse_ready)`` for heatmap / demo parsers."""
+    blob = file_record_compression_blob(record) or b""
+    inner = strip_wcx_if_present(blob)
+    algo = getattr(record, "algorithm", None)
+    return inner, prepare_token_parse_payload(inner, algo)
 
 
 def is_u32_be_chunk_framed_stream_payload(payload: bytes) -> bool:

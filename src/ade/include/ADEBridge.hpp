@@ -66,6 +66,8 @@ public:
     auto load_model(const std::string& filepath) -> bool;
     auto save_model(const std::string& filepath) const -> bool;
 
+    auto predict_padded(const std::vector<float>& padded_features) const -> int;
+
     auto analyze(const uint8_t* data, size_t size) -> ADEBridgeResult;
     auto analyze(const std::vector<uint8_t>& data) -> ADEBridgeResult;
     auto analyze_file(const std::string& filepath) -> ADEBridgeResult;

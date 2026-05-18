@@ -55,6 +55,8 @@ if not exist "%CORE_ENGINE_PYD%" (
 
 echo Building WebCompress...
 pyinstaller --noconfirm --onefile --windowed --name "WebCompress" --icon "%PROJECT_DIR%\resources\icon\WebCompressor.ico" --distpath "%PKG_DIR%" --workpath "%PYI_WORK%" --specpath "%PYI_SPEC%" ^
+  --paths "%PROJECT_DIR%\src" ^
+  --collect-submodules gui ^
   --exclude-module PySide6 ^
   --exclude-module torch ^
   --exclude-module tensorflow ^

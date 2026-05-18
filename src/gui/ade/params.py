@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from gui.ade.types import DecisionResult, ParamRegressionSample
-from gui.models import AlgorithmType, FileRecord
+from gui.models import ALGORITHM_PARAMS, AlgorithmType, FileRecord
 
 logger = logging.getLogger(__name__)
 
@@ -88,13 +88,30 @@ class ParameterRegressor:
         logger.info("[param_regressor] model built: input=%d, hidden=%d, output=%d",
                     in_dim, hidden_dim, self._output_dim)
 
-    def _normalize_params(self, params: dict[str, int]) -> list[float]:
-        normalized = []
+    def _param_keys_for_algorithm(self, algorithm: AlgorithmType) -> list[str]:
+        defs = ALGORITHM_PARAMS.get(algorithm, [])
+        if defs:
+            return [p.key for p in defs]
+        return [k for k in self.PARAM_NAMES if k in self.PARAM_RANGES]
+
+    def _normalize_params(self, params: dict[str, int], algorithm: AlgorithmType | None = None) -> list[float]:
+        """Normalize to fixed output dim; keys not used by ``algorithm`` are zero."""
+        normalized = [0.0] * len(self.PARAM_NAMES)
+        active_keys = (
+            self._param_keys_for_algorithm(algorithm)
+            if algorithm is not None
+            else list(params.keys())
+        )
         for name in self.PARAM_NAMES:
+            if name not in active_keys:
+                continue
             value = params.get(name, 0)
+            if name not in self.PARAM_RANGES:
+                continue
             min_val, max_val = self.PARAM_RANGES[name]
             norm_val = (value - min_val) / max(max_val - min_val, 1)
-            normalized.append(max(0.0, min(1.0, norm_val)))
+            idx = self.PARAM_NAMES.index(name)
+            normalized[idx] = max(0.0, min(1.0, norm_val))
         return normalized
 
     def _denormalize_params(self, normalized: list[float]) -> dict[str, int]:
@@ -149,6 +166,67 @@ class ParameterRegressor:
             base_features.append(0.0)
 
         return base_features[:33]
+
+    def _features_from_v3_vector(self, features_vector: list[float]) -> list[float]:
+        base = [float(x) for x in (features_vector or [])[:20]]
+        while len(base) < 33:
+            base.append(0.0)
+        return base[:33]
+
+    def clear_ingested_samples(self) -> None:
+        self._training_data.clear()
+
+    def count_by_algorithm(self) -> dict[str, int]:
+        out: dict[str, int] = {}
+        for s in self._training_data:
+            key = str(s.algorithm_id)
+            out[key] = out.get(key, 0) + 1
+        return out
+
+    def ingest_v3_sample(self, sample: object) -> bool:
+        """
+        Ingest one JSONL row: arm = ``algorithm_used`` / ``algorithm_id``,
+        knobs = ``params_used`` (algorithm-specific), reward = ``compression_ratio``.
+        """
+        from gui.ade.training import algorithm_type_from_v3
+
+        if not getattr(sample, "is_valid", True):
+            sample.validate()
+        if not sample.is_valid:
+            return False
+        if not sample.params_used:
+            return False
+
+        algorithm = algorithm_type_from_v3(sample)
+        if algorithm is None:
+            return False
+
+        if algorithm not in self.ALGORITHM_MAP:
+            return False
+
+        from gui.ade.training import v3_algorithm_id_to_param_slot
+
+        slot = v3_algorithm_id_to_param_slot(int(sample.algorithm_id))
+        if slot is None:
+            slot = self.ALGORITHM_MAP.get(algorithm)
+        if slot is None:
+            return False
+
+        pr = ParamRegressionSample()
+        pr.sample_id = sample.sample_id or uuid.uuid4().hex[:12]
+        pr.algorithm_id = int(slot)
+        pr.actual_params = {
+            k: int(v) for k, v in sample.params_used.items()
+        }
+        pr.compression_ratio = float(sample.compression_ratio)
+        pr.compression_time_ms = float(sample.compression_time_ms)
+        if sample.features_vector:
+            pr.features = {f"f{i}": float(v) for i, v in enumerate(sample.features_vector[:20])}
+        else:
+            pr.features = dict(sample.features_dict or {})
+
+        self._training_data.append(pr)
+        return True
 
     def predict(self, record: FileRecord, algorithm: AlgorithmType) -> dict[str, int] | None:
         if not self.is_ready:
@@ -240,12 +318,17 @@ class ParameterRegressor:
 
         X, y_algo, y_params = [], [], []
         for s in self._training_data:
-            feat_vec = [
-                s.features.get('shannon_entropy', 0.5) / 8.0,
-                s.features.get('confidence', 0.5),
-                s.features.get('estimated_ratio', 0.5),
-                1.0,
-            ] + [0.0] * 29
+            feat_vec = [0.0] * 33
+            if any(k.startswith("f") for k in s.features):
+                for i in range(20):
+                    feat_vec[i] = float(s.features.get(f"f{i}", 0.0))
+            else:
+                feat_vec = [
+                    s.features.get('shannon_entropy', 0.5) / 8.0,
+                    s.features.get('confidence', 0.5),
+                    s.features.get('estimated_ratio', 0.5),
+                    1.0,
+                ] + [0.0] * 29
 
             algo_one_hot = [0.0] * 6
             algo_one_hot[s.algorithm_id % 6] = 1.0
@@ -253,7 +336,12 @@ class ParameterRegressor:
             input_vec = feat_vec[:33] + algo_one_hot
             X.append(input_vec)
             y_algo.append(s.algorithm_id)
-            y_params.append(self._normalize_params(s.actual_params))
+            algo_type = None
+            for at, aid in self.ALGORITHM_MAP.items():
+                if aid == s.algorithm_id:
+                    algo_type = at
+                    break
+            y_params.append(self._normalize_params(s.actual_params, algo_type))
 
         import random
         combined = list(zip(X, y_algo, y_params))

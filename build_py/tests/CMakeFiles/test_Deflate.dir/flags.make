@@ -4,7 +4,7 @@
 # compile CXX with D:/AAA_C/AAA_MinGW/mingw64/bin/c++.exe
 CXX_DEFINES = -DDEBUG_LOG_ENABLED=1
 
-CXX_INCLUDES = @CMakeFiles/test_Deflate.dir/includes_CXX.rsp
+CXX_INCLUDES = @CMakeFiles/test_deflate.dir/includes_CXX.rsp
 
 CXX_FLAGS = -O3 -DNDEBUG -std=gnu++20
 

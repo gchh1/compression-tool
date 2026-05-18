@@ -1,0 +1,2 @@
+D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc libcore_new.a CMakeFiles/core_new.dir/LZDPcompressor.cpp.obj
+D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe libcore_new.a

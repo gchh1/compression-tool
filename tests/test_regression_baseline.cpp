@@ -153,10 +153,10 @@ const GoldenValue* find_golden(const char* algo, const char* corpus) {
 bool test_lzdp(const Corpus& corp, bool print_only) {
     using namespace compressor::algorithm;
     LZDP lz;
+    lz.autoBitWidth(4096, 256);
     lz.set_min_match(4);
     lz.set_use_flag_encoding(false);
     lz.set_match_engine(1);
-    lz.autoBitWidth(4096, 256);
 
     auto dp = lz.dp_core(corp.data, 4096, 256, 3);
     auto enc = lz.encode_triples(dp.triples, lz.get_offset_bits(), lz.get_length_bits(), false);

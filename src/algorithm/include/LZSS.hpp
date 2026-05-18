@@ -51,10 +51,12 @@ class LZSS {
                                                 size_t min_match_length,
                                                 bool use_flag_encoding);
 
-   private:
+   public:
     static constexpr uint16_t DICTIONARY_BUFFER_SIZE_ = 4095;  // 12 bits
     static constexpr uint8_t MIN_MATCH_LENGTH_ = 3;            // 4 bits
     static constexpr uint8_t MAX_MATCH_LENGTH_ = 18;  // MIN_MATCH_LENGTH + 15
+
+   private:
 };
 
 /**
@@ -66,9 +68,9 @@ class LZSS {
  * COLLECT_INPUT 阶段累积输入，调用 lzss_core() 完成贪婪匹配；
  * EMIT_TOKENS 阶段将 Triple 编码为字节流输出。
  */
-class LZSS_OutOfCore : public AlgorithmBase {
+class LZSS_Streaming : public AlgorithmBase {
 public:
-    LZSS_OutOfCore(size_t search_size = 4095, size_t min_match_length = 3,
+    LZSS_Streaming(size_t search_size = 4095, size_t min_match_length = 3,
                    bool use_flag_encoding = true);
 
     auto reset(void) -> void override;
@@ -98,10 +100,10 @@ private:
     auto handleCollectInput(AlgorithmStatus& status, bool is_last_chunk) -> void;
     auto handleEmitTokens(AlgorithmStatus& status, bool is_last_chunk) -> void;
 
-    using StateHandler = void (LZSS_OutOfCore::*)(AlgorithmStatus&, bool);
+    using StateHandler = void (LZSS_Streaming::*)(AlgorithmStatus&, bool);
     static constexpr StateHandler kStateHandlers[3] = {
-        &LZSS_OutOfCore::handleCollectInput,
-        &LZSS_OutOfCore::handleEmitTokens,
+        &LZSS_Streaming::handleCollectInput,
+        &LZSS_Streaming::handleEmitTokens,
         nullptr  // DONE
     };
 };

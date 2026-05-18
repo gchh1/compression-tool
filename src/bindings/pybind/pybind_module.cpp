@@ -453,7 +453,9 @@ PYBIND11_MODULE(core_engine, m) {
         .def_readwrite("compression_ratio", &compressor::api::CompressResult::compression_ratio)
         .def_readwrite("time_ms", &compressor::api::CompressResult::time_ms)
         .def_readwrite("success", &compressor::api::CompressResult::success)
-        .def_readwrite("error_message", &compressor::api::CompressResult::error_message);
+        .def_readwrite("error_message", &compressor::api::CompressResult::error_message)
+        .def_readwrite("bytes_processed", &compressor::api::CompressResult::bytes_processed)
+        .def_readwrite("cancelled", &compressor::api::CompressResult::cancelled);
 
     py::class_<compressor::api::WCXUnpackResult>(m, "WCXUnpackResult")
         .def(py::init<>())
@@ -490,8 +492,8 @@ PYBIND11_MODULE(core_engine, m) {
           py::arg("original_size"),
           py::arg("original_filename") = "",
           py::arg("is_folder") = false,
-          py::call_guard<py::gil_scoped_release>(),
-          "Pack WCX header + payload");
+          // Keep GIL: returning py::bytes after gil_scoped_release faulted on Windows (0xC0000005).
+          "Pack WCX header + payload (WCXProtocol in C++; Python must not redefine the wire format)");
 
     m.def("unpack_wcx",
           [](py::buffer buf) -> compressor::api::WCXUnpackResult {

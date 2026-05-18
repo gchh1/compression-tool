@@ -2,18 +2,29 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <utility>
 #include <vector>
 
+#include "BitUtils.hpp"
 #include "IAlgorithm.hpp"
 #include "KMPMatcher.hpp"
 #include "SpillBitStream.hpp"
 #include "TempFile.hpp"
+#include "StreamingDpChunk.hpp"
 #include "VirtualBuffer.hpp"
 
 namespace compressor {
 namespace algorithm {
 
 class LZDP {
+    size_t offset_bits_;
+    size_t length_bits_;
+    size_t max_search_size_;
+    size_t max_look_size_;
+    bool use_flag_encoding_;
+    int match_engine_{0}; // 0 = KMP, 1 = HashChain
+    size_t min_match_{0};
+
 public:
     size_t get_min_match() const {
         if (min_match_ == 0) {
@@ -36,6 +47,13 @@ public:
         size_t length;
         uint8_t literal;
         bool is_chosen;
+        DPCandidate()
+            : offset(0), length(0), literal(0), is_chosen(false) {}
+        DPCandidate(Triple t, bool chosen)
+            : offset(t.offset),
+              length(t.length),
+              literal(t.literal),
+              is_chosen(chosen) {}
     };
 
     struct DpCoreResult {
@@ -69,18 +87,7 @@ public:
         size_t lookahead_size;
     };
 
-private:
-    size_t offset_bits_;
-    size_t length_bits_;
-    size_t max_search_size_;
-    size_t max_look_size_;
-    bool use_flag_encoding_;
-    int match_engine_{0}; // 0 = KMP, 1 = HashChain
-    size_t min_match_{0};
 
-    static size_t calcBitWidth(size_t max_val);
-
-public:
     LZDP(size_t offset_bits = 0, size_t length_bits = 0)
         : offset_bits_(offset_bits),
           length_bits_(length_bits),
@@ -93,12 +100,13 @@ public:
     }
 
     void autoBitWidth(size_t search_size, size_t lookahead_size) {
-        offset_bits_ = calcBitWidth(search_size);
-        length_bits_ = calcBitWidth(lookahead_size);
+        offset_bits_ = utils::calcBitWidth(search_size);
+        length_bits_ = utils::calcBitWidth(lookahead_size);
         max_search_size_ = (size_t{1} << offset_bits_) - 1;
         max_look_size_ = (size_t{1} << length_bits_) - 1;
     }
 
+    // 算法配置模块
     size_t get_offset_bits() const { return offset_bits_; }
     size_t get_length_bits() const { return length_bits_; }
 
@@ -115,6 +123,9 @@ public:
     void set_min_match(size_t v) { min_match_ = v; }
     size_t get_min_match_param() const { return min_match_; }
 
+    size_t cal_cost(size_t literal_count, size_t match_count) const;
+
+    // 非流式
     DpCoreResult dp_core(
         const std::vector<uint8_t>& input,
         size_t search_size,
@@ -147,16 +158,16 @@ public:
     std::vector<uint8_t> decompress(const std::vector<uint8_t>& input);
 };
 
-class LZDP_OutOfCore : public AlgorithmBase {
+class LZDP_Streaming : public AlgorithmBase {
     /**
-     * ``lzdp`` = LZDP；``ooc`` = Out-of-core（见 ``docs/缩写对照表.md``）。
+     * ``lzdp`` = LZDP；``streaming`` 流式状态机。
      * COLLECT_INPUT 单步：前向 bit-cost DP + packed link 写 temp A；对齐 ``streaming-compression-design.md`` §3.1 / §5.4。
      */
-    friend void lzdp_ooc_collect_one_index(LZDP_OutOfCore& self, size_t pos_idx,
+    friend void lzdp_streaming_collect_one_index(LZDP_Streaming& self, size_t pos_idx,
                                            uint32_t abs_pos);
 
 public:
-    LZDP_OutOfCore(size_t search_size = 4096, size_t lookahead_size = 256,
+    LZDP_Streaming(size_t search_size = 4096, size_t lookahead_size = 256,
                    size_t min_match = 0, size_t dp_top = 3,
                    bool use_flag_encoding = false, int match_engine = 0);
 
@@ -174,8 +185,6 @@ private:
 
     size_t SEARCH_SIZE;
     size_t LOOKAHEAD_SIZE;
-    /// Ring size for forward DP columns (must exceed max match length to avoid slot aliasing).
-    size_t dp_slot_count_{0};
     size_t MIN_MATCH;
     size_t DP_TOP;
 
@@ -184,12 +193,7 @@ private:
 
     std::vector<uint8_t> input_buffer_;
     
-    struct DpState {
-        uint32_t cost{UINT32_MAX};
-        uint16_t length{0};
-        uint16_t offset{0};
-    };
-    std::vector<DpState> dp_states_;
+    StreamingDpTwoChunk streaming_dp_;
     std::vector<uint32_t> head_;
     /// Per buffer index — same semantics as ``compress_dp``'s ``prev[pos]`` (not ``abs_pos % SEARCH_SIZE``).
     std::vector<uint32_t> prev_buf_;
@@ -213,10 +217,11 @@ private:
     /// Emit the same 2-byte prefix as ``LZDP::compress_dp`` / ``decompress`` (not bit-packed only).
     bool emit_lzdp_raw_header_done_{false};
 
-    uint32_t lit_cost_{1};
-    uint32_t match_cost_{1};
     size_t offset_bits_{12};
     size_t length_bits_{8};
+
+    /// Same bit-cost as ``LZDP::cal_cost`` / ``compress_dp`` (not fixed ``lit_cost_`` steps).
+    [[nodiscard]] uint32_t cal_path_cost(uint32_t literal_count, uint32_t match_count) const;
 
     auto hashBucket3(size_t pos_idx) const -> size_t;
     auto reseedHashChainPrefix(size_t end_exclusive) -> void;
@@ -225,15 +230,15 @@ private:
     auto handleBacktrack(AlgorithmStatus& status, bool is_last_chunk) -> void;
     auto handleEmitTokens(AlgorithmStatus& status, bool is_last_chunk) -> void;
 
-    using StateHandler = void (LZDP_OutOfCore::*)(AlgorithmStatus&, bool);
+    using StateHandler = void (LZDP_Streaming::*)(AlgorithmStatus&, bool);
     static constexpr StateHandler kStateHandlers[3] = {
-        &LZDP_OutOfCore::handleCollectInput, &LZDP_OutOfCore::handleBacktrack,
-        &LZDP_OutOfCore::handleEmitTokens};
+        &LZDP_Streaming::handleCollectInput, &LZDP_Streaming::handleBacktrack,
+        &LZDP_Streaming::handleEmitTokens};
 };
 
-class LZDPDecompress_OutOfCore : public AlgorithmBase {
+class LZDPDecompress_Streaming : public AlgorithmBase {
 public:
-    LZDPDecompress_OutOfCore(bool use_flag_encoding = false);
+    LZDPDecompress_Streaming(bool use_flag_encoding = false);
 
     /// non-flag 匹配编码总位宽 = Ob + Lb
     size_t get_match_bits() const { return offset_bits_ + length_bits_; }

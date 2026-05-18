@@ -25,6 +25,10 @@ struct CompressResult {
     bool success{false};
     std::string error_message;
     std::optional<BlockProfile> block_profile;
+    /// Input bytes consumed before abort (``compressFile`` cancel path).
+    size_t bytes_processed{0};
+    /// True when cooperative cancel (not a codec failure).
+    bool cancelled{false};
 };
 
 struct WebFile {

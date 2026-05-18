@@ -37,7 +37,13 @@ from gui.models import (
     STREAMING_CHUNK_SIZE_KB,
     STREAMING_THRESHOLD_MB,
 )
-from gui.engine.file_protocol import file_record_compression_blob, strip_wcx_if_present
+from gui.engine.file_protocol import (
+    compression_blob_for_visualization,
+    dpflate_format_byte,
+    file_record_compression_blob,
+    prepare_token_parse_payload,
+    strip_wcx_if_present,
+)
 from gui.config.settings import load_config, get_defaults
 from gui.config.theme import ThemeManager
 from gui.ui.table import FileTableWidget
@@ -430,6 +436,13 @@ class DecisionEngineManagerDialog(QDialog):
         self._build_config_tab(tab_config)
 
         btn_layout = QHBoxLayout()
+        apply_cfg_btn = QPushButton("应用配置")
+        apply_cfg_btn.setToolTip("保存「配置」页中的数值到 webcompress_settings.json 并生效")
+        apply_cfg_btn.clicked.connect(self._on_apply_de_config)
+        btn_layout.addWidget(apply_cfg_btn)
+        restore_cfg_btn = QPushButton("恢复默认")
+        restore_cfg_btn.clicked.connect(self._on_de_cfg_restore_defaults)
+        btn_layout.addWidget(restore_cfg_btn)
         refresh_btn = QPushButton("刷新")
         refresh_btn.clicked.connect(self._refresh)
         btn_layout.addStretch()
@@ -489,6 +502,15 @@ class DecisionEngineManagerDialog(QDialog):
         except Exception:
             stats = {}
 
+        try:
+            from gui.ade.training import get_training_store
+            ts = get_training_store().get_stats()
+            jsonl_total = int(ts.get("total_samples", 0) or 0)
+            jsonl_explore = int(ts.get("exploration_samples", 0) or 0)
+        except Exception:
+            jsonl_total = 0
+            jsonl_explore = 0
+
         info_group = QGroupBox("探索器概览")
         info_form = QFormLayout(info_group)
 
@@ -496,13 +518,23 @@ class DecisionEngineManagerDialog(QDialog):
         self._expl_enabled_val = QLabel("✅ 启用" if enabled else "⏸ 已禁用")
         info_form.addRow("探索状态:", self._expl_enabled_val)
 
+        self._expl_jsonl_total_val = QLabel(f"{jsonl_total}")
+        self._expl_jsonl_total_val.setToolTip("ade_training_v3.jsonl 中全部训练行数")
+        info_form.addRow("JSONL 训练样本:", self._expl_jsonl_total_val)
+
+        self._expl_jsonl_explore_val = QLabel(f"{jsonl_explore}")
+        self._expl_jsonl_explore_val.setToolTip("JSONL 中 is_exploration=true 的行数（持久化探索样本）")
+        info_form.addRow("JSONL 探索样本:", self._expl_jsonl_explore_val)
+
         total = stats.get('total_samples', 0)
         explore = stats.get('explore_count', 0)
         discovery = stats.get('discovery_count', 0)
         self._expl_total_val = QLabel(f"{total}")
-        info_form.addRow("总样本数:", self._expl_total_val)
+        self._expl_total_val.setToolTip("本次运行内 bandit 臂更新次数（内存，重启清零）")
+        info_form.addRow("本次运行臂统计:", self._expl_total_val)
         self._expl_explore_val = QLabel(f"{explore} ({explore/max(1,total)*100:.1f}%)")
-        info_form.addRow("探索次数:", self._expl_explore_val)
+        self._expl_explore_val.setToolTip("本次运行内成功完成的静默探索次数")
+        info_form.addRow("本次探索次数:", self._expl_explore_val)
         self._expl_discovery_val = QLabel(f"{discovery} ({discovery/max(1,explore)*100:.1f}%)" if explore > 0 else "0")
         info_form.addRow("发现次数:", self._expl_discovery_val)
 
@@ -589,36 +621,107 @@ class DecisionEngineManagerDialog(QDialog):
 
     def _build_config_tab(self, tab):
         layout = QVBoxLayout(tab)
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll_body = QWidget()
+        scroll.setWidget(scroll_body)
+        scroll_layout = QVBoxLayout(scroll_body)
 
-        config_group = QGroupBox("当前配置")
+        from gui.config.settings import get_silent_explore_enabled, load_config as _de_cfg_load
+
+        config_group = QGroupBox("探索器与 ADE（可编辑，点「应用配置」保存）")
         config_form = QFormLayout(config_group)
 
-        try:
-            from gui.ade.explorer import SilentExplorer
-            cfg = SilentExplorer.DEFAULT_CONFIG
-        except Exception:
-            cfg = {}
+        self._cfg_enabled_btn = _streaming_follow_toggle_button(
+            "启用静默探索（后台对比压缩）",
+            checked=get_silent_explore_enabled(_de_cfg_load()),
+        )
+        self._cfg_enabled_btn.setToolTip(
+            "关闭：不启动后台静默压缩采样。\n"
+            "开启：在部分压缩完成后可能异步试运行其他算法；"
+            "正在压缩/解压时不会新起静默任务。"
+        )
+        config_form.addRow("", self._cfg_enabled_btn)
 
-        self._cfg_enabled_cb = QCheckBox()
-        self._cfg_enabled_cb.setChecked(cfg.get('enabled', True))
-        config_form.addRow("启用探索:", self._cfg_enabled_cb)
+        self._cfg_epsilon_spin = QDoubleSpinBox()
+        self._cfg_epsilon_spin.setRange(0.02, 0.60)
+        self._cfg_epsilon_spin.setDecimals(3)
+        self._cfg_epsilon_spin.setSingleStep(0.01)
+        config_form.addRow("基础探索率 (ε):", self._cfg_epsilon_spin)
 
-        self._cfg_epsilon_val = QLabel(f"{cfg.get('epsilon_base', 0.25)}")
-        config_form.addRow("基础探索率 (ε):", self._cfg_epsilon_val)
+        self._cfg_alpha_spin = QDoubleSpinBox()
+        self._cfg_alpha_spin.setRange(0.1, 5.0)
+        self._cfg_alpha_spin.setDecimals(2)
+        self._cfg_alpha_spin.setSingleStep(0.05)
+        config_form.addRow("UCB 系数 (α):", self._cfg_alpha_spin)
 
-        self._cfg_alpha_val = QLabel(f"{cfg.get('alpha_ucb', 1.41)}")
-        config_form.addRow("UCB 系数 (α):", self._cfg_alpha_val)
+        self._cfg_max_concurrent_spin = QSpinBox()
+        self._cfg_max_concurrent_spin.setRange(1, 8)
+        config_form.addRow("探索排队线程上限:", self._cfg_max_concurrent_spin)
 
-        self._cfg_max_concurrent_val = QLabel(f"{cfg.get('max_concurrent', 2)}")
-        config_form.addRow("最大并发线程:", self._cfg_max_concurrent_val)
+        self._cfg_timeout_spin = QDoubleSpinBox()
+        self._cfg_timeout_spin.setRange(1.0, 600.0)
+        self._cfg_timeout_spin.setDecimals(0)
+        self._cfg_timeout_spin.setSuffix(" s")
+        config_form.addRow("单次探索超时:", self._cfg_timeout_spin)
 
-        self._cfg_timeout_val = QLabel(f"{cfg.get('timeout_seconds', 30)}s")
-        config_form.addRow("单次超时:", self._cfg_timeout_val)
+        self._cfg_budget_spin = QSpinBox()
+        self._cfg_budget_spin.setRange(5, 100)
+        self._cfg_budget_spin.setSuffix(" %")
+        self._cfg_budget_spin.setToolTip("探索累计耗时上限 = 主压缩累计耗时 × 该百分比")
+        config_form.addRow("探索时间预算:", self._cfg_budget_spin)
 
-        self._cfg_budget_val = QLabel(f"{cfg.get('budget_ratio', 0.30)*100:.0f}%")
-        config_form.addRow("时间预算上限:", self._cfg_budget_val)
+        self._cfg_min_file_spin = QSpinBox()
+        self._cfg_min_file_spin.setRange(0, 10 * 1024 * 1024)
+        self._cfg_min_file_spin.setSuffix(" B")
+        config_form.addRow("最小探索文件:", self._cfg_min_file_spin)
 
-        warmup = cfg.get('warmup_samples', 50)
+        self._cfg_max_l2_spin = QSpinBox()
+        self._cfg_max_l2_spin.setRange(1, 4096)
+        self._cfg_max_l2_spin.setSuffix(" MB")
+        config_form.addRow("L2 参数探索上限:", self._cfg_max_l2_spin)
+
+        self._cfg_warmup_spin = QSpinBox()
+        self._cfg_warmup_spin.setRange(1, 10000)
+        config_form.addRow("Warmup 样本数:", self._cfg_warmup_spin)
+
+        self._cfg_ucb_gap_spin = QDoubleSpinBox()
+        self._cfg_ucb_gap_spin.setRange(0.0, 1.0)
+        self._cfg_ucb_gap_spin.setDecimals(3)
+        self._cfg_ucb_gap_spin.setSingleStep(0.01)
+        config_form.addRow("UCB 差距阈值:", self._cfg_ucb_gap_spin)
+
+        self._cfg_l1_spin = QSpinBox()
+        self._cfg_l1_spin.setRange(1, 100)
+        config_form.addRow("L1 最少样本:", self._cfg_l1_spin)
+
+        self._cfg_l2_spin = QSpinBox()
+        self._cfg_l2_spin.setRange(1, 100)
+        config_form.addRow("L2 最少样本:", self._cfg_l2_spin)
+
+        io_gb = QGroupBox("静默探索 · 流式 I/O")
+        io_form = QFormLayout(io_gb)
+        self._cfg_explore_thr_spin = QDoubleSpinBox()
+        self._cfg_explore_thr_spin.setRange(0.0, 4096.0)
+        self._cfg_explore_thr_spin.setDecimals(1)
+        self._cfg_explore_thr_spin.setSuffix(" MB")
+        self._cfg_explore_thr_spin.setToolTip("≤ 阈值：内存压缩；> 阈值：按分块大小流式读盘")
+        io_form.addRow("流式分块阈值:", self._cfg_explore_thr_spin)
+
+        self._cfg_explore_chunk_spin = QSpinBox()
+        self._cfg_explore_chunk_spin.setRange(64, 65536)
+        self._cfg_explore_chunk_spin.setSingleStep(64)
+        self._cfg_explore_chunk_spin.setSuffix(" KB")
+        io_form.addRow("流式分块大小:", self._cfg_explore_chunk_spin)
+
+        self._cfg_retrain_spin = QSpinBox()
+        self._cfg_retrain_spin.setRange(1, 100000)
+        self._cfg_retrain_spin.setToolTip("JSONL 新增样本达到该数后触发参数回归补充训练")
+        io_form.addRow("补充训练阈值:", self._cfg_retrain_spin)
+
+        scroll_layout.addWidget(config_group)
+        scroll_layout.addWidget(io_gb)
+
         stages = [
             ("冷启动 (0-50)", 0.40),
             ("学习期 (51-500)", 0.25),
@@ -627,9 +730,13 @@ class DecisionEngineManagerDialog(QDialog):
         ]
         stage_text = "\n".join(f"  {s[0]}: ε={s[1]}" for s in stages)
         self._cfg_stages_val = QLabel(stage_text)
-        config_form.addRow("自适应衰减阶段:", self._cfg_stages_val)
+        self._cfg_stages_val.setStyleSheet("color: #888; font-size: 11px;")
+        scroll_layout.addWidget(self._cfg_stages_val)
 
-        layout.addWidget(config_group)
+        scroll_layout.addStretch()
+        layout.addWidget(scroll, 1)
+
+        self._de_cfg_load_from_disk()
 
         action_group = QGroupBox("操作")
         action_layout = QVBoxLayout(action_group)
@@ -644,15 +751,117 @@ class DecisionEngineManagerDialog(QDialog):
         export_btn.setEnabled(False)
         action_layout.addWidget(export_btn)
 
-        train_btn = QPushButton("训练模型")
-        train_btn.setToolTip("使用收集的训练数据重新训练 ADE 模型")
-        train_btn.setEnabled(False)
-        action_layout.addWidget(train_btn)
+        self._train_rf_btn = QPushButton("训练 RF 模型")
+        self._train_rf_btn.setToolTip(
+            "从 ade_training_v3.jsonl 重新训练随机森林（default_model.bin），"
+            "训练完成后自动加载到决策引擎"
+        )
+        self._train_rf_btn.clicked.connect(self._on_train_rf_model)
+        action_layout.addWidget(self._train_rf_btn)
 
-        placeholder = QLabel("更多功能（模型训练、数据导出、参数调优）将在后续版本实现")
-        placeholder.setStyleSheet("color: #888; font-size: 12px; padding: 8px;")
-        action_layout.addWidget(placeholder)
+        self._rf_train_hint = QLabel("")
+        self._rf_train_hint.setStyleSheet("color: #888; font-size: 12px; padding: 4px 0;")
+        self._rf_train_hint.setWordWrap(True)
+        action_layout.addWidget(self._rf_train_hint)
+
+        self._rf_train_worker = None
         layout.addWidget(action_group)
+
+    def _de_cfg_load_from_disk(self) -> None:
+        """Populate config-tab spinboxes from persisted settings + live explorer."""
+        try:
+            from gui.config.settings import (
+                get_ade_explore_streaming_chunk_kb,
+                get_ade_explore_streaming_threshold_mb,
+                get_ade_explorer_tunables,
+                get_ade_retrain_min_new_samples,
+                get_silent_explore_enabled,
+                load_config,
+            )
+            cfg = load_config()
+            t = get_ade_explorer_tunables(cfg)
+            self._cfg_enabled_btn.setChecked(get_silent_explore_enabled(cfg))
+            self._cfg_epsilon_spin.setValue(float(t["epsilon_base"]))
+            self._cfg_alpha_spin.setValue(float(t["alpha_ucb"]))
+            self._cfg_max_concurrent_spin.setValue(int(t["max_concurrent"]))
+            self._cfg_timeout_spin.setValue(float(t["timeout_seconds"]))
+            self._cfg_budget_spin.setValue(int(round(float(t["budget_ratio"]) * 100)))
+            self._cfg_min_file_spin.setValue(int(t["min_file_size_bytes"]))
+            self._cfg_max_l2_spin.setValue(
+                max(1, int(t["max_file_size_for_l2"]) // (1024 * 1024))
+            )
+            self._cfg_warmup_spin.setValue(int(t["warmup_samples"]))
+            self._cfg_ucb_gap_spin.setValue(float(t["ucb_gap_threshold"]))
+            self._cfg_l1_spin.setValue(int(t["l1_min_samples"]))
+            self._cfg_l2_spin.setValue(int(t["l2_min_samples"]))
+            self._cfg_explore_thr_spin.setValue(
+                float(get_ade_explore_streaming_threshold_mb(cfg))
+            )
+            self._cfg_explore_chunk_spin.setValue(
+                int(get_ade_explore_streaming_chunk_kb(cfg))
+            )
+            self._cfg_retrain_spin.setValue(int(get_ade_retrain_min_new_samples(cfg)))
+        except Exception as e:
+            logger.debug("[de_manager] _de_cfg_load_from_disk: %s", e)
+
+    def _on_apply_de_config(self) -> None:
+        from gui.config.settings import load_config, save_config
+        from gui.ade.explorer import SilentExplorer
+
+        full = load_config()
+        full.setdefault("ade", {})
+        full["ade"]["silent_explore_enabled"] = bool(self._cfg_enabled_btn.isChecked())
+        full["ade"]["explore_streaming_threshold_mb"] = float(
+            self._cfg_explore_thr_spin.value()
+        )
+        full["ade"]["explore_streaming_chunk_size_kb"] = int(
+            self._cfg_explore_chunk_spin.value()
+        )
+        full["ade"]["retrain_min_new_samples"] = int(self._cfg_retrain_spin.value())
+        full["ade"]["explorer"] = {
+            "epsilon_base": float(self._cfg_epsilon_spin.value()),
+            "alpha_ucb": float(self._cfg_alpha_spin.value()),
+            "max_concurrent": int(self._cfg_max_concurrent_spin.value()),
+            "timeout_seconds": float(self._cfg_timeout_spin.value()),
+            "budget_ratio": float(self._cfg_budget_spin.value()) / 100.0,
+            "min_file_size_bytes": int(self._cfg_min_file_spin.value()),
+            "max_file_size_for_l2": int(self._cfg_max_l2_spin.value()) * 1024 * 1024,
+            "warmup_samples": int(self._cfg_warmup_spin.value()),
+            "ucb_gap_threshold": float(self._cfg_ucb_gap_spin.value()),
+            "l1_min_samples": int(self._cfg_l1_spin.value()),
+            "l2_min_samples": int(self._cfg_l2_spin.value()),
+        }
+        save_config(full)
+        SilentExplorer.apply_tunables_from_settings()
+        self._refresh()
+        QMessageBox.information(self, "已保存", "决策引擎 / 探索器配置已写入配置文件并生效。")
+
+    def _on_de_cfg_restore_defaults(self) -> None:
+        from gui.config.settings import get_defaults
+
+        ade = get_defaults().get("ade", {})
+        explorer = ade.get("explorer", {})
+        self._cfg_enabled_btn.setChecked(bool(ade.get("silent_explore_enabled", False)))
+        self._cfg_epsilon_spin.setValue(float(explorer.get("epsilon_base", 0.25)))
+        self._cfg_alpha_spin.setValue(float(explorer.get("alpha_ucb", 1.41)))
+        self._cfg_max_concurrent_spin.setValue(int(explorer.get("max_concurrent", 2)))
+        self._cfg_timeout_spin.setValue(float(explorer.get("timeout_seconds", 30)))
+        self._cfg_budget_spin.setValue(int(round(float(explorer.get("budget_ratio", 0.3)) * 100)))
+        self._cfg_min_file_spin.setValue(int(explorer.get("min_file_size_bytes", 1024)))
+        self._cfg_max_l2_spin.setValue(
+            max(1, int(explorer.get("max_file_size_for_l2", 100 * 1024 * 1024)) // (1024 * 1024))
+        )
+        self._cfg_warmup_spin.setValue(int(explorer.get("warmup_samples", 50)))
+        self._cfg_ucb_gap_spin.setValue(float(explorer.get("ucb_gap_threshold", 0.05)))
+        self._cfg_l1_spin.setValue(int(explorer.get("l1_min_samples", 3)))
+        self._cfg_l2_spin.setValue(int(explorer.get("l2_min_samples", 5)))
+        self._cfg_explore_thr_spin.setValue(
+            float(ade.get("explore_streaming_threshold_mb", STREAMING_THRESHOLD_MB))
+        )
+        self._cfg_explore_chunk_spin.setValue(
+            int(ade.get("explore_streaming_chunk_size_kb", STREAMING_CHUNK_SIZE_KB))
+        )
+        self._cfg_retrain_spin.setValue(int(ade.get("retrain_min_new_samples", 50)))
 
     def _on_reset_explorer(self):
         reply = QMessageBox.question(
@@ -670,6 +879,70 @@ class DecisionEngineManagerDialog(QDialog):
                 QMessageBox.information(self, "已完成", "探索器已重置")
             except Exception as e:
                 QMessageBox.warning(self, "错误", f"重置失败: {e}")
+
+    def _on_train_rf_model(self) -> None:
+        from PyQt6.QtWidgets import QProgressDialog
+
+        from gui.ade.rf_train import MIN_RF_SAMPLES, RFTrainWorker, count_rf_ready_samples
+        from gui.engine.compressor import CompressionEngine
+
+        if self._rf_train_worker is not None and self._rf_train_worker.isRunning():
+            QMessageBox.information(self, "训练中", "RF 训练正在进行，请稍候。")
+            return
+
+        if not CompressionEngine().available:
+            QMessageBox.warning(self, "无法训练", "压缩引擎（core_engine）不可用。")
+            return
+
+        ready = count_rf_ready_samples()
+        if ready < MIN_RF_SAMPLES:
+            QMessageBox.warning(
+                self,
+                "样本不足",
+                f"当前可用于 RF 的样本约 {ready} 条，至少需要 {MIN_RF_SAMPLES} 条。\n"
+                "请继续压缩文件并开启静默探索以收集带算法标签的样本。",
+            )
+            return
+
+        reply = QMessageBox.question(
+            self,
+            "训练 RF 模型",
+            f"将使用 JSONL 中约 {ready} 条有效样本训练随机森林，并覆盖\n"
+            f"{get_training_store_path_hint()}\n"
+            "下的 default_model.bin（旧文件会自动备份）。\n\n是否继续？",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        if reply != QMessageBox.StandardButton.Yes:
+            return
+
+        self._train_rf_btn.setEnabled(False)
+        progress = QProgressDialog("正在训练 RF 模型…", None, 0, 0, self)
+        progress.setWindowTitle("ADE 训练")
+        progress.setWindowModality(Qt.WindowModality.WindowModal)
+        progress.setMinimumDuration(0)
+        progress.setCancelButton(None)
+        progress.show()
+
+        worker = RFTrainWorker(self)
+        self._rf_train_worker = worker
+
+        def on_progress(msg: str) -> None:
+            progress.setLabelText(msg)
+
+        def on_done(result) -> None:
+            progress.close()
+            self._train_rf_btn.setEnabled(True)
+            self._rf_train_worker = None
+            self._refresh()
+            if result.ok:
+                QMessageBox.information(self, "训练完成", result.message)
+            else:
+                QMessageBox.warning(self, "训练失败", result.message)
+
+        worker.progress.connect(on_progress)
+        worker.finished_with_result.connect(on_done)
+        worker.start()
 
     def _refresh(self):
         try:
@@ -690,6 +963,17 @@ class DecisionEngineManagerDialog(QDialog):
             stats = SilentExplorer.get().get_stats()
             if hasattr(self, '_expl_enabled_val'):
                 self._expl_enabled_val.setText("✅ 启用" if stats.get('enabled') else "⏸ 已禁用")
+            try:
+                from gui.ade.training import get_training_store
+                ts = get_training_store().get_stats()
+                if hasattr(self, "_expl_jsonl_total_val"):
+                    self._expl_jsonl_total_val.setText(f"{ts.get('total_samples', 0)}")
+                if hasattr(self, "_expl_jsonl_explore_val"):
+                    self._expl_jsonl_explore_val.setText(
+                        f"{ts.get('exploration_samples', 0)}"
+                    )
+            except Exception:
+                pass
             if hasattr(self, '_expl_total_val'):
                 self._expl_total_val.setText(f"{stats.get('total_samples', 0)}")
             if hasattr(self, '_expl_explore_val'):
@@ -705,6 +989,9 @@ class DecisionEngineManagerDialog(QDialog):
         except Exception:
             pass
 
+        if hasattr(self, "_cfg_epsilon_spin"):
+            self._de_cfg_load_from_disk()
+
         try:
             from gui.ade.training import get_training_store
             ts = get_training_store().get_stats()
@@ -717,6 +1004,34 @@ class DecisionEngineManagerDialog(QDialog):
                 self._train_rejected_val.setText(f"{ts.get('rejected_samples', 0)}")
         except Exception:
             pass
+
+        try:
+            from gui.ade.rf_train import MIN_RF_SAMPLES, count_rf_ready_samples
+            from gui.engine.compressor import CompressionEngine
+
+            ready = count_rf_ready_samples()
+            eng_ok = CompressionEngine().available
+            if hasattr(self, "_train_rf_btn"):
+                self._train_rf_btn.setEnabled(eng_ok and ready >= MIN_RF_SAMPLES)
+            if hasattr(self, "_rf_train_hint"):
+                if not eng_ok:
+                    hint = "core_engine 不可用，无法训练 RF。"
+                elif ready < MIN_RF_SAMPLES:
+                    hint = f"RF 可用样本约 {ready}/{MIN_RF_SAMPLES}，继续压缩以收集数据。"
+                else:
+                    hint = f"可训练 RF（约 {ready} 条有效样本）。"
+                self._rf_train_hint.setText(hint)
+        except Exception:
+            pass
+
+
+def get_training_store_path_hint() -> str:
+    try:
+        from gui.ade.training import get_training_store
+
+        return str(get_training_store()._base_dir)
+    except Exception:
+        return "ade/"
 
 
 def _streaming_follow_toggle_button(label: str, *, checked: bool) -> QPushButton:
@@ -791,6 +1106,9 @@ class MinMatchWidget(QWidget):
 class AlgorithmConfigDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
+        from gui.engine.compressor import CompressionEngine
+
+        CompressionEngine.reload_from_file()
         self.setWindowTitle("算法配置")
         self.setMinimumSize(640, 520)
         self._spinboxes: dict[AlgorithmType, dict[str, QWidget]] = {}
@@ -806,32 +1124,18 @@ class AlgorithmConfigDialog(QDialog):
         root.addWidget(body, 1)
         layout = QVBoxLayout(body)
         from gui.config.theme import ThemeManager
-        from gui.config.settings import get_silent_explore_enabled, load_config as _cfg_for_ade
 
-        self._silent_explore_btn = _streaming_follow_toggle_button(
-            "启用静默探索（后台对比压缩）",
-            checked=get_silent_explore_enabled(_cfg_for_ade()),
+        ade_note = QLabel(
+            "静默探索、探索流式 I/O 与 AC-UCB 参数请在「决策引擎 (D)」→「配置」页设置。"
         )
-        self._silent_explore_btn.setToolTip(
-            "关闭：不启动后台静默压缩采样。\n"
-            "开启：在部分压缩完成后可能异步试运行其他算法；正在压缩/解压时不会新起静默任务，避免与用户操作争用引擎配置。"
+        ade_note.setWordWrap(True)
+        ade_note.setStyleSheet(
+            f"color: {ThemeManager.hex('text_muted')}; font-size: 11px; padding: 4px 0 8px 0;"
         )
-        ade_row = QHBoxLayout()
-        ade_row.addWidget(self._silent_explore_btn, 0)
-        ade_hint = QLabel(
-            "说明：用户压缩/解压相当于更高优先级「中断」——进行中的主路径会阻止新起静默探索；"
-            "引擎全局配置在内部加锁串行，保护静默探索的 set_config / 恢复现场。"
-        )
-        ade_hint.setWordWrap(True)
-        ade_hint.setStyleSheet(
-            f"color: {ThemeManager.hex('text_muted')}; font-size: 11px; padding-left: 8px;"
-        )
-        ade_row.addWidget(ade_hint, 1)
-        layout.addLayout(ade_row)
+        layout.addWidget(ade_note)
 
         try:
             from gui.engine.compressor import CompressionEngine
-            from gui.config.theme import ThemeManager
 
             current_config = CompressionEngine.get_config()
 
@@ -1172,10 +1476,6 @@ class AlgorithmConfigDialog(QDialog):
         if self._streaming_chunk_spin:
             self._streaming_chunk_spin.setValue(STREAMING_CHUNK_SIZE_KB)
         dpa = get_defaults()["streaming"]["per_algorithm"]
-        if hasattr(self, "_silent_explore_btn"):
-            self._silent_explore_btn.setChecked(
-                bool(get_defaults().get("ade", {}).get("silent_explore_enabled", False))
-            )
         for algo, pack in self._per_algo_stream_widgets.items():
             follow_cb = pack["follow"]
             chunk_sb = pack["chunk"]
@@ -1197,16 +1497,16 @@ class AlgorithmConfigDialog(QDialog):
     def _on_apply(self) -> None:
         from gui.engine.compressor import CompressionEngine
 
-        config: dict[AlgorithmType, dict[str, int]] = {}
+        patch: dict[AlgorithmType, dict[str, int]] = {}
         for algo, widgets in self._spinboxes.items():
-            config[algo] = {}
+            patch[algo] = {}
             for key, widget in widgets.items():
                 if isinstance(widget, QComboBox):
-                    config[algo][key] = widget.currentData()
+                    patch[algo][key] = widget.currentData()
                 else:
-                    config[algo][key] = widget.value()
+                    patch[algo][key] = widget.value()
 
-        CompressionEngine.set_config(config)
+        CompressionEngine.set_config(patch)
 
         if self._streaming_threshold_spin:
             CompressionEngine.set_streaming_threshold(
@@ -1216,8 +1516,6 @@ class AlgorithmConfigDialog(QDialog):
         from gui.config.settings import load_config, save_config
 
         full = load_config()
-        full.setdefault("ade", {})
-        full["ade"]["silent_explore_enabled"] = bool(self._silent_explore_btn.isChecked())
         if "streaming" not in full:
             full["streaming"] = {}
         if self._streaming_chunk_spin:
@@ -1241,12 +1539,6 @@ class AlgorithmConfigDialog(QDialog):
                 pa_out[algo.value] = ent
             full["streaming"]["per_algorithm"] = pa_out
         save_config(full)
-        try:
-            from gui.ade.explorer import SilentExplorer
-
-            SilentExplorer.get().set_enabled(bool(full["ade"]["silent_explore_enabled"]))
-        except Exception:
-            pass
 
         self.accept()
 
@@ -1690,129 +1982,138 @@ class MainWindow(QMainWindow):
         if not isinstance(record, FileRecord):
             QMessageBox.information(self, "提示", "压缩演示仅支持单文件")
             return
-        from gui.engine.token_parser import can_parse, get_parser
+        if record.status != CompressionStatus.DONE:
+            QMessageBox.information(self, "提示", "请先完成压缩后再使用压缩演示")
+            return
+        if getattr(record, "is_stored", False):
+            QMessageBox.information(self, "提示", "原样存储的文件无压缩演示")
+            return
+
+        from gui.engine.token_parser import (
+            can_parse,
+            fetch_demo_dp_visualization,
+            parse_for_demo,
+        )
         from gui.models import TEXT_EXTENSIONS, SCRIPT_EXTENSIONS
 
+        if not can_parse(record.algorithm):
+            CompressDemoDialog(record, self._algo_selector.current_algorithm, parent=self).exec()
+            return
+
+        try:
+            record.load_raw_data()
+        except Exception as e:
+            QMessageBox.warning(self, "压缩演示", f"无法读取原文件:\n{e}")
+            return
+        if not record.raw_data:
+            QMessageBox.warning(self, "压缩演示", "原文件为空或无法读取")
+            return
+        if len(record.raw_data) > LZDP_DP_VIZ_MAX_SIZE:
+            QMessageBox.information(
+                self,
+                "提示",
+                f"文件超过演示大小上限 ({LZDP_DP_VIZ_MAX_SIZE // 1024} KiB)，请使用较小语料。",
+            )
+            return
+
         ext = Path(record.name).suffix.lower() if "." in record.name else ""
-        is_text = ext in (TEXT_EXTENSIONS | SCRIPT_EXTENSIONS | frozenset({".html", ".htm", ".css", ".json", ".xml"}))
-        logger.info("[demo] name=%s algo=%s is_text=%s ext=%s", record.name, record.algorithm.value, is_text, ext)
+        is_text = ext in (
+            TEXT_EXTENSIONS | SCRIPT_EXTENSIONS | frozenset({".html", ".htm", ".css", ".json", ".xml"})
+        )
+        _demo_params = getattr(record, "compression_config_snapshot", None)
+        logger.info(
+            "[demo] memory demo path algo=%s is_text=%s raw=%d",
+            record.algorithm.value,
+            is_text,
+            len(record.raw_data),
+        )
 
-        if can_parse(record.algorithm) and not getattr(record, 'is_stored', False):
-            logger.info("[demo] can_parse=True, getting parser")
-            parser = get_parser(record.algorithm)
-            _demo_params = getattr(record, 'compression_config_snapshot', None)
-            if parser is not None:
-                container = file_record_compression_blob(record)
-                if not container:
-                    QMessageBox.information(
-                        self,
-                        "提示",
-                        "没有可用的压缩数据（流式压缩结果保存在磁盘 .wcx 中）。",
-                    )
-                    return
-                record.load_raw_data()
-                parse_input = strip_wcx_if_present(container)
-                raw_sz = len(record.raw_data) if record.raw_data else 0
-                logger.info("[demo] parsing payload=%d raw_data=%d", len(parse_input), raw_sz)
-                pr = parser.parse(
-                    parse_input, record.raw_data, compression_params=_demo_params
-                )
-                logger.info("[demo] parse done, tokens=%d", len(pr.tokens))
-                if is_text and len(pr.tokens) > 0:
-                    text = record.raw_data.decode('utf-8', errors='replace')
-                    byte_to_char = []
-                    char_idx = 0
-                    for ch in text:
-                        byte_len = len(ch.encode('utf-8'))
-                        for _ in range(byte_len):
-                            byte_to_char.append(char_idx)
-                        char_idx += 1
-                    logger.info("[demo] text len=%d byte_to_char len=%d", len(text), len(byte_to_char))
+        try:
+            pr = parse_for_demo(record.algorithm, record.raw_data, _demo_params)
+        except Exception as e:
+            logger.warning("[demo] parse_for_demo failed: %s", e, exc_info=True)
+            QMessageBox.warning(self, "压缩演示", f"演示数据生成失败:\n{e}")
+            return
 
-                    _LZ_ALGOS = {AlgorithmType.LZSS, AlgorithmType.LZDP}
-                    if record.algorithm in _LZ_ALGOS:
-                        if record.algorithm == AlgorithmType.LZDP:
-                            logger.info("[demo] LZDP path, getting dp_viz")
-                            dp_viz = None
-                            if len(record.raw_data) <= LZDP_DP_VIZ_MAX_SIZE:
-                                try:
-                                    from gui.engine.compressor import CompressionEngine
-                                    from gui.ade.explorer import SilentExplorer
+        logger.info("[demo] parse_for_demo tokens=%d", len(pr.tokens))
 
-                                    engine = CompressionEngine()
-                                    with SilentExplorer.user_compression_priority():
-                                        comp = engine.create_compressor_for_visualization(
-                                            AlgorithmType.LZDP, _demo_params
-                                        )
-                                        dp_viz = comp.get_dp_visualization(list(record.raw_data), 0)
-                                    logger.info("[demo] dp_viz OK, steps=%d path=%d", len(dp_viz.steps), len(dp_viz.optimal_path))
-                                except Exception as e:
-                                    logger.warning("[demo] get_dp_visualization failed: %s", e, exc_info=True)
-                                    dp_viz = None
-                            else:
-                                logger.info("[demo] raw_data too large (%d) for dp_viz, skipping", len(record.raw_data))
-                            logger.info("[demo] creating LZDPDPDialog")
-                            from gui.ui.dialogs.lz_demo_dialog import LZDPDPDialog
-                            dlg = LZDPDPDialog(text, pr.tokens, byte_to_char,
-                                                 dp_viz, record.name, record.algorithm.value, parent=self)
-                            logger.info("[demo] LZDPDPDialog created, calling exec")
-                            dlg.exec()
-                            logger.info("[demo] LZDPDPDialog closed")
-                        else:
-                            logger.info("[demo] LZSS path, creating LZSliderDialog")
-                            from gui.ui.dialogs.lz_demo_dialog import LZSliderDialog
-                            dlg = LZSliderDialog(text, pr.tokens, byte_to_char,
-                                                 record.name, record.algorithm.value, parent=self)
-                            logger.info("[demo] LZSliderDialog created, calling exec")
-                            dlg.exec()
-                            logger.info("[demo] LZSliderDialog closed")
-                        return
+        if not is_text:
+            QMessageBox.information(
+                self,
+                "提示",
+                "当前文件类型不支持文本交互演示，请使用文本/脚本类语料。",
+            )
+            return
 
-                    _FLATE_ALGOS = {AlgorithmType.DPFLATE, AlgorithmType.DEFLATE}
-                    if record.algorithm in _FLATE_ALGOS:
-                        logger.info("[demo] Flate path, creating FlateDemoDialog")
-                        from gui.ui.dialogs.flate_demo_dialog import FlateDemoDialog
-                        huffman_trees = pr.huffman_trees if pr.huffman_trees else None
-                        
-                        dp_viz = None
-                        if record.algorithm == AlgorithmType.DPFLATE:
-                            if len(record.raw_data) <= LZDP_DP_VIZ_MAX_SIZE:
-                                try:
-                                    from gui.engine.compressor import CompressionEngine
-                                    from gui.ade.explorer import SilentExplorer
+        dp_viz = None
+        if record.algorithm in (AlgorithmType.LZDP, AlgorithmType.DPFLATE):
+            dp_viz = fetch_demo_dp_visualization(
+                record.algorithm, record.raw_data, _demo_params
+            )
 
-                                    engine = CompressionEngine()
-                                    with SilentExplorer.user_compression_priority():
-                                        comp = engine.create_compressor_for_visualization(
-                                            AlgorithmType.DPFLATE, _demo_params
-                                        )
-                                        lzdp_comp = engine.create_compressor_for_visualization(
-                                            AlgorithmType.LZDP, _demo_params
-                                        )
-                                        lzdp_comp.set_min_match(comp.get_min_match())
-                                        lzdp_comp.set_match_engine(comp.get_match_engine())
-                                        dp_viz = lzdp_comp.get_dp_visualization(list(record.raw_data), 0)
-                                except Exception as e:
-                                    logger.warning("[demo] DPFlate get_dp_visualization failed: %s", e)
+        has_lz_dp = record.algorithm == AlgorithmType.LZDP and (
+            pr.tokens or dp_viz is not None
+        )
+        has_lzss = record.algorithm == AlgorithmType.LZSS and pr.tokens
+        has_flate = record.algorithm in (AlgorithmType.DPFLATE, AlgorithmType.DEFLATE) and (
+            pr.tokens or (record.algorithm == AlgorithmType.DPFLATE and dp_viz is not None)
+        )
 
-                        dlg = FlateDemoDialog(text, pr.tokens, byte_to_char,
-                                              record.name, record.algorithm.value,
-                                              huffman_trees=huffman_trees, dp_viz=dp_viz, parent=self)
-                        logger.info("[demo] FlateDemoDialog created, calling exec")
-                        dlg.exec()
-                        logger.info("[demo] FlateDemoDialog closed")
-                        return
+        if not (has_lz_dp or has_lzss or has_flate):
+            QMessageBox.warning(
+                self,
+                "压缩演示",
+                "未能生成演示数据（请确认 core_engine 已构建且算法参数有效）。",
+            )
+            return
 
-                    logger.info("[demo] non-LZ/non-Flate path (e.g. pure Huffman), showing info")
-                    QMessageBox.information(
-                        self, "提示",
-                        f"算法「{record.algorithm.value}」暂不支持交互式演示。\n\n"
-                        f"请使用「📊 压缩热力图」查看该算法的压缩可视化。"
-                    )
-                    return
+        text = record.raw_data.decode("utf-8", errors="replace")
+        byte_to_char = []
+        char_idx = 0
+        for ch in text:
+            byte_len = len(ch.encode("utf-8"))
+            for _ in range(byte_len):
+                byte_to_char.append(char_idx)
+            char_idx += 1
 
-        dlg = CompressDemoDialog(record, self._algo_selector.current_algorithm, parent=self)
-        dlg.exec()
+        if record.algorithm == AlgorithmType.LZDP:
+            from gui.ui.dialogs.lz_demo_dialog import LZDPDPDialog
+
+            LZDPDPDialog(
+                text,
+                pr.tokens,
+                byte_to_char,
+                dp_viz,
+                record.name,
+                record.algorithm.value,
+                parent=self,
+            ).exec()
+            return
+
+        if record.algorithm == AlgorithmType.LZSS:
+            from gui.ui.dialogs.lz_demo_dialog import LZSliderDialog
+
+            LZSliderDialog(
+                text, pr.tokens, byte_to_char, record.name, record.algorithm.value, parent=self
+            ).exec()
+            return
+
+        if record.algorithm in (AlgorithmType.DPFLATE, AlgorithmType.DEFLATE):
+            from gui.ui.dialogs.flate_demo_dialog import FlateDemoDialog
+
+            FlateDemoDialog(
+                text,
+                pr.tokens,
+                byte_to_char,
+                record.name,
+                record.algorithm.value,
+                huffman_trees=pr.huffman_trees if pr.huffman_trees else None,
+                dp_viz=dp_viz,
+                parent=self,
+            ).exec()
+            return
+
+        CompressDemoDialog(record, self._algo_selector.current_algorithm, parent=self).exec()
 
     def _decompress_payload(self, engine, header, payload) -> bytes:
         from gui.engine.decompress_log import log_decompress, summarize_result
@@ -1859,7 +2160,11 @@ class MainWindow(QMainWindow):
 
     # ========== 导出操作 ==========
     def _on_export(self) -> None:
-        from gui.engine.file_protocol import pack_compressed_file, make_export_filename, pack_folder_archive
+        from gui.engine.file_protocol import (
+            make_export_filename,
+            pack_folder_archive,
+            wcx_bytes_for_file_record,
+        )
         from pathlib import Path as P
 
         selected = self._table.selected_rows
@@ -1930,25 +2235,27 @@ class MainWindow(QMainWindow):
                 with open(export_path, 'wb') as file:
                     file.write(archive_data)
                 exported += 1
-            elif isinstance(record, FileRecord) and record.compressed_data:
+            elif isinstance(record, FileRecord):
+                try:
+                    packed = wcx_bytes_for_file_record(record)
+                except Exception as e:
+                    logger.error(
+                        "[export] pack failed row=%d file=%s: %s",
+                        row,
+                        getattr(record, "name", "?"),
+                        e,
+                        exc_info=True,
+                    )
+                    continue
+                if not packed:
+                    logger.warning(
+                        "[export] SKIP row=%d: no compression artifact", row
+                    )
+                    continue
                 export_name = make_export_filename(record.name, record.algorithm)
                 export_path = os.path.join(export_dir, export_name)
-
-                packed = pack_compressed_file(
-                    compressed_data=record.compressed_data,
-                    algorithm=record.algorithm,
-                    original_size=record.size,
-                    original_filename=record.name,
-                )
-                with open(export_path, 'wb') as f:
+                with open(export_path, "wb") as f:
                     f.write(packed)
-                exported += 1
-            elif isinstance(record, FileRecord) and record.compressed_path:
-                import shutil
-
-                export_name = make_export_filename(record.name, record.algorithm)
-                export_path = os.path.join(export_dir, export_name)
-                shutil.copy2(record.compressed_path, export_path)
                 exported += 1
 
         logger.info("[export] done: exported=%d", exported)
@@ -2294,14 +2601,43 @@ class MainWindow(QMainWindow):
         try:
             record.load_raw_data()
             container = file_record_compression_blob(record) or b""
-            parse_payload = strip_wcx_if_present(container)
+            inner_wcx, parse_payload = compression_blob_for_visualization(record)
 
             from gui.engine.token_parser import can_parse, get_parser
             from gui.models import TEXT_EXTENSIONS, SCRIPT_EXTENSIONS
 
             ext = Path(record.name).suffix.lower() if "." in record.name else ""
             is_text = ext in (TEXT_EXTENSIONS | SCRIPT_EXTENSIONS | frozenset({".html", ".htm", ".css", ".json", ".xml"}))
-            logger.info("[heatmap] ext=%s is_text=%s can_parse=%s", ext, is_text, can_parse(record.algorithm))
+            use_3hm = dpflate_format_byte(inner_wcx) == 0x33
+            logger.info(
+                "[heatmap] ext=%s is_text=%s can_parse=%s inner=%d parse=%d 3hm=%s",
+                ext,
+                is_text,
+                can_parse(record.algorithm),
+                len(inner_wcx),
+                len(parse_payload),
+                use_3hm,
+            )
+
+            if (
+                use_3hm
+                and record.algorithm == AlgorithmType.DPFLATE
+                and not getattr(record, "is_stored", False)
+            ):
+                from gui.ui.dialogs.block_heatmap_dialog import BlockHeatmapDialog
+
+                dlg = BlockHeatmapDialog(
+                    raw_data=record.raw_data,
+                    compressed_data=inner_wcx,
+                    filename=record.name,
+                    algorithm=record.algorithm.value + " (3HfMT)",
+                    original_size=record.size,
+                    compressed_size=_compressed_size(record),
+                    time_ms=record.compression_time_ms,
+                    parent=self,
+                )
+                dlg.exec()
+                return
 
             if can_parse(record.algorithm) and not getattr(record, 'is_stored', False):
                 parser = get_parser(record.algorithm)
@@ -2315,7 +2651,7 @@ class MainWindow(QMainWindow):
                         parse_payload, record.raw_data, compression_params=_hm_params
                     )
                     logger.info("[heatmap] parse done, tokens=%d", len(pr.tokens))
-                    if is_text:
+                    if is_text and len(pr.tokens) > 0:
                         text = record.raw_data.decode('utf-8', errors='replace')
                         byte_to_char = []
                         char_idx = 0

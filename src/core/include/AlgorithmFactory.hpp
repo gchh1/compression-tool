@@ -46,7 +46,7 @@ struct DpflatePipelineParams {
 
 /// Options for ``createAlgorithm`` when used from file streaming compress path.
 inline constexpr uint32_t kFileCompressOptsNone = 0;
-/// LZDP: legacy name — file pipeline uses ``LZDP_OutOfCore`` + ``LzdpWholeFileParams``. Bit kept for ABI / logs.
+/// LZDP: legacy name — file pipeline uses ``LZDP_Streaming`` + ``LzdpWholeFileParams``. Bit kept for ABI / logs.
 inline constexpr uint32_t kFileCompressLzdpWholeFileFramed = 1u << 0;
 
 enum class AlgorithmID {
@@ -73,7 +73,7 @@ enum class AlgorithmID {
 ///                                        (same min/max/default for all file streaming). Used as
 ///                                        the ``StreamingCompressAdapter`` segment size for LZSS /
 ///                                        Brotli / Zstd, and as the file read / ``MemoryPool`` chunk
-///                                        for ``algorithm::Deflate``, ``LZDP_OutOfCore``, and
+///                                        for ``algorithm::Deflate``, ``LZDP_Streaming``, and
 ///                                        ``DPFlate`` (one ``process()`` read per disk chunk).
 /// @param deflate_pipeline                 When ``id == Deflate``, ctor args for ``algorithm::Deflate``
 ///                                        (omit or null for defaults). Ignored for other ids.

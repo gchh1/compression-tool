@@ -2,6 +2,7 @@
 /// Chunk size 300 KiB; corpora up to 6 MiB.
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <random>
@@ -9,13 +10,23 @@
 #include <vector>
 
 #include "AlgorithmFactory.hpp"
+#include "DPFlateBin64kDebug.hpp"
 #include "api.hpp"
 
 namespace fs = std::filesystem;
 
 namespace {
 
-constexpr size_t kStreamChunkBytes = 300u * 1024u;
+static size_t stream_chunk_bytes() {
+    if (const char* env = std::getenv("WEBCOMPRESS_DPFLATE_BIN64K_STREAM_CHUNK")) {
+        char* end = nullptr;
+        const unsigned long v = std::strtoul(env, &end, 10);
+        if (end != env && v >= 64 && v <= 4u * 1024u * 1024u) {
+            return static_cast<size_t>(v);
+        }
+    }
+    return 300u * 1024u;
+}
 constexpr size_t kMaxCorpusBytes = 6u * 1024u * 1024u;
 
 struct Corpus {
@@ -117,7 +128,8 @@ bool roundtrip_stream(const fs::path& work, const Corpus& corp, bool use_flag) {
 
     const auto df = default_dp_params(use_flag);
     const AlgorithmID ch[] = {AlgorithmID::DPFlate};
-    auto cr = compressFile(in.string(), wcx.string(), ch, kStreamChunkBytes,
+    const size_t chunk_bytes = stream_chunk_bytes();
+    auto cr = compressFile(in.string(), wcx.string(), ch, chunk_bytes,
                            compressor::core::kFileCompressOptsNone, nullptr, &df);
     if (!cr.success) {
         fprintf(stderr, "[%s] flag=%d compressFile: %s\n", corp.name.c_str(), use_flag ? 1 : 0,
@@ -126,7 +138,7 @@ bool roundtrip_stream(const fs::path& work, const Corpus& corp, bool use_flag) {
     }
 
     const AlgorithmID de[] = {AlgorithmID::Inflate};
-    auto dr = decompressFile(wcx.string(), dec.string(), de, kStreamChunkBytes);
+    auto dr = decompressFile(wcx.string(), dec.string(), de, chunk_bytes);
     if (!dr.success) {
         fprintf(stderr, "[%s] flag=%d decompressFile: %s\n", corp.name.c_str(), use_flag ? 1 : 0,
                 dr.error_message.c_str());
@@ -157,27 +169,48 @@ bool roundtrip_stream(const fs::path& work, const Corpus& corp, bool use_flag) {
 }  // namespace
 
 int main() {
-    fprintf(stderr, "[dpflate_3hm_stream] P7/P8 chunk=%zu bytes max_corpus=%zu MiB\n",
-            kStreamChunkBytes, kMaxCorpusBytes / (1024u * 1024u));
-
+    if (const char* dbg = std::getenv("WEBCOMPRESS_DPFLATE_BIN64K_DEBUG")) {
+        fprintf(stderr, "[dpflate_3hm_stream] binary_64k container debug -> %s\n",
+                (dbg[0] == '1' && dbg[1] == '\0') ? "dpflate_bin64k_containers.log" : dbg);
+        compressor::algorithm::DPFlateBin64kDebug::init_once();
+        if (const char* only = std::getenv("WEBCOMPRESS_DPFLATE_BIN64K_ONLY");
+            only && only[0] == '1') {
+            compressor::algorithm::DPFlateBin64kDebug::arm_session(64u * 1024u, true);
+        }
+        fflush(stderr);
+    }
     std::vector<Corpus> corpora;
-    corpora.push_back(corpus_pattern());
-    corpora.push_back(corpus_random());
-    corpora.push_back(corpus_text());
-    corpora.push_back(corpus_binary_64k());
-    corpora.push_back(corpus_repeat("repeat_1mb", 1u * 1024u * 1024u));
-    corpora.push_back(corpus_repeat("repeat_3mb", 3u * 1024u * 1024u));
-    corpora.push_back(corpus_repeat("repeat_6mb", kMaxCorpusBytes));
+    if (const char* only = std::getenv("WEBCOMPRESS_DPFLATE_BIN64K_ONLY");
+        only && only[0] == '1') {
+        corpora.push_back(corpus_binary_64k());
+        fprintf(stderr, "[dpflate_3hm_stream] WEBCOMPRESS_DPFLATE_BIN64K_ONLY=1 -> binary_64k only\n");
+    } else {
+        corpora.push_back(corpus_pattern());
+        corpora.push_back(corpus_random());
+        corpora.push_back(corpus_text());
+        corpora.push_back(corpus_binary_64k());
+        corpora.push_back(corpus_repeat("repeat_1mb", 1u * 1024u * 1024u));
+        corpora.push_back(corpus_repeat("repeat_3mb", 3u * 1024u * 1024u));
+        corpora.push_back(corpus_repeat("repeat_6mb", kMaxCorpusBytes));
+    }
+    fprintf(stderr, "[dpflate_3hm_stream] P7/P8 chunk=%zu bytes max_corpus=%zu MiB\n",
+            stream_chunk_bytes(), kMaxCorpusBytes / (1024u * 1024u));
+    fflush(stderr);
 
-    const fs::path work =
-        fs::temp_directory_path() / "dpflate_3hm_stream_test";
+    fs::path work = fs::current_path() / "dpflate_3hm_stream_test";
+    if (const char* w = std::getenv("WEBCOMPRESS_TEST_WORKDIR"); w && w[0]) {
+        work = fs::path(w) / "dpflate_3hm_stream_test";
+    }
     std::error_code ec;
     fs::remove_all(work, ec);
     fs::create_directories(work, ec);
 
     bool ok = true;
     fprintf(stderr, "[dpflate_3hm_stream] --- P7 (flag=false) ---\n");
+    fflush(stderr);
     for (const auto& c : corpora) {
+        fprintf(stderr, "[dpflate_3hm_stream] >>> compress %s flag=0\n", c.name.c_str());
+        fflush(stderr);
         if (!roundtrip_stream(work, c, false)) {
             ok = false;
         }

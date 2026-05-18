@@ -62,6 +62,10 @@ auto ADEBridge::save_model(const std::string& filepath) const -> bool {
     return engine_.save_model(filepath);
 }
 
+auto ADEBridge::predict_padded(const std::vector<float>& padded_features) const -> int {
+    return engine_.predict_padded(padded_features);
+}
+
 auto ADEBridge::analyze(const uint8_t* data, size_t size) -> ADEBridgeResult {
     ADEBridgeResult result;
 

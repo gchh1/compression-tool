@@ -1,0 +1,1 @@
+ ../src/api/libapi.a ../src/algorithm/libalgorithm.a ../src/archiver/libarchiver.a ../src/processor/libprocessor.a ../src/core/libcore.a ../src/algorithm/libalgorithm.a -lz -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 

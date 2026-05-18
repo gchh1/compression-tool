@@ -24,19 +24,33 @@ def formatted_size(size_bytes: int) -> str:
 
 
 def compressed_payload_size(record: object) -> int:
-    """Bytes of the stored compressed artifact (memory or ``compressed_path`` on disk)."""
-    data = getattr(record, "compressed_data", None)
-    if data is not None:
-        return len(data)
-    path = getattr(record, "compressed_path", None)
-    if path:
-        try:
-            p = Path(path)
-            if p.is_file():
-                return int(p.stat().st_size)
-        except OSError:
+    """Codec payload bytes (WCX container header stripped when present)."""
+    try:
+        from gui.engine.file_protocol import (
+            MAGIC,
+            file_record_compression_blob,
+            strip_wcx_if_present,
+        )
+
+        blob = file_record_compression_blob(record)
+        if not blob:
             return 0
-    return 0
+        if len(blob) >= 4 and blob[:4] == MAGIC:
+            return len(strip_wcx_if_present(blob))
+        return len(blob)
+    except Exception:
+        data = getattr(record, "compressed_data", None)
+        if data is not None:
+            return len(data)
+        path = getattr(record, "compressed_path", None)
+        if path:
+            try:
+                p = Path(path)
+                if p.is_file():
+                    return int(p.stat().st_size)
+            except OSError:
+                return 0
+        return 0
 
 
 class ResourceType(Enum):

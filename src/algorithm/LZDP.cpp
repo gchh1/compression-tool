@@ -1,5 +1,8 @@
 #include "LZDP.hpp"
 
+#include "LZDPStreamDebug.hpp"
+#include "TopMatch.hpp"
+
 #include "DebugLog.hpp"
 
 #include <algorithm>
@@ -14,17 +17,21 @@
 namespace compressor {
 namespace algorithm {
 
-size_t LZDP::calcBitWidth(size_t max_val) {
-    if (max_val == 0) return 1;
-    size_t bits = 0;
-    while (max_val > 0) {
-        bits++;
-        max_val >>= 1;
+size_t LZDP::cal_cost(size_t literal_count, size_t match_count) const {
+    if (use_flag_encoding_) {
+        return literal_count * (offset_bits_ + 1) +
+               match_count * (length_bits_ + 1);
     }
-    return bits;
+    size_t tmp = literal_count;
+    const size_t maxlen = (size_t{1} << length_bits_) - 1;
+    size_t cost = 0;
+    while (tmp > maxlen) {
+        cost += offset_bits_ + length_bits_ + maxlen * 8;
+        tmp -= maxlen;
+    }
+    cost += offset_bits_ + length_bits_ + tmp * 8;
+    return cost;
 }
-
-
 
 struct ROLListNode {
     size_t literal_count{0};
@@ -35,16 +42,6 @@ struct ROLListNode {
 
 LZDP::DpCoreResult LZDP::dp_core(
     const std::vector<uint8_t>& input, size_t search_size,
-    size_t lookahead_size, size_t range,
-    size_t core_begin, size_t core_end) {
-    std::vector<std::span<const uint8_t>> segs;
-    segs.emplace_back(input);
-    VirtualBuffer<3> vb(std::move(segs));
-    return dp_core(vb, search_size, lookahead_size, range, core_begin, core_end);
-}
-
-LZDP::DpCoreResult LZDP::dp_core(
-    const VirtualBuffer<3>& input, size_t search_size,
     size_t lookahead_size, size_t range,
     size_t core_begin, size_t core_end) {
     if (search_size > max_search_size_) {
@@ -90,16 +87,18 @@ LZDP::DpCoreResult LZDP::dp_core(
     for (size_t pos = core_begin; pos < core_end; pos++) {
         if (dp[pos] == nullptr) { continue; }
 
+        const size_t lit_lit = dp[pos]->literal_count + 1;
+        const size_t lit_mat = dp[pos]->match_count;
+        const size_t lit_cost_new = cal_cost(lit_lit, lit_mat);
+
         if (dp[pos + 1] == nullptr) {
-            dp[pos + 1] = new Node{
-                dp[pos]->literal_count + 1, dp[pos]->match_count,
-                pos, Triple(0, 0, input[pos])};
+            dp[pos + 1] = new Node{lit_lit, lit_mat, pos, Triple(0, 0, input[pos])};
         } else {
-            size_t cur_cost = dp[pos]->literal_count + dp[pos]->match_count + 1;
-            size_t next_cost = dp[pos + 1]->literal_count + dp[pos + 1]->match_count;
-            if (cur_cost < next_cost) {
-                dp[pos + 1]->literal_count = dp[pos]->literal_count + 1;
-                dp[pos + 1]->match_count = dp[pos]->match_count;
+            const size_t next_cost =
+                cal_cost(dp[pos + 1]->literal_count, dp[pos + 1]->match_count);
+            if (lit_cost_new < next_cost) {
+                dp[pos + 1]->literal_count = lit_lit;
+                dp[pos + 1]->match_count = lit_mat;
                 dp[pos + 1]->offset = pos;
                 dp[pos + 1]->data = Triple(0, 0, input[pos]);
             }
@@ -122,30 +121,32 @@ LZDP::DpCoreResult LZDP::dp_core(
                 input.begin() + search_start, search_len,
                 input.begin() + pos, look_len, range, get_min_match());
             for (auto& kr : kmp_results) {
-                match_results.push_back({kr.offset, kr.length});
+                match_results.push_back(MatchRes{kr.offset, kr.length});
             }
         } else {
-            size_t match_pos = prev[pos]; 
-            size_t chain_length = range * 8; 
+            TopMatch top_matches(range);
+            size_t match_pos = prev[pos];
+            size_t chain_length = range * 8;
             while (match_pos != SIZE_MAX && chain_length-- > 0) {
                 size_t dist = pos - match_pos;
-                if (dist > search_size || dist == 0) break;
+                if (dist > search_size || dist == 0) {
+                    break;
+                }
 
                 size_t match_len = 0;
-                while (match_len < look_len && input[pos + match_len] == input[match_pos + match_len]) {
+                while (match_len < look_len &&
+                       input[pos + match_len] == input[match_pos + match_len]) {
                     match_len++;
                 }
 
                 if (match_len >= get_min_match()) {
-                    match_results.push_back({dist, match_len});
+                    top_matches.insert(static_cast<uint16_t>(dist),
+                                       static_cast<uint16_t>(match_len));
                 }
                 match_pos = prev[match_pos];
             }
-            if (match_results.size() > range) {
-                std::sort(match_results.begin(), match_results.end(), [](const MatchRes& a, const MatchRes& b) {
-                    return a.length > b.length;
-                });
-                match_results.resize(range);
+            for (const auto& e : top_matches.entries()) {
+                match_results.push_back(MatchRes{e.offset, e.length});
             }
         }
 
@@ -154,16 +155,19 @@ LZDP::DpCoreResult LZDP::dp_core(
             size_t target = pos + kr.length;
             if (target > in_len) { continue; }
 
+            const size_t mat_lit = dp[pos]->literal_count;
+            const size_t mat_mat = dp[pos]->match_count + 1;
+            const size_t mat_cost_new = cal_cost(mat_lit, mat_mat);
+
             if (dp[target] == nullptr) {
-                dp[target] = new Node{
-                    dp[pos]->literal_count, dp[pos]->match_count + 1,
-                    pos, Triple(kr.offset, kr.length, 0)};
+                dp[target] = new Node{mat_lit, mat_mat, pos,
+                                      Triple(kr.offset, kr.length, 0)};
             } else {
-                size_t cur_cost = dp[pos]->literal_count + dp[pos]->match_count + 1;
-                size_t tgt_cost = dp[target]->literal_count + dp[target]->match_count;
-                if (cur_cost < tgt_cost) {
-                    dp[target]->literal_count = dp[pos]->literal_count;
-                    dp[target]->match_count = dp[pos]->match_count + 1;
+                const size_t tgt_cost =
+                    cal_cost(dp[target]->literal_count, dp[target]->match_count);
+                if (mat_cost_new < tgt_cost) {
+                    dp[target]->literal_count = mat_lit;
+                    dp[target]->match_count = mat_mat;
                     dp[target]->offset = pos;
                     dp[target]->data = Triple(kr.offset, kr.length, 0);
                 }
@@ -192,6 +196,18 @@ LZDP::DpCoreResult LZDP::dp_core(
         }
     }
     return result;
+}
+
+LZDP::DpCoreResult LZDP::dp_core(
+    const VirtualBuffer<3>& input, size_t search_size,
+    size_t lookahead_size, size_t range,
+    size_t core_begin, size_t core_end) {
+    // VirtualBuffer 重载：拷贝到连续缓冲区后委托 vector 重载
+    std::vector<uint8_t> flat(input.size());
+    for (size_t i = 0; i < input.size(); ++i) {
+        flat[i] = input[i];
+    }
+    return dp_core(flat, search_size, lookahead_size, range, core_begin, core_end);
 }
 
 std::vector<uint8_t> LZDP::encode_triples(
@@ -407,27 +423,29 @@ LZDP::DPVisualization LZDP::get_dp_visualization(
                 match_results.push_back({kr.offset, kr.length});
             }
         } else {
-            size_t match_pos = prev[pos]; 
-            size_t chain_length = range * 8; 
+            TopMatch top_matches(range);
+            size_t match_pos = prev[pos];
+            size_t chain_length = range * 8;
             while (match_pos != SIZE_MAX && chain_length-- > 0) {
                 size_t dist = pos - match_pos;
-                if (dist > search_size || dist == 0) break;
+                if (dist > search_size || dist == 0) {
+                    break;
+                }
 
                 size_t match_len = 0;
-                while (match_len < look_len && input[pos + match_len] == input[match_pos + match_len]) {
+                while (match_len < look_len &&
+                       input[pos + match_len] == input[match_pos + match_len]) {
                     match_len++;
                 }
 
                 if (match_len >= get_min_match()) {
-                    match_results.push_back({dist, match_len});
+                    top_matches.insert(static_cast<uint16_t>(dist),
+                                       static_cast<uint16_t>(match_len));
                 }
                 match_pos = prev[match_pos];
             }
-            if (match_results.size() > range) {
-                std::sort(match_results.begin(), match_results.end(), [](const MatchRes& a, const MatchRes& b) {
-                    return a.length > b.length;
-                });
-                match_results.resize(range);
+            for (const auto& e : top_matches.entries()) {
+                match_results.push_back({e.offset, e.length});
             }
         }
 
@@ -459,8 +477,8 @@ LZDP::DPVisualization LZDP::get_dp_visualization(
                 }
             }
 
-            step.candidates.push_back(DPCandidate{
-                kr.offset, kr.length, 0, is_chosen});
+            step.candidates.emplace_back(
+                Triple{kr.offset, kr.length, 0}, is_chosen);
         }
 
         if (!step.candidates.empty()) {
@@ -512,84 +530,116 @@ LZDP::DPVisualization LZDP::get_dp_visualization(
     return viz;
 }
 
-void lzdp_ooc_collect_one_index(LZDP_OutOfCore& self, size_t pos_idx, uint32_t abs_pos) {
-    auto& cur = self.dp_states_[abs_pos % self.dp_slot_count_];
+uint32_t LZDP_Streaming::cal_path_cost(uint32_t literal_count, uint32_t match_count) const {
+    if (use_flag_encoding_) {
+        return literal_count * static_cast<uint32_t>(offset_bits_ + 1) +
+               match_count * static_cast<uint32_t>(length_bits_ + 1);
+    }
+    uint32_t tmp = literal_count;
+    const uint32_t maxlen = (uint32_t{1} << length_bits_) - 1u;
+    uint32_t cost = 0;
+    while (tmp > maxlen) {
+        cost += static_cast<uint32_t>(offset_bits_ + length_bits_) + maxlen * 8u;
+        tmp -= maxlen;
+    }
+    cost += static_cast<uint32_t>(offset_bits_ + length_bits_) + tmp * 8u;
+    return cost;
+}
+
+void lzdp_streaming_collect_one_index(LZDP_Streaming& self, size_t pos_idx, uint32_t abs_pos) {
+    auto& cur = self.streaming_dp_.cell_at(abs_pos);
+    const uint32_t cur_cost = cur.cost;
+    const uint16_t link_len = cur.length;
+    const uint16_t link_off = cur.offset;
+    const uint32_t cur_lit = cur.literal_count;
+    const uint32_t cur_mat = cur.match_count;
 
     if (abs_pos < 20) {
-        DEBUG_LOG("[LZDP_OutOfCore] COLLECT pos=%u pos_idx=%zu cur.cost=%u cur.len=%u cur.off=%u",
-                  abs_pos, pos_idx, cur.cost, cur.length, cur.offset);
+        DEBUG_LOG(
+            "[LZDP_Streaming] COLLECT pos=%u pos_idx=%zu cur.cost=%u lit=%u mat=%u len=%u off=%u",
+            abs_pos, pos_idx, cur_cost, cur_lit, cur_mat, link_len, link_off);
     }
 
-    // 1. Literal transition
-    auto& next_lit = self.dp_states_[(abs_pos + 1) % self.dp_slot_count_];
-    if (cur.cost + self.lit_cost_ < next_lit.cost) {
-        next_lit.cost = cur.cost + self.lit_cost_;
+    const uint32_t lit_lit = cur_lit + 1u;
+    const uint32_t lit_mat = cur_mat;
+    const uint32_t lit_cost_new = self.cal_path_cost(lit_lit, lit_mat);
+    auto& next_lit = self.streaming_dp_.cell_at(abs_pos + 1);
+    if (lit_cost_new < next_lit.cost) {
+        next_lit.cost = lit_cost_new;
+        next_lit.literal_count = lit_lit;
+        next_lit.match_count = lit_mat;
         next_lit.length = 0;
         next_lit.offset = self.input_buffer_[pos_idx];
     }
 
-    // 2. Match transitions
     const size_t remain_len = self.input_buffer_.size() - pos_idx;
     const size_t look_len =
         (remain_len > self.LOOKAHEAD_SIZE) ? self.LOOKAHEAD_SIZE : remain_len;
 
+    struct MatchRes {
+        size_t offset;
+        size_t length;
+    };
+    std::vector<MatchRes> match_results;
+
     if (look_len >= self.MIN_MATCH) {
         if (self.match_engine_ == 0) {
-            size_t search_len = (abs_pos > self.SEARCH_SIZE) ? self.SEARCH_SIZE : abs_pos;
-            size_t search_start = pos_idx - search_len;
-            auto kmp_results = kmpSearch(
+            const size_t search_len =
+                (abs_pos > self.SEARCH_SIZE) ? self.SEARCH_SIZE : static_cast<size_t>(abs_pos);
+            const size_t search_start = pos_idx - search_len;
+            const auto kmp_results = kmpSearch(
                 self.input_buffer_.begin() + search_start, search_len,
                 self.input_buffer_.begin() + pos_idx, look_len, self.DP_TOP, self.MIN_MATCH);
-            if (abs_pos < 30) {
-                DEBUG_LOG("[LZDP_OutOfCore] COLLECT pos=%u search_len=%zu look_len=%zu matches=%zu",
-                          abs_pos, search_len, look_len, kmp_results.size());
-                if (!kmp_results.empty()) {
-                    DEBUG_LOG("[LZDP_OutOfCore] COLLECT pos=%u first_match=(off=%zu,len=%zu)",
-                              abs_pos, kmp_results[0].offset, kmp_results[0].length);
-                }
+            for (const auto& kr : kmp_results) {
+                match_results.push_back(MatchRes{kr.offset, kr.length});
             }
-            for (auto& kr : kmp_results) {
-                auto& nm =
-                    self.dp_states_[(abs_pos + kr.length) % self.dp_slot_count_];
-                if (cur.cost + self.match_cost_ < nm.cost) {
-                    nm.cost = cur.cost + self.match_cost_;
-                    nm.length = static_cast<uint16_t>(kr.length);
-                    nm.offset = static_cast<uint16_t>(kr.offset);
+        } else if (pos_idx + 2 < self.input_buffer_.size()) {
+            const size_t slot = self.hashBucket3(pos_idx);
+            self.prev_buf_[pos_idx] = self.head_[slot];
+            self.head_[slot] = static_cast<uint32_t>(pos_idx);
+
+            TopMatch top_matches(self.DP_TOP);
+            uint32_t match_buf_idx = self.prev_buf_[pos_idx];
+            size_t chain_length = self.DP_TOP * 8;
+            while (match_buf_idx != UINT32_MAX && chain_length-- > 0) {
+                const size_t dist = pos_idx - match_buf_idx;
+                if (dist > self.SEARCH_SIZE || dist == 0) {
+                    break;
                 }
-            }
-        } else {
-            if (pos_idx + 2 < self.input_buffer_.size()) {
-                const size_t slot = self.hashBucket3(pos_idx);
-                self.prev_buf_[pos_idx] = self.head_[slot];
-                self.head_[slot] = static_cast<uint32_t>(pos_idx);
 
-                uint32_t match_buf_idx = self.prev_buf_[pos_idx];
-                size_t chain_length = self.DP_TOP * 8;
-                while (match_buf_idx != UINT32_MAX && chain_length-- > 0) {
-                    const size_t dist = pos_idx - match_buf_idx;
-                    if (dist > self.SEARCH_SIZE || dist == 0) {
-                        break;
-                    }
-
-                    size_t match_len = 0;
-                    while (match_len < look_len &&
-                           self.input_buffer_[pos_idx + match_len] ==
-                               self.input_buffer_[match_buf_idx + match_len]) {
-                        match_len++;
-                    }
-
-                    if (match_len >= self.MIN_MATCH) {
-                        auto& nm =
-                            self.dp_states_[(abs_pos + match_len) % self.dp_slot_count_];
-                        if (cur.cost + self.match_cost_ < nm.cost) {
-                            nm.cost = cur.cost + self.match_cost_;
-                            nm.length = static_cast<uint16_t>(match_len);
-                            nm.offset = static_cast<uint16_t>(dist);
-                        }
-                    }
-                    match_buf_idx = self.prev_buf_[match_buf_idx];
+                size_t match_len = 0;
+                while (match_len < look_len &&
+                       self.input_buffer_[pos_idx + match_len] ==
+                           self.input_buffer_[match_buf_idx + match_len]) {
+                    match_len++;
                 }
+
+                if (match_len >= self.MIN_MATCH) {
+                    top_matches.insert(static_cast<uint16_t>(dist),
+                                       static_cast<uint16_t>(match_len));
+                }
+                match_buf_idx = self.prev_buf_[match_buf_idx];
             }
+            for (const auto& e : top_matches.entries()) {
+                match_results.push_back(MatchRes{e.offset, e.length});
+            }
+        }
+    }
+
+    for (const auto& kr : match_results) {
+        if (kr.offset == 0 || kr.length < self.MIN_MATCH) {
+            continue;
+        }
+        const uint32_t mat_lit = cur_lit;
+        const uint32_t mat_mat = cur_mat + 1u;
+        const uint32_t mat_cost_new = self.cal_path_cost(mat_lit, mat_mat);
+        auto& nm = self.streaming_dp_.cell_at(abs_pos + static_cast<uint32_t>(kr.length));
+        if (mat_cost_new < nm.cost) {
+            nm.cost = mat_cost_new;
+            nm.literal_count = mat_lit;
+            nm.match_count = mat_mat;
+            nm.length = static_cast<uint16_t>(kr.length);
+            nm.offset = static_cast<uint16_t>(kr.offset);
         }
     }
 
@@ -597,17 +647,16 @@ void lzdp_ooc_collect_one_index(LZDP_OutOfCore& self, size_t pos_idx, uint32_t a
         self.link_lengths_.resize(static_cast<size_t>(abs_pos) + 1);
         self.link_offsets_.resize(static_cast<size_t>(abs_pos) + 1);
     }
-    self.link_lengths_[abs_pos] = cur.length;
-    self.link_offsets_[abs_pos] = cur.offset;
-    self.spill_a_.writePackedLink(self.spill_spec_, cur.length, cur.offset);
+    self.link_lengths_[abs_pos] = link_len;
+    self.link_offsets_[abs_pos] = link_off;
+    self.spill_a_.writePackedLink(self.spill_spec_, link_len, link_off);
 
-    // 4. Clear state for future wrap-around
-    cur.cost = UINT32_MAX;
-    cur.length = 0;
-    cur.offset = 0;
+    if (abs_pos == 0) {
+        LZDP_STREAM_LOG("COLLECT", "index=0 cost=%u len=%u off=%u", cur_cost, link_len, link_off);
+    }
 }
 
-LZDP_OutOfCore::LZDP_OutOfCore(size_t search_size, size_t lookahead_size,
+LZDP_Streaming::LZDP_Streaming(size_t search_size, size_t lookahead_size,
                                size_t min_match, size_t dp_top,
                                bool use_flag_encoding, int match_engine)
     : SEARCH_SIZE(search_size),
@@ -618,7 +667,7 @@ LZDP_OutOfCore::LZDP_OutOfCore(size_t search_size, size_t lookahead_size,
       match_engine_(match_engine) {
     if (SEARCH_SIZE < 16) SEARCH_SIZE = 16;
     if (LOOKAHEAD_SIZE < 4) LOOKAHEAD_SIZE = 4;
-    // Must match ``LZDP::calcBitWidth`` / ``autoBitWidth``: distances and match
+    // Must match ``utils::calcBitWidth``: distances and match
     // lengths can equal SEARCH_SIZE / LOOKAHEAD_SIZE inclusive (e.g. 256 needs 9 bits).
     const size_t sz_ob = std::max<size_t>(SEARCH_SIZE, size_t{1});
     const size_t sz_lb = std::max<size_t>(LOOKAHEAD_SIZE, size_t{1});
@@ -627,16 +676,14 @@ LZDP_OutOfCore::LZDP_OutOfCore(size_t search_size, size_t lookahead_size,
     if (MIN_MATCH == 0) {
         MIN_MATCH = get_match_bits() / 8 + 1;
     }
-    dp_slot_count_ = std::max(size_t{64}, 2 * LOOKAHEAD_SIZE + 2);
     reset();
 }
 
-auto LZDP_OutOfCore::reset(void) -> void {
+auto LZDP_Streaming::reset(void) -> void {
     input_buffer_.clear();
-    
-    dp_states_.assign(dp_slot_count_, DpState{});
-    dp_states_[0].cost = 0;
-    
+
+    streaming_dp_.reset(LOOKAHEAD_SIZE);
+
     head_.assign(std::max(SEARCH_SIZE, size_t{1}), UINT32_MAX);
     prev_buf_.clear();
     
@@ -658,18 +705,10 @@ auto LZDP_OutOfCore::reset(void) -> void {
     emit_lzdp_raw_header_done_ = false;
     writer_.resetPendingBits();
 
-    if (use_flag_encoding_) {
-        lit_cost_ = 9;
-        match_cost_ = 1 + get_match_bits();
-    } else {
-        lit_cost_ = 8;
-        match_cost_ = get_match_bits();
-    }
-
     state_ = State::COLLECT_INPUT;
 }
 
-auto LZDP_OutOfCore::hashBucket3(size_t pos_idx) const -> size_t {
+auto LZDP_Streaming::hashBucket3(size_t pos_idx) const -> size_t {
     const uint32_t h = (uint32_t(input_buffer_[pos_idx] << 10) ^
                         uint32_t(input_buffer_[pos_idx + 1] << 5) ^
                         uint32_t(input_buffer_[pos_idx + 2]));
@@ -682,7 +721,7 @@ auto LZDP_OutOfCore::hashBucket3(size_t pos_idx) const -> size_t {
     return size_t(h % head_.size());
 }
 
-auto LZDP_OutOfCore::reseedHashChainPrefix(size_t end_exclusive) -> void {
+auto LZDP_Streaming::reseedHashChainPrefix(size_t end_exclusive) -> void {
     std::fill(head_.begin(), head_.end(), UINT32_MAX);
     const size_t n = std::min(end_exclusive, input_buffer_.size());
     for (size_t i = 0; i + 2 < n; ++i) {
@@ -696,7 +735,7 @@ auto LZDP_OutOfCore::reseedHashChainPrefix(size_t end_exclusive) -> void {
     }
 }
 
-auto LZDP_OutOfCore::handleCollectInput(AlgorithmStatus& status, bool is_last_chunk) -> void {
+auto LZDP_Streaming::handleCollectInput(AlgorithmStatus& status, bool is_last_chunk) -> void {
     size_t remain = reader_.getRemainSize();
     if (remain > 0) {
         size_t old_len = input_buffer_.size();
@@ -723,37 +762,36 @@ auto LZDP_OutOfCore::handleCollectInput(AlgorithmStatus& status, bool is_last_ch
         }
     }
     
-    if (is_last_chunk && current_i_ == 0 &&
-        input_buffer_.size() > dp_slot_count_) {
-        dp_slot_count_ = input_buffer_.size() + 2;
-        dp_states_.assign(dp_slot_count_, DpState{});
-        dp_states_[0].cost = 0;
-    }
-
     if (processable > 0) {
         for (size_t k = 0; k < processable; ++k) {
             if ((k & size_t{4095}) == 0 && algorithm::g_cancel_callback &&
                 algorithm::g_cancel_callback()) {
                 throw std::runtime_error("cancelled");
             }
-            
+
             size_t pos_idx = current_i_ + k;
             uint32_t abs_pos = window_abs_pos_ + static_cast<uint32_t>(pos_idx);
 
-            lzdp_ooc_collect_one_index(*this, pos_idx, abs_pos);
+            lzdp_streaming_collect_one_index(*this, pos_idx, abs_pos);
         }
         current_i_ += processable;
+        const uint32_t commit_until =
+            window_abs_pos_ + static_cast<uint32_t>(current_i_);
+        streaming_dp_.rotate(commit_until);
+        LZDP_STREAM_LOG("COLLECT_SLIDE", "commit_until=%u current_i=%zu window_abs=%u buf=%zu",
+                        commit_until, current_i_, window_abs_pos_, input_buffer_.size());
         if (algorithm::g_cancel_callback && algorithm::g_cancel_callback()) {
             throw std::runtime_error("cancelled");
         }
     }
-    
+
     if (!is_last_chunk) {
         size_t next_abs_pos = window_abs_pos_ + current_i_;
         size_t keep_start_abs = (next_abs_pos > SEARCH_SIZE) ? (next_abs_pos - SEARCH_SIZE) : 0;
         size_t keep_start_idx = keep_start_abs - window_abs_pos_;
-        
+
         if (keep_start_idx > 0) {
+            streaming_dp_.prune_before(static_cast<uint32_t>(keep_start_abs));
             input_buffer_.erase(input_buffer_.begin(), input_buffer_.begin() + keep_start_idx);
             prev_buf_.erase(prev_buf_.begin(), prev_buf_.begin() + keep_start_idx);
             window_abs_pos_ = static_cast<uint32_t>(keep_start_abs);
@@ -765,25 +803,25 @@ auto LZDP_OutOfCore::handleCollectInput(AlgorithmStatus& status, bool is_last_ch
         status.need_input = true;
     } else {
         total_in_len_ = window_abs_pos_ + static_cast<uint32_t>(current_i_);
-        
-        DpState& cur = dp_states_[total_in_len_ % dp_slot_count_];
+
+        StreamingDpCell& end_cell = streaming_dp_.cell_at(total_in_len_);
         if (link_lengths_.size() <= total_in_len_) {
             link_lengths_.resize(static_cast<size_t>(total_in_len_) + 1);
             link_offsets_.resize(static_cast<size_t>(total_in_len_) + 1);
         }
-        link_lengths_[total_in_len_] = cur.length;
-        link_offsets_[total_in_len_] = cur.offset;
-        spill_a_.writePackedLink(spill_spec_, cur.length, cur.offset);
+        link_lengths_[total_in_len_] = end_cell.length;
+        link_offsets_[total_in_len_] = end_cell.offset;
+        spill_a_.writePackedLink(spill_spec_, end_cell.length, end_cell.offset);
         spill_a_.flush();
-        
-        DEBUG_LOG("[LZDP_OutOfCore] COLLECT done: total_in_len=%u final_state=(len=%u off=%u cost=%u)",
-                  total_in_len_, cur.length, cur.offset, cur.cost);
-        
+
+        DEBUG_LOG("[LZDP_Streaming] COLLECT done: total_in_len=%u final_state=(len=%u off=%u cost=%u)",
+                  total_in_len_, end_cell.length, end_cell.offset, end_cell.cost);
+
         state_ = State::BACKTRACK;
     }
 }
 
-auto LZDP_OutOfCore::handleBacktrack(AlgorithmStatus& status, bool is_last_chunk) -> void {
+auto LZDP_Streaming::handleBacktrack(AlgorithmStatus& status, bool is_last_chunk) -> void {
     if (algorithm::g_cancel_callback && algorithm::g_cancel_callback()) {
         throw std::runtime_error("cancelled");
     }
@@ -809,7 +847,7 @@ auto LZDP_OutOfCore::handleBacktrack(AlgorithmStatus& status, bool is_last_chunk
         }
 
         if (bt_count < 10) {
-            DEBUG_LOG("[LZDP_OutOfCore] BACKTRACK cur=%u len=%u off=%u", cur, length, offset);
+            DEBUG_LOG("[LZDP_Streaming] BACKTRACK cur=%u len=%u off=%u", cur, length, offset);
         }
         bt_count++;
 
@@ -827,10 +865,13 @@ auto LZDP_OutOfCore::handleBacktrack(AlgorithmStatus& status, bool is_last_chunk
 
     spill_b_.flush();
 
+    LZDP_STREAM_LOG("BACKTRACK", "done total_tokens=%zu total_in_len=%u", total_tokens_,
+                    total_in_len_);
+
     state_ = State::EMIT_TOKENS;
 }
 
-auto LZDP_OutOfCore::handleEmitTokens(AlgorithmStatus& status, bool is_last_chunk) -> void {
+auto LZDP_Streaming::handleEmitTokens(AlgorithmStatus& status, bool is_last_chunk) -> void {
     if (token_lengths_.size() != total_tokens_ || token_offsets_.size() != total_tokens_) {
         status.done = true;
         return;
@@ -852,7 +893,7 @@ auto LZDP_OutOfCore::handleEmitTokens(AlgorithmStatus& status, bool is_last_chun
             status.need_output = true;
             return;
         }
-        DEBUG_LOG("[LZDP_OutOfCore] emit header: hdr0=0x%02x hdr1=0x%02x offset_bits=%zu length_bits=%zu use_flag=%d total_tokens=%zu",
+        DEBUG_LOG("[LZDP_Streaming] emit header: hdr0=0x%02x hdr1=0x%02x offset_bits=%zu length_bits=%zu use_flag=%d total_tokens=%zu",
                   h[0], h[1], offset_bits_, length_bits_, use_flag_encoding_, total_tokens_);
         emit_lzdp_raw_header_done_ = true;
     }
@@ -862,60 +903,72 @@ auto LZDP_OutOfCore::handleEmitTokens(AlgorithmStatus& status, bool is_last_chun
             throw std::runtime_error("cancelled");
         }
 
-        if (!writer_.ensureSpace(64)) {
-            status.need_output = true;
-            return;
-        }
-
         const uint64_t idx = total_tokens_ - 1 - emitted_tokens_;
         const uint16_t len = token_lengths_[idx];
         const uint16_t off = token_offsets_[idx];
 
         if (emitted_tokens_ < 10) {
-            DEBUG_LOG("[LZDP_OutOfCore] EMIT token[%zu]: idx=%llu len=%u off=%u",
+            DEBUG_LOG("[LZDP_Streaming] EMIT token[%zu]: idx=%llu len=%u off=%u",
                       emitted_tokens_, (unsigned long long)idx, len, off);
         }
 
-        LZDP::Triple t;
-        if (len == 0) {
-            t.length = 0;
-            t.offset = 0;
-            t.literal = static_cast<uint8_t>(off);
-        } else {
-            t.length = len;
-            t.offset = off;
-            t.literal = 0;
+        // non-flag: batch literal runs like ``encode_triples`` (not one (0,1)+byte per token).
+        if (!use_flag_encoding_ && len == 0) {
+            size_t run_len = 0;
+            for (int64_t scan = static_cast<int64_t>(idx); scan >= 0 &&
+                 token_lengths_[static_cast<size_t>(scan)] == 0;
+                 --scan) {
+                run_len++;
+            }
+            const size_t max_run = (size_t{1} << length_bits_) - 1;
+            size_t pos = 0;
+            while (pos < run_len) {
+                if (!writer_.ensureSpace(64)) {
+                    status.need_output = true;
+                    return;
+                }
+                const size_t chunk = std::min(run_len - pos, max_run);
+                writer_.writeBits(0, static_cast<uint8_t>(offset_bits_));
+                writer_.writeBits(chunk, static_cast<uint8_t>(length_bits_));
+                for (size_t j = 0; j < chunk; j++) {
+                    const uint64_t tok_idx = idx - pos - j;
+                    writer_.writeBits(token_offsets_[tok_idx], 8);
+                }
+                pos += chunk;
+            }
+            emitted_tokens_ += run_len;
+            continue;
         }
-        
-        // Must match ``LZDP::encode_triples`` / ``LZDP::decompress`` (``writeBits`` / ``readBits``).
+
+        if (!writer_.ensureSpace(64)) {
+            status.need_output = true;
+            return;
+        }
+
         if (use_flag_encoding_) {
-            if (t.length == 0) {
+            if (len == 0) {
                 writer_.writeBits(1, 1);
-                writer_.writeBits(t.literal, 8);
+                writer_.writeBits(off, 8);
             } else {
                 writer_.writeBits(0, 1);
-                writer_.writeBits(t.offset, static_cast<uint8_t>(offset_bits_));
-                writer_.writeBits(t.length, static_cast<uint8_t>(length_bits_));
+                writer_.writeBits(off, static_cast<uint8_t>(offset_bits_));
+                writer_.writeBits(len, static_cast<uint8_t>(length_bits_));
             }
         } else {
-            if (t.length == 0) {
-                writer_.writeBits(0, static_cast<uint8_t>(offset_bits_));
-                writer_.writeBits(1, static_cast<uint8_t>(length_bits_));
-                writer_.writeBits(t.literal, 8);
-            } else {
-                writer_.writeBits(t.offset, static_cast<uint8_t>(offset_bits_));
-                writer_.writeBits(t.length, static_cast<uint8_t>(length_bits_));
-            }
+            writer_.writeBits(off, static_cast<uint8_t>(offset_bits_));
+            writer_.writeBits(len, static_cast<uint8_t>(length_bits_));
         }
-        
+
         emitted_tokens_++;
     }
     
     writer_.flush();
+    LZDP_STREAM_LOG("EMIT", "done writer_bytes=%zu total_tokens=%zu", writer_.getBytesWritten(),
+                    total_tokens_);
     status.done = true;
 }
 
-auto LZDP_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
+auto LZDP_Streaming::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
     while (true) {
         (this->*kStateHandlers[static_cast<size_t>(state_)])(status, is_last_chunk);
 
@@ -925,12 +978,12 @@ auto LZDP_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chunk) -> void
     }
 }
 
-LZDPDecompress_OutOfCore::LZDPDecompress_OutOfCore(bool use_flag_encoding)
+LZDPDecompress_Streaming::LZDPDecompress_Streaming(bool use_flag_encoding)
     : use_flag_encoding_(use_flag_encoding) {
     reset();
 }
 
-auto LZDPDecompress_OutOfCore::reset(void) -> void {
+auto LZDPDecompress_Streaming::reset(void) -> void {
     read_header_ = false;
     lzdp_hdr_acc_[0] = 0;
     lzdp_hdr_acc_[1] = 0;
@@ -942,7 +995,7 @@ auto LZDPDecompress_OutOfCore::reset(void) -> void {
     lzdp_dec_iter_ = 0;
 }
 
-auto LZDPDecompress_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
+auto LZDPDecompress_Streaming::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
     if (algorithm::g_cancel_callback && algorithm::g_cancel_callback()) {
         throw std::runtime_error("cancelled");
     }
@@ -969,7 +1022,7 @@ auto LZDPDecompress_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chun
         use_flag_encoding_ = (hdr0 & 0x80) != 0;
         length_bits_ = static_cast<size_t>(hdr1);
 
-        DEBUG_LOG("[LZDPDecompress_OutOfCore] header: hdr0=0x%02x hdr1=0x%02x offset_bits=%zu length_bits=%zu use_flag=%d",
+        DEBUG_LOG("[LZDPDecompress_Streaming] header: hdr0=0x%02x hdr1=0x%02x offset_bits=%zu length_bits=%zu use_flag=%d",
                   hdr0, hdr1, offset_bits_, length_bits_, use_flag_encoding_);
 
         if (offset_bits_ < 1 || offset_bits_ > 24 || length_bits_ < 1 || length_bits_ > 24) {
@@ -986,7 +1039,7 @@ auto LZDPDecompress_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chun
 
         ++lzdp_dec_iter_;
         if (lzdp_dec_iter_ > 10000000) {
-            DEBUG_LOG("[LZDPDecompress_OutOfCore] SAFETY BREAK: iter=%zu out_buf_size=%zu",
+            DEBUG_LOG("[LZDPDecompress_Streaming] SAFETY BREAK: iter=%zu out_buf_size=%zu",
                       lzdp_dec_iter_, output_buffer_.size());
             status.done = true;
             return;
@@ -1013,7 +1066,7 @@ auto LZDPDecompress_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chun
                 }
                 const uint8_t lit = static_cast<uint8_t>(reader_.readBits(8));
                 if (lzdp_dec_iter_ < 20) {
-                    DEBUG_LOG("[LZDPDecompress_OutOfCore] DECODE iter=%zu LITERAL lit=0x%02x out_size=%zu",
+                    DEBUG_LOG("[LZDPDecompress_Streaming] DECODE iter=%zu LITERAL lit=0x%02x out_size=%zu",
                               lzdp_dec_iter_, lit, output_buffer_.size());
                 }
                 output_buffer_.push_back(lit);
@@ -1029,7 +1082,7 @@ auto LZDPDecompress_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chun
                     static_cast<uint32_t>(reader_.readBits(static_cast<uint8_t>(length_bits_)));
 
                 if (lzdp_dec_iter_ < 20) {
-                    DEBUG_LOG("[LZDPDecompress_OutOfCore] DECODE iter=%zu MATCH off=%u len=%u out_size=%zu",
+                    DEBUG_LOG("[LZDPDecompress_Streaming] DECODE iter=%zu MATCH off=%u len=%u out_size=%zu",
                               lzdp_dec_iter_, offset, length, output_buffer_.size());
                 }
 
@@ -1061,7 +1114,7 @@ auto LZDPDecompress_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chun
                 static_cast<uint32_t>(reader_.readBits(static_cast<uint8_t>(length_bits_)));
 
             if (lzdp_dec_iter_ < 20) {
-                DEBUG_LOG("[LZDPDecompress_OutOfCore] DECODE iter=%zu off=%u len=%u out_size=%zu",
+                DEBUG_LOG("[LZDPDecompress_Streaming] DECODE iter=%zu off=%u len=%u out_size=%zu",
                           lzdp_dec_iter_, offset, length, output_buffer_.size());
             }
 
@@ -1100,14 +1153,14 @@ auto LZDPDecompress_OutOfCore::handle(AlgorithmStatus& status, bool is_last_chun
             const size_t n = writer_.writeBytes(output_buffer_.data() + output_flush_idx_,
                                                   available);
             output_flush_idx_ += n;
-            // Do not shrink ``output_buffer_`` here: LZ match offsets are relative to the
-            // full decoded stream; dropping prefix bytes would break copies without a
-            // sliding-window base offset (see lzdp-file-pipeline-design).
+            // Do not shrink ``output_buffer_`` here: match offset is backward distance from
+            // the current decode tail (LZ77, same as LZSS). Dropping prefix bytes would break
+            // copies unless we keep a ring buffer + decode_base (see streaming-compression-design §1.9).
         } else {
             status.need_output = true;
         }
     } else if (is_last_chunk && reader_.getRemainingBits() == 0) {
-        DEBUG_LOG("[LZDPDecompress_OutOfCore] done: output_buffer_size=%zu output_flush_idx=%zu",
+        DEBUG_LOG("[LZDPDecompress_Streaming] done: output_buffer_size=%zu output_flush_idx=%zu",
                   output_buffer_.size(), output_flush_idx_);
         status.done = true;
     }

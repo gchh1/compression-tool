@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "BitReader.hpp"
+#include "BitUtils.hpp"
 #include "BitWriter.hpp"
 #include "TempFile.hpp"
 
@@ -23,19 +24,9 @@ struct PackedDpLinkSpec {
     /// non-flag 匹配数据位宽 = length_bits + offset_bits
     uint8_t match_data_bits() const { return static_cast<uint8_t>(length_bits + offset_bits); }
 
-    static auto calcBitWidth(size_t v) -> uint8_t {
-        int bits = 0;
-        if (v == 0) return 1;
-        while (v > 0) {
-            ++bits;
-            v >>= 1;
-        }
-        return static_cast<uint8_t>(bits == 0 ? 1 : bits);
-    }
-
     static auto fromWindow(size_t search_size, size_t lookahead_size) -> PackedDpLinkSpec {
-        uint8_t ob = calcBitWidth(search_size);
-        uint8_t lb = calcBitWidth(lookahead_size);
+        uint8_t ob = utils::calcBitWidth(search_size);
+        uint8_t lb = utils::calcBitWidth(lookahead_size);
         uint8_t w = static_cast<uint8_t>(1 + std::max(8, static_cast<int>(ob) + static_cast<int>(lb)));
         return {ob, lb, w};
     }

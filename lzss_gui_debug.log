@@ -1420,3 +1420,153 @@
 [LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
 [LZSS::decompress] ENTER input_size=28417 min_match=3 flag_encoding=0
 [LZSS::decompress] EXIT input_size=28417 output_size=253952 (expected=253952)
+[Python::CompressionEngine.compress] LZSS data_size=60975
+[LZSSCompressor::compress] ENTER data_size=60975 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=60975 comp=22189 ratio=0.3639 time_ms=85.51 success=1
+[Python::CompressionEngine.compress] LZSS data_size=60975
+[LZSSCompressor::compress] ENTER data_size=60975 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=60975 comp=22189 ratio=0.3639 time_ms=83.12 success=1
+[Python::single_compress] LZSS raw_data=2996683 use_streaming=False path=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+[Python::CompressionEngine.compress] LZSS data_size=2996683
+[LZSSCompressor::compress] ENTER data_size=2996683 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=2996683 comp=664010 ratio=0.2216 time_ms=2668.29 success=1
+[Python::streaming] LZSS file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb size=2996683
+[LZSSCompressor::decompress] ENTER data_size=664010 min_match=0 flag=1
+[LZSSCompressor::decompress] EXIT orig=664010 decomp=2996683 time_ms=5.35 success=1
+[Python::single_compress] LZSS raw_data=2996683 use_streaming=False path=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+[Python::CompressionEngine.compress] LZSS data_size=2996683
+[LZSSCompressor::compress] ENTER data_size=2996683 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=2996683 comp=664010 ratio=0.2216 time_ms=2806.41 success=1
+[Python::streaming] LZSS file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb size=2996683
+[Python::CompressionEngine.compress] LZSS data_size=2229
+[LZSSCompressor::compress] ENTER data_size=2229 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=2229 comp=1427 ratio=0.6402 time_ms=1.80 success=1
+[Python::CompressionEngine.compress] LZSS data_size=1857
+[LZSSCompressor::compress] ENTER data_size=1857 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=1857 comp=1151 ratio=0.6198 time_ms=1.23 success=1
+[Python::CompressionEngine.compress] LZSS data_size=1864
+[LZSSCompressor::compress] ENTER data_size=1864 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=1864 comp=1401 ratio=0.7516 time_ms=1.34 success=1
+[Python::CompressionEngine.compress] LZSS data_size=1488
+[LZSSCompressor::compress] ENTER data_size=1488 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=1488 comp=921 ratio=0.6190 time_ms=0.70 success=1
+[Python::CompressionEngine.compress] LZSS data_size=1553
+[LZSSCompressor::compress] ENTER data_size=1553 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=1553 comp=836 ratio=0.5383 time_ms=1.29 success=1
+[Python::CompressionEngine.compress] LZSS data_size=769
+[LZSSCompressor::compress] ENTER data_size=769 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=769 comp=518 ratio=0.6736 time_ms=0.21 success=1
+[Python::CompressionEngine.compress] LZSS data_size=1623
+[LZSSCompressor::compress] ENTER data_size=1623 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=1623 comp=1190 ratio=0.7332 time_ms=0.99 success=1
+[Python::CompressionEngine.compress] LZSS data_size=6607
+[LZSSCompressor::compress] ENTER data_size=6607 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=6607 comp=3354 ratio=0.5076 time_ms=8.61 success=1
+[Python::CompressionEngine.compress] LZSS data_size=1196
+[LZSSCompressor::compress] ENTER data_size=1196 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=1196 comp=750 ratio=0.6271 time_ms=0.44 success=1
+[Python::CompressionEngine.compress] LZSS data_size=164
+[LZSSCompressor::compress] ENTER data_size=164 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=164 comp=140 ratio=0.8537 time_ms=0.02 success=1
+[Python::CompressionEngine.compress] LZSS data_size=907
+[LZSSCompressor::compress] ENTER data_size=907 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=907 comp=677 ratio=0.7464 time_ms=0.31 success=1
+[Python::CompressionEngine.compress] LZSS data_size=2530
+[LZSSCompressor::compress] ENTER data_size=2530 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=2530 comp=1383 ratio=0.5466 time_ms=1.57 success=1
+[Python::CompressionEngine.compress] LZSS data_size=2116
+[LZSSCompressor::compress] ENTER data_size=2116 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=2116 comp=1459 ratio=0.6895 time_ms=1.43 success=1
+[Python::CompressionEngine.compress] LZSS data_size=1268
+[LZSSCompressor::compress] ENTER data_size=1268 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=1268 comp=802 ratio=0.6325 time_ms=0.53 success=1
+[Python::CompressionEngine.compress] LZSS data_size=1381
+[LZSSCompressor::compress] ENTER data_size=1381 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=1381 comp=821 ratio=0.5945 time_ms=0.54 success=1
+[Python::CompressionEngine.compress] LZSS data_size=116
+[LZSSCompressor::compress] ENTER data_size=116 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=116 comp=110 ratio=0.9483 time_ms=0.01 success=1
+[Python::CompressionEngine.compress] LZSS data_size=1454
+[LZSSCompressor::compress] ENTER data_size=1454 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=1454 comp=892 ratio=0.6135 time_ms=0.62 success=1
+[Python::CompressionEngine.compress] LZSS data_size=1296
+[LZSSCompressor::compress] ENTER data_size=1296 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=1296 comp=836 ratio=0.6451 time_ms=0.57 success=1
+[Python::CompressionEngine.compress] LZSS data_size=782
+[LZSSCompressor::compress] ENTER data_size=782 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=782 comp=312 ratio=0.3990 time_ms=0.10 success=1
+[Python::CompressionEngine.compress] LZSS data_size=1247
+[LZSSCompressor::compress] ENTER data_size=1247 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=1247 comp=892 ratio=0.7153 time_ms=0.55 success=1
+[Python::CompressionEngine.compress] LZSS data_size=14729
+[LZSSCompressor::compress] ENTER data_size=14729 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=14729 comp=3918 ratio=0.2660 time_ms=11.20 success=1
+[Python::CompressionEngine.compress] LZSS data_size=2017
+[LZSSCompressor::compress] ENTER data_size=2017 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=2017 comp=909 ratio=0.4507 time_ms=0.91 success=1
+[Python::CompressionEngine.compress] LZSS data_size=6749
+[LZSSCompressor::compress] ENTER data_size=6749 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=6749 comp=2506 ratio=0.3713 time_ms=5.20 success=1
+[Python::CompressionEngine.compress] LZSS data_size=1760
+[LZSSCompressor::compress] ENTER data_size=1760 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=1760 comp=992 ratio=0.5636 time_ms=0.89 success=1
+[Python::CompressionEngine.compress] LZSS data_size=1003
+[LZSSCompressor::compress] ENTER data_size=1003 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=1003 comp=984 ratio=0.9811 time_ms=0.54 success=1
+[Python::CompressionEngine.compress] LZSS data_size=2629
+[LZSSCompressor::compress] ENTER data_size=2629 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=2629 comp=980 ratio=0.3728 time_ms=0.85 success=1
+[Python::CompressionEngine.compress] LZSS data_size=45732
+[LZSSCompressor::compress] ENTER data_size=45732 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=45732 comp=14809 ratio=0.3238 time_ms=49.64 success=1
+[Python::CompressionEngine.compress] LZSS data_size=29855
+[LZSSCompressor::compress] ENTER data_size=29855 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=29855 comp=4707 ratio=0.1577 time_ms=12.51 success=1
+[Python::CompressionEngine.compress] LZSS data_size=1188
+[LZSSCompressor::compress] ENTER data_size=1188 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=1188 comp=919 ratio=0.7736 time_ms=0.58 success=1
+[Python::CompressionEngine.compress] LZSS data_size=11331
+[LZSSCompressor::compress] ENTER data_size=11331 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=11331 comp=11742 ratio=1.0363 time_ms=42.64 success=1
+[Python::CompressionEngine.compress] LZSS data_size=1444
+[LZSSCompressor::compress] ENTER data_size=1444 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=1444 comp=745 ratio=0.5159 time_ms=0.50 success=1
+[Python::CompressionEngine.compress] LZSS data_size=28949
+[LZSSCompressor::compress] ENTER data_size=28949 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=28949 comp=10148 ratio=0.3505 time_ms=32.97 success=1
+[Python::CompressionEngine.compress] LZSS data_size=28186
+[LZSSCompressor::compress] ENTER data_size=28186 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=28186 comp=8624 ratio=0.3060 time_ms=28.27 success=1
+[Python::CompressionEngine.compress] LZSS data_size=28023
+[LZSSCompressor::compress] ENTER data_size=28023 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=28023 comp=11560 ratio=0.4125 time_ms=39.49 success=1
+[Python::CompressionEngine.compress] LZSS data_size=27846
+[LZSSCompressor::compress] ENTER data_size=27846 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=27846 comp=12103 ratio=0.4346 time_ms=42.79 success=1
+[Python::CompressionEngine.compress] LZSS data_size=28106
+[LZSSCompressor::compress] ENTER data_size=28106 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=28106 comp=14434 ratio=0.5136 time_ms=51.87 success=1
+[Python::CompressionEngine.compress] LZSS data_size=20221
+[LZSSCompressor::compress] ENTER data_size=20221 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=20221 comp=11249 ratio=0.5563 time_ms=41.07 success=1
+[Python::CompressionEngine.compress] LZSS data_size=2886
+[LZSSCompressor::compress] ENTER data_size=2886 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=2886 comp=1177 ratio=0.4078 time_ms=1.46 success=1
+[Python::CompressionEngine.compress] LZSS data_size=1975
+[LZSSCompressor::compress] ENTER data_size=1975 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=1975 comp=808 ratio=0.4091 time_ms=0.65 success=1
+[Python::CompressionEngine.compress] LZSS data_size=4205
+[LZSSCompressor::compress] ENTER data_size=4205 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=4205 comp=1674 ratio=0.3981 time_ms=3.27 success=1
+[Python::CompressionEngine.compress] LZSS data_size=8292
+[LZSSCompressor::compress] ENTER data_size=8292 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=8292 comp=2870 ratio=0.3461 time_ms=7.35 success=1
+[Python::CompressionEngine.compress] LZSS data_size=1896
+[LZSSCompressor::compress] ENTER data_size=1896 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=1896 comp=857 ratio=0.4520 time_ms=0.69 success=1
+[Python::CompressionEngine.compress] LZSS data_size=3250
+[LZSSCompressor::compress] ENTER data_size=3250 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=3250 comp=1150 ratio=0.3538 time_ms=1.40 success=1
+[Python::CompressionEngine.compress] LZSS data_size=3327
+[LZSSCompressor::compress] ENTER data_size=3327 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=3327 comp=1454 ratio=0.4370 time_ms=2.33 success=1

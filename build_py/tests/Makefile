@@ -287,6 +287,20 @@ test_lzss_noflag/fast:
 .PHONY : test_lzss_noflag/fast
 
 # Convenience name for target.
+tests/CMakeFiles/test_deflate.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_deflate.dir/rule
+.PHONY : tests/CMakeFiles/test_deflate.dir/rule
+
+# Convenience name for target.
+test_deflate: tests/CMakeFiles/test_deflate.dir/rule
+.PHONY : test_deflate
+
+# fast build rule for target.
+test_deflate/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate.dir\build.make tests/CMakeFiles/test_deflate.dir/build
+.PHONY : test_deflate/fast
+
+# Convenience name for target.
 tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/rule:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/rule
 .PHONY : tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/rule
@@ -371,6 +385,104 @@ test_mixed_dpflate_only/fast:
 .PHONY : test_mixed_dpflate_only/fast
 
 # Convenience name for target.
+tests/CMakeFiles/test_lzdp_memory_flag.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzdp_memory_flag.dir/rule
+.PHONY : tests/CMakeFiles/test_lzdp_memory_flag.dir/rule
+
+# Convenience name for target.
+test_lzdp_memory_flag: tests/CMakeFiles/test_lzdp_memory_flag.dir/rule
+.PHONY : test_lzdp_memory_flag
+
+# fast build rule for target.
+test_lzdp_memory_flag/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_memory_flag.dir\build.make tests/CMakeFiles/test_lzdp_memory_flag.dir/build
+.PHONY : test_lzdp_memory_flag/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_dpflate_3hm_stream.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_dpflate_3hm_stream.dir/rule
+.PHONY : tests/CMakeFiles/test_dpflate_3hm_stream.dir/rule
+
+# Convenience name for target.
+test_dpflate_3hm_stream: tests/CMakeFiles/test_dpflate_3hm_stream.dir/rule
+.PHONY : test_dpflate_3hm_stream
+
+# fast build rule for target.
+test_dpflate_3hm_stream/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_3hm_stream.dir\build.make tests/CMakeFiles/test_dpflate_3hm_stream.dir/build
+.PHONY : test_dpflate_3hm_stream/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/rule
+.PHONY : tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/rule
+
+# Convenience name for target.
+test_dpflate_bin64k_3k_stream: tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/rule
+.PHONY : test_dpflate_bin64k_3k_stream
+
+# fast build rule for target.
+test_dpflate_bin64k_3k_stream/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_bin64k_3k_stream.dir\build.make tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/build
+.PHONY : test_dpflate_bin64k_3k_stream/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_dpflate_stream_trace.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_dpflate_stream_trace.dir/rule
+.PHONY : tests/CMakeFiles/test_dpflate_stream_trace.dir/rule
+
+# Convenience name for target.
+test_dpflate_stream_trace: tests/CMakeFiles/test_dpflate_stream_trace.dir/rule
+.PHONY : test_dpflate_stream_trace
+
+# fast build rule for target.
+test_dpflate_stream_trace/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_stream_trace.dir\build.make tests/CMakeFiles/test_dpflate_stream_trace.dir/build
+.PHONY : test_dpflate_stream_trace/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_cartesian_stream_matrix.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_cartesian_stream_matrix.dir/rule
+.PHONY : tests/CMakeFiles/test_cartesian_stream_matrix.dir/rule
+
+# Convenience name for target.
+test_cartesian_stream_matrix: tests/CMakeFiles/test_cartesian_stream_matrix.dir/rule
+.PHONY : test_cartesian_stream_matrix
+
+# fast build rule for target.
+test_cartesian_stream_matrix/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_cartesian_stream_matrix.dir/build
+.PHONY : test_cartesian_stream_matrix/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_small_stream_7k_67k.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_small_stream_7k_67k.dir/rule
+.PHONY : tests/CMakeFiles/test_small_stream_7k_67k.dir/rule
+
+# Convenience name for target.
+test_small_stream_7k_67k: tests/CMakeFiles/test_small_stream_7k_67k.dir/rule
+.PHONY : test_small_stream_7k_67k
+
+# fast build rule for target.
+test_small_stream_7k_67k/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_small_stream_7k_67k.dir\build.make tests/CMakeFiles/test_small_stream_7k_67k.dir/build
+.PHONY : test_small_stream_7k_67k/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/rule
+.PHONY : tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/rule
+
+# Convenience name for target.
+test_lzdp_cartesian_stream_matrix: tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/rule
+.PHONY : test_lzdp_cartesian_stream_matrix
+
+# fast build rule for target.
+test_lzdp_cartesian_stream_matrix/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/build
+.PHONY : test_lzdp_cartesian_stream_matrix/fast
+
+# Convenience name for target.
 tests/CMakeFiles/test_3hm_binary.dir/rule:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_3hm_binary.dir/rule
 .PHONY : tests/CMakeFiles/test_3hm_binary.dir/rule
@@ -453,6 +565,48 @@ debug_token_trace: tests/CMakeFiles/debug_token_trace.dir/rule
 debug_token_trace/fast:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_token_trace.dir\build.make tests/CMakeFiles/debug_token_trace.dir/build
 .PHONY : debug_token_trace/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_algorithm_new_lzdp.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_algorithm_new_lzdp.dir/rule
+.PHONY : tests/CMakeFiles/test_algorithm_new_lzdp.dir/rule
+
+# Convenience name for target.
+test_algorithm_new_lzdp: tests/CMakeFiles/test_algorithm_new_lzdp.dir/rule
+.PHONY : test_algorithm_new_lzdp
+
+# fast build rule for target.
+test_algorithm_new_lzdp/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzdp.dir\build.make tests/CMakeFiles/test_algorithm_new_lzdp.dir/build
+.PHONY : test_algorithm_new_lzdp/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_algorithm_new_phase1.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_algorithm_new_phase1.dir/rule
+.PHONY : tests/CMakeFiles/test_algorithm_new_phase1.dir/rule
+
+# Convenience name for target.
+test_algorithm_new_phase1: tests/CMakeFiles/test_algorithm_new_phase1.dir/rule
+.PHONY : test_algorithm_new_phase1
+
+# fast build rule for target.
+test_algorithm_new_phase1/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase1.dir\build.make tests/CMakeFiles/test_algorithm_new_phase1.dir/build
+.PHONY : test_algorithm_new_phase1/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_algorithm_new_phase2.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_algorithm_new_phase2.dir/rule
+.PHONY : tests/CMakeFiles/test_algorithm_new_phase2.dir/rule
+
+# Convenience name for target.
+test_algorithm_new_phase2: tests/CMakeFiles/test_algorithm_new_phase2.dir/rule
+.PHONY : test_algorithm_new_phase2
+
+# fast build rule for target.
+test_algorithm_new_phase2/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase2.dir\build.make tests/CMakeFiles/test_algorithm_new_phase2.dir/build
+.PHONY : test_algorithm_new_phase2/fast
 
 debug_dpflate.obj: debug_dpflate.cpp.obj
 .PHONY : debug_dpflate.obj
@@ -556,6 +710,7 @@ test_Deflate.obj: test_Deflate.cpp.obj
 # target to build an object file
 test_Deflate.cpp.obj:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_Deflate.dir\build.make tests/CMakeFiles/test_Deflate.dir/test_Deflate.cpp.obj
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate.dir\build.make tests/CMakeFiles/test_deflate.dir/test_Deflate.cpp.obj
 .PHONY : test_Deflate.cpp.obj
 
 test_Deflate.i: test_Deflate.cpp.i
@@ -564,6 +719,7 @@ test_Deflate.i: test_Deflate.cpp.i
 # target to preprocess a source file
 test_Deflate.cpp.i:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_Deflate.dir\build.make tests/CMakeFiles/test_Deflate.dir/test_Deflate.cpp.i
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate.dir\build.make tests/CMakeFiles/test_deflate.dir/test_Deflate.cpp.i
 .PHONY : test_Deflate.cpp.i
 
 test_Deflate.s: test_Deflate.cpp.s
@@ -572,6 +728,7 @@ test_Deflate.s: test_Deflate.cpp.s
 # target to generate assembly for a file
 test_Deflate.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_Deflate.dir\build.make tests/CMakeFiles/test_Deflate.dir/test_Deflate.cpp.s
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate.dir\build.make tests/CMakeFiles/test_deflate.dir/test_Deflate.cpp.s
 .PHONY : test_Deflate.cpp.s
 
 test_HuffmanTree3HM.obj: test_HuffmanTree3HM.cpp.obj
@@ -670,6 +827,174 @@ test_algorithm_comparison.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_comparison.dir\build.make tests/CMakeFiles/test_algorithm_comparison.dir/test_algorithm_comparison.cpp.s
 .PHONY : test_algorithm_comparison.cpp.s
 
+test_algorithm_new_lzdp.obj: test_algorithm_new_lzdp.cpp.obj
+.PHONY : test_algorithm_new_lzdp.obj
+
+# target to build an object file
+test_algorithm_new_lzdp.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzdp.dir\build.make tests/CMakeFiles/test_algorithm_new_lzdp.dir/test_algorithm_new_lzdp.cpp.obj
+.PHONY : test_algorithm_new_lzdp.cpp.obj
+
+test_algorithm_new_lzdp.i: test_algorithm_new_lzdp.cpp.i
+.PHONY : test_algorithm_new_lzdp.i
+
+# target to preprocess a source file
+test_algorithm_new_lzdp.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzdp.dir\build.make tests/CMakeFiles/test_algorithm_new_lzdp.dir/test_algorithm_new_lzdp.cpp.i
+.PHONY : test_algorithm_new_lzdp.cpp.i
+
+test_algorithm_new_lzdp.s: test_algorithm_new_lzdp.cpp.s
+.PHONY : test_algorithm_new_lzdp.s
+
+# target to generate assembly for a file
+test_algorithm_new_lzdp.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzdp.dir\build.make tests/CMakeFiles/test_algorithm_new_lzdp.dir/test_algorithm_new_lzdp.cpp.s
+.PHONY : test_algorithm_new_lzdp.cpp.s
+
+test_algorithm_new_phase1.obj: test_algorithm_new_phase1.cpp.obj
+.PHONY : test_algorithm_new_phase1.obj
+
+# target to build an object file
+test_algorithm_new_phase1.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase1.dir\build.make tests/CMakeFiles/test_algorithm_new_phase1.dir/test_algorithm_new_phase1.cpp.obj
+.PHONY : test_algorithm_new_phase1.cpp.obj
+
+test_algorithm_new_phase1.i: test_algorithm_new_phase1.cpp.i
+.PHONY : test_algorithm_new_phase1.i
+
+# target to preprocess a source file
+test_algorithm_new_phase1.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase1.dir\build.make tests/CMakeFiles/test_algorithm_new_phase1.dir/test_algorithm_new_phase1.cpp.i
+.PHONY : test_algorithm_new_phase1.cpp.i
+
+test_algorithm_new_phase1.s: test_algorithm_new_phase1.cpp.s
+.PHONY : test_algorithm_new_phase1.s
+
+# target to generate assembly for a file
+test_algorithm_new_phase1.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase1.dir\build.make tests/CMakeFiles/test_algorithm_new_phase1.dir/test_algorithm_new_phase1.cpp.s
+.PHONY : test_algorithm_new_phase1.cpp.s
+
+test_algorithm_new_phase2.obj: test_algorithm_new_phase2.cpp.obj
+.PHONY : test_algorithm_new_phase2.obj
+
+# target to build an object file
+test_algorithm_new_phase2.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase2.dir\build.make tests/CMakeFiles/test_algorithm_new_phase2.dir/test_algorithm_new_phase2.cpp.obj
+.PHONY : test_algorithm_new_phase2.cpp.obj
+
+test_algorithm_new_phase2.i: test_algorithm_new_phase2.cpp.i
+.PHONY : test_algorithm_new_phase2.i
+
+# target to preprocess a source file
+test_algorithm_new_phase2.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase2.dir\build.make tests/CMakeFiles/test_algorithm_new_phase2.dir/test_algorithm_new_phase2.cpp.i
+.PHONY : test_algorithm_new_phase2.cpp.i
+
+test_algorithm_new_phase2.s: test_algorithm_new_phase2.cpp.s
+.PHONY : test_algorithm_new_phase2.s
+
+# target to generate assembly for a file
+test_algorithm_new_phase2.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase2.dir\build.make tests/CMakeFiles/test_algorithm_new_phase2.dir/test_algorithm_new_phase2.cpp.s
+.PHONY : test_algorithm_new_phase2.cpp.s
+
+test_cartesian_stream_matrix.obj: test_cartesian_stream_matrix.cpp.obj
+.PHONY : test_cartesian_stream_matrix.obj
+
+# target to build an object file
+test_cartesian_stream_matrix.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_cartesian_stream_matrix.dir/test_cartesian_stream_matrix.cpp.obj
+.PHONY : test_cartesian_stream_matrix.cpp.obj
+
+test_cartesian_stream_matrix.i: test_cartesian_stream_matrix.cpp.i
+.PHONY : test_cartesian_stream_matrix.i
+
+# target to preprocess a source file
+test_cartesian_stream_matrix.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_cartesian_stream_matrix.dir/test_cartesian_stream_matrix.cpp.i
+.PHONY : test_cartesian_stream_matrix.cpp.i
+
+test_cartesian_stream_matrix.s: test_cartesian_stream_matrix.cpp.s
+.PHONY : test_cartesian_stream_matrix.s
+
+# target to generate assembly for a file
+test_cartesian_stream_matrix.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_cartesian_stream_matrix.dir/test_cartesian_stream_matrix.cpp.s
+.PHONY : test_cartesian_stream_matrix.cpp.s
+
+test_dpflate_3hm_stream.obj: test_dpflate_3hm_stream.cpp.obj
+.PHONY : test_dpflate_3hm_stream.obj
+
+# target to build an object file
+test_dpflate_3hm_stream.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_3hm_stream.dir\build.make tests/CMakeFiles/test_dpflate_3hm_stream.dir/test_dpflate_3hm_stream.cpp.obj
+.PHONY : test_dpflate_3hm_stream.cpp.obj
+
+test_dpflate_3hm_stream.i: test_dpflate_3hm_stream.cpp.i
+.PHONY : test_dpflate_3hm_stream.i
+
+# target to preprocess a source file
+test_dpflate_3hm_stream.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_3hm_stream.dir\build.make tests/CMakeFiles/test_dpflate_3hm_stream.dir/test_dpflate_3hm_stream.cpp.i
+.PHONY : test_dpflate_3hm_stream.cpp.i
+
+test_dpflate_3hm_stream.s: test_dpflate_3hm_stream.cpp.s
+.PHONY : test_dpflate_3hm_stream.s
+
+# target to generate assembly for a file
+test_dpflate_3hm_stream.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_3hm_stream.dir\build.make tests/CMakeFiles/test_dpflate_3hm_stream.dir/test_dpflate_3hm_stream.cpp.s
+.PHONY : test_dpflate_3hm_stream.cpp.s
+
+test_dpflate_bin64k_3k_stream.obj: test_dpflate_bin64k_3k_stream.cpp.obj
+.PHONY : test_dpflate_bin64k_3k_stream.obj
+
+# target to build an object file
+test_dpflate_bin64k_3k_stream.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_bin64k_3k_stream.dir\build.make tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/test_dpflate_bin64k_3k_stream.cpp.obj
+.PHONY : test_dpflate_bin64k_3k_stream.cpp.obj
+
+test_dpflate_bin64k_3k_stream.i: test_dpflate_bin64k_3k_stream.cpp.i
+.PHONY : test_dpflate_bin64k_3k_stream.i
+
+# target to preprocess a source file
+test_dpflate_bin64k_3k_stream.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_bin64k_3k_stream.dir\build.make tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/test_dpflate_bin64k_3k_stream.cpp.i
+.PHONY : test_dpflate_bin64k_3k_stream.cpp.i
+
+test_dpflate_bin64k_3k_stream.s: test_dpflate_bin64k_3k_stream.cpp.s
+.PHONY : test_dpflate_bin64k_3k_stream.s
+
+# target to generate assembly for a file
+test_dpflate_bin64k_3k_stream.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_bin64k_3k_stream.dir\build.make tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/test_dpflate_bin64k_3k_stream.cpp.s
+.PHONY : test_dpflate_bin64k_3k_stream.cpp.s
+
+test_dpflate_stream_trace.obj: test_dpflate_stream_trace.cpp.obj
+.PHONY : test_dpflate_stream_trace.obj
+
+# target to build an object file
+test_dpflate_stream_trace.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_stream_trace.dir\build.make tests/CMakeFiles/test_dpflate_stream_trace.dir/test_dpflate_stream_trace.cpp.obj
+.PHONY : test_dpflate_stream_trace.cpp.obj
+
+test_dpflate_stream_trace.i: test_dpflate_stream_trace.cpp.i
+.PHONY : test_dpflate_stream_trace.i
+
+# target to preprocess a source file
+test_dpflate_stream_trace.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_stream_trace.dir\build.make tests/CMakeFiles/test_dpflate_stream_trace.dir/test_dpflate_stream_trace.cpp.i
+.PHONY : test_dpflate_stream_trace.cpp.i
+
+test_dpflate_stream_trace.s: test_dpflate_stream_trace.cpp.s
+.PHONY : test_dpflate_stream_trace.s
+
+# target to generate assembly for a file
+test_dpflate_stream_trace.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_stream_trace.dir\build.make tests/CMakeFiles/test_dpflate_stream_trace.dir/test_dpflate_stream_trace.cpp.s
+.PHONY : test_dpflate_stream_trace.cpp.s
+
 test_lzdp_binary.obj: test_lzdp_binary.cpp.obj
 .PHONY : test_lzdp_binary.obj
 
@@ -693,6 +1018,30 @@ test_lzdp_binary.s: test_lzdp_binary.cpp.s
 test_lzdp_binary.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_binary.dir\build.make tests/CMakeFiles/test_lzdp_binary.dir/test_lzdp_binary.cpp.s
 .PHONY : test_lzdp_binary.cpp.s
+
+test_lzdp_cartesian_stream_matrix.obj: test_lzdp_cartesian_stream_matrix.cpp.obj
+.PHONY : test_lzdp_cartesian_stream_matrix.obj
+
+# target to build an object file
+test_lzdp_cartesian_stream_matrix.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/test_lzdp_cartesian_stream_matrix.cpp.obj
+.PHONY : test_lzdp_cartesian_stream_matrix.cpp.obj
+
+test_lzdp_cartesian_stream_matrix.i: test_lzdp_cartesian_stream_matrix.cpp.i
+.PHONY : test_lzdp_cartesian_stream_matrix.i
+
+# target to preprocess a source file
+test_lzdp_cartesian_stream_matrix.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/test_lzdp_cartesian_stream_matrix.cpp.i
+.PHONY : test_lzdp_cartesian_stream_matrix.cpp.i
+
+test_lzdp_cartesian_stream_matrix.s: test_lzdp_cartesian_stream_matrix.cpp.s
+.PHONY : test_lzdp_cartesian_stream_matrix.s
+
+# target to generate assembly for a file
+test_lzdp_cartesian_stream_matrix.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/test_lzdp_cartesian_stream_matrix.cpp.s
+.PHONY : test_lzdp_cartesian_stream_matrix.cpp.s
 
 test_lzdp_dpflate_regression.obj: test_lzdp_dpflate_regression.cpp.obj
 .PHONY : test_lzdp_dpflate_regression.obj
@@ -741,6 +1090,30 @@ test_lzdp_dpflate_stream.s: test_lzdp_dpflate_stream.cpp.s
 test_lzdp_dpflate_stream.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_dpflate_stream.dir\build.make tests/CMakeFiles/test_lzdp_dpflate_stream.dir/test_lzdp_dpflate_stream.cpp.s
 .PHONY : test_lzdp_dpflate_stream.cpp.s
+
+test_lzdp_memory_flag.obj: test_lzdp_memory_flag.cpp.obj
+.PHONY : test_lzdp_memory_flag.obj
+
+# target to build an object file
+test_lzdp_memory_flag.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_memory_flag.dir\build.make tests/CMakeFiles/test_lzdp_memory_flag.dir/test_lzdp_memory_flag.cpp.obj
+.PHONY : test_lzdp_memory_flag.cpp.obj
+
+test_lzdp_memory_flag.i: test_lzdp_memory_flag.cpp.i
+.PHONY : test_lzdp_memory_flag.i
+
+# target to preprocess a source file
+test_lzdp_memory_flag.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_memory_flag.dir\build.make tests/CMakeFiles/test_lzdp_memory_flag.dir/test_lzdp_memory_flag.cpp.i
+.PHONY : test_lzdp_memory_flag.cpp.i
+
+test_lzdp_memory_flag.s: test_lzdp_memory_flag.cpp.s
+.PHONY : test_lzdp_memory_flag.s
+
+# target to generate assembly for a file
+test_lzdp_memory_flag.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_memory_flag.dir\build.make tests/CMakeFiles/test_lzdp_memory_flag.dir/test_lzdp_memory_flag.cpp.s
+.PHONY : test_lzdp_memory_flag.cpp.s
 
 test_lzdp_memory_streaming_parity.obj: test_lzdp_memory_streaming_parity.cpp.obj
 .PHONY : test_lzdp_memory_streaming_parity.obj
@@ -862,6 +1235,30 @@ test_roundtrip.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_roundtrip.dir\build.make tests/CMakeFiles/test_roundtrip.dir/test_roundtrip.cpp.s
 .PHONY : test_roundtrip.cpp.s
 
+test_small_stream_7k_67k.obj: test_small_stream_7k_67k.cpp.obj
+.PHONY : test_small_stream_7k_67k.obj
+
+# target to build an object file
+test_small_stream_7k_67k.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_small_stream_7k_67k.dir\build.make tests/CMakeFiles/test_small_stream_7k_67k.dir/test_small_stream_7k_67k.cpp.obj
+.PHONY : test_small_stream_7k_67k.cpp.obj
+
+test_small_stream_7k_67k.i: test_small_stream_7k_67k.cpp.i
+.PHONY : test_small_stream_7k_67k.i
+
+# target to preprocess a source file
+test_small_stream_7k_67k.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_small_stream_7k_67k.dir\build.make tests/CMakeFiles/test_small_stream_7k_67k.dir/test_small_stream_7k_67k.cpp.i
+.PHONY : test_small_stream_7k_67k.cpp.i
+
+test_small_stream_7k_67k.s: test_small_stream_7k_67k.cpp.s
+.PHONY : test_small_stream_7k_67k.s
+
+# target to generate assembly for a file
+test_small_stream_7k_67k.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_small_stream_7k_67k.dir\build.make tests/CMakeFiles/test_small_stream_7k_67k.dir/test_small_stream_7k_67k.cpp.s
+.PHONY : test_small_stream_7k_67k.cpp.s
+
 test_wcx_corrupt.obj: test_wcx_corrupt.cpp.obj
 .PHONY : test_wcx_corrupt.obj
 
@@ -979,14 +1376,25 @@ help:
 	@echo ... test_PackWriter
 	@echo ... test_PackWriter_RoundTrip
 	@echo ... test_algorithm_comparison
+	@echo ... test_algorithm_new_lzdp
+	@echo ... test_algorithm_new_phase1
+	@echo ... test_algorithm_new_phase2
+	@echo ... test_cartesian_stream_matrix
+	@echo ... test_deflate
+	@echo ... test_dpflate_3hm_stream
+	@echo ... test_dpflate_bin64k_3k_stream
+	@echo ... test_dpflate_stream_trace
 	@echo ... test_lzdp_binary
+	@echo ... test_lzdp_cartesian_stream_matrix
 	@echo ... test_lzdp_dpflate_regression
 	@echo ... test_lzdp_dpflate_stream
+	@echo ... test_lzdp_memory_flag
 	@echo ... test_lzdp_memory_streaming_parity
 	@echo ... test_lzss_noflag
 	@echo ... test_mixed_dpflate_only
 	@echo ... test_regression_baseline
 	@echo ... test_roundtrip
+	@echo ... test_small_stream_7k_67k
 	@echo ... test_wcx_corrupt
 	@echo ... test_wcx_directory_archive
 	@echo ... test_wcx_file_strict
@@ -1018,15 +1426,42 @@ help:
 	@echo ... test_algorithm_comparison.obj
 	@echo ... test_algorithm_comparison.i
 	@echo ... test_algorithm_comparison.s
+	@echo ... test_algorithm_new_lzdp.obj
+	@echo ... test_algorithm_new_lzdp.i
+	@echo ... test_algorithm_new_lzdp.s
+	@echo ... test_algorithm_new_phase1.obj
+	@echo ... test_algorithm_new_phase1.i
+	@echo ... test_algorithm_new_phase1.s
+	@echo ... test_algorithm_new_phase2.obj
+	@echo ... test_algorithm_new_phase2.i
+	@echo ... test_algorithm_new_phase2.s
+	@echo ... test_cartesian_stream_matrix.obj
+	@echo ... test_cartesian_stream_matrix.i
+	@echo ... test_cartesian_stream_matrix.s
+	@echo ... test_dpflate_3hm_stream.obj
+	@echo ... test_dpflate_3hm_stream.i
+	@echo ... test_dpflate_3hm_stream.s
+	@echo ... test_dpflate_bin64k_3k_stream.obj
+	@echo ... test_dpflate_bin64k_3k_stream.i
+	@echo ... test_dpflate_bin64k_3k_stream.s
+	@echo ... test_dpflate_stream_trace.obj
+	@echo ... test_dpflate_stream_trace.i
+	@echo ... test_dpflate_stream_trace.s
 	@echo ... test_lzdp_binary.obj
 	@echo ... test_lzdp_binary.i
 	@echo ... test_lzdp_binary.s
+	@echo ... test_lzdp_cartesian_stream_matrix.obj
+	@echo ... test_lzdp_cartesian_stream_matrix.i
+	@echo ... test_lzdp_cartesian_stream_matrix.s
 	@echo ... test_lzdp_dpflate_regression.obj
 	@echo ... test_lzdp_dpflate_regression.i
 	@echo ... test_lzdp_dpflate_regression.s
 	@echo ... test_lzdp_dpflate_stream.obj
 	@echo ... test_lzdp_dpflate_stream.i
 	@echo ... test_lzdp_dpflate_stream.s
+	@echo ... test_lzdp_memory_flag.obj
+	@echo ... test_lzdp_memory_flag.i
+	@echo ... test_lzdp_memory_flag.s
 	@echo ... test_lzdp_memory_streaming_parity.obj
 	@echo ... test_lzdp_memory_streaming_parity.i
 	@echo ... test_lzdp_memory_streaming_parity.s
@@ -1042,6 +1477,9 @@ help:
 	@echo ... test_roundtrip.obj
 	@echo ... test_roundtrip.i
 	@echo ... test_roundtrip.s
+	@echo ... test_small_stream_7k_67k.obj
+	@echo ... test_small_stream_7k_67k.i
+	@echo ... test_small_stream_7k_67k.s
 	@echo ... test_wcx_corrupt.obj
 	@echo ... test_wcx_corrupt.i
 	@echo ... test_wcx_corrupt.s

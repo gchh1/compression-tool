@@ -203,11 +203,56 @@ src/algorithm/CMakeFiles/algorithm.dir/DPFlate.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/algorithm.dir/DPFlate.cpp.s"
 	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\algorithm\DPFlate.cpp -o CMakeFiles\algorithm.dir\DPFlate.cpp.s
 
+src/algorithm/CMakeFiles/algorithm.dir/DPFlateBin64kDebug.cpp.obj: src/algorithm/CMakeFiles/algorithm.dir/flags.make
+src/algorithm/CMakeFiles/algorithm.dir/DPFlateBin64kDebug.cpp.obj: src/algorithm/CMakeFiles/algorithm.dir/includes_CXX.rsp
+src/algorithm/CMakeFiles/algorithm.dir/DPFlateBin64kDebug.cpp.obj: D:/AAA_C/compression-tool/src/algorithm/DPFlateBin64kDebug.cpp
+src/algorithm/CMakeFiles/algorithm.dir/DPFlateBin64kDebug.cpp.obj: src/algorithm/CMakeFiles/algorithm.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object src/algorithm/CMakeFiles/algorithm.dir/DPFlateBin64kDebug.cpp.obj"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm/CMakeFiles/algorithm.dir/DPFlateBin64kDebug.cpp.obj -MF CMakeFiles\algorithm.dir\DPFlateBin64kDebug.cpp.obj.d -o CMakeFiles\algorithm.dir\DPFlateBin64kDebug.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm\DPFlateBin64kDebug.cpp
+
+src/algorithm/CMakeFiles/algorithm.dir/DPFlateBin64kDebug.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/algorithm.dir/DPFlateBin64kDebug.cpp.i"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\AAA_C\compression-tool\src\algorithm\DPFlateBin64kDebug.cpp > CMakeFiles\algorithm.dir\DPFlateBin64kDebug.cpp.i
+
+src/algorithm/CMakeFiles/algorithm.dir/DPFlateBin64kDebug.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/algorithm.dir/DPFlateBin64kDebug.cpp.s"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\algorithm\DPFlateBin64kDebug.cpp -o CMakeFiles\algorithm.dir\DPFlateBin64kDebug.cpp.s
+
+src/algorithm/CMakeFiles/algorithm.dir/LZDPStreamDebug.cpp.obj: src/algorithm/CMakeFiles/algorithm.dir/flags.make
+src/algorithm/CMakeFiles/algorithm.dir/LZDPStreamDebug.cpp.obj: src/algorithm/CMakeFiles/algorithm.dir/includes_CXX.rsp
+src/algorithm/CMakeFiles/algorithm.dir/LZDPStreamDebug.cpp.obj: D:/AAA_C/compression-tool/src/algorithm/LZDPStreamDebug.cpp
+src/algorithm/CMakeFiles/algorithm.dir/LZDPStreamDebug.cpp.obj: src/algorithm/CMakeFiles/algorithm.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object src/algorithm/CMakeFiles/algorithm.dir/LZDPStreamDebug.cpp.obj"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm/CMakeFiles/algorithm.dir/LZDPStreamDebug.cpp.obj -MF CMakeFiles\algorithm.dir\LZDPStreamDebug.cpp.obj.d -o CMakeFiles\algorithm.dir\LZDPStreamDebug.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm\LZDPStreamDebug.cpp
+
+src/algorithm/CMakeFiles/algorithm.dir/LZDPStreamDebug.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/algorithm.dir/LZDPStreamDebug.cpp.i"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\AAA_C\compression-tool\src\algorithm\LZDPStreamDebug.cpp > CMakeFiles\algorithm.dir\LZDPStreamDebug.cpp.i
+
+src/algorithm/CMakeFiles/algorithm.dir/LZDPStreamDebug.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/algorithm.dir/LZDPStreamDebug.cpp.s"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\algorithm\LZDPStreamDebug.cpp -o CMakeFiles\algorithm.dir\LZDPStreamDebug.cpp.s
+
+src/algorithm/CMakeFiles/algorithm.dir/DPFlateTrace.cpp.obj: src/algorithm/CMakeFiles/algorithm.dir/flags.make
+src/algorithm/CMakeFiles/algorithm.dir/DPFlateTrace.cpp.obj: src/algorithm/CMakeFiles/algorithm.dir/includes_CXX.rsp
+src/algorithm/CMakeFiles/algorithm.dir/DPFlateTrace.cpp.obj: D:/AAA_C/compression-tool/src/algorithm/DPFlateTrace.cpp
+src/algorithm/CMakeFiles/algorithm.dir/DPFlateTrace.cpp.obj: src/algorithm/CMakeFiles/algorithm.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object src/algorithm/CMakeFiles/algorithm.dir/DPFlateTrace.cpp.obj"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm/CMakeFiles/algorithm.dir/DPFlateTrace.cpp.obj -MF CMakeFiles\algorithm.dir\DPFlateTrace.cpp.obj.d -o CMakeFiles\algorithm.dir\DPFlateTrace.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm\DPFlateTrace.cpp
+
+src/algorithm/CMakeFiles/algorithm.dir/DPFlateTrace.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/algorithm.dir/DPFlateTrace.cpp.i"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\AAA_C\compression-tool\src\algorithm\DPFlateTrace.cpp > CMakeFiles\algorithm.dir\DPFlateTrace.cpp.i
+
+src/algorithm/CMakeFiles/algorithm.dir/DPFlateTrace.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/algorithm.dir/DPFlateTrace.cpp.s"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\algorithm\DPFlateTrace.cpp -o CMakeFiles\algorithm.dir\DPFlateTrace.cpp.s
+
 src/algorithm/CMakeFiles/algorithm.dir/Inflate.cpp.obj: src/algorithm/CMakeFiles/algorithm.dir/flags.make
 src/algorithm/CMakeFiles/algorithm.dir/Inflate.cpp.obj: src/algorithm/CMakeFiles/algorithm.dir/includes_CXX.rsp
 src/algorithm/CMakeFiles/algorithm.dir/Inflate.cpp.obj: D:/AAA_C/compression-tool/src/algorithm/Inflate.cpp
 src/algorithm/CMakeFiles/algorithm.dir/Inflate.cpp.obj: src/algorithm/CMakeFiles/algorithm.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object src/algorithm/CMakeFiles/algorithm.dir/Inflate.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object src/algorithm/CMakeFiles/algorithm.dir/Inflate.cpp.obj"
 	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm/CMakeFiles/algorithm.dir/Inflate.cpp.obj -MF CMakeFiles\algorithm.dir\Inflate.cpp.obj.d -o CMakeFiles\algorithm.dir\Inflate.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm\Inflate.cpp
 
 src/algorithm/CMakeFiles/algorithm.dir/Inflate.cpp.i: cmake_force
@@ -222,7 +267,7 @@ src/algorithm/CMakeFiles/algorithm.dir/Inflate3HM.cpp.obj: src/algorithm/CMakeFi
 src/algorithm/CMakeFiles/algorithm.dir/Inflate3HM.cpp.obj: src/algorithm/CMakeFiles/algorithm.dir/includes_CXX.rsp
 src/algorithm/CMakeFiles/algorithm.dir/Inflate3HM.cpp.obj: D:/AAA_C/compression-tool/src/algorithm/Inflate3HM.cpp
 src/algorithm/CMakeFiles/algorithm.dir/Inflate3HM.cpp.obj: src/algorithm/CMakeFiles/algorithm.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object src/algorithm/CMakeFiles/algorithm.dir/Inflate3HM.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object src/algorithm/CMakeFiles/algorithm.dir/Inflate3HM.cpp.obj"
 	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm/CMakeFiles/algorithm.dir/Inflate3HM.cpp.obj -MF CMakeFiles\algorithm.dir\Inflate3HM.cpp.obj.d -o CMakeFiles\algorithm.dir\Inflate3HM.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm\Inflate3HM.cpp
 
 src/algorithm/CMakeFiles/algorithm.dir/Inflate3HM.cpp.i: cmake_force
@@ -237,7 +282,7 @@ src/algorithm/CMakeFiles/algorithm.dir/Zstd.cpp.obj: src/algorithm/CMakeFiles/al
 src/algorithm/CMakeFiles/algorithm.dir/Zstd.cpp.obj: src/algorithm/CMakeFiles/algorithm.dir/includes_CXX.rsp
 src/algorithm/CMakeFiles/algorithm.dir/Zstd.cpp.obj: D:/AAA_C/compression-tool/src/algorithm/Zstd.cpp
 src/algorithm/CMakeFiles/algorithm.dir/Zstd.cpp.obj: src/algorithm/CMakeFiles/algorithm.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object src/algorithm/CMakeFiles/algorithm.dir/Zstd.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object src/algorithm/CMakeFiles/algorithm.dir/Zstd.cpp.obj"
 	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm/CMakeFiles/algorithm.dir/Zstd.cpp.obj -MF CMakeFiles\algorithm.dir\Zstd.cpp.obj.d -o CMakeFiles\algorithm.dir\Zstd.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm\Zstd.cpp
 
 src/algorithm/CMakeFiles/algorithm.dir/Zstd.cpp.i: cmake_force
@@ -259,6 +304,9 @@ algorithm_OBJECTS = \
 "CMakeFiles/algorithm.dir/LZDP.cpp.obj" \
 "CMakeFiles/algorithm.dir/LZSS.cpp.obj" \
 "CMakeFiles/algorithm.dir/DPFlate.cpp.obj" \
+"CMakeFiles/algorithm.dir/DPFlateBin64kDebug.cpp.obj" \
+"CMakeFiles/algorithm.dir/LZDPStreamDebug.cpp.obj" \
+"CMakeFiles/algorithm.dir/DPFlateTrace.cpp.obj" \
 "CMakeFiles/algorithm.dir/Inflate.cpp.obj" \
 "CMakeFiles/algorithm.dir/Inflate3HM.cpp.obj" \
 "CMakeFiles/algorithm.dir/Zstd.cpp.obj"
@@ -275,12 +323,15 @@ src/algorithm/libalgorithm.a: src/algorithm/CMakeFiles/algorithm.dir/HuffmanTree
 src/algorithm/libalgorithm.a: src/algorithm/CMakeFiles/algorithm.dir/LZDP.cpp.obj
 src/algorithm/libalgorithm.a: src/algorithm/CMakeFiles/algorithm.dir/LZSS.cpp.obj
 src/algorithm/libalgorithm.a: src/algorithm/CMakeFiles/algorithm.dir/DPFlate.cpp.obj
+src/algorithm/libalgorithm.a: src/algorithm/CMakeFiles/algorithm.dir/DPFlateBin64kDebug.cpp.obj
+src/algorithm/libalgorithm.a: src/algorithm/CMakeFiles/algorithm.dir/LZDPStreamDebug.cpp.obj
+src/algorithm/libalgorithm.a: src/algorithm/CMakeFiles/algorithm.dir/DPFlateTrace.cpp.obj
 src/algorithm/libalgorithm.a: src/algorithm/CMakeFiles/algorithm.dir/Inflate.cpp.obj
 src/algorithm/libalgorithm.a: src/algorithm/CMakeFiles/algorithm.dir/Inflate3HM.cpp.obj
 src/algorithm/libalgorithm.a: src/algorithm/CMakeFiles/algorithm.dir/Zstd.cpp.obj
 src/algorithm/libalgorithm.a: src/algorithm/CMakeFiles/algorithm.dir/build.make
 src/algorithm/libalgorithm.a: src/algorithm/CMakeFiles/algorithm.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX static library libalgorithm.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Linking CXX static library libalgorithm.a"
 	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm && $(CMAKE_COMMAND) -P CMakeFiles\algorithm.dir\cmake_clean_target.cmake
 	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\algorithm.dir\link.txt --verbose=$(VERBOSE)
 

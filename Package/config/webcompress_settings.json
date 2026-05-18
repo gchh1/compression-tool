@@ -3,21 +3,21 @@
   "algorithms": {
     "lzss": {
       "search_size": 4095,
-      "lookahead_size": 18,
+      "lookahead_size": 31,
       "min_match": 0,
       "use_flag_encoding": 1
     },
     "lzdp": {
-      "search_size": 4096,
-      "lookahead_size": 256,
+      "search_size": 4095,
+      "lookahead_size": 31,
       "min_match": 0,
-      "dp_top": 3,
-      "match_engine": 0,
-      "use_flag_encoding": 0
+      "dp_top": 6,
+      "match_engine": 1,
+      "use_flag_encoding": 1
     },
     "dpflate": {
-      "search_size": 4096,
-      "lookahead_size": 256,
+      "search_size": 32767,
+      "lookahead_size": 255,
       "min_match": 0,
       "dp_sub_match_max": 6,
       "max_chain_length": 256,
@@ -28,8 +28,8 @@
       "huffman_length_chunk_bits": 8
     },
     "deflate": {
-      "search_size": 4096,
-      "lookahead_size": 256,
+      "search_size": 32767,
+      "lookahead_size": 255,
       "min_match": 0,
       "max_chain_length": 256,
       "use_flag_encoding": 1,
@@ -50,7 +50,23 @@
     }
   },
   "ade": {
-    "silent_explore_enabled": false
+    "silent_explore_enabled": true,
+    "retrain_min_new_samples": 50,
+    "explore_streaming_threshold_mb": 0.1,
+    "explore_streaming_chunk_size_kb": 102,
+    "explorer": {
+      "epsilon_base": 0.25,
+      "alpha_ucb": 1.41,
+      "max_concurrent": 2,
+      "timeout_seconds": 30.0,
+      "budget_ratio": 0.3,
+      "min_file_size_bytes": 1024,
+      "max_file_size_for_l2": 104857600,
+      "warmup_samples": 50,
+      "ucb_gap_threshold": 0.05,
+      "l1_min_samples": 3,
+      "l2_min_samples": 5
+    }
   },
   "streaming": {
     "threshold_mb": 1.0,
@@ -63,13 +79,13 @@
         "follow_global_threshold": true,
         "threshold_mb": 10.0
       },
-      "lzdp": {
+      "lzss": {
         "follow_global_chunk": true,
         "chunk_size_kb": 1024,
         "follow_global_threshold": true,
         "threshold_mb": 10.0
       },
-      "lzss": {
+      "lzdp": {
         "follow_global_chunk": true,
         "chunk_size_kb": 1024,
         "follow_global_threshold": true,

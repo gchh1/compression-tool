@@ -4887,45 +4887,84 @@ Flag 编码有两种位宽（9 bits vs 1+Ob+Lb bits），Phase 2 从文件尾部
 - **flag-at-front**（不可行）：逆向读取时不知道记录宽度，无法定位到记录开头
 
 ## User
-19835 INFO: Copying bootloader EXE to D:\AAA_C\compression-tool\Package\bin\WebCompress.exe 
- 19842 INFO: Copying icon to EXE 
- 19847 INFO: Copying 0 resources to EXE 
- 19847 INFO: Embedding manifest in EXE 
- 19854 INFO: Appending PKG archive to EXE 
- 19878 INFO: Fixing EXE headers 
- 20016 INFO: Building EXE from EXE-00.toc completed successfully. 
- 20019 INFO: Build complete! The results are available in: D:\AAA_C\compression-tool\Package\bin 
- PS D:\AAA_C\compression-tool> ./run 
- Cleaning PyInstaller work cache (prevents stale packaged GUI)... 
- Building core_engine (skips if no CMake build dir)... 
- ninja: error: loading 'build.ninja': The system cannot find the file specified. 
-  
- WARNING: core_engine build failed; PyInstaller may copy an old .pyd 
- Building WebCompress... 
- 110 INFO: PyInstaller: 6.20.0, contrib hooks: 2026.4 
- 110 INFO: Python: 3.12.4 
- 129 INFO: Platform: Windows-11-10.0.26200-SP0 
- 129 INFO: Python environment: D:\Python 
- 131 INFO: wrote D:\AAA_C\compression-tool\build\WebCompress.spec 
- 172 INFO: UPX is available and will be used if enabled on build targets. 
- 173 INFO: Module search paths (PYTHONPATH): 
- ['D:\\Python\\Scripts\\pyinstaller.exe', 
-  'D:\\AAA_C\\compression-tool\\src', 
-  'D:\\Python\\python312.zip', 
-  'D:\\Python\\DLLs', 
-  'D:\\Python\\Lib', 
-  'D:\\Python', 
-  'D:\\Python\\Lib\\site-packages', 
-  'D:\\Python\\Lib\\site-packages\\win32', 
-  'D:\\Python\\Lib\\site-packages\\win32\\lib', 
-  'D:\\Python\\Lib\\site-packages\\Pythonwin', 
-  'D:\\AAA_C\\compression-tool\\src'] 
- pygame 2.6.1 (SDL 2.28.4, Python 3.12.4) 
- Hello from the pygame community. `https://www.pygame.org/contribute.html`  
- 617 INFO: Appending 'datas' from .spec 
- ERROR: Unable to find 'D:\\AAA_C\\compression-tool\\build\\src\\bindings\\pybind\\core_engine.cp312-win_amd64.pyd' when adding binary and data files. 
- Build failed with error code 1 
- Press any key to continue . . . 
+19835 INFO: Copying bootloader EXE to D:\AAA_C\compression-tool\Package\bin\WebCompress.exe
+ 
+ 19842 INFO: Copying icon to EXE
+ 
+ 19847 INFO: Copying 0 resources to EXE
+ 
+ 19847 INFO: Embedding manifest in EXE
+ 
+ 19854 INFO: Appending PKG archive to EXE
+ 
+ 19878 INFO: Fixing EXE headers
+ 
+ 20016 INFO: Building EXE from EXE-00.toc completed successfully.
+ 
+ 20019 INFO: Build complete! The results are available in: D:\AAA_C\compression-tool\Package\bin
+ 
+ PS D:\AAA_C\compression-tool> ./run
+ 
+ Cleaning PyInstaller work cache (prevents stale packaged GUI)...
+ 
+ Building core_engine (skips if no CMake build dir)...
+ 
+ ninja: error: loading 'build.ninja': The system cannot find the file specified.
+ 
+ 
+ 
+ WARNING: core_engine build failed; PyInstaller may copy an old .pyd
+ 
+ Building WebCompress...
+ 
+ 110 INFO: PyInstaller: 6.20.0, contrib hooks: 2026.4
+ 
+ 110 INFO: Python: 3.12.4
+ 
+ 129 INFO: Platform: Windows-11-10.0.26200-SP0
+ 
+ 129 INFO: Python environment: D:\Python
+ 
+ 131 INFO: wrote D:\AAA_C\compression-tool\build\WebCompress.spec
+ 
+ 172 INFO: UPX is available and will be used if enabled on build targets.
+ 
+ 173 INFO: Module search paths (PYTHONPATH):
+ 
+ ['D:\\Python\\Scripts\\pyinstaller.exe',
+ 
+  'D:\\AAA_C\\compression-tool\\src',
+ 
+  'D:\\Python\\python312.zip',
+ 
+  'D:\\Python\\DLLs',
+ 
+  'D:\\Python\\Lib',
+ 
+  'D:\\Python',
+ 
+  'D:\\Python\\Lib\\site-packages',
+ 
+  'D:\\Python\\Lib\\site-packages\\win32',
+ 
+  'D:\\Python\\Lib\\site-packages\\win32\\lib',
+ 
+  'D:\\Python\\Lib\\site-packages\\Pythonwin',
+ 
+  'D:\\AAA_C\\compression-tool\\src']
+ 
+ pygame 2.6.1 (SDL 2.28.4, Python 3.12.4)
+ 
+ Hello from the pygame community. `https://www.pygame.org/contribute.html` 
+ 
+ 617 INFO: Appending 'datas' from .spec
+ 
+ ERROR: Unable to find 'D:\\AAA_C\\compression-tool\\build\\src\\bindings\\pybind\\core_engine.cp312-win_amd64.pyd' when adding binary and data files.
+ 
+ Build failed with error code 1
+ 
+ Press any key to continue . . .
+ 
  PS D:\AAA_C\compression-tool>
 
 ## Assistant
@@ -5348,7 +5387,7 @@ cur_chunk = VirtualBuffer([raw_chunk])  // 单段也统一用容器
 由 `search_size` 和 `lookahead_size` 计算得出：
 
 ```cpp
-// 来自 LZDP_OutOfCore 构造函数
+// 来自 LZDP_Streaming 构造函数
 offset_bits_ = calcBitWidth(SEARCH_SIZE);   // Ob = ceil(log2(search_size))
 length_bits_ = calcBitWidth(LOOKAHEAD_SIZE); // Lb = ceil(log2(lookahead_size))
 ```
@@ -5442,7 +5481,7 @@ Now update `get_min_match()` in `LZDP.hpp` to use `get_match_bits()` too
 
 Now let me verify the build compiles correctly
 
-`get_match_bits()` 是 `LZDP` 的成员方法，但 `LZDP_OutOfCore` 和 `LZDPDecompress_OutOfCore` 是独立类。需要给它们也加上：
+`get_match_bits()` 是 `LZDP` 的成员方法，但 `LZDP_Streaming` 和 `LZDPDecompress_Streaming` 是独立类。需要给它们也加上：
 
 
 
@@ -5462,7 +5501,7 @@ Now let me verify the build compiles correctly
 
 | 文件 | 改动 |
 |------|------|
-| [LZDP.hpp](file:///d:/AAA_C/compression-tool/src/algorithm/include/LZDP.hpp) | 三个类都加了 `get_match_bits()`：`LZDP`、`LZDP_OutOfCore`、`LZDPDecompress_OutOfCore` |
+| [LZDP.hpp](file:///d:/AAA_C/compression-tool/src/algorithm/include/LZDP.hpp) | 三个类都加了 `get_match_bits()`：`LZDP`、`LZDP_Streaming`、`LZDPDecompress_Streaming` |
 | [LZDP.cpp](file:///d:/AAA_C/compression-tool/src/algorithm/LZDP.cpp) | 5 处 `offset_bits_ + length_bits_` → `get_match_bits()` |
 | [SpillBitStream.hpp](file:///d:/AAA_C/compression-tool/src/algorithm/include/SpillBitStream.hpp) | `PackedDpLinkSpec` 加了 `match_data_bits()`，2 处 `1 + length_bits + offset_bits` → `1 + match_data_bits()` |
 | [helpers.py](file:///d:/AAA_C/compression-tool/src/gui/ui/helpers.py) | `lzdp_effective_min_match` 中提取 `match_bits` 局部变量 |
@@ -5636,7 +5675,7 @@ struct BitReader { ... };   // 本地简化版
 |---------|------|------|
 | **BitWriter** | [LZDP.cpp:L26](file:///d:/AAA_C/compression-tool/src/algorithm/LZDP.cpp#L26) vs [utils/BitWriter.hpp](file:///d:/AAA_C/compression-tool/src/utils/include/BitWriter.hpp) | 本地简化版，接口不兼容（vector vs span） |
 | **BitReader** | [LZDP.cpp:L56](file:///d:/AAA_C/compression-tool/src/algorithm/LZDP.cpp#L56) vs [utils/BitReader.hpp](file:///d:/AAA_C/compression-tool/src/utils/include/BitReader.hpp) | 同上 |
-| **decompress 逻辑** | [LZDP::decompress()](file:///d:/AAA_C/compression-tool/src/algorithm/LZDP.cpp#L317-L379) vs [LZDPDecompress_OutOfCore::handle()](file:///d:/AAA_C/compression-tool/src/algorithm/LZDP.cpp#L958-L1070+) | 核心解码逻辑（flag/non-flag 分支、offset/length 读取、历史拷贝）完全重复，只是前者用本地 BitReader 处理完整 buffer，后者用 utils BitReader 流式处理 |
+| **decompress 逻辑** | [LZDP::decompress()](file:///d:/AAA_C/compression-tool/src/algorithm/LZDP.cpp#L317-L379) vs [LZDPDecompress_Streaming::handle()](file:///d:/AAA_C/compression-tool/src/algorithm/LZDP.cpp#L958-L1070+) | 核心解码逻辑（flag/non-flag 分支、offset/length 读取、历史拷贝）完全重复，只是前者用本地 BitReader 处理完整 buffer，后者用 utils BitReader 流式处理 |
 
 ### 设计文档 vs 已有代码
 
@@ -5665,13 +5704,13 @@ struct BitReader { ... };   // 本地简化版
 
 **真正的重复只有两处**：
 1. **LZDP.cpp 的匿名命名空间 BitWriter/BitReader** — 与 utils 版功能重复
-2. **LZDP::decompress() 与 LZDPDecompress_OutOfCore::handle()** — 解码逻辑重复
+2. **LZDP::decompress() 与 LZDPDecompress_Streaming::handle()** — 解码逻辑重复
 
 设计文档提出的新组件（`StreamReader`、`StreamParams`、`IDpCore`、`ReverseBitWriter`）都还不存在，没有重复。
 
 
 
-以上就是三个问题的完整答案。核心发现是 **LZDP.cpp 的匿名命名空间 BitWriter/BitReader** 和 **LZDP::decompress() 与 LZDPDecompress_OutOfCore::handle()** 两处重复。需要我着手消除这些重复吗？
+以上就是三个问题的完整答案。核心发现是 **LZDP.cpp 的匿名命名空间 BitWriter/BitReader** 和 **LZDP::decompress() 与 LZDPDecompress_Streaming::handle()** 两处重复。需要我着手消除这些重复吗？
 
 ## User
 好
@@ -5712,11 +5751,11 @@ struct BitReader { ... };   // 本地简化版
 
 ### 3. 项目组件重复检查
 - 确认其他组件（HuffmanTree、KMPMatcher、TempFile 等）均为唯一实现
-- 发现 LZDP::decompress() 与 LZDPDecompress_OutOfCore::handle() 之间存在**解压逻辑重复**（可选优化项）
+- 发现 LZDP::decompress() 与 LZDPDecompress_Streaming::handle() 之间存在**解压逻辑重复**（可选优化项）
 
 ---
 
-如果您想继续，下一步可以考虑**重构解压逻辑重复**的问题——将 `LZDP::decompress()` 和 `LZDPDecompress_OutOfCore::handle()` 中的公共解压逻辑提取为共享工具函数。需要继续吗？
+如果您想继续，下一步可以考虑**重构解压逻辑重复**的问题——将 `LZDP::decompress()` 和 `LZDPDecompress_Streaming::handle()` 中的公共解压逻辑提取为共享工具函数。需要继续吗？
 
 ## User
 对flag编码的flate的处理，是单独统计字面量和match各自的频率，建立字面量huffman树和match树，然后拼为一棵树获取编码， 
@@ -6074,9 +6113,9 @@ MatchToken = offset(ob位) + length(lb位) → 一个 Huffman 符号
 
 ## 一、流式压缩的整体架构设计
 
-### 1. LZDP 流式管线（`LZDP_OutOfCore`）
+### 1. LZDP 流式管线（`LZDP_Streaming`）
 
-LZDP 的流式方案是一个 **三阶段外存 DP 状态机**，定义在 [LZDP.cpp](file:///d:/AAA_C/compression-tool/src/algorithm/LZDP.cpp) 的 `LZDP_OutOfCore` 中：
+LZDP 的流式方案是一个 **三阶段外存 DP 状态机**，定义在 [LZDP.cpp](file:///d:/AAA_C/compression-tool/src/algorithm/LZDP.cpp) 的 `LZDP_Streaming` 中：
 
 | 阶段 | 行为 | 内存特征 |
 |------|------|----------|
@@ -6101,7 +6140,7 @@ DPFlate 采用类似的外存 DP 策略：
 
 这是交接报告中 **最关键的认知点**，也是需求方认为「未解决」的根因：
 
-| 维度 | 内存 `LZDPCompressor` | 流式 `LZDP_OutOfCore` |
+| 维度 | 内存 `LZDPCompressor` | 流式 `LZDP_Streaming` |
 |------|----------------------|----------------------|
 | **DP 目标函数** | `compress_dp`：**每步代价 = +1 token**（literal 与 match 均 +1） | 前向递推用 `lit_cost_` / `match_cost_`（**按位宽估算的整数代价**） |
 | **明文可见范围** | 全文可见 | 滑动窗口（≈ search_size + lookahead） |
@@ -6116,7 +6155,7 @@ DPFlate 采用类似的外存 DP 策略：
 根据交接报告和整改日志，以下问题已在代码中修复：
 
 1. **HashChain 索引错误**：`prev_[abs_pos % SEARCH_SIZE]` → `prev_buf_`（缓冲区下标），与 `compress_dp` 的 `prev[pos]` 语义对齐
-2. **BitWriter 残留比特**：增加 `resetPendingBits()`，在 `LZDP_OutOfCore::reset` 和写头前调用，防止分数比特残留导致头错位 → `invalid bit widths`
+2. **BitWriter 残留比特**：增加 `resetPendingBits()`，在 `LZDP_Streaming::reset` 和写头前调用，防止分数比特残留导致头错位 → `invalid bit widths`
 3. **Flag 编码反相**：字面=1/匹配=0 对齐 `compress_dp`
 4. **非 flag 单字面缺前缀**：补上 `offset=0 + run 长度=1` 前缀
 5. **缺 2 字节明文头**：流式发射补充与内存版一致的两字节头
@@ -6139,7 +6178,7 @@ DPFlate 采用类似的外存 DP 策略：
 
 基于以上理解，我明确我的任务如下：
 
-> **我的核心任务**：作为接手人，基于交接报告和设计文档中暴露的问题，**对流式压缩（LZDP_OutOfCore / DPFlate）的实现进行审查和整改**，重点解决：
+> **我的核心任务**：作为接手人，基于交接报告和设计文档中暴露的问题，**对流式压缩（LZDP_Streaming / DPFlate）的实现进行审查和整改**，重点解决：
 >
 > 1. **流式压缩结果损坏问题**（WCX 解压失败、压缩率异常）— 这是 P0 级阻断性问题
 > 2. **流式与内存路径的差异分析与对齐** — 至少保证解压正确性，量化差异
@@ -6150,7 +6189,7 @@ DPFlate 采用类似的外存 DP 策略：
 
 请问你希望我从哪个具体问题开始入手？比如：
 - **P0**：先确认 WCX 损坏问题在当前构建上是否已修复？
-- **架构**：先审查 `LZDP_OutOfCore` 的设计合理性，提出重构方案？
+- **架构**：先审查 `LZDP_Streaming` 的设计合理性，提出重构方案？
 - **对齐**：先设计流式与内存路径的对齐方案（目标函数统一）？
 
 ## User
@@ -6183,7 +6222,7 @@ DPFlate 采用类似的外存 DP 策略：
 
 ### 前工作者错在哪里
 
-他搞出了一个 `LZDP_OutOfCore`，完全偏离了你的设计：
+他搞出了一个 `LZDP_Streaming`，完全偏离了你的设计：
 
 | 维度 | 你的设计 | 前工作者的实现 |
 |------|---------|---------------|
@@ -6205,7 +6244,7 @@ DPFlate 采用类似的外存 DP 策略：
 
 现在我的任务很明确：
 
-**彻底废弃 `LZDP_OutOfCore` 这条错误路径，按照你的原始设计重新实现 LZDP 流式压缩：**
+**彻底废弃 `LZDP_Streaming` 这条错误路径，按照你的原始设计重新实现 LZDP 流式压缩：**
 
 1. **`WholeFileFramedCompressAdapter`** — 分块读入，缓冲明文到 EOF，然后一次调用 `compress_dp`
 2. **DP 目标 = token 数最少** — 与内存版完全一致
@@ -8069,7 +8108,7 @@ stream_compress_lzdp(input_path, output_path, params)
 | **推进式 DP**：dp[i] 只依赖 dp[i-1]，向前推 | 自创 bit-cost 启发式，废弃推进式 DP | 压缩率不一致 |
 | **显式序列化**：write_u32_le，固定 12/8 字节 | `fwrite(&cell, sizeof(cell))`，含 padding | 临时文件膨胀，跨平台风险 |
 | **pending 表**：暂存跨分块推送 | 未正确处理分块间推送 | 分块边界 DP 断裂 |
-| **解耦框架**：算法无关的三阶段管线 | 把流式逻辑嵌入 LZDP_OutOfCore | 无法复用给 DPFlate 等 |
+| **解耦框架**：算法无关的三阶段管线 | 把流式逻辑嵌入 LZDP_Streaming | 无法复用给 DPFlate 等 |
 | **delete 释放**：shrink_to_fit / swap | 只 clear() 不释放 | 内存泄漏 |
 
 这个版本是否正确？如果没问题，下一步我可以对照这个设计去审查当前代码。
@@ -9185,7 +9224,7 @@ ring[(cur_idx + 1) % 3] = read_chunk()  // freed slot → new
 
 现在我理解了。关键洞察是：**流式框架不应该重写 DP 循环**，而是构造缓冲区后调用 DP 算法的核心函数。
 
-现有的 `LZDP::compress_dp_triples` 和 `LZDP_OutOfCore::handleCollectInput` 已经展示了这个模式——`input_buffer_` 就是 `search_window + data + lookahead` 的拼接。让我更新设计文档。
+现有的 `LZDP::compress_dp_triples` 和 `LZDP_Streaming::handleCollectInput` 已经展示了这个模式——`input_buffer_` 就是 `search_window + data + lookahead` 的拼接。让我更新设计文档。
 
 
 

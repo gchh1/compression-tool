@@ -4,10 +4,25 @@
 
 #include "ADEBridge.hpp"
 #include "EvolutionaryAlgorithms.hpp"
+#include "RandomForest.hpp"
 
 namespace py = pybind11;
 
 void init_ade(py::module_& m) {
+    py::class_<compressor::ade::RandomForestConfig>(m, "RandomForestConfig")
+        .def(py::init<>())
+        .def_readwrite("num_trees", &compressor::ade::RandomForestConfig::num_trees)
+        .def_readwrite("max_depth", &compressor::ade::RandomForestConfig::max_depth)
+        .def_readwrite("min_samples_split",
+                       &compressor::ade::RandomForestConfig::min_samples_split)
+        .def_readwrite("min_samples_leaf",
+                       &compressor::ade::RandomForestConfig::min_samples_leaf)
+        .def_readwrite("max_features", &compressor::ade::RandomForestConfig::max_features)
+        .def_readwrite("random_seed", &compressor::ade::RandomForestConfig::random_seed)
+        .def_readwrite("bootstrap", &compressor::ade::RandomForestConfig::bootstrap)
+        .def_readwrite("bootstrap_ratio",
+                       &compressor::ade::RandomForestConfig::bootstrap_ratio);
+
     py::class_<compressor::ade::ADEBridgeResult>(m, "ADEResult")
         .def(py::init<>())
         .def_readwrite("algorithm", &compressor::ade::ADEBridgeResult::algorithm)
@@ -44,7 +59,30 @@ void init_ade(py::module_& m) {
             py::arg("filepath"),
             "Save the current RF model to binary file")
         .def("try_load_default_model", &compressor::ade::ADEBridge::try_load_default_model,
-            "Try to load default model from standard paths");
+            "Try to load default model from standard paths")
+        .def(
+            "train",
+            [](compressor::ade::ADEBridge& bridge,
+               const std::vector<std::tuple<std::vector<float>, int, float>>& rows,
+               const compressor::ade::RandomForestConfig& config) {
+                std::vector<compressor::ade::TrainingSample> samples;
+                samples.reserve(rows.size());
+                for (const auto& row : rows) {
+                    compressor::ade::TrainingSample sample;
+                    sample.features = std::get<0>(row);
+                    sample.label = std::get<1>(row);
+                    sample.weight = std::get<2>(row);
+                    samples.push_back(std::move(sample));
+                }
+                bridge.train(samples, config);
+            },
+            py::arg("rows"),
+            py::arg("config") = compressor::ade::RandomForestConfig{},
+            py::call_guard<py::gil_scoped_release>(),
+            "Train RF classifier from (features, label, weight) rows")
+        .def("predict_padded", &compressor::ade::ADEBridge::predict_padded,
+            py::arg("features"),
+            "Predict algorithm label from 33-dim padded features");
 }
 
 void init_ea(py::module_& m) {

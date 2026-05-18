@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "DebugLog.hpp"
+#include "DPFlateBin64kDebug.hpp"
 
 namespace compressor::processor {
 
@@ -17,6 +18,14 @@ namespace compressor::processor {
 auto StreamProcessor::push(memory::DataChunk chunk, bool is_last) -> void {
     if (finished_) return;
     if (!chunk.empty()) {
+        if (compressor::algorithm::DPFlateBin64kDebug::active()) {
+            compressor::processor::dpflate_bin64k_log_pipeline(
+                "PIPE_PUSH", "in_chunks.push_back size=%zu is_last=%d", chunk.size(),
+                is_last ? 1 : 0);
+            auto view = chunk.view();
+            compressor::processor::dpflate_bin64k_log_pipeline_bytes(
+                "PIPE_CHUNK", "push_head", view.data(), view.size());
+        }
         in_chunks_.push_back(std::move(chunk));
     }
     processChunks(is_last);
@@ -30,6 +39,13 @@ auto StreamProcessor::push(std::span<const uint8_t> data, bool is_last)
         return;
     }
     auto v = std::make_shared<std::vector<uint8_t>>(data.begin(), data.end());
+    if (compressor::algorithm::DPFlateBin64kDebug::active()) {
+        compressor::processor::dpflate_bin64k_log_pipeline(
+            "PIPE_PUSH_SPAN", "vector copy-construct size=%zu cap=%zu is_last=%d", v->size(),
+            v->capacity(), is_last ? 1 : 0);
+        compressor::processor::dpflate_bin64k_log_pipeline_bytes(
+            "PIPE_CHUNK", "push_head", v->data(), v->size());
+    }
     push(memory::DataChunk::adopt(v, v->size()), is_last);
 }
 
@@ -78,6 +94,9 @@ auto StreamProcessor::consumeInput(size_t n) -> void {
 
 auto StreamProcessor::publishCurrent() -> void {
     if (!current_out_ || out_pos_ == 0) return;
+    compressor::processor::dpflate_bin64k_log_pipeline(
+        "PIPE_PUBLISH", "ready_chunks.push_back out_pos=%zu vec_cap=%zu", out_pos_,
+        current_out_ ? current_out_->capacity() : 0);
     ready_chunks_.push_back(
         memory::DataChunk::adopt(current_out_, out_pos_));
     current_out_.reset();
@@ -106,9 +125,13 @@ auto StreamProcessor::processChunks(bool is_last) -> void {
             if (pool_) {
                 current_out_ = pool_->acquire();
                 current_out_->resize(pool_->chunkSize());
+                compressor::processor::dpflate_bin64k_log_pipeline(
+                    "PIPE_OUT", "pool.acquire+resize chunkSize=%zu", pool_->chunkSize());
             } else {
                 current_out_ =
                     std::make_shared<std::vector<uint8_t>>(OUT_CHUNK_SIZE);
+                compressor::processor::dpflate_bin64k_log_pipeline(
+                    "PIPE_OUT", "new vector OUT_CHUNK_SIZE=%zu", OUT_CHUNK_SIZE);
             }
             out_pos_ = 0;
         }
@@ -116,7 +139,9 @@ auto StreamProcessor::processChunks(bool is_last) -> void {
         auto span_in = readSpan();
         auto span_out = std::span<uint8_t>(current_out_->data() + out_pos_,
                                            current_out_->size() - out_pos_);
-        bool final_flag = is_last && in_chunks_.empty();
+        // ``is_last`` on push means no further plaintext arrives after this chunk.
+        // Do not require ``in_chunks_.empty()`` — the current chunk is still queued here.
+        bool final_flag = is_last;
 
         auto status = algo_->process(span_in, span_out, final_flag);
 
@@ -143,6 +168,9 @@ auto StreamProcessor::processChunks(bool is_last) -> void {
                     auto next_span = readSpan();
                     merged->insert(merged->end(), next_span.begin(),
                                    next_span.end());
+                    compressor::processor::dpflate_bin64k_log_pipeline(
+                        "PIPE_MERGE", "merged.size=%zu cap=%zu front=%zu next=%zu",
+                        merged->size(), merged->capacity(), front_span.size(), next_span.size());
                     in_chunks_.pop_front();
                     in_chunks_.push_front(
                         memory::DataChunk::adopt(merged, merged->size()));

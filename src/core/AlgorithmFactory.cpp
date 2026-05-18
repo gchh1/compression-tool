@@ -9,6 +9,7 @@
 #include "LZDP.hpp"
 #include "LZSS.hpp"
 #include "DPFlate.hpp"
+#include "DPFlateBin64kDebug.hpp"
 #include "ChunkedStreamAdapter.hpp"
 #include "StreamChunkPolicy.hpp"
 #include "Zstd.hpp"
@@ -33,7 +34,7 @@ auto createAlgorithm(AlgorithmID id,
     switch (id) {
         case AlgorithmID::None:
             return nullptr;
-        // File streaming: same ``AlgorithmBase`` push/pull model as ``DPFlate`` / ``LZDP_OutOfCore``
+        // File streaming: same ``AlgorithmBase`` push/pull model as ``DPFlate`` / ``LZDP_Streaming``
         // (no ``StreamingCompressAdapter`` / u32 framing). Bitstream is one continuous classic Deflate
         // stream inverted by ``Inflate`` (also unwrapped — no ``StreamingDecompressAdapter``).
         case AlgorithmID::Deflate: {
@@ -71,6 +72,12 @@ auto createAlgorithm(AlgorithmID id,
                 df.huffman_length_chunk_bits > 0 ? df.huffman_length_chunk_bits : 8;
             inst->set_huffman_offset_chunk_bits(hob);
             inst->set_huffman_length_chunk_bits(hlb);
+            if (df.use_3hfmtree) {
+                if (const char* only = std::getenv("WEBCOMPRESS_DPFLATE_BIN64K_ONLY");
+                    only && only[0] == '1') {
+                    algorithm::DPFlateBin64kDebug::arm_session(64u * 1024u, true);
+                }
+            }
             return inst;
         }
         case AlgorithmID::LZSS:
@@ -96,17 +103,17 @@ auto createAlgorithm(AlgorithmID id,
                     return algorithm::LZSS::decompress(data, 3, false);
                 });
         case AlgorithmID::LZDP: {
-            // Streaming path: ``LZDP_OutOfCore`` — chunked plaintext window, forward DP with packed
+            // Streaming path: ``LZDP_Streaming`` — chunked plaintext window, forward DP with packed
             // link spill (temp A), backtrack to temp B, then emit bitstream (see
             // ``docs/design/lzdp-file-pipeline-design.md``). Parameters from ``LzdpWholeFileParams``.
             const LzdpWholeFileParams wf_fallback{};
             const LzdpWholeFileParams wf = lzdp_whole_file ? *lzdp_whole_file : wf_fallback;
-            return std::make_unique<algorithm::LZDP_OutOfCore>(
+            return std::make_unique<algorithm::LZDP_Streaming>(
                 wf.search_size, wf.lookahead_size, wf.min_match, wf.dp_top,
                 wf.use_flag_encoding, wf.match_engine);
         }
         case AlgorithmID::LZDPDecompress:
-            return std::make_unique<algorithm::LZDPDecompress_OutOfCore>(false);
+            return std::make_unique<algorithm::LZDPDecompress_Streaming>(false);
         case AlgorithmID::Brotli:
             return std::make_unique<SCA>(
                 [](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {

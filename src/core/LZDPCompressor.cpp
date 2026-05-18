@@ -12,10 +12,10 @@ auto LZDPCompressor::compress(std::vector<uint8_t> data) -> CompressorResult {
 
     auto start_time = std::chrono::high_resolution_clock::now();
     algorithm::LZDP lzdp;
+    lzdp.autoBitWidth(search_size_, lookahead_size_);
     lzdp.set_min_match(min_match_);
     lzdp.set_use_flag_encoding(use_flag_encoding_);
     lzdp.set_match_engine(match_engine_);
-    lzdp.autoBitWidth(search_size_, lookahead_size_);
     auto dp_result = lzdp.dp_core(data, search_size_, lookahead_size_, dp_range_);
     result.data = lzdp.encode_triples(dp_result.triples, lzdp.get_offset_bits(), lzdp.get_length_bits(), use_flag_encoding_);
     auto end_time = std::chrono::high_resolution_clock::now();
@@ -55,10 +55,10 @@ algorithm::LZDP::DPVisualization LZDPCompressor::get_dp_visualization(
     if (range == 0) range = dp_range_;
     auto start_time = std::chrono::high_resolution_clock::now();
     algorithm::LZDP lzdp;
+    lzdp.autoBitWidth(search_size_, lookahead_size_);
     lzdp.set_min_match(min_match_);
     lzdp.set_use_flag_encoding(use_flag_encoding_);
     lzdp.set_match_engine(match_engine_);
-    lzdp.autoBitWidth(search_size_, lookahead_size_);
     if (data.size() > 65536) {
         algorithm::LZDP::DPVisualization empty_viz;
         empty_viz.input_length = data.size();
