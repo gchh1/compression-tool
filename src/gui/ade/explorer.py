@@ -13,10 +13,12 @@ Theory: Multi-Armed Bandit with Context (Contextual Bandit)
 from __future__ import annotations
 
 import math
+import os
 import random
 import threading
 import time
 import logging
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
@@ -110,9 +112,11 @@ class SilentExplorer:
 
     _instance: SilentExplorer | None = None
     _lock = threading.Lock()
+    _user_ops_depth = 0
+    _user_ops_lock = threading.Lock()
 
-    DEFAULT_CONFIG = {
-        "enabled": True,
+    # Tunables merged with optional ``config`` in ``__init__``; ``enabled`` comes from settings + env.
+    DEFAULT_TUNABLES = {
         "epsilon_base": 0.25,
         "alpha_ucb": 1.41,
         "max_concurrent": 2,
@@ -127,8 +131,15 @@ class SilentExplorer:
     }
 
     def __init__(self, config: dict | None = None):
-        cfg = {**self.DEFAULT_CONFIG, **(config or {})}
-        self.enabled: bool = cfg["enabled"]
+        from gui.config.settings import get_silent_explore_enabled
+
+        cfg = {**self.DEFAULT_TUNABLES, **(config or {})}
+        persisted = bool(get_silent_explore_enabled())
+        if os.environ.get("WEBCOMPRESS_SILENT_EXPLORE", "").strip().lower() in ("1", "true", "yes"):
+            persisted = True
+        self.enabled = persisted
+        if config is not None and "enabled" in config:
+            self.enabled = bool(config["enabled"])
         self.epsilon_base: float = cfg["epsilon_base"]
         self.alpha_ucb: float = cfg["alpha_ucb"]
         self.max_concurrent: int = cfg["max_concurrent"]
@@ -150,6 +161,47 @@ class SilentExplorer:
         self._active_threads: int = 0
         self._total_compress_time: float = 0.0
         self._total_explore_time: float = 0.0
+
+    @classmethod
+    def begin_user_operation(cls) -> None:
+        """用户主路径压缩/解压进入关键区：禁止新起静默探索线程（类「中断」优先级）。"""
+        with cls._user_ops_lock:
+            cls._user_ops_depth += 1
+
+    @classmethod
+    def end_user_operation(cls) -> None:
+        with cls._user_ops_lock:
+            cls._user_ops_depth = max(0, cls._user_ops_depth - 1)
+
+    @classmethod
+    def user_operations_active(cls) -> bool:
+        with cls._user_ops_lock:
+            return cls._user_ops_depth > 0
+
+    @classmethod
+    @contextmanager
+    def user_compression_priority(cls):
+        """``with SilentExplorer.user_compression_priority():`` 包裹 native 压/解压调用。"""
+        cls.begin_user_operation()
+        try:
+            yield
+        finally:
+            cls.end_user_operation()
+
+    @classmethod
+    def apply_enabled_from_settings(cls) -> None:
+        """从磁盘配置刷新单例开关（应用算法配置对话框后调用）。"""
+        from gui.config.settings import get_silent_explore_enabled
+
+        inst = cls.get()
+        persisted = bool(get_silent_explore_enabled())
+        if os.environ.get("WEBCOMPRESS_SILENT_EXPLORE", "").strip().lower() in ("1", "true", "yes"):
+            persisted = True
+        inst.enabled = persisted
+
+    def set_enabled(self, enabled: bool) -> None:
+        """运行时开关（由 UI 写入；``WEBCOMPRESS_SILENT_EXPLORE`` 仅在 ``apply_enabled_from_settings`` 时覆盖读盘值）。"""
+        self.enabled = bool(enabled)
 
     @classmethod
     def get(cls) -> SilentExplorer:
@@ -183,7 +235,7 @@ class SilentExplorer:
         if not self.enabled:
             return False
 
-        if not isinstance(record, FileRecord):
+        if self.user_operations_active():
             return False
 
         if record.base_features is None:
@@ -192,7 +244,7 @@ class SilentExplorer:
         if record.size < self.min_file_size:
             return False
 
-        if greedy_algo == AlgorithmType.NONE or greedy_algo == AlgorithmType.SKIP:
+        if greedy_algo == AlgorithmType.NONE:
             return False
 
         cluster_id = self.cluster_space.assign(record.base_features.vector)
@@ -272,7 +324,7 @@ class SilentExplorer:
         stats = self.cluster_stats.get(cluster_id, {})
 
         for algo in AlgorithmType:
-            if algo == AlgorithmType.AUTO or algo == AlgorithmType.SKIP:
+            if algo == AlgorithmType.AUTO:
                 continue
             s = stats.get(algo)
             if s is None or s.count == 0:
@@ -297,11 +349,11 @@ class SilentExplorer:
         stats = self.cluster_stats.get(cluster_id, {})
         candidates = [
             (algo, s.count) for algo, s in stats.items()
-            if algo != exclude and algo not in (AlgorithmType.AUTO, AlgorithmType.SKIP, AlgorithmType.NONE, AlgorithmType.TRANSFORMER)
+            if algo != exclude and algo not in (AlgorithmType.AUTO, AlgorithmType.NONE, AlgorithmType.TRANSFORMER)
         ]
         if not candidates:
             all_algos = [a for a in AlgorithmType
-                        if a not in (AlgorithmType.AUTO, AlgorithmType.SKIP, AlgorithmType.NONE, AlgorithmType.TRANSFORMER)]
+                        if a not in (AlgorithmType.AUTO, AlgorithmType.NONE, AlgorithmType.TRANSFORMER)]
             random.shuffle(all_algos)
             return all_algos[0] if all_algos else None
         candidates.sort(key=lambda x: x[1])
@@ -377,6 +429,8 @@ class SilentExplorer:
         success = False
 
         try:
+            if SilentExplorer.user_operations_active():
+                return
             from gui.engine.compressor import CompressionEngine
             from gui.ade.training import get_training_store, TrainingSampleV3
 
@@ -458,6 +512,7 @@ class SilentExplorer:
 
     def get_stats(self) -> dict:
         return {
+            "enabled": self.enabled,
             "total_samples": self.total_samples,
             "explore_count": self.explore_count,
             "discovery_count": self.discovery_count,

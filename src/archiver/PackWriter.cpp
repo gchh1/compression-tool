@@ -16,7 +16,13 @@
 namespace compressor::archiver {
 
 auto PackWriter::beginFile(const std::string& filepath,
-                           std::span<const AlgorithmID> chain) -> void {
+                           std::span<const AlgorithmID> chain,
+                           uint32_t file_compress_opts,
+                           const core::LzdpWholeFileParams* lzdp_whole_file,
+                           std::size_t streaming_compress_chunk_bytes,
+                           const core::DpflatePipelineParams* dpflate_pipeline,
+                           const core::DeflatePipelineParams* deflate_pipeline)
+    -> void {
     if (finished_) return;
     if (file_open_) closeCurrentFile();
 
@@ -34,7 +40,12 @@ auto PackWriter::beginFile(const std::string& filepath,
     chunk_idx_ = 0;
     current_compressed_size_ = 0;
 
-    pipeline_ = processor::buildCompressionPipeline(entry_header_.algo_chain, pool_);
+    pipeline_ = processor::buildCompressionPipeline(entry_header_.algo_chain, pool_,
+                                                    file_compress_opts,
+                                                    lzdp_whole_file,
+                                                    streaming_compress_chunk_bytes,
+                                                    dpflate_pipeline,
+                                                    deflate_pipeline);
 
     file_open_ = true;
 }

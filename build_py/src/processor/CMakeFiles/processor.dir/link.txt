@@ -1,0 +1,2 @@
+D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc libprocessor.a CMakeFiles/processor.dir/Pipeline.cpp.obj CMakeFiles/processor.dir/PipelineBuilder.cpp.obj CMakeFiles/processor.dir/StreamProcessor.cpp.obj
+D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe libprocessor.a

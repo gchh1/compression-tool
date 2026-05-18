@@ -119,6 +119,7 @@ class NetworkView(QWidget):
         all_files: list[FileRecord] = []
         for rec in records:
             if isinstance(rec, FolderRecord):
+                rec.ensure_files_loaded()
                 all_files.extend(rec.files)
             else:
                 all_files.append(rec)

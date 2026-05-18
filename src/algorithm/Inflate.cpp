@@ -6,14 +6,23 @@
 #include <vector>
 
 #include "BitReader.hpp"
+#include "DebugLog.hpp"
 #include "HuffmanTree.hpp"
 
 namespace compressor::algorithm {
 
 Inflate::Inflate() { reset(); }
 
+auto Inflate::appendDecodedByte(uint8_t b) -> void {
+    output_buf_.push_back(b);
+    window_[static_cast<size_t>(out_abs_ % kWindowSize)] = b;
+    ++out_abs_;
+}
+
 auto Inflate::reset(void) -> void {
     output_buf_.clear();
+    window_.assign(kWindowSize, 0);
+    out_abs_ = 0;
     destroyTree(lit_root_);
     destroyTree(dist_root_);
     lit_root_ = nullptr;
@@ -21,6 +30,8 @@ auto Inflate::reset(void) -> void {
     lit_cursor_ = nullptr;
     dist_cursor_ = nullptr;
     decode_state_ = DecodeState::READ_TREES;
+    output_flush_pos_ = 0;
+    done_after_flush_ = false;
     pending_length_ = 0;
     pending_dist_ = 0;
     stored_bytes_remaining_ = 0;
@@ -71,7 +82,19 @@ void Inflate::decodeDistCode(uint16_t symbol, uint16_t& dist, uint8_t& extra_bit
 }
 
 auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
+    static int handle_call = 0;
+    ++handle_call;
+    int inner_iter = 0;
     while (true) {
+        ++inner_iter;
+        if (inner_iter > 100000000) {
+            // === DEBUG_BLOCK_BEGIN (可删除) ===
+            DEBUG_LOG("[Inflate] SAFETY BREAK: inner_iter=%d out_abs=%llu state=%d",
+                      inner_iter, (unsigned long long)out_abs_, (int)decode_state_);
+            // === DEBUG_BLOCK_END ===
+            status.done = true;
+            return;
+        }
 
         if (decode_state_ == DecodeState::READ_BLOCK_HEADER) {
             if (!reader_.ensureBits(3)) {
@@ -81,6 +104,7 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
             }
             bool bfinal = reader_.readBit();
             uint8_t btype = reader_.readBits(2);
+            DEBUG_LOG("[Inflate] READ_BLOCK_HEADER: bfinal=%d btype=%d", bfinal, btype);
 
             if (btype == 0) {
                 reader_.alignToByte();
@@ -102,16 +126,34 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
             continue;
         }
 
+        if (decode_state_ == DecodeState::FLUSH_TO_WRITER) {
+            while (output_flush_pos_ < output_buf_.size()) {
+                if (!writer_.ensureSpace(8)) {
+                    status.need_output = true;
+                    return;
+                }
+                writer_.writeBits(output_buf_[output_flush_pos_], 8);
+                ++output_flush_pos_;
+            }
+            output_buf_.clear();
+            output_flush_pos_ = 0;
+            if (done_after_flush_) {
+                done_after_flush_ = false;
+                status.done = true;
+                return;
+            }
+            decode_state_ = post_flush_state_;
+            continue;
+        }
+
         if (decode_state_ == DecodeState::READ_TREES) {
             destroyTree(lit_root_);
             destroyTree(dist_root_);
             lit_root_ = nullptr;
             dist_root_ = nullptr;
 
-            auto saved = reader_.savePosition();
             if (!readHuffmanTree(lit_root_, DEFLATE_SYMBOL_BITS)) {
-                reader_.restorePosition(saved);
-                if (is_last_chunk) {
+                if (is_last_chunk && reader_.getRemainingBits() == 0) {
                     status.done = true;
                     return;
                 }
@@ -119,12 +161,8 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
                 return;
             }
 
-            saved = reader_.savePosition();
             if (!readHuffmanTree(dist_root_, DISTANCE_SYMBOL_BITS)) {
-                reader_.restorePosition(saved);
-                destroyTree(lit_root_);
-                lit_root_ = nullptr;
-                if (is_last_chunk) {
+                if (is_last_chunk && reader_.getRemainingBits() == 0) {
                     status.done = true;
                     return;
                 }
@@ -135,6 +173,7 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
             lit_cursor_ = lit_root_;
             dist_cursor_ = dist_root_;
             decode_state_ = DecodeState::DECODE_TOKENS;
+            DEBUG_LOG("[Inflate] READ_TREES done: out_abs=%llu", (unsigned long long)out_abs_);
             continue;
         }
 
@@ -144,27 +183,17 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
                     status.need_input = true;
                     return;
                 }
-                output_buf_.push_back(static_cast<uint8_t>(reader_.readBits(8)));
+                appendDecodedByte(static_cast<uint8_t>(reader_.readBits(8)));
                 stored_bytes_remaining_--;
             }
-            for (size_t i = 0; i < output_buf_.size(); i++) {
-                if (!writer_.ensureSpace(1)) {
-                    status.need_output = true;
-                    return;
-                }
-                writer_.writeBits(output_buf_[i], 8);
-            }
-            output_buf_.clear();
-            decode_state_ = DecodeState::READ_TREES;
+            output_flush_pos_ = 0;
+            post_flush_state_ = DecodeState::READ_BLOCK_HEADER;
+            decode_state_ = DecodeState::FLUSH_TO_WRITER;
             continue;
         }
 
         if (decode_state_ == DecodeState::DECODE_TOKENS) {
             if (!reader_.ensureBits(1)) {
-                if (is_last_chunk) {
-                    status.done = true;
-                    return;
-                }
                 status.need_input = true;
                 return;
             }
@@ -172,30 +201,44 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
             bool bit = (reader_.readBit() == 1);
             lit_cursor_ = bit ? lit_cursor_->right : lit_cursor_->left;
 
-            if (!lit_cursor_) {
-                status.done = true;
-                return;
-            }
             if (!lit_cursor_->isLeaf()) continue;
 
             uint16_t symbol = lit_cursor_->symbol;
             lit_cursor_ = lit_root_;
 
+            // === DEBUG_BLOCK_BEGIN (可删除) ===
+            static int dbg_dec_tok_cnt = 0;
+            if (++dbg_dec_tok_cnt <= 50) {
+                DEBUG_LOG("[Inflate] DECODE_TOKENS: symbol=%u out_abs=%llu",
+                          symbol, (unsigned long long)out_abs_);
+            }
+            // === DEBUG_BLOCK_END ===
+
             if (symbol < 256) {
-                output_buf_.push_back(static_cast<uint8_t>(symbol));
+                appendDecodedByte(static_cast<uint8_t>(symbol));
+                if (output_buf_.size() >= 32768) {
+                    output_flush_pos_ = 0;
+                    post_flush_state_ = DecodeState::DECODE_TOKENS;
+                    decode_state_ = DecodeState::FLUSH_TO_WRITER;
+                }
                 continue;
             }
 
             if (symbol == 256) {
-                for (size_t i = 0; i < output_buf_.size(); i++) {
-                    if (!writer_.ensureSpace(1)) {
-                        status.need_output = true;
+                const bool only_padding_remains =
+                    is_last_chunk && reader_.getRemainingBits() <= 7;
+                if (output_buf_.empty()) {
+                    if (only_padding_remains) {
+                        status.done = true;
                         return;
                     }
-                    writer_.writeBits(output_buf_[i], 8);
+                    decode_state_ = DecodeState::READ_TREES;
+                    continue;
                 }
-                output_buf_.clear();
-                decode_state_ = DecodeState::READ_TREES;
+                output_flush_pos_ = 0;
+                post_flush_state_ = DecodeState::READ_TREES;
+                done_after_flush_ = only_padding_remains;
+                decode_state_ = DecodeState::FLUSH_TO_WRITER;
                 continue;
             }
 
@@ -220,13 +263,7 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
                 }
                 bool dbit = (reader_.readBit() == 1);
                 dist_cursor_ = dbit ? dist_cursor_->right : dist_cursor_->left;
-                if (!dist_cursor_) break;
                 if (dist_cursor_->isLeaf()) break;
-            }
-
-            if (!dist_cursor_) {
-                status.done = true;
-                return;
             }
 
             uint16_t dist_sym = dist_cursor_->symbol;
@@ -248,16 +285,35 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
         }
 
         if (decode_state_ == DecodeState::COPY_MATCH) {
-            if (pending_dist_ > output_buf_.size()) {
-                status.done = false;
+            // === DEBUG_BLOCK_BEGIN (可删除) ===
+            static int dbg_copy_match_cnt = 0;
+            if (++dbg_copy_match_cnt <= 50) {
+                DEBUG_LOG("[Inflate] COPY_MATCH: dist=%u len=%u out_abs=%llu",
+                          pending_dist_, pending_length_, (unsigned long long)out_abs_);
+            }
+            // === DEBUG_BLOCK_END ===
+            if (pending_dist_ == 0 || pending_dist_ > out_abs_) {
+                // === DEBUG_BLOCK_BEGIN (可删除) ===
+                DEBUG_LOG("[Inflate] COPY_MATCH invalid: dist=%u out_abs=%llu len=%u",
+                          pending_dist_, (unsigned long long)out_abs_, pending_length_);
+                // === DEBUG_BLOCK_END ===
+                status.done = true;
                 return;
             }
-            size_t src_start = output_buf_.size() - pending_dist_;
-            for (size_t i = 0; i < pending_length_; i++) {
-                output_buf_.push_back(output_buf_[src_start + i]);
+            const uint64_t base = out_abs_;
+            for (size_t i = 0; i < pending_length_; ++i) {
+                const uint64_t src_abs = base - static_cast<uint64_t>(pending_dist_) + i;
+                appendDecodedByte(
+                    window_[static_cast<size_t>(src_abs % kWindowSize)]);
             }
 
-            decode_state_ = DecodeState::DECODE_TOKENS;
+            if (output_buf_.size() >= 32768) {
+                output_flush_pos_ = 0;
+                post_flush_state_ = DecodeState::DECODE_TOKENS;
+                decode_state_ = DecodeState::FLUSH_TO_WRITER;
+            } else {
+                decode_state_ = DecodeState::DECODE_TOKENS;
+            }
             continue;
         }
     }

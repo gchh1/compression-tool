@@ -74,7 +74,8 @@ def calc_bit_width(max_val: int) -> int:
 
 def lzdp_effective_min_match(offset_bits: int, length_bits: int, min_match_param: int) -> int:
     if min_match_param == 0:
-        return (offset_bits + length_bits) // 8 + 1
+        match_bits = offset_bits + length_bits
+        return match_bits // 8 + 1
     return min_match_param
 
 
@@ -187,5 +188,59 @@ def format_dpflate_lz_reference_preview(
             "当前：Offset=0 兜底模式代价评估（与 core LZDP 一致）",
             f"  · 引用匹配代价: {ob} + {lb} = {ob + lb} bit",
             f"  · 连续字面量代价: 基础 {ob}+{lb} bit + 8×chunk bit，单段最多 {max_chunk} 字节",
+        ]
+    return "\n".join(lines)
+
+
+def format_deflate_preview(
+    search_size: int,
+    lookahead_size: int,
+    min_match_param: int,
+    use_flag_encoding: bool,
+    use_3hfmtree: bool,
+    huffman_offset_chunk_bits: int,
+    huffman_length_chunk_bits: int,
+) -> str:
+    """LZ 阶段位宽与编码方案（与 greedy LZ77 代价一致）；Huffman 侧区分标准两树 / 3HfM。"""
+    ob = calc_bit_width(search_size)
+    lb = calc_bit_width(lookahead_size)
+    eff_mm = 3 if min_match_param == 0 else min_match_param
+    max_chunk = (1 << lb) - 1
+    lines = [
+        f"offset 字段 ≈ {ob} bit（搜索窗口 {search_size}）",
+        f"length 字段 ≈ {lb} bit（前瞻窗口 {lookahead_size}）",
+        f"有效最小匹配 min_match = {eff_mm}"
+        + (
+            "（参数为 0 时引擎内默认 3）"
+            if min_match_param == 0
+            else f"（参数 = {min_match_param}）"
+        ),
+        "",
+    ]
+    if use_flag_encoding:
+        lit_bits = 1 + 8
+        mat_bits = 1 + ob + lb
+        lines += [
+            "当前：1-Bit Flag 模式（LZ 符号层，与 core Deflate 一致）",
+            f"  · 字面量: 1 + 8 = {lit_bits} bit",
+            f"  · 匹配: 1 + {ob} + {lb} = {mat_bits} bit",
+        ]
+    else:
+        lines += [
+            "当前：Offset=0 兜底模式（LZ 符号层）",
+            f"  · 匹配（offset>0）: {ob} + {lb} = {ob + lb} bit",
+            f"  · 连续字面量: 每段 {ob}+{lb}+8×chunk bit，单段最多 {max_chunk} 字节字面量",
+        ]
+    lines += ["", "Huffman 输出层："]
+    if use_3hfmtree:
+        lines += [
+            "  · 策略：3HfMTree（整块内存压缩走 DPFlate 内核；见「Huffman 树策略」说明）",
+            f"  · 多级槽：offset 槽宽 {huffman_offset_chunk_bits} bit，length 槽宽 {huffman_length_chunk_bits} bit",
+            "  · 解压路径需与编码一致（非标准两树 Inflate 时勿用标准 Inflate 解压）",
+        ]
+    else:
+        lines += [
+            "  · 策略：标准 FLATE（字面量/长度一树 + 距离一树，与 Inflate 解压兼容）",
+            "  · 变长码长由块内频率自适应，预览不估算具体码字长度",
         ]
     return "\n".join(lines)

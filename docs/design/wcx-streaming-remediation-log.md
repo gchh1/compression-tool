@@ -14,6 +14,35 @@
 
 ## 按日期记录
 
+#### [2026-05-11] 每算法流式分块、阈值与 LZDP 流式策略（GUI + 引擎读配置）
+
+- **阶段**: GUI / 配置契约对齐主规格第 12、16.1.1、16.1.2 节
+- **目标**: 全局「流式设置」保留简单默认；各算法页可「跟随全局」或单独设置 **分块 KB** 与 **流式启动阈值 MB**；**LZDP** 可选 `global_dp_spill` / `legacy_chunked`；**DPFlate** 文件流式 **仅** **外存 DP 容器 + 整文件 Huffman**（`legacy_chunked` 已废弃，见 **[2026-05-12]** 条目）。文件管线与 `smart_compress*` 按有效分块/阈值取值。
+- **改动文件**:
+  - `src/gui/config/settings.py`（`per_algorithm` 增加 `follow_global_threshold` / `threshold_mb`；`get_effective_streaming_threshold_mb`）
+  - `src/gui/engine/compressor.py`（`should_use_streaming(size, algorithm)`）
+  - `src/gui/ui/worker.py`（压缩任务在算法确定后按有效阈值选择文件流式）
+  - `src/gui/ui/main_window.py`（算法页「流式阈值」跟随/覆盖）
+  - `docs/design/streaming-workspace-spec.md`（§12、§16.1.2）
+- **验证**: `python -m py_compile` 通过上述 Python 模块；GUI 需人工点「应用」确认配置落盘。
+- **风险**: C++ 侧尚未区分 LZDP `streaming_mode` 时，仅配置与日志对齐，语义仍以引擎实现为准。
+
+#### [2026-05-12] DPFlate：移除旧版流式策略（配置 / GUI / C++ bit）
+
+- **阶段**: 产品与实现对齐 §16.6
+- **目标**: **不再保留** DPFlate 的 `legacy_chunked` / `streaming.per_algorithm.dpflate.streaming_mode` / `file_compress_opts` bit1；文件流式仅一条外存 DP + 整文件 Huffman 路径。
+- **改动文件**（摘要）: `AlgorithmFactory.hpp` / `.cpp`；`pybind_module.cpp` 文档串；`compressor.py`、`settings.py`、`models.py`、`main_window.py`；`Package/config/webcompress_settings.json`；`streaming-workspace-spec.md`、`lzdp-dpflate-work-report.md`、本文档。
+- **验证**: C++ 构建；配置加载时剔除 `dpflate.streaming_mode`。
+- **风险**: 外部脚本若曾依赖 `file_compress_opts` bit1，需改为传 `0`（DPFlate 行为不变）。
+
+#### [2026-05-12] LZDP：单一文件管线 + 与内存压缩对齐
+
+- **阶段**: 产品与实现对齐 `lzdp-file-pipeline-design.md`、`streaming-workspace-spec.md` §16.1.1
+- **目标**: 移除 `streaming.per_algorithm.lzdp.streaming_mode` 与 GUI「legacy 分帧」选项；`createAlgorithm(LZDP)` 改为 **`WholeFileFramedCompressAdapter`** + 与 **`LZDPCompressor::compress` 相同** 的 `algorithm::LZDP` 分支，保证 **同参数下文件管线与内存压缩比特级一致**。
+- **改动文件**（摘要）: `AlgorithmFactory.cpp`；`compressor.py`；`settings.py`；`models.py`；`main_window.py`；`pybind_module.cpp` 文档串；`Package/config/webcompress_settings.json`；`streaming-workspace-spec.md`、`lzdp-dpflate-work-report.md`；新增 `docs/design/lzdp-file-pipeline-design.md`。
+- **验证**: C++ 构建与 `test_roundtrip`；配置加载时剔除 `lzdp.streaming_mode`。
+- **风险**: 超大文件峰值内存与 **整文件明文缓冲** 同量级；`LZDP_OutOfCore` 不再用于产品路径（源码保留）。
+
 #### [2026-05-11 16:22] C++ 流式文件接口接入 WCX 头（占位+回填）
 
 - **阶段**: Phase 2
@@ -558,4 +587,32 @@
 - **协议影响**: 无
 - **验证**: 本地导入与启动路径无异常
 - **结论**: 完成
+
+#### [2026-05-11] 配置项 ``streaming.workspace_root`` 覆盖默认工作区根路径
+
+- **阶段**: Phase 3 / 配置（规格 §12）
+- **目标**: 允许将工作区放到自定义磁盘路径；默认行为不变（空字符串）。
+- **改动文件**:
+  - `src/gui/config/settings.py`（`DEFAULTS["streaming"]["workspace_root"]`、`get_streaming_workspace_root_override`）
+  - `src/gui/utils/workspace.py`（`workspace_root()` 读取配置）
+  - `docs/design/streaming-workspace-spec.md`（§5、§12）
+- **协议影响**: 无
+- **验证**: 本地 `Path` 展开与 `allocate_streaming_wcx_path` 仍落在 ``compressed/`` 下
+- **结论**: 完成
+
+#### [2026-05-12] 大文件流式压缩「取消」与删行后工具栏卡死
+
+- **阶段**: GUI / C++ 流式 API
+- **目标**: 点击「取消」后不必等整段 C++ 自然结束即可退出读循环；压缩中删除表格行不再导致「开始压缩」永久禁用；框选后选中行实心高亮且 ☑ 与框选一致。
+- **改动文件**:
+  - `src/api/api.cpp`、`src/api/include/api.hpp`（`set_streaming_compress_cancel_requested`；`compressFile` 读块与 drain 间检测取消，失败时删 `.part`）
+  - `src/bindings/pybind/pybind_module.cpp`（绑定上述 API）
+  - `src/gui/ui/worker.py`（`cancel` 调 C++ 标志；流式结果用 `success`/`error_message`；信号改为 `Record`；`run` 的 `finally` 复位标志）
+  - `src/gui/ui/table.py`（`row_for_record`、`mark_error_record`）
+  - `src/gui/ui/main_window.py`（`_on_compression_finished` 用 `finally` 恢复按钮；槽按 `Record` 解析行）
+  - `src/gui/config/theme.py`、`src/gui/ui/table.py`（框选/选中填充）
+- **协议影响**: 无（取消仅中止当前任务，不写成功 WCX）
+- **验证**: `cmake --build … --target api core_engine`；`python -m py_compile` 相关 GUI 模块
+- **风险**: **LZDP whole-file framed** 路径在单次大块 `compress` 执行期间仍无法细分取消，需等该调用返回
+- **结论**: 完成（分块读路径可协作取消）
 

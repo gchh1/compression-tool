@@ -21,6 +21,8 @@ def get_core_engine():
     _base = Path(__file__).resolve().parent.parent.parent.parent
     _candidates = [
         _base / "build" / "src" / "bindings" / "pybind",
+        _base / "build_debug" / "src" / "bindings" / "pybind",
+        _base / "build_py" / "src" / "bindings" / "pybind",
         _base / "build_pybind" / "src" / "bindings" / "pybind",
         _base / "build" / "src" / "bindings",
         _base / "build_pybind" / "src" / "bindings",
@@ -31,11 +33,13 @@ def get_core_engine():
     if _meipass:
         _candidates.insert(0, Path(_meipass) / "core_engine")
 
+    logger.info("bridge _base=%s sys.path[0]=%s", _base, sys.path[0] if sys.path else '?')
     _ext_patterns = ("core_engine.cp312-win_amd64.pyd", "core_engine.*.so")
     for _p in _candidates:
         if not _p.is_dir():
             continue
         if any(tuple(_p.glob(pat)) for pat in _ext_patterns):
+            logger.info("bridge inserting sys.path: %s", _p)
             sys.path.insert(0, str(_p))
             break
 
@@ -45,6 +49,6 @@ def get_core_engine():
         _core_engine = core_engine
         logger.info("C++ core_engine loaded from %s", core_engine.__file__)
         return _core_engine
-    except ImportError:
-        logger.warning("core_engine not available, using fallback")
+    except ImportError as _e:
+        logger.warning("core_engine not available (sys.path[0]=%s) err=%s", sys.path[0] if sys.path else '?', _e)
         return None

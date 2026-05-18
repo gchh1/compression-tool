@@ -1,0 +1,1427 @@
+[Python::single_compress] LZSS raw_data=60975 use_streaming=False path=D:/AAA_C/compression-tool/resources/wow.html
+[Python::CompressionEngine.compress] LZSS data_size=60975
+[Python::single_compress] LZSS raw_data=60975 use_streaming=False path=D:/AAA_C/compression-tool/resources/wow.html
+[Python::CompressionEngine.compress] LZSS data_size=60975
+[LZSSCompressor::compress] ENTER data_size=672 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=672 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=672 output_size=107 ratio=0.1592
+[LZSSCompressor::compress] EXIT orig=672 comp=107 ratio=0.1592 time_ms=0.92 success=1
+[LZSSCompressor::decompress] ENTER data_size=107 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=107 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=107 output_size=672 (expected=672)
+[LZSSCompressor::decompress] EXIT orig=107 decomp=672 time_ms=0.14 success=1
+[LZSSCompressor::compress] ENTER data_size=384 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=384 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=384 output_size=436 ratio=1.1354
+[LZSSCompressor::compress] EXIT orig=384 comp=436 ratio=1.1354 time_ms=0.40 success=1
+[LZSSCompressor::decompress] ENTER data_size=436 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=436 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=436 output_size=384 (expected=384)
+[LZSSCompressor::decompress] EXIT orig=436 decomp=384 time_ms=0.02 success=1
+[LZSSCompressor::compress] ENTER data_size=22300 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=22300 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=22300 output_size=2997 ratio=0.1344
+[LZSSCompressor::compress] EXIT orig=22300 comp=2997 ratio=0.1344 time_ms=26.00 success=1
+[LZSSCompressor::decompress] ENTER data_size=2997 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=2997 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=2997 output_size=22300 (expected=22300)
+[LZSSCompressor::decompress] EXIT orig=2997 decomp=22300 time_ms=0.27 success=1
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=65536 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=65536 output_size=73710 ratio=1.1247
+[LZSSCompressor::compress] EXIT orig=65536 comp=73710 ratio=1.1247 time_ms=635.01 success=1
+[LZSSCompressor::decompress] ENTER data_size=73710 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=73710 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=73710 output_size=65536 (expected=65536)
+[LZSSCompressor::decompress] EXIT orig=73710 decomp=65536 time_ms=0.51 success=1
+[LZSSCompressor::compress] ENTER data_size=2097152 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=2097152 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=2097152 output_size=951442 ratio=0.4537
+[LZSSCompressor::compress] EXIT orig=2097152 comp=951442 ratio=0.4537 time_ms=8361.81 success=1
+[LZSSCompressor::decompress] ENTER data_size=951442 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=951442 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=951442 output_size=2097152 (expected=2097152)
+[LZSSCompressor::decompress] EXIT orig=951442 decomp=2097152 time_ms=11.63 success=1
+[LZSSCompressor::compress] ENTER data_size=672 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=672 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=672 output_size=107 ratio=0.1592
+[LZSSCompressor::compress] EXIT orig=672 comp=107 ratio=0.1592 time_ms=0.43 success=1
+[LZSSCompressor::decompress] ENTER data_size=107 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=107 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=107 output_size=672 (expected=672)
+[LZSSCompressor::decompress] EXIT orig=107 decomp=672 time_ms=0.15 success=1
+[LZSSCompressor::compress] ENTER data_size=384 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=384 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=384 output_size=436 ratio=1.1354
+[LZSSCompressor::compress] EXIT orig=384 comp=436 ratio=1.1354 time_ms=0.24 success=1
+[LZSSCompressor::decompress] ENTER data_size=436 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=436 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=436 output_size=384 (expected=384)
+[LZSSCompressor::decompress] EXIT orig=436 decomp=384 time_ms=0.01 success=1
+[LZSSCompressor::compress] ENTER data_size=22300 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=22300 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=22300 output_size=2997 ratio=0.1344
+[LZSSCompressor::compress] EXIT orig=22300 comp=2997 ratio=0.1344 time_ms=17.01 success=1
+[LZSSCompressor::decompress] ENTER data_size=2997 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=2997 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=2997 output_size=22300 (expected=22300)
+[LZSSCompressor::decompress] EXIT orig=2997 decomp=22300 time_ms=0.16 success=1
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=65536 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=65536 output_size=73710 ratio=1.1247
+[LZSSCompressor::compress] EXIT orig=65536 comp=73710 ratio=1.1247 time_ms=668.22 success=1
+[LZSSCompressor::decompress] ENTER data_size=73710 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=73710 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=73710 output_size=65536 (expected=65536)
+[LZSSCompressor::decompress] EXIT orig=73710 decomp=65536 time_ms=0.52 success=1
+[LZSSCompressor::compress] ENTER data_size=672 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=672 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=672 output_size=107 ratio=0.1592
+[LZSSCompressor::compress] EXIT orig=672 comp=107 ratio=0.1592 time_ms=0.35 success=1
+[LZSSCompressor::decompress] ENTER data_size=107 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=107 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=107 output_size=672 (expected=672)
+[LZSSCompressor::decompress] EXIT orig=107 decomp=672 time_ms=0.01 success=1
+[LZSSCompressor::compress] ENTER data_size=384 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=384 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=384 output_size=436 ratio=1.1354
+[LZSSCompressor::compress] EXIT orig=384 comp=436 ratio=1.1354 time_ms=0.20 success=1
+[LZSSCompressor::decompress] ENTER data_size=436 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=436 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=436 output_size=384 (expected=384)
+[LZSSCompressor::decompress] EXIT orig=436 decomp=384 time_ms=0.01 success=1
+[LZSSCompressor::compress] ENTER data_size=22300 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=22300 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=22300 output_size=2997 ratio=0.1344
+[LZSSCompressor::compress] EXIT orig=22300 comp=2997 ratio=0.1344 time_ms=19.63 success=1
+[LZSSCompressor::decompress] ENTER data_size=2997 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=2997 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=2997 output_size=22300 (expected=22300)
+[LZSSCompressor::decompress] EXIT orig=2997 decomp=22300 time_ms=0.21 success=1
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=65536 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=65536 output_size=73710 ratio=1.1247
+[LZSSCompressor::compress] EXIT orig=65536 comp=73710 ratio=1.1247 time_ms=620.73 success=1
+[LZSSCompressor::decompress] ENTER data_size=73710 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=73710 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=73710 output_size=65536 (expected=65536)
+[LZSSCompressor::decompress] EXIT orig=73710 decomp=65536 time_ms=0.52 success=1
+[LZSSCompressor::compress] ENTER data_size=672 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=672 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=672 output_size=107 ratio=0.1592
+[LZSSCompressor::compress] EXIT orig=672 comp=107 ratio=0.1592 time_ms=0.33 success=1
+[LZSSCompressor::decompress] ENTER data_size=107 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=107 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=107 output_size=672 (expected=672)
+[LZSSCompressor::decompress] EXIT orig=107 decomp=672 time_ms=0.03 success=1
+[LZSSCompressor::compress] ENTER data_size=384 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=384 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=384 output_size=436 ratio=1.1354
+[LZSSCompressor::compress] EXIT orig=384 comp=436 ratio=1.1354 time_ms=0.20 success=1
+[LZSSCompressor::decompress] ENTER data_size=436 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=436 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=436 output_size=384 (expected=384)
+[LZSSCompressor::decompress] EXIT orig=436 decomp=384 time_ms=0.01 success=1
+[LZSSCompressor::compress] ENTER data_size=22300 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=22300 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=22300 output_size=2997 ratio=0.1344
+[LZSSCompressor::compress] EXIT orig=22300 comp=2997 ratio=0.1344 time_ms=16.35 success=1
+[LZSSCompressor::decompress] ENTER data_size=2997 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=2997 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=2997 output_size=22300 (expected=22300)
+[LZSSCompressor::decompress] EXIT orig=2997 decomp=22300 time_ms=0.16 success=1
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=65536 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=65536 output_size=73710 ratio=1.1247
+[LZSSCompressor::compress] EXIT orig=65536 comp=73710 ratio=1.1247 time_ms=710.79 success=1
+[LZSSCompressor::decompress] ENTER data_size=73710 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=73710 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=73710 output_size=65536 (expected=65536)
+[LZSSCompressor::decompress] EXIT orig=73710 decomp=65536 time_ms=0.55 success=1
+[LZSSCompressor::compress] ENTER data_size=672 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=672 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=672 output_size=107 ratio=0.1592
+[LZSSCompressor::compress] EXIT orig=672 comp=107 ratio=0.1592 time_ms=0.31 success=1
+[LZSSCompressor::decompress] ENTER data_size=107 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=107 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=107 output_size=672 (expected=672)
+[LZSSCompressor::decompress] EXIT orig=107 decomp=672 time_ms=0.12 success=1
+[LZSSCompressor::compress] ENTER data_size=384 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=384 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=384 output_size=436 ratio=1.1354
+[LZSSCompressor::compress] EXIT orig=384 comp=436 ratio=1.1354 time_ms=0.30 success=1
+[LZSSCompressor::decompress] ENTER data_size=436 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=436 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=436 output_size=384 (expected=384)
+[LZSSCompressor::decompress] EXIT orig=436 decomp=384 time_ms=0.01 success=1
+[LZSSCompressor::compress] ENTER data_size=22300 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=22300 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=22300 output_size=2997 ratio=0.1344
+[LZSSCompressor::compress] EXIT orig=22300 comp=2997 ratio=0.1344 time_ms=31.73 success=1
+[LZSSCompressor::decompress] ENTER data_size=2997 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=2997 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=2997 output_size=22300 (expected=22300)
+[LZSSCompressor::decompress] EXIT orig=2997 decomp=22300 time_ms=0.37 success=1
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=65536 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=65536 output_size=73710 ratio=1.1247
+[LZSSCompressor::compress] EXIT orig=65536 comp=73710 ratio=1.1247 time_ms=1589.56 success=1
+[LZSSCompressor::decompress] ENTER data_size=73710 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=73710 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=73710 output_size=65536 (expected=65536)
+[LZSSCompressor::decompress] EXIT orig=73710 decomp=65536 time_ms=2.15 success=1
+[LZSSCompressor::compress] ENTER data_size=672 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=672 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=672 output_size=107 ratio=0.1592
+[LZSSCompressor::compress] EXIT orig=672 comp=107 ratio=0.1592 time_ms=0.28 success=1
+[LZSSCompressor::decompress] ENTER data_size=107 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=107 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=107 output_size=672 (expected=672)
+[LZSSCompressor::decompress] EXIT orig=107 decomp=672 time_ms=0.01 success=1
+[LZSSCompressor::compress] ENTER data_size=384 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=384 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=384 output_size=436 ratio=1.1354
+[LZSSCompressor::compress] EXIT orig=384 comp=436 ratio=1.1354 time_ms=0.20 success=1
+[LZSSCompressor::decompress] ENTER data_size=436 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=436 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=436 output_size=384 (expected=384)
+[LZSSCompressor::decompress] EXIT orig=436 decomp=384 time_ms=0.01 success=1
+[LZSSCompressor::compress] ENTER data_size=22300 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=22300 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=22300 output_size=2997 ratio=0.1344
+[LZSSCompressor::compress] EXIT orig=22300 comp=2997 ratio=0.1344 time_ms=29.25 success=1
+[LZSSCompressor::decompress] ENTER data_size=2997 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=2997 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=2997 output_size=22300 (expected=22300)
+[LZSSCompressor::decompress] EXIT orig=2997 decomp=22300 time_ms=0.42 success=1
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=65536 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=65536 output_size=73710 ratio=1.1247
+[LZSSCompressor::compress] EXIT orig=65536 comp=73710 ratio=1.1247 time_ms=1389.15 success=1
+[LZSSCompressor::decompress] ENTER data_size=73710 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=73710 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=73710 output_size=65536 (expected=65536)
+[LZSSCompressor::decompress] EXIT orig=73710 decomp=65536 time_ms=0.81 success=1
+[LZSSCompressor::compress] ENTER data_size=672 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=672 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=672 output_size=107 ratio=0.1592
+[LZSSCompressor::compress] EXIT orig=672 comp=107 ratio=0.1592 time_ms=0.49 success=1
+[LZSSCompressor::decompress] ENTER data_size=107 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=107 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=107 output_size=672 (expected=672)
+[LZSSCompressor::decompress] EXIT orig=107 decomp=672 time_ms=0.06 success=1
+[LZSSCompressor::compress] ENTER data_size=384 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=384 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=384 output_size=436 ratio=1.1354
+[LZSSCompressor::compress] EXIT orig=384 comp=436 ratio=1.1354 time_ms=0.20 success=1
+[LZSSCompressor::decompress] ENTER data_size=436 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=436 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=436 output_size=384 (expected=384)
+[LZSSCompressor::decompress] EXIT orig=436 decomp=384 time_ms=0.01 success=1
+[LZSSCompressor::compress] ENTER data_size=22300 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=22300 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=22300 output_size=2997 ratio=0.1344
+[LZSSCompressor::compress] EXIT orig=22300 comp=2997 ratio=0.1344 time_ms=29.04 success=1
+[LZSSCompressor::decompress] ENTER data_size=2997 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=2997 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=2997 output_size=22300 (expected=22300)
+[LZSSCompressor::decompress] EXIT orig=2997 decomp=22300 time_ms=0.34 success=1
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=65536 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=65536 output_size=73710 ratio=1.1247
+[LZSSCompressor::compress] EXIT orig=65536 comp=73710 ratio=1.1247 time_ms=1286.10 success=1
+[LZSSCompressor::decompress] ENTER data_size=73710 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=73710 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=73710 output_size=65536 (expected=65536)
+[LZSSCompressor::decompress] EXIT orig=73710 decomp=65536 time_ms=0.81 success=1
+[LZSSCompressor::compress] ENTER data_size=672 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=672 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=672 output_size=107 ratio=0.1592
+[LZSSCompressor::compress] EXIT orig=672 comp=107 ratio=0.1592 time_ms=0.34 success=1
+[LZSSCompressor::decompress] ENTER data_size=107 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=107 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=107 output_size=672 (expected=672)
+[LZSSCompressor::decompress] EXIT orig=107 decomp=672 time_ms=0.10 success=1
+[LZSSCompressor::compress] ENTER data_size=384 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=384 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=384 output_size=436 ratio=1.1354
+[LZSSCompressor::compress] EXIT orig=384 comp=436 ratio=1.1354 time_ms=0.20 success=1
+[LZSSCompressor::decompress] ENTER data_size=436 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=436 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=436 output_size=384 (expected=384)
+[LZSSCompressor::decompress] EXIT orig=436 decomp=384 time_ms=0.01 success=1
+[LZSSCompressor::compress] ENTER data_size=22300 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=22300 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=22300 output_size=2997 ratio=0.1344
+[LZSSCompressor::compress] EXIT orig=22300 comp=2997 ratio=0.1344 time_ms=28.77 success=1
+[LZSSCompressor::decompress] ENTER data_size=2997 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=2997 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=2997 output_size=22300 (expected=22300)
+[LZSSCompressor::decompress] EXIT orig=2997 decomp=22300 time_ms=0.28 success=1
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=65536 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=65536 output_size=73710 ratio=1.1247
+[LZSSCompressor::compress] EXIT orig=65536 comp=73710 ratio=1.1247 time_ms=1285.86 success=1
+[LZSSCompressor::decompress] ENTER data_size=73710 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=73710 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=73710 output_size=65536 (expected=65536)
+[LZSSCompressor::decompress] EXIT orig=73710 decomp=65536 time_ms=0.82 success=1
+[LZSSCompressor::compress] ENTER data_size=672 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=672 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=672 output_size=107 ratio=0.1592
+[LZSSCompressor::compress] EXIT orig=672 comp=107 ratio=0.1592 time_ms=0.62 success=1
+[LZSSCompressor::decompress] ENTER data_size=107 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=107 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=107 output_size=672 (expected=672)
+[LZSSCompressor::decompress] EXIT orig=107 decomp=672 time_ms=0.05 success=1
+[LZSSCompressor::compress] ENTER data_size=384 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=384 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=384 output_size=436 ratio=1.1354
+[LZSSCompressor::compress] EXIT orig=384 comp=436 ratio=1.1354 time_ms=0.20 success=1
+[LZSSCompressor::decompress] ENTER data_size=436 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=436 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=436 output_size=384 (expected=384)
+[LZSSCompressor::decompress] EXIT orig=436 decomp=384 time_ms=0.01 success=1
+[LZSSCompressor::compress] ENTER data_size=22300 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=22300 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=22300 output_size=2997 ratio=0.1344
+[LZSSCompressor::compress] EXIT orig=22300 comp=2997 ratio=0.1344 time_ms=15.66 success=1
+[LZSSCompressor::decompress] ENTER data_size=2997 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=2997 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=2997 output_size=22300 (expected=22300)
+[LZSSCompressor::decompress] EXIT orig=2997 decomp=22300 time_ms=0.15 success=1
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=65536 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=65536 output_size=73710 ratio=1.1247
+[LZSSCompressor::compress] EXIT orig=65536 comp=73710 ratio=1.1247 time_ms=612.86 success=1
+[LZSSCompressor::decompress] ENTER data_size=73710 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=73710 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=73710 output_size=65536 (expected=65536)
+[LZSSCompressor::decompress] EXIT orig=73710 decomp=65536 time_ms=0.58 success=1
+[LZSSCompressor::compress] ENTER data_size=2097152 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=2097152 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=2097152 output_size=951442 ratio=0.4537
+[LZSSCompressor::compress] EXIT orig=2097152 comp=951442 ratio=0.4537 time_ms=8280.82 success=1
+[LZSSCompressor::decompress] ENTER data_size=951442 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=951442 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=951442 output_size=2097152 (expected=2097152)
+[LZSSCompressor::decompress] EXIT orig=951442 decomp=2097152 time_ms=12.34 success=1
+[LZSSCompressor::compress] ENTER data_size=672 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=672 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=672 output_size=107 ratio=0.1592
+[LZSSCompressor::compress] EXIT orig=672 comp=107 ratio=0.1592 time_ms=0.29 success=1
+[LZSSCompressor::decompress] ENTER data_size=107 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=107 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=107 output_size=672 (expected=672)
+[LZSSCompressor::decompress] EXIT orig=107 decomp=672 time_ms=0.01 success=1
+[LZSSCompressor::compress] ENTER data_size=384 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=384 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=384 output_size=436 ratio=1.1354
+[LZSSCompressor::compress] EXIT orig=384 comp=436 ratio=1.1354 time_ms=0.20 success=1
+[LZSSCompressor::decompress] ENTER data_size=436 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=436 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=436 output_size=384 (expected=384)
+[LZSSCompressor::decompress] EXIT orig=436 decomp=384 time_ms=0.01 success=1
+[LZSSCompressor::compress] ENTER data_size=22300 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=22300 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=22300 output_size=2997 ratio=0.1344
+[LZSSCompressor::compress] EXIT orig=22300 comp=2997 ratio=0.1344 time_ms=15.83 success=1
+[LZSSCompressor::decompress] ENTER data_size=2997 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=2997 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=2997 output_size=22300 (expected=22300)
+[LZSSCompressor::decompress] EXIT orig=2997 decomp=22300 time_ms=0.16 success=1
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=65536 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=65536 output_size=73710 ratio=1.1247
+[LZSSCompressor::compress] EXIT orig=65536 comp=73710 ratio=1.1247 time_ms=608.66 success=1
+[LZSSCompressor::decompress] ENTER data_size=73710 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=73710 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=73710 output_size=65536 (expected=65536)
+[LZSSCompressor::decompress] EXIT orig=73710 decomp=65536 time_ms=0.60 success=1
+[LZSSCompressor::compress] ENTER data_size=2097152 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=2097152 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=2097152 output_size=951442 ratio=0.4537
+[LZSSCompressor::compress] EXIT orig=2097152 comp=951442 ratio=0.4537 time_ms=8100.93 success=1
+[LZSSCompressor::decompress] ENTER data_size=951442 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=951442 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=951442 output_size=2097152 (expected=2097152)
+[LZSSCompressor::decompress] EXIT orig=951442 decomp=2097152 time_ms=12.24 success=1
+[LZSSCompressor::compress] ENTER data_size=672 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=672 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=672 output_size=107 ratio=0.1592
+[LZSSCompressor::compress] EXIT orig=672 comp=107 ratio=0.1592 time_ms=0.87 success=1
+[LZSSCompressor::decompress] ENTER data_size=107 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=107 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=107 output_size=672 (expected=672)
+[LZSSCompressor::decompress] EXIT orig=107 decomp=672 time_ms=0.25 success=1
+[LZSSCompressor::compress] ENTER data_size=384 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=384 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=384 output_size=436 ratio=1.1354
+[LZSSCompressor::compress] EXIT orig=384 comp=436 ratio=1.1354 time_ms=0.28 success=1
+[LZSSCompressor::decompress] ENTER data_size=436 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=436 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=436 output_size=384 (expected=384)
+[LZSSCompressor::decompress] EXIT orig=436 decomp=384 time_ms=0.04 success=1
+[LZSSCompressor::compress] ENTER data_size=22300 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=22300 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=22300 output_size=2997 ratio=0.1344
+[LZSSCompressor::compress] EXIT orig=22300 comp=2997 ratio=0.1344 time_ms=16.48 success=1
+[LZSSCompressor::decompress] ENTER data_size=2997 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=2997 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=2997 output_size=22300 (expected=22300)
+[LZSSCompressor::decompress] EXIT orig=2997 decomp=22300 time_ms=0.16 success=1
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=65536 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=65536 output_size=73710 ratio=1.1247
+[LZSSCompressor::compress] EXIT orig=65536 comp=73710 ratio=1.1247 time_ms=612.64 success=1
+[LZSSCompressor::decompress] ENTER data_size=73710 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=73710 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=73710 output_size=65536 (expected=65536)
+[LZSSCompressor::decompress] EXIT orig=73710 decomp=65536 time_ms=0.56 success=1
+[LZSSCompressor::compress] ENTER data_size=2097152 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=2097152 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=2097152 output_size=951442 ratio=0.4537
+[LZSSCompressor::compress] EXIT orig=2097152 comp=951442 ratio=0.4537 time_ms=7961.64 success=1
+[LZSSCompressor::decompress] ENTER data_size=951442 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=951442 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=951442 output_size=2097152 (expected=2097152)
+[LZSSCompressor::decompress] EXIT orig=951442 decomp=2097152 time_ms=12.06 success=1
+[LZSSCompressor::compress] ENTER data_size=672 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=672 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=672 output_size=107 ratio=0.1592
+[LZSSCompressor::compress] EXIT orig=672 comp=107 ratio=0.1592 time_ms=0.30 success=1
+[LZSSCompressor::decompress] ENTER data_size=107 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=107 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=107 output_size=672 (expected=672)
+[LZSSCompressor::decompress] EXIT orig=107 decomp=672 time_ms=0.15 success=1
+[LZSSCompressor::compress] ENTER data_size=384 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=384 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=384 output_size=436 ratio=1.1354
+[LZSSCompressor::compress] EXIT orig=384 comp=436 ratio=1.1354 time_ms=0.24 success=1
+[LZSSCompressor::decompress] ENTER data_size=436 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=436 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=436 output_size=384 (expected=384)
+[LZSSCompressor::decompress] EXIT orig=436 decomp=384 time_ms=0.01 success=1
+[LZSSCompressor::compress] ENTER data_size=22300 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=22300 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=22300 output_size=2997 ratio=0.1344
+[LZSSCompressor::compress] EXIT orig=22300 comp=2997 ratio=0.1344 time_ms=28.48 success=1
+[LZSSCompressor::decompress] ENTER data_size=2997 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=2997 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=2997 output_size=22300 (expected=22300)
+[LZSSCompressor::decompress] EXIT orig=2997 decomp=22300 time_ms=0.30 success=1
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=65536 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=65536 output_size=73710 ratio=1.1247
+[LZSSCompressor::compress] EXIT orig=65536 comp=73710 ratio=1.1247 time_ms=1282.77 success=1
+[LZSSCompressor::decompress] ENTER data_size=73710 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=73710 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=73710 output_size=65536 (expected=65536)
+[LZSSCompressor::decompress] EXIT orig=73710 decomp=65536 time_ms=1.00 success=1
+[LZSSCompressor::compress] ENTER data_size=2097152 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=2097152 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=2097152 output_size=951442 ratio=0.4537
+[LZSSCompressor::compress] EXIT orig=2097152 comp=951442 ratio=0.4537 time_ms=8713.97 success=1
+[LZSSCompressor::decompress] ENTER data_size=951442 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=951442 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=951442 output_size=2097152 (expected=2097152)
+[LZSSCompressor::decompress] EXIT orig=951442 decomp=2097152 time_ms=11.75 success=1
+[Python::CompressionEngine.compress] LZSS data_size=60975
+[LZSSCompressor::compress] ENTER data_size=60975 dict=4095 min_match=0 flag=1
+[LZSS::compress] ENTER input_size=60975 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=60975 output_size=22189 ratio=0.3639
+[LZSSCompressor::compress] EXIT orig=60975 comp=22189 ratio=0.3639 time_ms=44.93 success=1
+[Python::CompressionEngine.compress] LZSS data_size=60975
+[LZSSCompressor::compress] ENTER data_size=60975 dict=4095 min_match=0 flag=1
+[LZSS::compress] ENTER input_size=60975 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=60975 output_size=22189 ratio=0.3639
+[LZSSCompressor::compress] EXIT orig=60975 comp=22189 ratio=0.3639 time_ms=45.35 success=1
+[LZSSCompressor::compress] ENTER data_size=672 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=672 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=672 output_size=107 ratio=0.1592
+[LZSSCompressor::compress] EXIT orig=672 comp=107 ratio=0.1592 time_ms=0.41 success=1
+[LZSSCompressor::decompress] ENTER data_size=107 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=107 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=107 output_size=672 (expected=672)
+[LZSSCompressor::decompress] EXIT orig=107 decomp=672 time_ms=0.06 success=1
+[LZSSCompressor::compress] ENTER data_size=384 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=384 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=384 output_size=436 ratio=1.1354
+[LZSSCompressor::compress] EXIT orig=384 comp=436 ratio=1.1354 time_ms=0.20 success=1
+[LZSSCompressor::decompress] ENTER data_size=436 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=436 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=436 output_size=384 (expected=384)
+[LZSSCompressor::decompress] EXIT orig=436 decomp=384 time_ms=0.02 success=1
+[LZSSCompressor::compress] ENTER data_size=22300 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=22300 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=22300 output_size=2997 ratio=0.1344
+[LZSSCompressor::compress] EXIT orig=22300 comp=2997 ratio=0.1344 time_ms=18.01 success=1
+[LZSSCompressor::decompress] ENTER data_size=2997 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=2997 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=2997 output_size=22300 (expected=22300)
+[LZSSCompressor::decompress] EXIT orig=2997 decomp=22300 time_ms=0.16 success=1
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=65536 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=65536 output_size=73710 ratio=1.1247
+[LZSSCompressor::compress] EXIT orig=65536 comp=73710 ratio=1.1247 time_ms=685.56 success=1
+[LZSSCompressor::decompress] ENTER data_size=73710 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=73710 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=73710 output_size=65536 (expected=65536)
+[LZSSCompressor::decompress] EXIT orig=73710 decomp=65536 time_ms=0.64 success=1
+[LZSSCompressor::compress] ENTER data_size=2097152 dict=4095 min_match=3 flag=1
+[LZSS::compress] ENTER input_size=2097152 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=2097152 output_size=951442 ratio=0.4537
+[LZSSCompressor::compress] EXIT orig=2097152 comp=951442 ratio=0.4537 time_ms=8649.93 success=1
+[LZSSCompressor::decompress] ENTER data_size=951442 min_match=3 flag=1
+[LZSS::decompress] ENTER input_size=951442 min_match=3 flag_encoding=1
+[LZSS::decompress] EXIT input_size=951442 output_size=2097152 (expected=2097152)
+[LZSSCompressor::decompress] EXIT orig=951442 decomp=2097152 time_ms=12.41 success=1
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=65536 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSSCompressor::compress] EXIT orig=65536 comp=7486 ratio=0.1142 time_ms=12.72 success=1
+[LZSSCompressor::decompress] ENTER data_size=7486 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=7486 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=7486 output_size=65536 (expected=65536)
+[LZSSCompressor::decompress] EXIT orig=7486 decomp=65536 time_ms=0.19 success=1
+[LZSS::compress] ENTER input_size=65536 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSS::decompress] ENTER input_size=7486 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=7486 output_size=65536 (expected=65536)
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=65536 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSSCompressor::compress] EXIT orig=65536 comp=7486 ratio=0.1142 time_ms=13.72 success=1
+[LZSS::compress] ENTER input_size=65536 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSSCompressor::compress] ENTER data_size=131072 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=131072 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSSCompressor::compress] EXIT orig=131072 comp=14768 ratio=0.1127 time_ms=34.07 success=1
+[LZSSCompressor::decompress] ENTER data_size=14768 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=14768 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=14768 output_size=131072 (expected=131072)
+[LZSSCompressor::decompress] EXIT orig=14768 decomp=131072 time_ms=0.38 success=1
+[LZSS::compress] ENTER input_size=131072 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSS::decompress] ENTER input_size=14768 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=14768 output_size=131072 (expected=131072)
+[LZSSCompressor::compress] ENTER data_size=131072 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=131072 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSSCompressor::compress] EXIT orig=131072 comp=14768 ratio=0.1127 time_ms=25.10 success=1
+[LZSS::compress] ENTER input_size=131072 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSSCompressor::compress] ENTER data_size=262144 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=262144 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSSCompressor::compress] EXIT orig=262144 comp=29332 ratio=0.1119 time_ms=46.17 success=1
+[LZSSCompressor::decompress] ENTER data_size=29332 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=29332 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=29332 output_size=262144 (expected=262144)
+[LZSSCompressor::decompress] EXIT orig=29332 decomp=262144 time_ms=0.32 success=1
+[LZSS::compress] ENTER input_size=262144 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSS::decompress] ENTER input_size=29332 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=29332 output_size=262144 (expected=262144)
+[LZSSCompressor::compress] ENTER data_size=262144 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=262144 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSSCompressor::compress] EXIT orig=262144 comp=29332 ratio=0.1119 time_ms=51.69 success=1
+[LZSS::compress] ENTER input_size=262144 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSSCompressor::compress] ENTER data_size=524288 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=524288 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=524288 output_size=58460 ratio=0.1115
+[LZSSCompressor::compress] EXIT orig=524288 comp=58460 ratio=0.1115 time_ms=94.03 success=1
+[LZSSCompressor::decompress] ENTER data_size=58460 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=58460 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=58460 output_size=524288 (expected=524288)
+[LZSSCompressor::decompress] EXIT orig=58460 decomp=524288 time_ms=0.91 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=217088 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=217088 output_size=24323 ratio=0.1120
+[LZSS::decompress] ENTER input_size=34338 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34338 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=24323 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=24323 output_size=217088 (expected=217088)
+[LZSSCompressor::compress] ENTER data_size=524288 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=524288 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=524288 output_size=58460 ratio=0.1115
+[LZSSCompressor::compress] EXIT orig=524288 comp=58460 ratio=0.1115 time_ms=97.22 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=217088 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=217088 output_size=24323 ratio=0.1120
+[LZSSCompressor::compress] ENTER data_size=1048576 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=1048576 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=1048576 output_size=116714 ratio=0.1113
+[LZSSCompressor::compress] EXIT orig=1048576 comp=116714 ratio=0.1113 time_ms=189.98 success=1
+[LZSSCompressor::decompress] ENTER data_size=116714 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=116714 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=116714 output_size=1048576 (expected=1048576)
+[LZSSCompressor::decompress] EXIT orig=116714 decomp=1048576 time_ms=1.46 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=126976 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=126976 output_size=14309 ratio=0.1127
+[LZSS::decompress] ENTER input_size=34338 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34338 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34335 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=14309 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=14309 output_size=126976 (expected=126976)
+[LZSSCompressor::compress] ENTER data_size=1048576 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=1048576 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=1048576 output_size=116714 ratio=0.1113
+[LZSSCompressor::compress] EXIT orig=1048576 comp=116714 ratio=0.1113 time_ms=189.05 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=126976 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=126976 output_size=14309 ratio=0.1127
+[LZSSCompressor::compress] ENTER data_size=2097152 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=2097152 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=2097152 output_size=233222 ratio=0.1112
+[LZSSCompressor::compress] EXIT orig=2097152 comp=233222 ratio=0.1112 time_ms=375.57 success=1
+[LZSSCompressor::decompress] ENTER data_size=233222 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=233222 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=233222 output_size=2097152 (expected=2097152)
+[LZSSCompressor::decompress] EXIT orig=233222 decomp=2097152 time_ms=3.37 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=253952 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=253952 output_size=28417 ratio=0.1119
+[LZSS::decompress] ENTER input_size=34338 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34338 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34335 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34335 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=28417 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=28417 output_size=253952 (expected=253952)
+[LZSSCompressor::compress] ENTER data_size=2097152 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=2097152 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=2097152 output_size=233222 ratio=0.1112
+[LZSSCompressor::compress] EXIT orig=2097152 comp=233222 ratio=0.1112 time_ms=377.05 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=253952 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=253952 output_size=28417 ratio=0.1119
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=65536 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSSCompressor::compress] EXIT orig=65536 comp=7486 ratio=0.1142 time_ms=12.63 success=1
+[LZSSCompressor::decompress] ENTER data_size=7486 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=7486 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=7486 output_size=65536 (expected=65536)
+[LZSSCompressor::decompress] EXIT orig=7486 decomp=65536 time_ms=0.10 success=1
+[LZSS::compress] ENTER input_size=65536 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSS::decompress] ENTER input_size=7486 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=7486 output_size=65536 (expected=65536)
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=65536 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSSCompressor::compress] EXIT orig=65536 comp=7486 ratio=0.1142 time_ms=11.24 success=1
+[LZSS::compress] ENTER input_size=65536 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSSCompressor::compress] ENTER data_size=131072 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=131072 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSSCompressor::compress] EXIT orig=131072 comp=14768 ratio=0.1127 time_ms=22.64 success=1
+[LZSSCompressor::decompress] ENTER data_size=14768 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=14768 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=14768 output_size=131072 (expected=131072)
+[LZSSCompressor::decompress] EXIT orig=14768 decomp=131072 time_ms=0.22 success=1
+[LZSS::compress] ENTER input_size=131072 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSS::decompress] ENTER input_size=14768 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=14768 output_size=131072 (expected=131072)
+[LZSSCompressor::compress] ENTER data_size=131072 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=131072 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSSCompressor::compress] EXIT orig=131072 comp=14768 ratio=0.1127 time_ms=25.81 success=1
+[LZSS::compress] ENTER input_size=131072 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSSCompressor::compress] ENTER data_size=262144 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=262144 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSSCompressor::compress] EXIT orig=262144 comp=29332 ratio=0.1119 time_ms=45.39 success=1
+[LZSSCompressor::decompress] ENTER data_size=29332 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=29332 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=29332 output_size=262144 (expected=262144)
+[LZSSCompressor::decompress] EXIT orig=29332 decomp=262144 time_ms=0.37 success=1
+[LZSS::compress] ENTER input_size=262144 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSS::decompress] ENTER input_size=29332 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=29332 output_size=262144 (expected=262144)
+[LZSSCompressor::compress] ENTER data_size=262144 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=262144 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSSCompressor::compress] EXIT orig=262144 comp=29332 ratio=0.1119 time_ms=55.79 success=1
+[LZSS::compress] ENTER input_size=262144 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSSCompressor::compress] ENTER data_size=524288 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=524288 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=524288 output_size=58460 ratio=0.1115
+[LZSSCompressor::compress] EXIT orig=524288 comp=58460 ratio=0.1115 time_ms=91.33 success=1
+[LZSSCompressor::decompress] ENTER data_size=58460 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=58460 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=58460 output_size=524288 (expected=524288)
+[LZSSCompressor::decompress] EXIT orig=58460 decomp=524288 time_ms=0.91 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=217088 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=217088 output_size=24323 ratio=0.1120
+[LZSS::decompress] ENTER input_size=34338 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34338 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=24323 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=24323 output_size=217088 (expected=217088)
+[LZSSCompressor::compress] ENTER data_size=524288 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=524288 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=524288 output_size=58460 ratio=0.1115
+[LZSSCompressor::compress] EXIT orig=524288 comp=58460 ratio=0.1115 time_ms=92.36 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=217088 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=217088 output_size=24323 ratio=0.1120
+[LZSSCompressor::compress] ENTER data_size=1048576 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=1048576 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=1048576 output_size=116714 ratio=0.1113
+[LZSSCompressor::compress] EXIT orig=1048576 comp=116714 ratio=0.1113 time_ms=202.69 success=1
+[LZSSCompressor::decompress] ENTER data_size=116714 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=116714 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=116714 output_size=1048576 (expected=1048576)
+[LZSSCompressor::decompress] EXIT orig=116714 decomp=1048576 time_ms=1.63 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=126976 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=126976 output_size=14309 ratio=0.1127
+[LZSS::decompress] ENTER input_size=34338 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34338 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34335 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=14309 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=14309 output_size=126976 (expected=126976)
+[LZSSCompressor::compress] ENTER data_size=1048576 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=1048576 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=1048576 output_size=116714 ratio=0.1113
+[LZSSCompressor::compress] EXIT orig=1048576 comp=116714 ratio=0.1113 time_ms=187.06 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=126976 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=126976 output_size=14309 ratio=0.1127
+[LZSSCompressor::compress] ENTER data_size=2097152 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=2097152 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=2097152 output_size=233222 ratio=0.1112
+[LZSSCompressor::compress] EXIT orig=2097152 comp=233222 ratio=0.1112 time_ms=370.29 success=1
+[LZSSCompressor::decompress] ENTER data_size=233222 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=233222 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=233222 output_size=2097152 (expected=2097152)
+[LZSSCompressor::decompress] EXIT orig=233222 decomp=2097152 time_ms=3.22 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=253952 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=253952 output_size=28417 ratio=0.1119
+[LZSS::decompress] ENTER input_size=34338 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34338 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34335 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34335 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=28417 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=28417 output_size=253952 (expected=253952)
+[LZSSCompressor::compress] ENTER data_size=2097152 dict=4095 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=2097152 dict=4095 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=2097152 output_size=233222 ratio=0.1112
+[LZSSCompressor::compress] EXIT orig=2097152 comp=233222 ratio=0.1112 time_ms=375.32 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=253952 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=253952 output_size=28417 ratio=0.1119
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=65536 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSSCompressor::compress] EXIT orig=65536 comp=7486 ratio=0.1142 time_ms=11.77 success=1
+[LZSSCompressor::decompress] ENTER data_size=7486 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=7486 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=7486 output_size=65536 (expected=65536)
+[LZSSCompressor::decompress] EXIT orig=7486 decomp=65536 time_ms=0.15 success=1
+[LZSS::compress] ENTER input_size=65536 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSS::decompress] ENTER input_size=7486 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=7486 output_size=65536 (expected=65536)
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=65536 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSSCompressor::compress] EXIT orig=65536 comp=7486 ratio=0.1142 time_ms=11.47 success=1
+[LZSS::compress] ENTER input_size=65536 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSSCompressor::compress] ENTER data_size=131072 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=131072 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSSCompressor::compress] EXIT orig=131072 comp=14768 ratio=0.1127 time_ms=22.97 success=1
+[LZSSCompressor::decompress] ENTER data_size=14768 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=14768 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=14768 output_size=131072 (expected=131072)
+[LZSSCompressor::decompress] EXIT orig=14768 decomp=131072 time_ms=0.22 success=1
+[LZSS::compress] ENTER input_size=131072 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSS::decompress] ENTER input_size=14768 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=14768 output_size=131072 (expected=131072)
+[LZSSCompressor::compress] ENTER data_size=131072 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=131072 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSSCompressor::compress] EXIT orig=131072 comp=14768 ratio=0.1127 time_ms=23.96 success=1
+[LZSS::compress] ENTER input_size=131072 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSSCompressor::compress] ENTER data_size=262144 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=262144 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSSCompressor::compress] EXIT orig=262144 comp=29332 ratio=0.1119 time_ms=64.06 success=1
+[LZSSCompressor::decompress] ENTER data_size=29332 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=29332 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=29332 output_size=262144 (expected=262144)
+[LZSSCompressor::decompress] EXIT orig=29332 decomp=262144 time_ms=0.55 success=1
+[LZSS::compress] ENTER input_size=262144 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSS::decompress] ENTER input_size=29332 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=29332 output_size=262144 (expected=262144)
+[LZSSCompressor::compress] ENTER data_size=262144 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=262144 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSSCompressor::compress] EXIT orig=262144 comp=29332 ratio=0.1119 time_ms=49.91 success=1
+[LZSS::compress] ENTER input_size=262144 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSSCompressor::compress] ENTER data_size=524288 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=524288 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=524288 output_size=58460 ratio=0.1115
+[LZSSCompressor::compress] EXIT orig=524288 comp=58460 ratio=0.1115 time_ms=92.22 success=1
+[LZSSCompressor::decompress] ENTER data_size=58460 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=58460 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=58460 output_size=524288 (expected=524288)
+[LZSSCompressor::decompress] EXIT orig=58460 decomp=524288 time_ms=0.99 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=217088 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=217088 output_size=24323 ratio=0.1120
+[LZSS::decompress] ENTER input_size=34338 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34338 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=24323 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=24323 output_size=217088 (expected=217088)
+[LZSSCompressor::compress] ENTER data_size=524288 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=524288 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=524288 output_size=58460 ratio=0.1115
+[LZSSCompressor::compress] EXIT orig=524288 comp=58460 ratio=0.1115 time_ms=92.08 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=217088 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=217088 output_size=24323 ratio=0.1120
+[LZSSCompressor::compress] ENTER data_size=1048576 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=1048576 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=1048576 output_size=116714 ratio=0.1113
+[LZSSCompressor::compress] EXIT orig=1048576 comp=116714 ratio=0.1113 time_ms=255.17 success=1
+[LZSSCompressor::decompress] ENTER data_size=116714 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=116714 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=116714 output_size=1048576 (expected=1048576)
+[LZSSCompressor::decompress] EXIT orig=116714 decomp=1048576 time_ms=1.84 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=126976 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=126976 output_size=14309 ratio=0.1127
+[LZSS::decompress] ENTER input_size=34338 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34338 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34335 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=14309 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=14309 output_size=126976 (expected=126976)
+[LZSSCompressor::compress] ENTER data_size=1048576 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=1048576 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=1048576 output_size=116714 ratio=0.1113
+[LZSSCompressor::compress] EXIT orig=1048576 comp=116714 ratio=0.1113 time_ms=192.32 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=126976 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=126976 output_size=14309 ratio=0.1127
+[LZSSCompressor::compress] ENTER data_size=2097152 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=2097152 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=2097152 output_size=233222 ratio=0.1112
+[LZSSCompressor::compress] EXIT orig=2097152 comp=233222 ratio=0.1112 time_ms=468.33 success=1
+[LZSSCompressor::decompress] ENTER data_size=233222 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=233222 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=233222 output_size=2097152 (expected=2097152)
+[LZSSCompressor::decompress] EXIT orig=233222 decomp=2097152 time_ms=5.46 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=253952 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=253952 output_size=28417 ratio=0.1119
+[LZSS::decompress] ENTER input_size=34338 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34338 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34335 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34335 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=28417 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=28417 output_size=253952 (expected=253952)
+[LZSSCompressor::compress] ENTER data_size=2097152 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=2097152 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=2097152 output_size=233222 ratio=0.1112
+[LZSSCompressor::compress] EXIT orig=2097152 comp=233222 ratio=0.1112 time_ms=389.23 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=253952 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=253952 output_size=28417 ratio=0.1119
+[Python::CompressionEngine.compress] LZSS data_size=60975
+[LZSSCompressor::compress] ENTER data_size=60975 dict=4095 min_match=0 flag=1
+[LZSS::compress] ENTER input_size=60975 dict=4095 min_match=3 flag_encoding=1
+[LZSS::compress] using flag_encoding path
+[LZSS::compress] EXIT input_size=60975 output_size=22189 ratio=0.3639
+[LZSSCompressor::compress] EXIT orig=60975 comp=22189 ratio=0.3639 time_ms=44.41 success=1
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=65536 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSSCompressor::compress] EXIT orig=65536 comp=7486 ratio=0.1142 time_ms=12.36 success=1
+[LZSSCompressor::decompress] ENTER data_size=7486 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=7486 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=7486 output_size=65536 (expected=65536)
+[LZSSCompressor::decompress] EXIT orig=7486 decomp=65536 time_ms=0.11 success=1
+[LZSS::compress] ENTER input_size=65536 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSS::decompress] ENTER input_size=7486 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=7486 output_size=65536 (expected=65536)
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=65536 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSSCompressor::compress] EXIT orig=65536 comp=7486 ratio=0.1142 time_ms=11.32 success=1
+[LZSS::compress] ENTER input_size=65536 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSSCompressor::compress] ENTER data_size=131072 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=131072 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSSCompressor::compress] EXIT orig=131072 comp=14768 ratio=0.1127 time_ms=23.06 success=1
+[LZSSCompressor::decompress] ENTER data_size=14768 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=14768 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=14768 output_size=131072 (expected=131072)
+[LZSSCompressor::decompress] EXIT orig=14768 decomp=131072 time_ms=0.22 success=1
+[LZSS::compress] ENTER input_size=131072 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSS::decompress] ENTER input_size=14768 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=14768 output_size=131072 (expected=131072)
+[LZSSCompressor::compress] ENTER data_size=131072 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=131072 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSSCompressor::compress] EXIT orig=131072 comp=14768 ratio=0.1127 time_ms=22.50 success=1
+[LZSS::compress] ENTER input_size=131072 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSSCompressor::compress] ENTER data_size=262144 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=262144 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSSCompressor::compress] EXIT orig=262144 comp=29332 ratio=0.1119 time_ms=45.83 success=1
+[LZSSCompressor::decompress] ENTER data_size=29332 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=29332 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=29332 output_size=262144 (expected=262144)
+[LZSSCompressor::decompress] EXIT orig=29332 decomp=262144 time_ms=0.49 success=1
+[LZSS::compress] ENTER input_size=262144 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSS::decompress] ENTER input_size=29332 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=29332 output_size=262144 (expected=262144)
+[LZSSCompressor::compress] ENTER data_size=262144 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=262144 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSSCompressor::compress] EXIT orig=262144 comp=29332 ratio=0.1119 time_ms=45.90 success=1
+[LZSS::compress] ENTER input_size=262144 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSSCompressor::compress] ENTER data_size=524288 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=524288 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=524288 output_size=58460 ratio=0.1115
+[LZSSCompressor::compress] EXIT orig=524288 comp=58460 ratio=0.1115 time_ms=91.84 success=1
+[LZSSCompressor::decompress] ENTER data_size=58460 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=58460 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=58460 output_size=524288 (expected=524288)
+[LZSSCompressor::decompress] EXIT orig=58460 decomp=524288 time_ms=0.85 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=217088 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=217088 output_size=24323 ratio=0.1120
+[LZSS::decompress] ENTER input_size=34338 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34338 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=24323 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=24323 output_size=217088 (expected=217088)
+[LZSSCompressor::compress] ENTER data_size=524288 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=524288 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=524288 output_size=58460 ratio=0.1115
+[LZSSCompressor::compress] EXIT orig=524288 comp=58460 ratio=0.1115 time_ms=91.46 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=217088 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=217088 output_size=24323 ratio=0.1120
+[LZSSCompressor::compress] ENTER data_size=1048576 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=1048576 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=1048576 output_size=116714 ratio=0.1113
+[LZSSCompressor::compress] EXIT orig=1048576 comp=116714 ratio=0.1113 time_ms=233.51 success=1
+[LZSSCompressor::decompress] ENTER data_size=116714 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=116714 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=116714 output_size=1048576 (expected=1048576)
+[LZSSCompressor::decompress] EXIT orig=116714 decomp=1048576 time_ms=1.61 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=126976 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=126976 output_size=14309 ratio=0.1127
+[LZSS::decompress] ENTER input_size=34338 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34338 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34335 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=14309 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=14309 output_size=126976 (expected=126976)
+[LZSSCompressor::compress] ENTER data_size=1048576 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=1048576 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=1048576 output_size=116714 ratio=0.1113
+[LZSSCompressor::compress] EXIT orig=1048576 comp=116714 ratio=0.1113 time_ms=248.00 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=126976 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=126976 output_size=14309 ratio=0.1127
+[LZSSCompressor::compress] ENTER data_size=2097152 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=2097152 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=2097152 output_size=233222 ratio=0.1112
+[LZSSCompressor::compress] EXIT orig=2097152 comp=233222 ratio=0.1112 time_ms=442.01 success=1
+[LZSSCompressor::decompress] ENTER data_size=233222 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=233222 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=233222 output_size=2097152 (expected=2097152)
+[LZSSCompressor::decompress] EXIT orig=233222 decomp=2097152 time_ms=2.86 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=253952 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=253952 output_size=28417 ratio=0.1119
+[LZSS::decompress] ENTER input_size=34338 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34338 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34335 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34335 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=28417 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=28417 output_size=253952 (expected=253952)
+[LZSSCompressor::compress] ENTER data_size=2097152 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=2097152 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=2097152 output_size=233222 ratio=0.1112
+[LZSSCompressor::compress] EXIT orig=2097152 comp=233222 ratio=0.1112 time_ms=418.81 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=253952 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=253952 output_size=28417 ratio=0.1119
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=65536 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSSCompressor::compress] EXIT orig=65536 comp=7486 ratio=0.1142 time_ms=11.86 success=1
+[LZSSCompressor::decompress] ENTER data_size=7486 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=7486 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=7486 output_size=65536 (expected=65536)
+[LZSSCompressor::decompress] EXIT orig=7486 decomp=65536 time_ms=0.11 success=1
+[LZSS::compress] ENTER input_size=65536 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSS::decompress] ENTER input_size=7486 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=7486 output_size=65536 (expected=65536)
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=65536 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSSCompressor::compress] EXIT orig=65536 comp=7486 ratio=0.1142 time_ms=11.22 success=1
+[LZSS::compress] ENTER input_size=65536 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=65536 output_size=7486 ratio=0.1142
+[LZSSCompressor::compress] ENTER data_size=131072 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=131072 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSSCompressor::compress] EXIT orig=131072 comp=14768 ratio=0.1127 time_ms=22.56 success=1
+[LZSSCompressor::decompress] ENTER data_size=14768 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=14768 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=14768 output_size=131072 (expected=131072)
+[LZSSCompressor::decompress] EXIT orig=14768 decomp=131072 time_ms=0.25 success=1
+[LZSS::compress] ENTER input_size=131072 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSS::decompress] ENTER input_size=14768 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=14768 output_size=131072 (expected=131072)
+[LZSSCompressor::compress] ENTER data_size=131072 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=131072 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSSCompressor::compress] EXIT orig=131072 comp=14768 ratio=0.1127 time_ms=22.69 success=1
+[LZSS::compress] ENTER input_size=131072 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=131072 output_size=14768 ratio=0.1127
+[LZSSCompressor::compress] ENTER data_size=262144 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=262144 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSSCompressor::compress] EXIT orig=262144 comp=29332 ratio=0.1119 time_ms=46.21 success=1
+[LZSSCompressor::decompress] ENTER data_size=29332 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=29332 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=29332 output_size=262144 (expected=262144)
+[LZSSCompressor::decompress] EXIT orig=29332 decomp=262144 time_ms=0.37 success=1
+[LZSS::compress] ENTER input_size=262144 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSS::decompress] ENTER input_size=29332 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=29332 output_size=262144 (expected=262144)
+[LZSSCompressor::compress] ENTER data_size=262144 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=262144 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSSCompressor::compress] EXIT orig=262144 comp=29332 ratio=0.1119 time_ms=45.99 success=1
+[LZSS::compress] ENTER input_size=262144 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=262144 output_size=29332 ratio=0.1119
+[LZSSCompressor::compress] ENTER data_size=524288 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=524288 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=524288 output_size=58460 ratio=0.1115
+[LZSSCompressor::compress] EXIT orig=524288 comp=58460 ratio=0.1115 time_ms=91.91 success=1
+[LZSSCompressor::decompress] ENTER data_size=58460 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=58460 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=58460 output_size=524288 (expected=524288)
+[LZSSCompressor::decompress] EXIT orig=58460 decomp=524288 time_ms=0.88 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=217088 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=217088 output_size=24323 ratio=0.1120
+[LZSS::decompress] ENTER input_size=34338 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34338 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=24323 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=24323 output_size=217088 (expected=217088)
+[LZSSCompressor::compress] ENTER data_size=524288 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=524288 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=524288 output_size=58460 ratio=0.1115
+[LZSSCompressor::compress] EXIT orig=524288 comp=58460 ratio=0.1115 time_ms=92.68 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=217088 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=217088 output_size=24323 ratio=0.1120
+[LZSSCompressor::decompress] ENTER data_size=58460 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=58460 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=58460 output_size=524288 (expected=524288)
+[LZSSCompressor::decompress] EXIT orig=58460 decomp=524288 time_ms=0.80 success=1
+[LZSS::decompress] ENTER input_size=34338 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34338 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=24323 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=24323 output_size=217088 (expected=217088)
+[LZSSCompressor::compress] ENTER data_size=1048576 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=1048576 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=1048576 output_size=116714 ratio=0.1113
+[LZSSCompressor::compress] EXIT orig=1048576 comp=116714 ratio=0.1113 time_ms=186.00 success=1
+[LZSSCompressor::decompress] ENTER data_size=116714 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=116714 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=116714 output_size=1048576 (expected=1048576)
+[LZSSCompressor::decompress] EXIT orig=116714 decomp=1048576 time_ms=1.69 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=126976 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=126976 output_size=14309 ratio=0.1127
+[LZSS::decompress] ENTER input_size=34338 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34338 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34335 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=14309 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=14309 output_size=126976 (expected=126976)
+[LZSSCompressor::compress] ENTER data_size=1048576 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=1048576 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=1048576 output_size=116714 ratio=0.1113
+[LZSSCompressor::compress] EXIT orig=1048576 comp=116714 ratio=0.1113 time_ms=187.58 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=126976 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=126976 output_size=14309 ratio=0.1127
+[LZSSCompressor::decompress] ENTER data_size=116714 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=116714 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=116714 output_size=1048576 (expected=1048576)
+[LZSSCompressor::decompress] EXIT orig=116714 decomp=1048576 time_ms=1.59 success=1
+[LZSS::decompress] ENTER input_size=34338 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34338 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34335 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=14309 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=14309 output_size=126976 (expected=126976)
+[LZSSCompressor::compress] ENTER data_size=2097152 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=2097152 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=2097152 output_size=233222 ratio=0.1112
+[LZSSCompressor::compress] EXIT orig=2097152 comp=233222 ratio=0.1112 time_ms=368.77 success=1
+[LZSSCompressor::decompress] ENTER data_size=233222 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=233222 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=233222 output_size=2097152 (expected=2097152)
+[LZSSCompressor::decompress] EXIT orig=233222 decomp=2097152 time_ms=3.24 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=253952 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=253952 output_size=28417 ratio=0.1119
+[LZSS::decompress] ENTER input_size=34338 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34338 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34335 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34335 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=28417 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=28417 output_size=253952 (expected=253952)
+[LZSSCompressor::compress] ENTER data_size=2097152 dict=4096 min_match=3 flag=0
+[LZSS::compress] ENTER input_size=2097152 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=2097152 output_size=233222 ratio=0.1112
+[LZSSCompressor::compress] EXIT orig=2097152 comp=233222 ratio=0.1112 time_ms=382.57 success=1
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34338 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34333 ratio=0.1118
+[LZSS::compress] ENTER input_size=307200 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=307200 output_size=34335 ratio=0.1118
+[LZSS::compress] ENTER input_size=253952 dict=4096 min_match=3 flag_encoding=0
+[LZSS::compress] EXIT input_size=253952 output_size=28417 ratio=0.1119
+[LZSSCompressor::decompress] ENTER data_size=233222 min_match=3 flag=0
+[LZSS::decompress] ENTER input_size=233222 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=233222 output_size=2097152 (expected=2097152)
+[LZSSCompressor::decompress] EXIT orig=233222 decomp=2097152 time_ms=2.61 success=1
+[LZSS::decompress] ENTER input_size=34338 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34338 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34335 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34333 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34333 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=34335 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=34335 output_size=307200 (expected=307200)
+[LZSS::decompress] ENTER input_size=28417 min_match=3 flag_encoding=0
+[LZSS::decompress] EXIT input_size=28417 output_size=253952 (expected=253952)
+[Python::CompressionEngine.compress] LZSS data_size=13000
+[LZSSCompressor::compress] ENTER data_size=13000 dict=4095 min_match=3 flag=1
+[LZSSCompressor::compress] EXIT orig=13000 comp=1553 ratio=0.1195 time_ms=39.86 success=1
+[LZSSCompressor::decompress] ENTER data_size=1553 min_match=3 flag=1
+[LZSSCompressor::decompress] EXIT orig=1553 decomp=13000 time_ms=0.16 success=1

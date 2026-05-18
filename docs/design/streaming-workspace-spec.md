@@ -65,7 +65,7 @@ Subdirectories:
 
 For current semantic preference in project, `compressed/` is mandatory.
 
-**GUI（流式大文件）**：压缩任务将 C++ 输出写到 ``<workspace_root>/compressed/<短uuid>_<原文件名主干>.wcx``，由 `gui.utils.workspace.allocate_streaming_wcx_path` 分配；`workspace_root` 为 **与 ``config`` 目录同级** 的 ``workspace``（启动时 `ensure_workspace_layout()` 创建 ``compressed/``、``tmp/``、``jobs/``）。
+**GUI（流式大文件）**：压缩任务将 C++ 输出写到 ``<workspace_root>/compressed/<短uuid>_<原文件名主干>.wcx``，由 `gui.utils.workspace.allocate_streaming_wcx_path` 分配。默认 ``workspace_root`` 为 **与 ``config`` 目录同级** 的 ``workspace``；若配置 ``streaming.workspace_root`` 非空则覆盖（启动时 `ensure_workspace_layout()` 创建 ``compressed/``、``tmp/``、``jobs/``、``decompressed/``）。
 
 ---
 
@@ -78,7 +78,7 @@ For each input file:
 2. Open input stream + output stream.
 3. Write required format/file header to `.part` once.
 4. Loop:
-   - Read one chunk (`chunk_size` from settings; C++ `compressFile`/`decompressFile`/`compressDirectory` 通过 `stream_chunk_bytes` 与 GUI `streaming.chunk_size_kb` 对齐，见 `api::effective_stream_chunk_bytes`)。
+   - Read one chunk (`chunk_size` from settings; C++ `compressFile`/`decompressFile`/`compressDirectory` 通过 `stream_chunk_bytes` 与 GUI `streaming.chunk_size_kb` 对齐，见 `compressor::processor::effective_stream_chunk_bytes`，定义在 `src/processor/include/StreamChunkPolicy.hpp`，与 ``StreamingCompressAdapter`` / LZDP / DPFlate 管线共用同一 clamp)。
   - Feed chunk into compressor state machine.
   - Compressor emits:
     - safe flush bytes (write to `.part` immediately),
@@ -179,8 +179,15 @@ On crash/restart:
 
 Under `streaming`:
 
-- `chunk_size_kb` (int)
-- `workspace_root` (string, optional)
+- `chunk_size_kb` (int) — 全局默认流式读块（KB）
+- `workspace_root` (string, optional) — **已实现**：非空时使用该路径（``~`` 可展开）作为工作区根；空字符串则仍为 ``<config 的父目录>/workspace``。
+- `per_algorithm` (object) — **已实现**：键为算法小写名（`deflate` / `lzss` / `lzdp` / `dpflate` / `gzip` / `brotli` / `zstd`）。每个值为：
+  - `follow_global_chunk` (bool)：`true` 时使用全局 `chunk_size_kb`
+  - `chunk_size_kb` (int)：仅当 `follow_global_chunk` 为 `false` 时作为本算法覆盖
+  - `follow_global_threshold` (bool)：`true` 时使用全局 `streaming.threshold_mb`
+  - `threshold_mb` (number)：仅当 `follow_global_threshold` 为 `false` 时作为本算法「超过该大小时走流式路径」的覆盖（单位 MB，与全局项含义相同）
+  - **lzdp**：**不再**使用 `streaming_mode`（历史键加载时剔除）；文件管线语义见 **`lzdp-file-pipeline-design.md`** 与 §16.1.1。  
+    - **dpflate**：**不**使用 `streaming_mode`；文件流式固定为 §16.6 的外存 DP + 整文件 Huffman 路径（配置加载时若存在历史键应忽略）。
 - `keep_completed_artifacts` (bool)
 - `retention_days` (int)
 - `max_workspace_size_mb` (int)
@@ -199,7 +206,9 @@ Under `streaming`:
 4. Export behavior:
   - exported file byte-identical to workspace completed artifact
 5. Algorithm continuity:
-  - chunked output equals single-pass output for same algorithm/config (where deterministic)
+   - 对 **Deflate / Brotli / Zstd** 等：分帧适配下应满足与单次调用可比的确定性（见各算法节）。
+   - 对 **LZDP**：文件管线与 **`LZDPCompressor` / 内存 `compress`** 在 **同参数** 下 **比特级一致**（见 `lzdp-file-pipeline-design.md`）。
+   - 对 **DPFlate**：文件管线固定为外存 DP 容器 + 整文件 Huffman（§16.6），**不要求**也不提供 `legacy_chunked`；与整文件单次 DPFlate **比特级一致**（同参数下）。
 
 ---
 
@@ -217,7 +226,8 @@ Under `streaming`:
 
 1. Workspace root location: app local dir vs user profile appdata?
 2. Should completed artifacts be auto-pruned or user-managed?
-3. Do we require resumable compression jobs in v1?
+3. Do we require resumable compression jobs in v1?  
+   **Related design (2026-05)**: [`streaming-interrupt-checkpoint-design.md`](./streaming-interrupt-checkpoint-design.md) — v1 saves **pipeline administrative checkpoint** (L2) on cancel for explore yield; **does not** resume codec state (L3).
 4. For each algorithm, what is minimum tail size for correctness?
 
 ### 15.1 协议统一决策（已定）
@@ -307,17 +317,44 @@ Under `streaming`:
 | ------------------------- | --------------- | ----------- | ------------- |
 | Deflate / Inflate         | 分帧适配            | 现有实现稳定，改动最小 | 必须处理截断帧，禁止死循环 |
 | LZSS / LZSSDecompress     | 分帧适配            | 低风险，快速接入    | 帧长度严格校验       |
-| LZDP / LZDPDecompress     | 分帧适配            | 保持当前行为一致    | 参数与位宽逻辑不改     |
+| LZDP / LZDPDecompress     | **整文件明文缓冲 + 单次 `compress` / `compress_dp`（`WholeFileFramedCompressAdapter`）** | 与内存整文件 LZDP **比特级一致**；读块大小仅影响 I/O | 见 §16.1.1、`lzdp-file-pipeline-design.md` |
 | Brotli / BrotliDecompress | 分帧适配            | 维持现有接口      | 终止帧缺失要报错      |
 | Zstd / ZstdDecompress     | 分帧适配            | 简单稳妥        | 帧完整性强校验       |
 | DeltaEncode / DeltaDecode | 真增量             | 算法天然流式      | 跨块保留 `prev`   |
-| DPFlate                   | 过渡模式（接口流式，内部聚合） | 不重写 DP 语义   | 需要内存上限保护      |
+| DPFlate                   | **外存 DP 容器 + 整文件 Huffman（唯一文件流式路径）** | 与整文件单次 DPFlate 对齐；Huffman 频率表有界、保留在 RAM | 见第 16.6 节；**无** `streaming_mode` 配置项 |
 
 
 说明：
 
 - **分帧适配**：外层做 `长度头 + 帧负载 + 终止帧`，每帧独立压缩/解压。
 - **真增量**：同一个算法实例跨 chunk 连续推进状态，不依赖分帧。
+
+### 16.1.1 LZDP 文件管线（单一产品路径）
+
+**权威说明**：`docs/design/lzdp-file-pipeline-design.md`。
+
+**摘要**：
+
+- Pipeline 仍按 `chunk_size_kb` **分块读盘**，但 **`WholeFileFramedCompressAdapter`** 在收到 EOF 前只 **累积明文**，结束时 **调用一次** 与 `LZDPCompressor::compress` 相同的逻辑：`dp_top > 1` → `LZDP::compress_dp`，否则 `LZDP::compress`；参数来自 `LzdpWholeFileParams`（与 GUI `algorithms.lzdp` 一致）。
+- 外层仍为 **长度帧 + 终止帧**（与其它算法的分帧 **格式** 兼容）；**语义** 为 **单帧整文件 LZDP**，不是「每块独立压缩」。
+- **已移除**：`streaming_mode`、`legacy_chunked` 及 GUI 切换；配置中的历史键应 **忽略并剔除**。
+
+#### 配置与 UI（LZDP）
+
+- 与上表各算法相同：仅 **分块 KB**、**阈值 MB**（及全局对应项）；无第二套流式策略开关。
+- DPFlate：**无** `streaming_mode`；`createAlgorithm(DPFlate, …)` 始终返回带 spill 的 `algorithm::DPFlate` 状态机（见实现）。
+
+### 16.1.2 DPFlate 与 LZDP：是否都有「分帧 ≠ 整文件算法」问题？
+
+**结论（概念上）**：
+
+| 点 | LZDP | DPFlate |
+|----|------|---------|
+| 若采用「每帧独立 `compress`」的 legacy 分帧 | **是**：每帧各自做一遍前向 DP，**整体不再等价**于对整文件做一次 LZDP。 | **是**：每帧各自做一遍 DPFlate 的 DP 层 + Huffman，**一般也不等价**于整文件一次 DPFlate。 |
+| 产品内为保语义所选的流式形态 | **整文件缓冲 + 单次核心**（§16.1.1），与 `LZDPCompressor` 对齐。 | **仅** **外存 DP 容器 + 整文件 Huffman**（§16.6）：链路 spill，Huffman 统计与建树留在 RAM；**不提供** DPFlate 的 legacy 分帧策略。 |
+| 超限或强行分帧时 | 不适用（产品路径不采用「每帧独立 `compress`」）。 | DPFlate 无 legacy 分帧产品路径；内存与上限策略见实现与 §16.6。 |
+
+因此：**两类算法若采用「每帧独立 `compress`」都会丢整文件语义**；当前产品中 **LZDP** 与 **DPFlate** 均 **不提供**该 legacy 路径。
 
 ---
 
@@ -508,9 +545,9 @@ function deflate_framed_decompress_process(read_bytes, is_last):
 
 ---
 
-### 16.4 LZSS / LZDP / Brotli / Zstd（统一分帧策略）
+### 16.4 LZSS / Brotli / Zstd（统一分帧策略）
 
-这四类在 v1 使用同一套外层流程，区别仅在 `compress_one_shot()` 与 `decompress_one_shot()` 的内部实现。
+本节描述 **分帧适配** 的外壳（**每帧独立**调用算法核心）。**LZDP** 产品路径 **不**使用本节语义（见 §16.1.1：整文件单次核心 + 外层单帧）。**DPFlate** 文件流式 **不**走「每帧独立 `compress`」的分帧语义，压缩语义以 **§16.6** 为准（WCX 载荷为连续比特流，非多帧 LZSS 式适配）。
 
 #### 16.4.1 统一流程
 
@@ -595,43 +632,49 @@ function delta_decode_process(read_bytes, is_last):
 
 ---
 
-### 16.6 DPFlate（过渡模式）
+### 16.6 DPFlate 流式策略（唯一路径：外存 DP 容器 + 整文件 Huffman）
 
-#### 16.6.1 设计目标
+目标：与 **LZDP 的 `global_dp_spill` 同一思想**——大文件下仍等价于「对**整份输入**跑一次 DPFlate（前向 DP 选路 → token → Deflate 风格 Huffman 编码）」，**不把整表 `dp[in_len+1]` 常驻 RAM**；Huffman **频率统计与建树**视为 **字母表有界**（字面量 / 距离码表规模固定档），**默认可全内存**，与产品假定「Huffman 不占多少内存」一致。
 
-- 不重写当前 DP 求解逻辑（避免破坏最优解析路径语义）。
-- 先通过“接口流式 + 内部聚合”接入工作区流程。
+#### 与现有实现的对应关系（整改方向）
 
-#### 16.6.2 行为定义
+当前参考实现（`src/algorithm/DPFlate.cpp` `handleBuildTree`）在 EOF 时分配稠密 `std::vector<ROLListNode> dp(in_len + 1)` 及 `prev`/`head` 等辅助向量。**整改目标**：
+   - 将 `ROLListNode` 列（或等价代价 / 父指针信息）**按列或按块 spill** 到工作区临时文件（`workspace/tmp/` 或 `jobs/` 下按 `job_id` 隔离），RAM 仅保留 **当前 DP 前沿** 与 **匹配窗口**（`SEARCH_SIZE` / `LOOKAHEAD` 相关）所需行。  
+   - 明文仍可分块从输入读入并 **追加到同一逻辑输入流**（或 mmap），不必整文件驻 RAM；若明文也需外存，可与 LZDP 一样采用 **输入侧临时文件** 或 OS 缓存策略。
 
-- 非最后块：只收集输入，返回 `need_input`。
-- 最后块：一次性构建树并输出全部压缩结果。
+2. **前向结束 → token 序列**  
+   - 与现逻辑一致：自终点回溯得到 **字面量 / 匹配** token 序列；若 token 缓冲过大，可 **流式写出中间 token 文件** 再第二遍读入做 Huffman（实现可选）。
 
-#### 16.6.3 伪代码
+3. **Huffman（保留在 RAM）**  
+   - 在完整 token 序列（或流式两遍）上统计 **literal / distance** 频次 → `build_huffman_trees` → 位打包。  
+   - 频率表与树结构 **规模有界**，不纳入「DP 容器」外存义务；若未来需极致省 RAM，可对 **频次数组** 再做 mmap，属优化项而非 v1 必达。
+
+4. **解压**  
+   - 输出仍为 **标准 Deflate/Inflate 语义**；解压路径继续沿用既有分帧 / 标准 Inflate，无需重复 DP。
+
+#### 唯一产品路径：外存 DP + 整文件 Huffman
+
+- 压缩侧满足上节 1–3；比特流与整文件单次 DPFlate **一致**（同一参数下）。
+- **已移除**：`streaming.per_algorithm.dpflate.streaming_mode` 及任何「DPFlate legacy 分帧」GUI/API 开关；历史配置文件中的该键应忽略。
+
+#### 配置、内存上限与实现状态
+
+- **可选未来项**：`dpflate_max_buffer_mb`（或等价配置）若引入，仅表示 **热列 / 明文侧 RAM 预算** 等产品约束，**不**再与「legacy 分帧」绑定。  
+- **实现状态**：`DPFlate` 使用环状 DP 状态 + 临时文件 spill（见 `DPFlate.cpp` / `SpillBitStream.hpp`）；稠密整表 mmap 等待选实现。
 
 ```pseudo
-function dpflate_process(read_bytes, is_last):
-    input_accumulator.append(read_bytes)
-
+function dpflate_process_global_spill(read_bytes, is_last, job_tmp_paths):
+    append_plain_to_input_spool(read_bytes)           // 可文件-backed
     if not is_last:
-        if input_accumulator.size > max_buffer_limit:
-            return error_or_fallback("dpflate buffer limit exceeded")
+        advance_dp_frontier_with_disk_columns(...)    // RAM: window + 少量列
         return need_input()
 
-    tokens = build_dp_tokens(input_accumulator)
-    trees = build_huffman_trees(tokens)
-    bitstream = encode_tokens(tokens, trees)
-    emit(bitstream)
+    finalize_dp_backtrack_to_tokens(...)              // 得 token 序列
+    counts = huffman_count_tokens_in_ram(tokens)     // 有界表
+    trees = build_huffman_trees(counts)
+    emit(deflate_pack(tokens, trees))
     finished = true
-    return emitted_bytes
 ```
-
-#### 16.6.4 内存策略
-
-- 增加配置项：`dpflate_max_buffer_mb`
-- 超限策略二选一：
-  1. 直接失败并提示用户切换算法；
-  2. 自动降级到分帧算法（需在 UI 明示）。
 
 ---
 
@@ -693,7 +736,7 @@ function fail_job(job_id, err):
 2. DeltaEncode / DeltaDecode（验证真增量路径）
 3. LZSS / LZDP（复用分帧模板）
 4. Brotli / Zstd（同模板接入）
-5. DPFlate（最后接入并加内存保护）
+5. DPFlate（**外存 DP 容器** 与 `global_dp_spill` 引擎路径；Huffman 整文件统计）
 
 ---
 

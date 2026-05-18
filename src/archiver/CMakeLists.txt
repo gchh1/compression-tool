@@ -2,6 +2,8 @@ add_library(
     archiver
     STATIC
     FileReader.cpp
+    PackReader.cpp
+    PackWriter.cpp
     WCXProtocol.cpp
     WCXReader.cpp
 )

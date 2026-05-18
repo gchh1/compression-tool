@@ -1,0 +1,64 @@
+{
+  "description": "Synthetic payloads: per size, three compressibility kinds.",
+  "kinds": {
+    "repetitive": "single byte 0x5A repeated",
+    "random": "deterministic PRNG (seed=42)",
+    "text": "UTF-8 English/HTML-like snippet tiled to length"
+  },
+  "files": [
+    {
+      "path": "resources/fixtures/uncompressed/benchmark/compress_test_1kib_repetitive.bin",
+      "bytes": 1024,
+      "kind": "repetitive",
+      "sha256": "e8fb68ce4d4d002dba40c0a459d96807c96ded1c2fdefae3f56f8a0c06a4fecf"
+    },
+    {
+      "path": "resources/fixtures/uncompressed/benchmark/compress_test_1kib_random.bin",
+      "bytes": 1024,
+      "kind": "random",
+      "sha256": "32ec5daa4d499d0851beee62fd6c9788f6ce8b7b90fa94b80edba44d9e79010f"
+    },
+    {
+      "path": "resources/fixtures/uncompressed/benchmark/compress_test_1kib_text.bin",
+      "bytes": 1024,
+      "kind": "text",
+      "sha256": "79ec8e2abdff00f5949d25e8bb3c9dfb5ce3c9e787c9b8ba2b132e04081114a8"
+    },
+    {
+      "path": "resources/fixtures/uncompressed/benchmark/compress_test_256kib_repetitive.bin",
+      "bytes": 262144,
+      "kind": "repetitive",
+      "sha256": "81d0141af58569f91edf2d036b67a6b82c062d1829fd93aec50ed96b4773d225"
+    },
+    {
+      "path": "resources/fixtures/uncompressed/benchmark/compress_test_256kib_random.bin",
+      "bytes": 262144,
+      "kind": "random",
+      "sha256": "83be2514abca29b5fa703fad70e0756b9b456e79c323e32f8436d97fc54070b9"
+    },
+    {
+      "path": "resources/fixtures/uncompressed/benchmark/compress_test_256kib_text.bin",
+      "bytes": 262144,
+      "kind": "text",
+      "sha256": "3bdc347331d03c1ee1c10288c375e990b2d1832d644436e90f5005c27d4df88e"
+    },
+    {
+      "path": "resources/fixtures/uncompressed/benchmark/compress_test_4mib_repetitive.bin",
+      "bytes": 4194304,
+      "kind": "repetitive",
+      "sha256": "4656153f1921ea9f09001428d189084d3db94509dd71990a8a971cfa02998087"
+    },
+    {
+      "path": "resources/fixtures/uncompressed/benchmark/compress_test_4mib_random.bin",
+      "bytes": 4194304,
+      "kind": "random",
+      "sha256": "b643de6f011e9e1e9f7ae167427535f323c3b63687a30ae4a174663dbf3da5cb"
+    },
+    {
+      "path": "resources/fixtures/uncompressed/benchmark/compress_test_4mib_text.bin",
+      "bytes": 4194304,
+      "kind": "text",
+      "sha256": "a3ac8d902dea883fe8c7d312061afc61250443fc657066d099784f6c35583787"
+    }
+  ]
+}

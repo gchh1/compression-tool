@@ -143,6 +143,8 @@ class BlockHeatmapDialog(QDialog):
         layout.addWidget(meta)
 
         from gui.engine.compressor import CompressionEngine
+        from gui.ade.explorer import SilentExplorer
+
         algo_map = {e.value: e for e in AlgorithmType}
         algo = algo_map.get(algorithm, AlgorithmType.DEFLATE)
         engine = CompressionEngine()
@@ -152,7 +154,8 @@ class BlockHeatmapDialog(QDialog):
             start = i * block_size
             end = min(start + block_size, len(raw_data))
             block_raw = raw_data[start:end]
-            r = engine.compress(block_raw, algo)
+            with SilentExplorer.user_compression_priority():
+                r = engine.compress(block_raw, algo)
             ratio = r.compressed_size / len(block_raw) if len(block_raw) > 0 else 1.0
             blocks.append({
                 "index": i, "offset": start, "size": end - start,

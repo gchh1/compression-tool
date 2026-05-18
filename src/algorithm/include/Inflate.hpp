@@ -21,6 +21,11 @@ protected:
 private:
     static constexpr size_t DISTANCE_DICTIONARY_SIZE = 30;
     static constexpr size_t DISTANCE_SYMBOL_BITS = 5;
+    /// RFC1951 max lookback distance (bytes).
+    static constexpr size_t kWindowSize = 32768;
+
+    std::vector<uint8_t> window_;
+    uint64_t out_abs_{0};
 
     std::vector<uint8_t> output_buf_;
 
@@ -29,8 +34,21 @@ private:
     node* lit_cursor_{nullptr};
     node* dist_cursor_{nullptr};
 
-    enum class DecodeState { READ_TREES, READ_BLOCK_HEADER, DECODE_TOKENS, COPY_MATCH, STORED_COPY };
+    enum class DecodeState {
+        READ_TREES,
+        READ_BLOCK_HEADER,
+        DECODE_TOKENS,
+        COPY_MATCH,
+        STORED_COPY,
+        /// After symbol 256 or STORED block: stream literals to writer; may span
+        /// multiple ``process`` calls when the output span fills (``need_output``).
+        FLUSH_TO_WRITER
+    };
     DecodeState decode_state_{DecodeState::READ_TREES};
+    DecodeState post_flush_state_{DecodeState::READ_TREES};
+
+    size_t output_flush_pos_{0};
+    bool done_after_flush_{false};
 
     uint16_t pending_length_{0};
     uint16_t pending_dist_{0};
@@ -42,6 +60,8 @@ private:
     void decodeDistCode(uint16_t symbol, uint16_t& dist, uint8_t& extra_bits);
 
     void destroyTree(node* n);
+
+    auto appendDecodedByte(uint8_t b) -> void;
 
     static constexpr size_t LENGTH_BASES[29] = {
         3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,

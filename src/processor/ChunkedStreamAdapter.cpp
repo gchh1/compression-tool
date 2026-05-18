@@ -115,6 +115,64 @@ auto StreamingCompressAdapter::copyToOutput(std::span<uint8_t> write) -> size_t 
     return to_write;
 }
 
+auto WholeFileFramedCompressAdapter::process(std::span<const uint8_t> read,
+                                               std::span<uint8_t> write,
+                                               bool is_last_chunk)
+    -> algorithm::AlgorithmStatus {
+
+    if (!read.empty()) {
+        input_buffer_.insert(input_buffer_.end(), read.begin(), read.end());
+    }
+
+    if (!finished_ && is_last_chunk) {
+        auto compressed = compress_fn_(input_buffer_);
+        input_buffer_.clear();
+        emitChunk(compressed);
+        emitTerminator();
+        finished_ = true;
+    }
+
+    size_t written = copyToOutput(write);
+
+    algorithm::AlgorithmStatus status;
+    status.bytes_consumed = read.size();
+    status.bytes_produced = written;
+    status.done = finished_ && output_pos_ >= output_buffer_.size();
+    status.need_input = !finished_ && !is_last_chunk;
+    status.need_output = output_pos_ < output_buffer_.size();
+    return status;
+}
+
+auto WholeFileFramedCompressAdapter::reset() -> void {
+    input_buffer_.clear();
+    output_buffer_.clear();
+    output_pos_ = 0;
+    finished_ = false;
+}
+
+void WholeFileFramedCompressAdapter::emitChunk(const std::vector<uint8_t>& compressed) {
+    encodeU32BE(static_cast<uint32_t>(compressed.size()), output_buffer_);
+    output_buffer_.insert(output_buffer_.end(), compressed.begin(), compressed.end());
+}
+
+void WholeFileFramedCompressAdapter::emitTerminator() {
+    encodeU32BE(0, output_buffer_);
+}
+
+auto WholeFileFramedCompressAdapter::copyToOutput(std::span<uint8_t> write) -> size_t {
+    size_t available = output_buffer_.size() - output_pos_;
+    size_t to_write = std::min(available, write.size());
+    if (to_write > 0) {
+        std::memcpy(write.data(), output_buffer_.data() + output_pos_, to_write);
+        output_pos_ += to_write;
+        if (output_pos_ >= output_buffer_.size()) {
+            output_buffer_.clear();
+            output_pos_ = 0;
+        }
+    }
+    return to_write;
+}
+
 auto StreamingDecompressAdapter::process(std::span<const uint8_t> read,
                                           std::span<uint8_t> write,
                                           bool is_last_chunk) -> algorithm::AlgorithmStatus {

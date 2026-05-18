@@ -9,13 +9,17 @@ _src_dir = Path(__file__).resolve().parent.parent
 if str(_src_dir) not in sys.path:
     sys.path.insert(0, str(_src_dir))
 
-from gui.utils.logging import setup_logging
+from gui.utils.logging import setup_logging, flush_logging
 from gui.utils.resources import resolve_icon_path
 
 
 def run_cli():
     setup_logging()
     logger = logging.getLogger("gui")
+
+    from gui.utils.workspace import ensure_workspace_layout
+
+    ensure_workspace_layout()
 
     from gui.engine.compressor import CompressionEngine
     from gui.utils.file_helper import scan_directory, load_batch
@@ -64,6 +68,7 @@ def run_gui():
             sys.__excepthook__(exc_type, exc_value, exc_traceback)
             return
         logger.error("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+        flush_logging()
 
     sys.excepthook = handle_exception
 
@@ -88,12 +93,22 @@ def run_gui():
 
     from gui.utils.workspace import cleanup_workspace_on_app_quit
 
+    def _log_quit() -> None:
+        logger.info("[ui] aboutToQuit")
+        flush_logging()
+
+    app.aboutToQuit.connect(_log_quit)
     app.aboutToQuit.connect(cleanup_workspace_on_app_quit)
 
     window = MainWindow()
     window.show()
+    logger.info("[ui] MainWindow shown, entering event loop")
+    flush_logging()
 
-    sys.exit(app.exec())
+    code = app.exec()
+    logger.info("[ui] event loop exited code=%s", code)
+    flush_logging()
+    sys.exit(code)
 
 
 if __name__ == "__main__":

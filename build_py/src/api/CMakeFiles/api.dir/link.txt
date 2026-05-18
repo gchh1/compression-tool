@@ -1,0 +1,2 @@
+D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc libapi.a CMakeFiles/api.dir/api.cpp.obj CMakeFiles/api.dir/WCXProtocol.cpp.obj CMakeFiles/api.dir/wcx_decompress_input.cpp.obj
+D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe libapi.a

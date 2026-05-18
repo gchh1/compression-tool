@@ -12,7 +12,7 @@ from PyQt6.QtWidgets import (
     QHeaderView,
 )
 
-from gui.models import ArchiveEntry, FileRecord, FolderRecord, formatted_size, _filetype
+from gui.models import ArchiveEntry, FileRecord, FolderRecord, formatted_size, compressed_payload_size, _filetype
 from gui.config.theme import ThemeManager
 
 
@@ -65,6 +65,7 @@ class ResourceTree(QWidget):
         files: list = []
         for rec in records:
             if isinstance(rec, FolderRecord):
+                rec.ensure_files_loaded()
                 dirs[rec.path] = list(rec.files)
             else:
                 files.append(rec)
@@ -262,7 +263,7 @@ class ResourceTree(QWidget):
         data = item.data(0, Qt.ItemDataRole.UserRole)
         if data is rec:
             if rec.status.value == "done":
-                item.setText(1, f"{formatted_size(rec.size)} → {formatted_size(len(rec.compressed_data or []))}")
+                item.setText(1, f"{formatted_size(rec.size)} → {formatted_size(compressed_payload_size(rec))}")
                 item.setForeground(1, Qt.GlobalColor.darkGreen)
         for i in range(item.childCount()):
             self._update_item_recursive(item.child(i), rec)

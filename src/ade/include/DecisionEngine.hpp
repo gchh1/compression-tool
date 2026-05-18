@@ -33,6 +33,12 @@ struct AlgorithmParams {
     size_t max_chain_length{256};
     size_t lookahead_size{256};
     size_t dp_range{3};
+    /// DPFlate: ``dp_sub_match_max`` (GUI); ignored for LZDP (uses ``dp_range`` as ``dp_top``).
+    size_t dp_sub_match_max{6};
+    bool use_flag_encoding{false};
+    bool use_3hfmtree{false};
+    size_t huffman_offset_chunk_bits{8};
+    size_t huffman_length_chunk_bits{8};
 
     auto to_string() const -> std::string;
 };

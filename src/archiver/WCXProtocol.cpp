@@ -53,6 +53,9 @@ auto toAlgoCode(core::AlgorithmID id) -> uint8_t {
         case core::AlgorithmID::LZSS:
         case core::AlgorithmID::LZSSDecompress:
             return 2;
+        case core::AlgorithmID::LZSS_NoFlag:
+        case core::AlgorithmID::LZSSDecompress_NoFlag:
+            return 9;
         case core::AlgorithmID::LZDP:
         case core::AlgorithmID::LZDPDecompress:
             return 3;

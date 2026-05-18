@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import re
 import shutil
 import uuid
@@ -19,7 +20,12 @@ def _config_dir() -> Path:
 
 
 def workspace_root() -> Path:
-    """Default root: sibling of the ``config`` directory, named ``workspace``."""
+    """Workspace root: ``streaming.workspace_root`` if set, else sibling ``config/../workspace``."""
+    from gui.config.settings import get_streaming_workspace_root_override, load_config
+
+    override = get_streaming_workspace_root_override(load_config())
+    if override:
+        return Path(override).expanduser().resolve()
     return _config_dir().parent / "workspace"
 
 
@@ -42,6 +48,8 @@ def ensure_workspace_layout() -> None:
     (workspace_root() / "jobs").mkdir(parents=True, exist_ok=True)
     (workspace_root() / "decompressed").mkdir(parents=True, exist_ok=True)
     sweep_workspace_transient_artifacts()
+    # C++ DP spill (TempFile) reads this and writes under ``<root>/tmp/`` (see TempFile.hpp).
+    os.environ["WEBCOMPRESS_WORKSPACE"] = os.fsdecode(workspace_root())
 
 
 def remove_stale_compressed_parts() -> None:

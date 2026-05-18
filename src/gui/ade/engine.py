@@ -655,7 +655,10 @@ class StrategyDispatcher:
         record.status = CompressionStatus.COMPRESSING
         try:
             snap = CompressionEngine.snapshot_for_algorithm(decision.algorithm)
-            result = self._engine.compress(record.raw_data, decision.algorithm)
+            from gui.ade.explorer import SilentExplorer
+
+            with SilentExplorer.user_compression_priority():
+                result = self._engine.compress(record.raw_data, decision.algorithm)
             record.compressed_data = bytes(result.data)
             record.compression_ratio = result.compression_ratio
             record.compression_time_ms = result.time_ms

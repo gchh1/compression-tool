@@ -46,6 +46,7 @@ def generate_heatmap(
     blocks = []
 
     from gui.engine.compressor import CompressionEngine
+    from gui.ade.explorer import SilentExplorer
     from gui.models import AlgorithmType
 
     algo_map = {e.value: e for e in AlgorithmType}
@@ -58,7 +59,8 @@ def generate_heatmap(
         end = min(start + block_size, len(raw_data))
         block_raw = raw_data[start:end]
 
-        r = engine.compress(block_raw, algo)
+        with SilentExplorer.user_compression_priority():
+            r = engine.compress(block_raw, algo)
 
         ratio = r.compressed_size / len(block_raw) if len(block_raw) > 0 else 1.0
         blocks.append({

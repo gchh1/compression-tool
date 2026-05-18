@@ -1,0 +1,1348 @@
+ .gitignore                                         |      2 +
+ CMakeLists.txt                                     |      7 +-
+ Package/ade/ade_stats_v3.json                      |     28 +-
+ Package/ade/ade_training_v3.jsonl                  |    241 +
+ Package/bin/WebCompress.exe                        |    Bin 48534589 -> 44403930 bytes
+ Package/config/webcompress_settings.json           |     98 +-
+ Package/config/webcompress_settings_recommend.json |    129 +
+ ade/ade_stats_v3.json                              |     24 +-
+ ade/ade_training_v3.jsonl                          |    199 -
+ build_debug/CMakeCache.txt                         |    400 +
+ .../CMakeFiles/3.30.4/CMakeCXXCompiler.cmake       |    105 +
+ .../3.30.4/CMakeDetermineCompilerABI_CXX.bin       |    Bin 0 -> 63698 bytes
+ .../CMakeFiles/3.30.4/CMakeRCCompiler.cmake        |      6 +
+ build_debug/CMakeFiles/3.30.4/CMakeSystem.cmake    |     15 +
+ .../3.30.4/CompilerIdCXX/CMakeCXXCompilerId.cpp    |    919 +
+ build_debug/CMakeFiles/3.30.4/CompilerIdCXX/a.exe  |    Bin 0 -> 63782 bytes
+ build_debug/CMakeFiles/CMakeConfigureLog.yaml      |    354 +
+ .../CMakeFiles/CMakeDirectoryInformation.cmake     |     16 +
+ build_debug/CMakeFiles/Makefile.cmake              |    100 +
+ build_debug/CMakeFiles/Makefile2                   |   1278 +
+ build_debug/CMakeFiles/TargetDirectories.txt       |     95 +
+ build_debug/CMakeFiles/cmake.check_cache           |      1 +
+ build_debug/CMakeFiles/progress.marks              |      1 +
+ build_debug/Makefile                               |    678 +
+ build_debug/Testing/Temporary/CTestCostData.txt    |      1 +
+ build_debug/Testing/Temporary/LastTest.log         |      3 +
+ build_debug/cmake_install.cmake                    |     67 +
+ build_debug/lzdp_dpflate_stream_work/dec.bin       |     27 +
+ .../lzdp_dpflate_stream_work/dec_dpf.bin.part      |      0
+ build_debug/lzdp_dpflate_stream_work/in.bin        |      1 +
+ build_debug/lzdp_dpflate_stream_work/in_dpf.bin    |      1 +
+ build_debug/memory_only_run.log                    |    Bin 0 -> 28038 bytes
+ .../src/CMakeFiles/CMakeDirectoryInformation.cmake |     16 +
+ build_debug/src/CMakeFiles/progress.marks          |      1 +
+ build_debug/src/Makefile                           |    188 +
+ .../ade/CMakeFiles/CMakeDirectoryInformation.cmake |     16 +
+ .../src/ade/CMakeFiles/ade.dir/DependInfo.cmake    |     29 +
+ build_debug/src/ade/CMakeFiles/ade.dir/build.make  |    213 +
+ .../src/ade/CMakeFiles/ade.dir/cmake_clean.cmake   |     23 +
+ .../CMakeFiles/ade.dir/cmake_clean_target.cmake    |      3 +
+ .../ade/CMakeFiles/ade.dir/compiler_depend.make    |      2 +
+ .../src/ade/CMakeFiles/ade.dir/compiler_depend.ts  |      2 +
+ build_debug/src/ade/CMakeFiles/ade.dir/depend.make |      2 +
+ build_debug/src/ade/CMakeFiles/ade.dir/flags.make  |     10 +
+ .../src/ade/CMakeFiles/ade.dir/includes_CXX.rsp    |      1 +
+ build_debug/src/ade/CMakeFiles/ade.dir/link.txt    |      2 +
+ .../src/ade/CMakeFiles/ade.dir/progress.make       |      9 +
+ .../bench_ade_extractor.dir/DependInfo.cmake       |     23 +
+ .../CMakeFiles/bench_ade_extractor.dir/build.make  |    113 +
+ .../bench_ade_extractor.dir/cmake_clean.cmake      |     13 +
+ .../bench_ade_extractor.dir/compiler_depend.make   |      2 +
+ .../bench_ade_extractor.dir/compiler_depend.ts     |      2 +
+ .../CMakeFiles/bench_ade_extractor.dir/depend.make |      2 +
+ .../CMakeFiles/bench_ade_extractor.dir/flags.make  |     10 +
+ .../bench_ade_extractor.dir/includes_CXX.rsp       |      1 +
+ .../CMakeFiles/bench_ade_extractor.dir/link.txt    |      3 +
+ .../bench_ade_extractor.dir/linkLibs.rsp           |      1 +
+ .../CMakeFiles/bench_ade_extractor.dir/objects.a   |    Bin 0 -> 1010328 bytes
+ .../bench_ade_extractor.dir/objects1.rsp           |      1 +
+ .../bench_ade_extractor.dir/progress.make          |      3 +
+ .../generate_ade_dataset.dir/DependInfo.cmake      |     23 +
+ .../CMakeFiles/generate_ade_dataset.dir/build.make |    113 +
+ .../generate_ade_dataset.dir/cmake_clean.cmake     |     13 +
+ .../generate_ade_dataset.dir/compiler_depend.make  |      2 +
+ .../generate_ade_dataset.dir/compiler_depend.ts    |      2 +
+ .../generate_ade_dataset.dir/depend.make           |      2 +
+ .../CMakeFiles/generate_ade_dataset.dir/flags.make |     10 +
+ .../generate_ade_dataset.dir/includes_CXX.rsp      |      1 +
+ .../CMakeFiles/generate_ade_dataset.dir/link.txt   |      3 +
+ .../generate_ade_dataset.dir/linkLibs.rsp          |      1 +
+ .../CMakeFiles/generate_ade_dataset.dir/objects.a  |    Bin 0 -> 2548822 bytes
+ .../generate_ade_dataset.dir/objects1.rsp          |      1 +
+ .../generate_ade_dataset.dir/progress.make         |      3 +
+ build_debug/src/ade/CMakeFiles/progress.marks      |      1 +
+ .../test_ade_decision_engine.dir/DependInfo.cmake  |     23 +
+ .../test_ade_decision_engine.dir/build.make        |    113 +
+ .../test_ade_decision_engine.dir/cmake_clean.cmake |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../test_ade_decision_engine.dir/depend.make       |      2 +
+ .../test_ade_decision_engine.dir/flags.make        |     10 +
+ .../test_ade_decision_engine.dir/includes_CXX.rsp  |      1 +
+ .../test_ade_decision_engine.dir/link.txt          |      3 +
+ .../test_ade_decision_engine.dir/linkLibs.rsp      |      1 +
+ .../test_ade_decision_engine.dir/objects.a         |    Bin 0 -> 1444860 bytes
+ .../test_ade_decision_engine.dir/objects1.rsp      |      1 +
+ .../test_ade_decision_engine.dir/progress.make     |      3 +
+ .../test_ade_evolutionary.dir/DependInfo.cmake     |     23 +
+ .../test_ade_evolutionary.dir/build.make           |    113 +
+ .../test_ade_evolutionary.dir/cmake_clean.cmake    |     13 +
+ .../test_ade_evolutionary.dir/compiler_depend.make |      2 +
+ .../test_ade_evolutionary.dir/compiler_depend.ts   |      2 +
+ .../test_ade_evolutionary.dir/depend.make          |      2 +
+ .../test_ade_evolutionary.dir/flags.make           |     10 +
+ .../test_ade_evolutionary.dir/includes_CXX.rsp     |      1 +
+ .../CMakeFiles/test_ade_evolutionary.dir/link.txt  |      3 +
+ .../test_ade_evolutionary.dir/linkLibs.rsp         |      1 +
+ .../CMakeFiles/test_ade_evolutionary.dir/objects.a |    Bin 0 -> 307062 bytes
+ .../test_ade_evolutionary.dir/objects1.rsp         |      1 +
+ .../test_ade_evolutionary.dir/progress.make        |      3 +
+ .../DependInfo.cmake                               |     23 +
+ .../test_ade_feature_extractor.dir/build.make      |    113 +
+ .../cmake_clean.cmake                              |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../test_ade_feature_extractor.dir/depend.make     |      2 +
+ .../test_ade_feature_extractor.dir/flags.make      |     10 +
+ .../includes_CXX.rsp                               |      1 +
+ .../test_ade_feature_extractor.dir/link.txt        |      3 +
+ .../test_ade_feature_extractor.dir/linkLibs.rsp    |      1 +
+ .../test_ade_feature_extractor.dir/objects.a       |    Bin 0 -> 627866 bytes
+ .../test_ade_feature_extractor.dir/objects1.rsp    |      1 +
+ .../test_ade_feature_extractor.dir/progress.make   |      3 +
+ .../train_ade_model.dir/DependInfo.cmake           |     23 +
+ .../ade/CMakeFiles/train_ade_model.dir/build.make  |    113 +
+ .../train_ade_model.dir/cmake_clean.cmake          |     13 +
+ .../train_ade_model.dir/compiler_depend.make       |      2 +
+ .../train_ade_model.dir/compiler_depend.ts         |      2 +
+ .../ade/CMakeFiles/train_ade_model.dir/depend.make |      2 +
+ .../ade/CMakeFiles/train_ade_model.dir/flags.make  |     10 +
+ .../train_ade_model.dir/includes_CXX.rsp           |      1 +
+ .../ade/CMakeFiles/train_ade_model.dir/link.txt    |      3 +
+ .../CMakeFiles/train_ade_model.dir/linkLibs.rsp    |      1 +
+ .../ade/CMakeFiles/train_ade_model.dir/objects.a   |    Bin 0 -> 816790 bytes
+ .../CMakeFiles/train_ade_model.dir/objects1.rsp    |      1 +
+ .../CMakeFiles/train_ade_model.dir/progress.make   |      3 +
+ build_debug/src/ade/CTestTestfile.cmake            |     12 +
+ build_debug/src/ade/Makefile                       |    644 +
+ build_debug/src/ade/cmake_install.cmake            |     47 +
+ .../CMakeFiles/CMakeDirectoryInformation.cmake     |     16 +
+ .../CMakeFiles/algorithm.dir/AlgorithmBase.cpp.obj |    Bin 0 -> 87924 bytes
+ .../algorithm.dir/AlgorithmBase.cpp.obj.d          |     92 +
+ .../CMakeFiles/algorithm.dir/Brotli.cpp.obj        |    Bin 0 -> 819195 bytes
+ .../CMakeFiles/algorithm.dir/Brotli.cpp.obj.d      |    200 +
+ .../CMakeFiles/algorithm.dir/DPFlate.cpp.obj       |    Bin 0 -> 2264286 bytes
+ .../CMakeFiles/algorithm.dir/DPFlate.cpp.obj.d     |    488 +
+ .../algorithm.dir/DPFlateHuffmanBackend.cpp.obj.d  |    479 +
+ .../CMakeFiles/algorithm.dir/Deflate.cpp.obj       |    Bin 0 -> 776332 bytes
+ .../CMakeFiles/algorithm.dir/Deflate.cpp.obj.d     |    221 +
+ .../CMakeFiles/algorithm.dir/Delta.cpp.obj         |    Bin 0 -> 223991 bytes
+ .../CMakeFiles/algorithm.dir/Delta.cpp.obj.d       |     95 +
+ .../CMakeFiles/algorithm.dir/DependInfo.cmake      |     34 +
+ .../CMakeFiles/algorithm.dir/HuffmanTree.cpp.obj   |    Bin 0 -> 510737 bytes
+ .../CMakeFiles/algorithm.dir/HuffmanTree.cpp.obj.d |     90 +
+ .../algorithm.dir/HuffmanTree3HM.cpp.obj           |    Bin 0 -> 419971 bytes
+ .../algorithm.dir/HuffmanTree3HM.cpp.obj.d         |    208 +
+ .../CMakeFiles/algorithm.dir/Inflate.cpp.obj       |    Bin 0 -> 324109 bytes
+ .../CMakeFiles/algorithm.dir/Inflate.cpp.obj.d     |    193 +
+ .../CMakeFiles/algorithm.dir/Inflate3HM.cpp.obj    |    Bin 0 -> 507492 bytes
+ .../CMakeFiles/algorithm.dir/Inflate3HM.cpp.obj.d  |    213 +
+ .../CMakeFiles/algorithm.dir/LZDP.cpp.obj          |    Bin 0 -> 3230813 bytes
+ .../CMakeFiles/algorithm.dir/LZDP.cpp.obj.d        |    487 +
+ .../CMakeFiles/algorithm.dir/LZSS.cpp.obj          |    Bin 0 -> 257349 bytes
+ .../CMakeFiles/algorithm.dir/LZSS.cpp.obj.d        |    116 +
+ .../CMakeFiles/algorithm.dir/Zstd.cpp.obj          |    Bin 0 -> 702817 bytes
+ .../CMakeFiles/algorithm.dir/Zstd.cpp.obj.d        |    201 +
+ .../algorithm/CMakeFiles/algorithm.dir/build.make  |    298 +
+ .../CMakeFiles/algorithm.dir/cmake_clean.cmake     |     33 +
+ .../algorithm.dir/cmake_clean_target.cmake         |      3 +
+ .../algorithm.dir/compiler_depend.internal         |   2611 +
+ .../CMakeFiles/algorithm.dir/compiler_depend.make  |   3635 +
+ .../CMakeFiles/algorithm.dir/compiler_depend.ts    |      2 +
+ .../algorithm/CMakeFiles/algorithm.dir/depend.make |      2 +
+ .../algorithm/CMakeFiles/algorithm.dir/flags.make  |     10 +
+ .../CMakeFiles/algorithm.dir/includes_CXX.rsp      |      1 +
+ .../algorithm/CMakeFiles/algorithm.dir/link.txt    |      2 +
+ .../CMakeFiles/algorithm.dir/progress.make         |     14 +
+ .../src/algorithm/CMakeFiles/progress.marks        |      1 +
+ build_debug/src/algorithm/Makefile                 |    527 +
+ build_debug/src/algorithm/cmake_install.cmake      |     39 +
+ build_debug/src/algorithm/libalgorithm.a           |    Bin 0 -> 10474332 bytes
+ .../api/CMakeFiles/CMakeDirectoryInformation.cmake |     16 +
+ .../src/api/CMakeFiles/api.dir/DependInfo.cmake    |     25 +
+ .../src/api/CMakeFiles/api.dir/WCXProtocol.cpp.obj |    Bin 0 -> 474923 bytes
+ .../api/CMakeFiles/api.dir/WCXProtocol.cpp.obj.d   |    213 +
+ build_debug/src/api/CMakeFiles/api.dir/api.cpp.obj |    Bin 0 -> 2717969 bytes
+ .../src/api/CMakeFiles/api.dir/api.cpp.obj.d       |    276 +
+ build_debug/src/api/CMakeFiles/api.dir/build.make  |    145 +
+ .../src/api/CMakeFiles/api.dir/cmake_clean.cmake   |     15 +
+ .../CMakeFiles/api.dir/cmake_clean_target.cmake    |      3 +
+ .../CMakeFiles/api.dir/compiler_depend.internal    |    703 +
+ .../api/CMakeFiles/api.dir/compiler_depend.make    |   1254 +
+ .../src/api/CMakeFiles/api.dir/compiler_depend.ts  |      2 +
+ build_debug/src/api/CMakeFiles/api.dir/depend.make |      2 +
+ build_debug/src/api/CMakeFiles/api.dir/flags.make  |     10 +
+ .../src/api/CMakeFiles/api.dir/includes_CXX.rsp    |      1 +
+ build_debug/src/api/CMakeFiles/api.dir/link.txt    |      2 +
+ .../src/api/CMakeFiles/api.dir/progress.make       |      5 +
+ .../api.dir/wcx_decompress_input.cpp.obj           |    Bin 0 -> 260887 bytes
+ .../api.dir/wcx_decompress_input.cpp.obj.d         |    208 +
+ build_debug/src/api/CMakeFiles/progress.marks      |      1 +
+ build_debug/src/api/Makefile                       |    284 +
+ build_debug/src/api/cmake_install.cmake            |     39 +
+ build_debug/src/api/libapi.a                       |    Bin 0 -> 3570512 bytes
+ .../CMakeFiles/CMakeDirectoryInformation.cmake     |     16 +
+ .../CMakeFiles/archiver.dir/DependInfo.cmake       |     25 +
+ .../CMakeFiles/archiver.dir/FileReader.cpp.obj     |    Bin 0 -> 77643 bytes
+ .../CMakeFiles/archiver.dir/FileReader.cpp.obj.d   |    177 +
+ .../CMakeFiles/archiver.dir/PackReader.cpp.obj     |    Bin 0 -> 962202 bytes
+ .../CMakeFiles/archiver.dir/PackReader.cpp.obj.d   |    232 +
+ .../CMakeFiles/archiver.dir/PackWriter.cpp.obj     |    Bin 0 -> 1104939 bytes
+ .../CMakeFiles/archiver.dir/PackWriter.cpp.obj.d   |    224 +
+ .../archiver/CMakeFiles/archiver.dir/build.make    |    145 +
+ .../CMakeFiles/archiver.dir/cmake_clean.cmake      |     15 +
+ .../archiver.dir/cmake_clean_target.cmake          |      3 +
+ .../archiver.dir/compiler_depend.internal          |    639 +
+ .../CMakeFiles/archiver.dir/compiler_depend.make   |   1120 +
+ .../CMakeFiles/archiver.dir/compiler_depend.ts     |      2 +
+ .../archiver/CMakeFiles/archiver.dir/depend.make   |      2 +
+ .../archiver/CMakeFiles/archiver.dir/flags.make    |     10 +
+ .../CMakeFiles/archiver.dir/includes_CXX.rsp       |      1 +
+ .../src/archiver/CMakeFiles/archiver.dir/link.txt  |      2 +
+ .../archiver/CMakeFiles/archiver.dir/progress.make |      5 +
+ build_debug/src/archiver/CMakeFiles/progress.marks |      1 +
+ build_debug/src/archiver/Makefile                  |    284 +
+ build_debug/src/archiver/cmake_install.cmake       |     39 +
+ build_debug/src/archiver/libarchiver.a             |    Bin 0 -> 2218688 bytes
+ build_debug/src/cmake_install.cmake                |     74 +
+ .../CMakeFiles/CMakeDirectoryInformation.cmake     |     16 +
+ .../CMakeFiles/core.dir/AlgorithmFactory.cpp.obj   |    Bin 0 -> 1331912 bytes
+ .../CMakeFiles/core.dir/AlgorithmFactory.cpp.obj.d |    499 +
+ .../CMakeFiles/core.dir/BrotliCompressor.cpp.obj   |    Bin 0 -> 518751 bytes
+ .../CMakeFiles/core.dir/BrotliCompressor.cpp.obj.d |    227 +
+ .../CMakeFiles/core.dir/DPFlateCompressor.cpp.obj  |    Bin 0 -> 828296 bytes
+ .../core.dir/DPFlateCompressor.cpp.obj.d           |    517 +
+ .../CMakeFiles/core.dir/DeflateCompressor.cpp.obj  |    Bin 0 -> 875900 bytes
+ .../core.dir/DeflateCompressor.cpp.obj.d           |    495 +
+ .../src/core/CMakeFiles/core.dir/DependInfo.cmake  |     31 +
+ .../CMakeFiles/core.dir/GzipCompressor.cpp.obj     |    Bin 0 -> 319434 bytes
+ .../CMakeFiles/core.dir/GzipCompressor.cpp.obj.d   |    213 +
+ .../CMakeFiles/core.dir/LZDPCompressor.cpp.obj     |    Bin 0 -> 454980 bytes
+ .../CMakeFiles/core.dir/LZDPCompressor.cpp.obj.d   |    482 +
+ .../CMakeFiles/core.dir/LZSSCompressor.cpp.obj     |    Bin 0 -> 248702 bytes
+ .../CMakeFiles/core.dir/LZSSCompressor.cpp.obj.d   |    210 +
+ .../CMakeFiles/core.dir/ZstdCompressor.cpp.obj     |    Bin 0 -> 279568 bytes
+ .../CMakeFiles/core.dir/ZstdCompressor.cpp.obj.d   |    226 +
+ .../__/processor/ChunkedStreamAdapter.cpp.obj      |    Bin 0 -> 427741 bytes
+ .../__/processor/ChunkedStreamAdapter.cpp.obj.d    |    125 +
+ .../src/core/CMakeFiles/core.dir/build.make        |    247 +
+ .../src/core/CMakeFiles/core.dir/cmake_clean.cmake |     27 +
+ .../CMakeFiles/core.dir/cmake_clean_target.cmake   |      3 +
+ .../CMakeFiles/core.dir/compiler_depend.internal   |   2990 +
+ .../core/CMakeFiles/core.dir/compiler_depend.make  |   4073 +
+ .../core/CMakeFiles/core.dir/compiler_depend.ts    |      2 +
+ .../src/core/CMakeFiles/core.dir/depend.make       |      2 +
+ .../src/core/CMakeFiles/core.dir/flags.make        |     10 +
+ .../src/core/CMakeFiles/core.dir/includes_CXX.rsp  |      1 +
+ build_debug/src/core/CMakeFiles/core.dir/link.txt  |      2 +
+ .../src/core/CMakeFiles/core.dir/progress.make     |     11 +
+ build_debug/src/core/CMakeFiles/progress.marks     |      1 +
+ build_debug/src/core/Makefile                      |    446 +
+ build_debug/src/core/cmake_install.cmake           |     39 +
+ build_debug/src/core/libcore.a                     |    Bin 0 -> 5443888 bytes
+ .../CMakeFiles/CMakeDirectoryInformation.cmake     |     16 +
+ .../CMakeFiles/processor.dir/DependInfo.cmake      |     25 +
+ .../CMakeFiles/processor.dir/Pipeline.cpp.obj      |    Bin 0 -> 720157 bytes
+ .../CMakeFiles/processor.dir/Pipeline.cpp.obj.d    |    214 +
+ .../processor.dir/PipelineBuilder.cpp.obj          |    Bin 0 -> 945737 bytes
+ .../processor.dir/PipelineBuilder.cpp.obj.d        |    222 +
+ .../processor.dir/StreamProcessor.cpp.obj          |    Bin 0 -> 1067431 bytes
+ .../processor.dir/StreamProcessor.cpp.obj.d        |    225 +
+ .../processor/CMakeFiles/processor.dir/build.make  |    145 +
+ .../CMakeFiles/processor.dir/cmake_clean.cmake     |     15 +
+ .../processor.dir/cmake_clean_target.cmake         |      3 +
+ .../processor.dir/compiler_depend.internal         |    667 +
+ .../CMakeFiles/processor.dir/compiler_depend.make  |   1134 +
+ .../CMakeFiles/processor.dir/compiler_depend.ts    |      2 +
+ .../processor/CMakeFiles/processor.dir/depend.make |      2 +
+ .../processor/CMakeFiles/processor.dir/flags.make  |     10 +
+ .../CMakeFiles/processor.dir/includes_CXX.rsp      |      1 +
+ .../processor/CMakeFiles/processor.dir/link.txt    |      2 +
+ .../CMakeFiles/processor.dir/progress.make         |      5 +
+ .../src/processor/CMakeFiles/progress.marks        |      1 +
+ build_debug/src/processor/Makefile                 |    284 +
+ build_debug/src/processor/cmake_install.cmake      |     39 +
+ build_debug/src/processor/libprocessor.a           |    Bin 0 -> 2838504 bytes
+ .../CMakeFiles/CMakeDirectoryInformation.cmake     |     16 +
+ build_debug/src/utils/CMakeFiles/progress.marks    |      1 +
+ build_debug/src/utils/Makefile                     |    188 +
+ build_debug/src/utils/cmake_install.cmake          |     39 +
+ build_debug/stream_scratch/in_dpf.bin              |      1 +
+ build_debug/stream_scratch/mini.cpp                |     24 +
+ build_debug/stream_scratch/mini.exe                |    Bin 0 -> 10485119 bytes
+ .../stream_scratch/test_lzdp_dpflate_stream.exe    |    Bin 0 -> 10891631 bytes
+ .../lzdp_dpflate_stream_test/dec.bin               |     48 +
+ .../lzdp_dpflate_stream_test/dec_dpf.bin.part      |      0
+ .../lzdp_dpflate_stream_test/in.bin                |      1 +
+ .../lzdp_dpflate_stream_test/in_dpf.bin            |      1 +
+ .../CMakeFiles/CMakeDirectoryInformation.cmake     |     16 +
+ .../CMakeFiles/debug_dpflate.dir/DependInfo.cmake  |     23 +
+ .../tests/CMakeFiles/debug_dpflate.dir/build.make  |    117 +
+ .../CMakeFiles/debug_dpflate.dir/cmake_clean.cmake |     13 +
+ .../debug_dpflate.dir/compiler_depend.make         |      2 +
+ .../debug_dpflate.dir/compiler_depend.ts           |      2 +
+ .../tests/CMakeFiles/debug_dpflate.dir/depend.make |      2 +
+ .../tests/CMakeFiles/debug_dpflate.dir/flags.make  |     10 +
+ .../CMakeFiles/debug_dpflate.dir/includes_CXX.rsp  |      1 +
+ .../tests/CMakeFiles/debug_dpflate.dir/link.txt    |      3 +
+ .../CMakeFiles/debug_dpflate.dir/linkLibs.rsp      |      1 +
+ .../tests/CMakeFiles/debug_dpflate.dir/objects.a   |    Bin 0 -> 1359450 bytes
+ .../CMakeFiles/debug_dpflate.dir/objects1.rsp      |      1 +
+ .../CMakeFiles/debug_dpflate.dir/progress.make     |      3 +
+ .../debug_token_trace.dir/DependInfo.cmake         |     23 +
+ .../CMakeFiles/debug_token_trace.dir/build.make    |    113 +
+ .../debug_token_trace.dir/cmake_clean.cmake        |     13 +
+ .../debug_token_trace.dir/compiler_depend.make     |      2 +
+ .../debug_token_trace.dir/compiler_depend.ts       |      2 +
+ .../CMakeFiles/debug_token_trace.dir/depend.make   |      2 +
+ .../CMakeFiles/debug_token_trace.dir/flags.make    |     10 +
+ .../debug_token_trace.dir/includes_CXX.rsp         |      1 +
+ .../CMakeFiles/debug_token_trace.dir/link.txt      |      3 +
+ .../CMakeFiles/debug_token_trace.dir/linkLibs.rsp  |      1 +
+ .../CMakeFiles/debug_token_trace.dir/objects1.rsp  |      1 +
+ .../CMakeFiles/debug_token_trace.dir/progress.make |      3 +
+ build_debug/tests/CMakeFiles/progress.marks        |      1 +
+ .../CMakeFiles/test_3hm_all.dir/DependInfo.cmake   |     23 +
+ .../tests/CMakeFiles/test_3hm_all.dir/build.make   |    117 +
+ .../CMakeFiles/test_3hm_all.dir/cmake_clean.cmake  |     13 +
+ .../test_3hm_all.dir/compiler_depend.make          |      2 +
+ .../CMakeFiles/test_3hm_all.dir/compiler_depend.ts |      2 +
+ .../tests/CMakeFiles/test_3hm_all.dir/depend.make  |      2 +
+ .../tests/CMakeFiles/test_3hm_all.dir/flags.make   |     10 +
+ .../CMakeFiles/test_3hm_all.dir/includes_CXX.rsp   |      1 +
+ .../tests/CMakeFiles/test_3hm_all.dir/link.txt     |      3 +
+ .../tests/CMakeFiles/test_3hm_all.dir/linkLibs.rsp |      1 +
+ .../tests/CMakeFiles/test_3hm_all.dir/objects.a    |    Bin 0 -> 543786 bytes
+ .../tests/CMakeFiles/test_3hm_all.dir/objects1.rsp |      1 +
+ .../CMakeFiles/test_3hm_all.dir/progress.make      |      3 +
+ .../test_3hm_binary.dir/DependInfo.cmake           |     23 +
+ .../CMakeFiles/test_3hm_binary.dir/build.make      |    117 +
+ .../test_3hm_binary.dir/cmake_clean.cmake          |     13 +
+ .../test_3hm_binary.dir/compiler_depend.make       |      2 +
+ .../test_3hm_binary.dir/compiler_depend.ts         |      2 +
+ .../CMakeFiles/test_3hm_binary.dir/depend.make     |      2 +
+ .../CMakeFiles/test_3hm_binary.dir/flags.make      |     10 +
+ .../test_3hm_binary.dir/includes_CXX.rsp           |      1 +
+ .../tests/CMakeFiles/test_3hm_binary.dir/link.txt  |      3 +
+ .../CMakeFiles/test_3hm_binary.dir/linkLibs.rsp    |      1 +
+ .../tests/CMakeFiles/test_3hm_binary.dir/objects.a |    Bin 0 -> 255464 bytes
+ .../CMakeFiles/test_3hm_binary.dir/objects1.rsp    |      1 +
+ .../CMakeFiles/test_3hm_binary.dir/progress.make   |      3 +
+ .../CMakeFiles/test_Deflate.dir/DependInfo.cmake   |     23 +
+ .../tests/CMakeFiles/test_Deflate.dir/build.make   |    113 +
+ .../CMakeFiles/test_Deflate.dir/cmake_clean.cmake  |     13 +
+ .../test_Deflate.dir/compiler_depend.make          |      2 +
+ .../CMakeFiles/test_Deflate.dir/compiler_depend.ts |      2 +
+ .../tests/CMakeFiles/test_Deflate.dir/depend.make  |      2 +
+ .../tests/CMakeFiles/test_Deflate.dir/flags.make   |     10 +
+ .../CMakeFiles/test_Deflate.dir/includes_CXX.rsp   |      1 +
+ .../tests/CMakeFiles/test_Deflate.dir/link.txt     |      3 +
+ .../tests/CMakeFiles/test_Deflate.dir/linkLibs.rsp |      1 +
+ .../tests/CMakeFiles/test_Deflate.dir/objects.a    |    Bin 0 -> 666866 bytes
+ .../tests/CMakeFiles/test_Deflate.dir/objects1.rsp |      1 +
+ .../CMakeFiles/test_Deflate.dir/progress.make      |      3 +
+ .../test_HuffmanTree3HM.dir/DependInfo.cmake       |     23 +
+ .../CMakeFiles/test_HuffmanTree3HM.dir/build.make  |    113 +
+ .../test_HuffmanTree3HM.dir/cmake_clean.cmake      |     13 +
+ .../test_HuffmanTree3HM.dir/compiler_depend.make   |      2 +
+ .../test_HuffmanTree3HM.dir/compiler_depend.ts     |      2 +
+ .../CMakeFiles/test_HuffmanTree3HM.dir/depend.make |      2 +
+ .../CMakeFiles/test_HuffmanTree3HM.dir/flags.make  |     10 +
+ .../test_HuffmanTree3HM.dir/includes_CXX.rsp       |      1 +
+ .../CMakeFiles/test_HuffmanTree3HM.dir/link.txt    |      3 +
+ .../test_HuffmanTree3HM.dir/linkLibs.rsp           |      1 +
+ .../CMakeFiles/test_HuffmanTree3HM.dir/objects.a   |    Bin 0 -> 432342 bytes
+ .../test_HuffmanTree3HM.dir/objects1.rsp           |      1 +
+ .../test_HuffmanTree3HM.dir/progress.make          |      3 +
+ .../test_PackWriter.dir/DependInfo.cmake           |     23 +
+ .../CMakeFiles/test_PackWriter.dir/build.make      |    116 +
+ .../test_PackWriter.dir/cmake_clean.cmake          |     13 +
+ .../test_PackWriter.dir/compiler_depend.make       |      2 +
+ .../test_PackWriter.dir/compiler_depend.ts         |      2 +
+ .../CMakeFiles/test_PackWriter.dir/depend.make     |      2 +
+ .../CMakeFiles/test_PackWriter.dir/flags.make      |     10 +
+ .../test_PackWriter.dir/includes_CXX.rsp           |      1 +
+ .../tests/CMakeFiles/test_PackWriter.dir/link.txt  |      3 +
+ .../CMakeFiles/test_PackWriter.dir/linkLibs.rsp    |      1 +
+ .../tests/CMakeFiles/test_PackWriter.dir/objects.a |    Bin 0 -> 1210672 bytes
+ .../CMakeFiles/test_PackWriter.dir/objects1.rsp    |      1 +
+ .../CMakeFiles/test_PackWriter.dir/progress.make   |      3 +
+ .../test_PackWriter_RoundTrip.dir/DependInfo.cmake |     23 +
+ .../test_PackWriter_RoundTrip.dir/build.make       |    117 +
+ .../cmake_clean.cmake                              |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../test_PackWriter_RoundTrip.dir/depend.make      |      2 +
+ .../test_PackWriter_RoundTrip.dir/flags.make       |     10 +
+ .../test_PackWriter_RoundTrip.dir/includes_CXX.rsp |      1 +
+ .../test_PackWriter_RoundTrip.dir/link.txt         |      3 +
+ .../test_PackWriter_RoundTrip.dir/linkLibs.rsp     |      1 +
+ .../test_PackWriter_RoundTrip.dir/objects.a        |    Bin 0 -> 473274 bytes
+ .../test_PackWriter_RoundTrip.dir/objects1.rsp     |      1 +
+ .../test_PackWriter_RoundTrip.dir/progress.make    |      3 +
+ .../test_algorithm_comparison.dir/DependInfo.cmake |     23 +
+ .../test_algorithm_comparison.dir/build.make       |    117 +
+ .../cmake_clean.cmake                              |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../test_algorithm_comparison.dir/depend.make      |      2 +
+ .../test_algorithm_comparison.dir/flags.make       |     10 +
+ .../test_algorithm_comparison.dir/includes_CXX.rsp |      1 +
+ .../test_algorithm_comparison.dir/link.txt         |      3 +
+ .../test_algorithm_comparison.dir/linkLibs.rsp     |      1 +
+ .../test_algorithm_comparison.dir/objects.a        |    Bin 0 -> 1738828 bytes
+ .../test_algorithm_comparison.dir/objects1.rsp     |      1 +
+ .../test_algorithm_comparison.dir/progress.make    |      3 +
+ .../test_dpflate_3hm_stream.dir/DependInfo.cmake   |     23 +
+ .../test_dpflate_3hm_stream.dir/build.make         |    117 +
+ .../test_dpflate_3hm_stream.dir/cmake_clean.cmake  |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../test_dpflate_3hm_stream.dir/compiler_depend.ts |      2 +
+ .../test_dpflate_3hm_stream.dir/depend.make        |      2 +
+ .../test_dpflate_3hm_stream.dir/flags.make         |     10 +
+ .../test_dpflate_3hm_stream.dir/includes_CXX.rsp   |      1 +
+ .../test_dpflate_3hm_stream.dir/link.txt           |      3 +
+ .../test_dpflate_3hm_stream.dir/linkLibs.rsp       |      1 +
+ .../test_dpflate_3hm_stream.dir/objects.a          |    Bin 0 -> 994236 bytes
+ .../test_dpflate_3hm_stream.dir/objects1.rsp       |      1 +
+ .../test_dpflate_3hm_stream.dir/progress.make      |      3 +
+ .../test_dpflate_3hm_stream.cpp.obj                |    Bin 0 -> 966118 bytes
+ .../test_dpflate_3hm_stream.cpp.obj.d              |    250 +
+ .../test_lzdp_binary.dir/DependInfo.cmake          |     23 +
+ .../CMakeFiles/test_lzdp_binary.dir/build.make     |    117 +
+ .../test_lzdp_binary.dir/cmake_clean.cmake         |     13 +
+ .../test_lzdp_binary.dir/compiler_depend.make      |      2 +
+ .../test_lzdp_binary.dir/compiler_depend.ts        |      2 +
+ .../CMakeFiles/test_lzdp_binary.dir/depend.make    |      2 +
+ .../CMakeFiles/test_lzdp_binary.dir/flags.make     |     10 +
+ .../test_lzdp_binary.dir/includes_CXX.rsp          |      1 +
+ .../tests/CMakeFiles/test_lzdp_binary.dir/link.txt |      3 +
+ .../CMakeFiles/test_lzdp_binary.dir/linkLibs.rsp   |      1 +
+ .../CMakeFiles/test_lzdp_binary.dir/objects.a      |    Bin 0 -> 257856 bytes
+ .../CMakeFiles/test_lzdp_binary.dir/objects1.rsp   |      1 +
+ .../CMakeFiles/test_lzdp_binary.dir/progress.make  |      3 +
+ .../DependInfo.cmake                               |     23 +
+ .../test_lzdp_dpflate_regression.dir/build.make    |    113 +
+ .../cmake_clean.cmake                              |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../test_lzdp_dpflate_regression.dir/depend.make   |      2 +
+ .../test_lzdp_dpflate_regression.dir/flags.make    |     10 +
+ .../includes_CXX.rsp                               |      1 +
+ .../test_lzdp_dpflate_regression.dir/link.txt      |      3 +
+ .../test_lzdp_dpflate_regression.dir/linkLibs.rsp  |      1 +
+ .../test_lzdp_dpflate_regression.dir/objects.a     |    Bin 0 -> 1073968 bytes
+ .../test_lzdp_dpflate_regression.dir/objects1.rsp  |      1 +
+ .../test_lzdp_dpflate_regression.dir/progress.make |      3 +
+ .../test_lzdp_dpflate_stream.dir/DependInfo.cmake  |     23 +
+ .../test_lzdp_dpflate_stream.dir/build.make        |    117 +
+ .../test_lzdp_dpflate_stream.dir/cmake_clean.cmake |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../test_lzdp_dpflate_stream.dir/depend.make       |      2 +
+ .../test_lzdp_dpflate_stream.dir/flags.make        |     10 +
+ .../test_lzdp_dpflate_stream.dir/includes_CXX.rsp  |      1 +
+ .../test_lzdp_dpflate_stream.dir/link.txt          |      3 +
+ .../test_lzdp_dpflate_stream.dir/linkLibs.rsp      |      1 +
+ .../test_lzdp_dpflate_stream.dir/objects.a         |    Bin 0 -> 1079914 bytes
+ .../test_lzdp_dpflate_stream.dir/objects1.rsp      |      1 +
+ .../test_lzdp_dpflate_stream.dir/progress.make     |      3 +
+ .../test_lzdp_dpflate_stream.cpp.obj               |    Bin 0 -> 1052039 bytes
+ .../test_lzdp_dpflate_stream.cpp.obj.d             |    492 +
+ .../test_lzdp_memory_flag.dir/DependInfo.cmake     |     23 +
+ .../test_lzdp_memory_flag.dir/build.make           |    114 +
+ .../test_lzdp_memory_flag.dir/cmake_clean.cmake    |     13 +
+ .../test_lzdp_memory_flag.dir/compiler_depend.make |      2 +
+ .../test_lzdp_memory_flag.dir/compiler_depend.ts   |      2 +
+ .../test_lzdp_memory_flag.dir/depend.make          |      2 +
+ .../test_lzdp_memory_flag.dir/flags.make           |     10 +
+ .../test_lzdp_memory_flag.dir/includes_CXX.rsp     |      1 +
+ .../CMakeFiles/test_lzdp_memory_flag.dir/link.txt  |      3 +
+ .../test_lzdp_memory_flag.dir/linkLibs.rsp         |      1 +
+ .../CMakeFiles/test_lzdp_memory_flag.dir/objects.a |    Bin 0 -> 536456 bytes
+ .../test_lzdp_memory_flag.dir/objects1.rsp         |      1 +
+ .../test_lzdp_memory_flag.dir/progress.make        |      3 +
+ .../test_lzdp_memory_flag.cpp.obj                  |    Bin 0 -> 519310 bytes
+ .../test_lzdp_memory_flag.cpp.obj.d                |    497 +
+ .../DependInfo.cmake                               |     23 +
+ .../build.make                                     |    117 +
+ .../cmake_clean.cmake                              |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../depend.make                                    |      2 +
+ .../flags.make                                     |     10 +
+ .../includes_CXX.rsp                               |      1 +
+ .../test_lzdp_memory_streaming_parity.dir/link.txt |      3 +
+ .../linkLibs.rsp                                   |      1 +
+ .../objects.a                                      |    Bin 0 -> 1128118 bytes
+ .../objects1.rsp                                   |      1 +
+ .../progress.make                                  |      3 +
+ .../test_lzdp_memory_streaming_parity.cpp.obj      |    Bin 0 -> 1097801 bytes
+ .../test_lzdp_memory_streaming_parity.cpp.obj.d    |    492 +
+ .../test_lzss_noflag.dir/DependInfo.cmake          |     23 +
+ .../CMakeFiles/test_lzss_noflag.dir/build.make     |    117 +
+ .../test_lzss_noflag.dir/cmake_clean.cmake         |     13 +
+ .../test_lzss_noflag.dir/compiler_depend.make      |      2 +
+ .../test_lzss_noflag.dir/compiler_depend.ts        |      2 +
+ .../CMakeFiles/test_lzss_noflag.dir/depend.make    |      2 +
+ .../CMakeFiles/test_lzss_noflag.dir/flags.make     |     10 +
+ .../test_lzss_noflag.dir/includes_CXX.rsp          |      1 +
+ .../tests/CMakeFiles/test_lzss_noflag.dir/link.txt |      3 +
+ .../CMakeFiles/test_lzss_noflag.dir/linkLibs.rsp   |      1 +
+ .../CMakeFiles/test_lzss_noflag.dir/objects1.rsp   |      1 +
+ .../CMakeFiles/test_lzss_noflag.dir/progress.make  |      3 +
+ .../test_mixed_dpflate_only.dir/DependInfo.cmake   |     23 +
+ .../test_mixed_dpflate_only.dir/build.make         |    114 +
+ .../test_mixed_dpflate_only.dir/cmake_clean.cmake  |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../test_mixed_dpflate_only.dir/compiler_depend.ts |      2 +
+ .../test_mixed_dpflate_only.dir/depend.make        |      2 +
+ .../test_mixed_dpflate_only.dir/flags.make         |     10 +
+ .../test_mixed_dpflate_only.dir/includes_CXX.rsp   |      1 +
+ .../test_mixed_dpflate_only.dir/link.txt           |      3 +
+ .../test_mixed_dpflate_only.dir/linkLibs.rsp       |      1 +
+ .../test_mixed_dpflate_only.dir/objects.a          |    Bin 0 -> 493130 bytes
+ .../test_mixed_dpflate_only.dir/objects1.rsp       |      1 +
+ .../test_mixed_dpflate_only.dir/progress.make      |      3 +
+ .../test_regression_baseline.dir/DependInfo.cmake  |     23 +
+ .../test_regression_baseline.dir/build.make        |    117 +
+ .../test_regression_baseline.dir/cmake_clean.cmake |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../test_regression_baseline.dir/depend.make       |      2 +
+ .../test_regression_baseline.dir/flags.make        |     10 +
+ .../test_regression_baseline.dir/includes_CXX.rsp  |      1 +
+ .../test_regression_baseline.dir/link.txt          |      3 +
+ .../test_regression_baseline.dir/linkLibs.rsp      |      1 +
+ .../test_regression_baseline.dir/objects1.rsp      |      1 +
+ .../test_regression_baseline.dir/progress.make     |      3 +
+ .../CMakeFiles/test_roundtrip.dir/DependInfo.cmake |     23 +
+ .../tests/CMakeFiles/test_roundtrip.dir/build.make |    113 +
+ .../test_roundtrip.dir/cmake_clean.cmake           |     13 +
+ .../test_roundtrip.dir/compiler_depend.make        |      2 +
+ .../test_roundtrip.dir/compiler_depend.ts          |      2 +
+ .../CMakeFiles/test_roundtrip.dir/depend.make      |      2 +
+ .../tests/CMakeFiles/test_roundtrip.dir/flags.make |     10 +
+ .../CMakeFiles/test_roundtrip.dir/includes_CXX.rsp |      1 +
+ .../tests/CMakeFiles/test_roundtrip.dir/link.txt   |      3 +
+ .../CMakeFiles/test_roundtrip.dir/linkLibs.rsp     |      1 +
+ .../tests/CMakeFiles/test_roundtrip.dir/objects.a  |    Bin 0 -> 958682 bytes
+ .../CMakeFiles/test_roundtrip.dir/objects1.rsp     |      1 +
+ .../CMakeFiles/test_roundtrip.dir/progress.make    |      3 +
+ .../test_wcx_corrupt.dir/DependInfo.cmake          |     23 +
+ .../CMakeFiles/test_wcx_corrupt.dir/build.make     |    117 +
+ .../test_wcx_corrupt.dir/cmake_clean.cmake         |     13 +
+ .../test_wcx_corrupt.dir/compiler_depend.make      |      2 +
+ .../test_wcx_corrupt.dir/compiler_depend.ts        |      2 +
+ .../CMakeFiles/test_wcx_corrupt.dir/depend.make    |      2 +
+ .../CMakeFiles/test_wcx_corrupt.dir/flags.make     |     10 +
+ .../test_wcx_corrupt.dir/includes_CXX.rsp          |      1 +
+ .../tests/CMakeFiles/test_wcx_corrupt.dir/link.txt |      3 +
+ .../CMakeFiles/test_wcx_corrupt.dir/linkLibs.rsp   |      1 +
+ .../CMakeFiles/test_wcx_corrupt.dir/objects.a      |    Bin 0 -> 1088104 bytes
+ .../CMakeFiles/test_wcx_corrupt.dir/objects1.rsp   |      1 +
+ .../CMakeFiles/test_wcx_corrupt.dir/progress.make  |      3 +
+ .../DependInfo.cmake                               |     23 +
+ .../test_wcx_directory_archive.dir/build.make      |    117 +
+ .../cmake_clean.cmake                              |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../test_wcx_directory_archive.dir/depend.make     |      2 +
+ .../test_wcx_directory_archive.dir/flags.make      |     10 +
+ .../includes_CXX.rsp                               |      1 +
+ .../test_wcx_directory_archive.dir/link.txt        |      3 +
+ .../test_wcx_directory_archive.dir/linkLibs.rsp    |      1 +
+ .../test_wcx_directory_archive.dir/objects.a       |    Bin 0 -> 995900 bytes
+ .../test_wcx_directory_archive.dir/objects1.rsp    |      1 +
+ .../test_wcx_directory_archive.dir/progress.make   |      3 +
+ .../test_wcx_file_strict.dir/DependInfo.cmake      |     23 +
+ .../CMakeFiles/test_wcx_file_strict.dir/build.make |    117 +
+ .../test_wcx_file_strict.dir/cmake_clean.cmake     |     13 +
+ .../test_wcx_file_strict.dir/compiler_depend.make  |      2 +
+ .../test_wcx_file_strict.dir/compiler_depend.ts    |      2 +
+ .../test_wcx_file_strict.dir/depend.make           |      2 +
+ .../CMakeFiles/test_wcx_file_strict.dir/flags.make |     10 +
+ .../test_wcx_file_strict.dir/includes_CXX.rsp      |      1 +
+ .../CMakeFiles/test_wcx_file_strict.dir/link.txt   |      3 +
+ .../test_wcx_file_strict.dir/linkLibs.rsp          |      1 +
+ .../CMakeFiles/test_wcx_file_strict.dir/objects.a  |    Bin 0 -> 1004096 bytes
+ .../test_wcx_file_strict.dir/objects1.rsp          |      1 +
+ .../test_wcx_file_strict.dir/progress.make         |      3 +
+ .../test_wcx_strict_no_compat.dir/DependInfo.cmake |     23 +
+ .../test_wcx_strict_no_compat.dir/build.make       |    117 +
+ .../cmake_clean.cmake                              |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../test_wcx_strict_no_compat.dir/depend.make      |      2 +
+ .../test_wcx_strict_no_compat.dir/flags.make       |     10 +
+ .../test_wcx_strict_no_compat.dir/includes_CXX.rsp |      1 +
+ .../test_wcx_strict_no_compat.dir/link.txt         |      3 +
+ .../test_wcx_strict_no_compat.dir/linkLibs.rsp     |      1 +
+ .../test_wcx_strict_no_compat.dir/objects.a        |    Bin 0 -> 1044316 bytes
+ .../test_wcx_strict_no_compat.dir/objects1.rsp     |      1 +
+ .../test_wcx_strict_no_compat.dir/progress.make    |      3 +
+ build_debug/tests/Makefile                         |   1154 +
+ build_debug/tests/cmake_install.cmake              |     39 +
+ build_py/CMakeCache.txt                            |    437 +
+ build_py/CMakeFiles/3.30.4/CMakeCXXCompiler.cmake  |    105 +
+ .../3.30.4/CMakeDetermineCompilerABI_CXX.bin       |    Bin 0 -> 63698 bytes
+ build_py/CMakeFiles/3.30.4/CMakeRCCompiler.cmake   |      6 +
+ build_py/CMakeFiles/3.30.4/CMakeSystem.cmake       |     15 +
+ .../3.30.4/CompilerIdCXX/CMakeCXXCompilerId.cpp    |    919 +
+ build_py/CMakeFiles/3.30.4/CompilerIdCXX/a.exe     |    Bin 0 -> 63782 bytes
+ build_py/CMakeFiles/CMakeConfigureLog.yaml         |    354 +
+ .../CMakeFiles/CMakeDirectoryInformation.cmake     |     16 +
+ build_py/CMakeFiles/Makefile.cmake                 |    116 +
+ build_py/CMakeFiles/Makefile2                      |   1266 +
+ build_py/CMakeFiles/TargetDirectories.txt          |    100 +
+ build_py/CMakeFiles/cmake.check_cache              |      1 +
+ build_py/CMakeFiles/progress.marks                 |      1 +
+ build_py/Makefile                                  |    664 +
+ build_py/cmake_install.cmake                       |     72 +
+ .../src/CMakeFiles/CMakeDirectoryInformation.cmake |     16 +
+ build_py/src/CMakeFiles/progress.marks             |      1 +
+ build_py/src/Makefile                              |    188 +
+ .../ade/CMakeFiles/CMakeDirectoryInformation.cmake |     16 +
+ .../src/ade/CMakeFiles/ade.dir/DependInfo.cmake    |     29 +
+ build_py/src/ade/CMakeFiles/ade.dir/build.make     |    213 +
+ .../src/ade/CMakeFiles/ade.dir/cmake_clean.cmake   |     23 +
+ .../CMakeFiles/ade.dir/cmake_clean_target.cmake    |      3 +
+ .../CMakeFiles/ade.dir/compiler_depend.internal    |   1642 +
+ .../ade/CMakeFiles/ade.dir/compiler_depend.make    |   2623 +
+ .../src/ade/CMakeFiles/ade.dir/compiler_depend.ts  |      2 +
+ build_py/src/ade/CMakeFiles/ade.dir/depend.make    |      2 +
+ .../ade.dir/features/FeatureExtractorV3.cpp.obj    |    Bin 0 -> 48043 bytes
+ .../ade.dir/features/FeatureExtractorV3.cpp.obj.d  |    208 +
+ .../ade.dir/features/FeatureVector.cpp.obj         |    Bin 0 -> 6066 bytes
+ .../ade.dir/features/FeatureVector.cpp.obj.d       |    157 +
+ .../ade.dir/features/MagicBytesDetector.cpp.obj    |    Bin 0 -> 25313 bytes
+ .../ade.dir/features/MagicBytesDetector.cpp.obj.d  |    124 +
+ build_py/src/ade/CMakeFiles/ade.dir/flags.make     |     10 +
+ .../src/ade/CMakeFiles/ade.dir/includes_CXX.rsp    |      1 +
+ build_py/src/ade/CMakeFiles/ade.dir/link.txt       |      2 +
+ .../ade.dir/models/EvolutionaryAlgorithms.cpp.obj  |    Bin 0 -> 74086 bytes
+ .../models/EvolutionaryAlgorithms.cpp.obj.d        |    230 +
+ .../CMakeFiles/ade.dir/models/RandomForest.cpp.obj |    Bin 0 -> 64231 bytes
+ .../ade.dir/models/RandomForest.cpp.obj.d          |    218 +
+ build_py/src/ade/CMakeFiles/ade.dir/progress.make  |      9 +
+ .../CMakeFiles/ade.dir/runtime/ADEBridge.cpp.obj   |    Bin 0 -> 40430 bytes
+ .../CMakeFiles/ade.dir/runtime/ADEBridge.cpp.obj.d |    477 +
+ .../ade.dir/runtime/DecisionEngine.cpp.obj         |    Bin 0 -> 40498 bytes
+ .../ade.dir/runtime/DecisionEngine.cpp.obj.d       |    222 +
+ .../bench_ade_extractor.dir/DependInfo.cmake       |     23 +
+ .../CMakeFiles/bench_ade_extractor.dir/build.make  |    113 +
+ .../bench_ade_extractor.dir/cmake_clean.cmake      |     13 +
+ .../bench_ade_extractor.dir/compiler_depend.make   |      2 +
+ .../bench_ade_extractor.dir/compiler_depend.ts     |      2 +
+ .../CMakeFiles/bench_ade_extractor.dir/depend.make |      2 +
+ .../CMakeFiles/bench_ade_extractor.dir/flags.make  |     10 +
+ .../bench_ade_extractor.dir/includes_CXX.rsp       |      1 +
+ .../CMakeFiles/bench_ade_extractor.dir/link.txt    |      3 +
+ .../bench_ade_extractor.dir/linkLibs.rsp           |      1 +
+ .../bench_ade_extractor.dir/objects1.rsp           |      1 +
+ .../bench_ade_extractor.dir/progress.make          |      3 +
+ .../generate_ade_dataset.dir/DependInfo.cmake      |     23 +
+ .../CMakeFiles/generate_ade_dataset.dir/build.make |    113 +
+ .../generate_ade_dataset.dir/cmake_clean.cmake     |     13 +
+ .../generate_ade_dataset.dir/compiler_depend.make  |      2 +
+ .../generate_ade_dataset.dir/compiler_depend.ts    |      2 +
+ .../generate_ade_dataset.dir/depend.make           |      2 +
+ .../CMakeFiles/generate_ade_dataset.dir/flags.make |     10 +
+ .../generate_ade_dataset.dir/includes_CXX.rsp      |      1 +
+ .../CMakeFiles/generate_ade_dataset.dir/link.txt   |      3 +
+ .../generate_ade_dataset.dir/linkLibs.rsp          |      1 +
+ .../generate_ade_dataset.dir/objects1.rsp          |      1 +
+ .../generate_ade_dataset.dir/progress.make         |      3 +
+ build_py/src/ade/CMakeFiles/progress.marks         |      1 +
+ .../test_ade_decision_engine.dir/DependInfo.cmake  |     23 +
+ .../test_ade_decision_engine.dir/build.make        |    113 +
+ .../test_ade_decision_engine.dir/cmake_clean.cmake |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../test_ade_decision_engine.dir/depend.make       |      2 +
+ .../test_ade_decision_engine.dir/flags.make        |     10 +
+ .../test_ade_decision_engine.dir/includes_CXX.rsp  |      1 +
+ .../test_ade_decision_engine.dir/link.txt          |      3 +
+ .../test_ade_decision_engine.dir/linkLibs.rsp      |      1 +
+ .../test_ade_decision_engine.dir/objects1.rsp      |      1 +
+ .../test_ade_decision_engine.dir/progress.make     |      3 +
+ .../test_ade_evolutionary.dir/DependInfo.cmake     |     23 +
+ .../test_ade_evolutionary.dir/build.make           |    113 +
+ .../test_ade_evolutionary.dir/cmake_clean.cmake    |     13 +
+ .../test_ade_evolutionary.dir/compiler_depend.make |      2 +
+ .../test_ade_evolutionary.dir/compiler_depend.ts   |      2 +
+ .../test_ade_evolutionary.dir/depend.make          |      2 +
+ .../test_ade_evolutionary.dir/flags.make           |     10 +
+ .../test_ade_evolutionary.dir/includes_CXX.rsp     |      1 +
+ .../CMakeFiles/test_ade_evolutionary.dir/link.txt  |      3 +
+ .../test_ade_evolutionary.dir/linkLibs.rsp         |      1 +
+ .../test_ade_evolutionary.dir/objects1.rsp         |      1 +
+ .../test_ade_evolutionary.dir/progress.make        |      3 +
+ .../DependInfo.cmake                               |     23 +
+ .../test_ade_feature_extractor.dir/build.make      |    113 +
+ .../cmake_clean.cmake                              |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../test_ade_feature_extractor.dir/depend.make     |      2 +
+ .../test_ade_feature_extractor.dir/flags.make      |     10 +
+ .../includes_CXX.rsp                               |      1 +
+ .../test_ade_feature_extractor.dir/link.txt        |      3 +
+ .../test_ade_feature_extractor.dir/linkLibs.rsp    |      1 +
+ .../test_ade_feature_extractor.dir/objects1.rsp    |      1 +
+ .../test_ade_feature_extractor.dir/progress.make   |      3 +
+ .../train_ade_model.dir/DependInfo.cmake           |     23 +
+ .../ade/CMakeFiles/train_ade_model.dir/build.make  |    113 +
+ .../train_ade_model.dir/cmake_clean.cmake          |     13 +
+ .../train_ade_model.dir/compiler_depend.make       |      2 +
+ .../train_ade_model.dir/compiler_depend.ts         |      2 +
+ .../ade/CMakeFiles/train_ade_model.dir/depend.make |      2 +
+ .../ade/CMakeFiles/train_ade_model.dir/flags.make  |     10 +
+ .../train_ade_model.dir/includes_CXX.rsp           |      1 +
+ .../ade/CMakeFiles/train_ade_model.dir/link.txt    |      3 +
+ .../CMakeFiles/train_ade_model.dir/linkLibs.rsp    |      1 +
+ .../CMakeFiles/train_ade_model.dir/objects1.rsp    |      1 +
+ .../CMakeFiles/train_ade_model.dir/progress.make   |      3 +
+ build_py/src/ade/CTestTestfile.cmake               |     12 +
+ build_py/src/ade/Makefile                          |    644 +
+ build_py/src/ade/cmake_install.cmake               |     47 +
+ build_py/src/ade/libade.a                          |    Bin 0 -> 316496 bytes
+ .../CMakeFiles/CMakeDirectoryInformation.cmake     |     16 +
+ .../CMakeFiles/algorithm.dir/AlgorithmBase.cpp.obj |    Bin 0 -> 4800 bytes
+ .../algorithm.dir/AlgorithmBase.cpp.obj.d          |     92 +
+ .../CMakeFiles/algorithm.dir/Brotli.cpp.obj        |    Bin 0 -> 47015 bytes
+ .../CMakeFiles/algorithm.dir/Brotli.cpp.obj.d      |    200 +
+ .../CMakeFiles/algorithm.dir/DPFlate.cpp.obj       |    Bin 0 -> 133212 bytes
+ .../CMakeFiles/algorithm.dir/DPFlate.cpp.obj.d     |    488 +
+ .../CMakeFiles/algorithm.dir/Deflate.cpp.obj       |    Bin 0 -> 35967 bytes
+ .../CMakeFiles/algorithm.dir/Deflate.cpp.obj.d     |    221 +
+ .../CMakeFiles/algorithm.dir/Delta.cpp.obj         |    Bin 0 -> 16082 bytes
+ .../CMakeFiles/algorithm.dir/Delta.cpp.obj.d       |     95 +
+ .../CMakeFiles/algorithm.dir/DependInfo.cmake      |     34 +
+ .../CMakeFiles/algorithm.dir/HuffmanTree.cpp.obj   |    Bin 0 -> 28321 bytes
+ .../CMakeFiles/algorithm.dir/HuffmanTree.cpp.obj.d |     90 +
+ .../algorithm.dir/HuffmanTree3HM.cpp.obj           |    Bin 0 -> 29733 bytes
+ .../algorithm.dir/HuffmanTree3HM.cpp.obj.d         |    208 +
+ .../CMakeFiles/algorithm.dir/Inflate.cpp.obj       |    Bin 0 -> 32011 bytes
+ .../CMakeFiles/algorithm.dir/Inflate.cpp.obj.d     |    193 +
+ .../CMakeFiles/algorithm.dir/Inflate3HM.cpp.obj    |    Bin 0 -> 33075 bytes
+ .../CMakeFiles/algorithm.dir/Inflate3HM.cpp.obj.d  |    213 +
+ .../CMakeFiles/algorithm.dir/LZDP.cpp.obj          |    Bin 0 -> 158208 bytes
+ .../CMakeFiles/algorithm.dir/LZDP.cpp.obj.d        |    487 +
+ .../CMakeFiles/algorithm.dir/LZSS.cpp.obj          |    Bin 0 -> 13784 bytes
+ .../CMakeFiles/algorithm.dir/LZSS.cpp.obj.d        |    116 +
+ .../CMakeFiles/algorithm.dir/Zstd.cpp.obj          |    Bin 0 -> 34234 bytes
+ .../CMakeFiles/algorithm.dir/Zstd.cpp.obj.d        |    201 +
+ .../algorithm/CMakeFiles/algorithm.dir/build.make  |    298 +
+ .../CMakeFiles/algorithm.dir/cmake_clean.cmake     |     33 +
+ .../algorithm.dir/cmake_clean_target.cmake         |      3 +
+ .../algorithm.dir/compiler_depend.internal         |   2611 +
+ .../CMakeFiles/algorithm.dir/compiler_depend.make  |   3635 +
+ .../CMakeFiles/algorithm.dir/compiler_depend.ts    |      2 +
+ .../algorithm/CMakeFiles/algorithm.dir/depend.make |      2 +
+ .../algorithm/CMakeFiles/algorithm.dir/flags.make  |     10 +
+ .../CMakeFiles/algorithm.dir/includes_CXX.rsp      |      1 +
+ .../algorithm/CMakeFiles/algorithm.dir/link.txt    |      2 +
+ .../CMakeFiles/algorithm.dir/progress.make         |     14 +
+ build_py/src/algorithm/CMakeFiles/progress.marks   |      1 +
+ build_py/src/algorithm/Makefile                    |    527 +
+ build_py/src/algorithm/cmake_install.cmake         |     39 +
+ build_py/src/algorithm/libalgorithm.a              |    Bin 0 -> 591804 bytes
+ .../api/CMakeFiles/CMakeDirectoryInformation.cmake |     16 +
+ .../src/api/CMakeFiles/api.dir/DependInfo.cmake    |     25 +
+ .../src/api/CMakeFiles/api.dir/WCXProtocol.cpp.obj |    Bin 0 -> 10692 bytes
+ .../api/CMakeFiles/api.dir/WCXProtocol.cpp.obj.d   |    213 +
+ build_py/src/api/CMakeFiles/api.dir/api.cpp.obj    |    Bin 0 -> 157714 bytes
+ build_py/src/api/CMakeFiles/api.dir/api.cpp.obj.d  |    273 +
+ build_py/src/api/CMakeFiles/api.dir/build.make     |    145 +
+ .../src/api/CMakeFiles/api.dir/cmake_clean.cmake   |     15 +
+ .../CMakeFiles/api.dir/cmake_clean_target.cmake    |      3 +
+ .../CMakeFiles/api.dir/compiler_depend.internal    |    700 +
+ .../api/CMakeFiles/api.dir/compiler_depend.make    |   1245 +
+ .../src/api/CMakeFiles/api.dir/compiler_depend.ts  |      2 +
+ build_py/src/api/CMakeFiles/api.dir/depend.make    |      2 +
+ build_py/src/api/CMakeFiles/api.dir/flags.make     |     10 +
+ .../src/api/CMakeFiles/api.dir/includes_CXX.rsp    |      1 +
+ build_py/src/api/CMakeFiles/api.dir/link.txt       |      2 +
+ build_py/src/api/CMakeFiles/api.dir/progress.make  |      5 +
+ .../api.dir/wcx_decompress_input.cpp.obj           |    Bin 0 -> 4750 bytes
+ .../api.dir/wcx_decompress_input.cpp.obj.d         |    208 +
+ build_py/src/api/CMakeFiles/progress.marks         |      1 +
+ build_py/src/api/Makefile                          |    284 +
+ build_py/src/api/cmake_install.cmake               |     39 +
+ build_py/src/api/libapi.a                          |    Bin 0 -> 180618 bytes
+ .../CMakeFiles/CMakeDirectoryInformation.cmake     |     16 +
+ .../CMakeFiles/archiver.dir/DependInfo.cmake       |     25 +
+ .../CMakeFiles/archiver.dir/FileReader.cpp.obj     |    Bin 0 -> 8929 bytes
+ .../CMakeFiles/archiver.dir/FileReader.cpp.obj.d   |    177 +
+ .../CMakeFiles/archiver.dir/PackReader.cpp.obj     |    Bin 0 -> 15388 bytes
+ .../CMakeFiles/archiver.dir/PackReader.cpp.obj.d   |    232 +
+ .../CMakeFiles/archiver.dir/PackWriter.cpp.obj     |    Bin 0 -> 35958 bytes
+ .../CMakeFiles/archiver.dir/PackWriter.cpp.obj.d   |    224 +
+ .../archiver/CMakeFiles/archiver.dir/build.make    |    145 +
+ .../CMakeFiles/archiver.dir/cmake_clean.cmake      |     15 +
+ .../archiver.dir/cmake_clean_target.cmake          |      3 +
+ .../archiver.dir/compiler_depend.internal          |    639 +
+ .../CMakeFiles/archiver.dir/compiler_depend.make   |   1120 +
+ .../CMakeFiles/archiver.dir/compiler_depend.ts     |      2 +
+ .../archiver/CMakeFiles/archiver.dir/depend.make   |      2 +
+ .../archiver/CMakeFiles/archiver.dir/flags.make    |     10 +
+ .../CMakeFiles/archiver.dir/includes_CXX.rsp       |      1 +
+ .../src/archiver/CMakeFiles/archiver.dir/link.txt  |      2 +
+ .../archiver/CMakeFiles/archiver.dir/progress.make |      5 +
+ build_py/src/archiver/CMakeFiles/progress.marks    |      1 +
+ build_py/src/archiver/Makefile                     |    284 +
+ build_py/src/archiver/cmake_install.cmake          |     39 +
+ build_py/src/archiver/libarchiver.a                |    Bin 0 -> 64716 bytes
+ .../CMakeFiles/CMakeDirectoryInformation.cmake     |     16 +
+ .../CMakeFiles/core_engine.dir/DependInfo.cmake    |     24 +
+ .../pybind/CMakeFiles/core_engine.dir/build.make   |    147 +
+ .../CMakeFiles/core_engine.dir/cmake_clean.cmake   |     15 +
+ .../core_engine.dir/compiler_depend.internal       |   1413 +
+ .../core_engine.dir/compiler_depend.make           |   2865 +
+ .../CMakeFiles/core_engine.dir/compiler_depend.ts  |      2 +
+ .../pybind/CMakeFiles/core_engine.dir/depend.make  |      2 +
+ .../pybind/CMakeFiles/core_engine.dir/flags.make   |     10 +
+ .../CMakeFiles/core_engine.dir/includes_CXX.rsp    |      1 +
+ .../pybind/CMakeFiles/core_engine.dir/link.txt     |      3 +
+ .../pybind/CMakeFiles/core_engine.dir/linkLibs.rsp |      1 +
+ .../pybind/CMakeFiles/core_engine.dir/objects.a    |    Bin 0 -> 3205626 bytes
+ .../pybind/CMakeFiles/core_engine.dir/objects1.rsp |      1 +
+ .../CMakeFiles/core_engine.dir/progress.make       |      4 +
+ .../CMakeFiles/core_engine.dir/pybind_ade.cpp.obj  |    Bin 0 -> 991595 bytes
+ .../core_engine.dir/pybind_ade.cpp.obj.d           |    652 +
+ .../core_engine.dir/pybind_module.cpp.obj          |    Bin 0 -> 1883177 bytes
+ .../core_engine.dir/pybind_module.cpp.obj.d        |    670 +
+ .../src/bindings/pybind/CMakeFiles/progress.marks  |      1 +
+ build_py/src/bindings/pybind/Makefile              |    257 +
+ build_py/src/bindings/pybind/cmake_install.cmake   |     39 +
+ .../pybind/core_engine.cp312-win_amd64.pyd         |    Bin 0 -> 1388046 bytes
+ build_py/src/bindings/pybind/libgcc_s_seh-1.dll    |    Bin 0 -> 930999 bytes
+ build_py/src/bindings/pybind/libstdc++-6.dll       |    Bin 0 -> 2360457 bytes
+ build_py/src/bindings/pybind/libwinpthread-1.dll   |    Bin 0 -> 94595 bytes
+ build_py/src/cmake_install.cmake                   |     74 +
+ .../CMakeFiles/CMakeDirectoryInformation.cmake     |     16 +
+ .../CMakeFiles/core.dir/AlgorithmFactory.cpp.obj   |    Bin 0 -> 26887 bytes
+ .../CMakeFiles/core.dir/AlgorithmFactory.cpp.obj.d |    499 +
+ .../CMakeFiles/core.dir/BrotliCompressor.cpp.obj   |    Bin 0 -> 15152 bytes
+ .../CMakeFiles/core.dir/BrotliCompressor.cpp.obj.d |    227 +
+ .../CMakeFiles/core.dir/DPFlateCompressor.cpp.obj  |    Bin 0 -> 47085 bytes
+ .../core.dir/DPFlateCompressor.cpp.obj.d           |    517 +
+ .../CMakeFiles/core.dir/DeflateCompressor.cpp.obj  |    Bin 0 -> 40986 bytes
+ .../core.dir/DeflateCompressor.cpp.obj.d           |    495 +
+ .../src/core/CMakeFiles/core.dir/DependInfo.cmake  |     31 +
+ .../CMakeFiles/core.dir/GzipCompressor.cpp.obj     |    Bin 0 -> 11104 bytes
+ .../CMakeFiles/core.dir/GzipCompressor.cpp.obj.d   |    213 +
+ .../CMakeFiles/core.dir/LZDPCompressor.cpp.obj     |    Bin 0 -> 8671 bytes
+ .../CMakeFiles/core.dir/LZDPCompressor.cpp.obj.d   |    482 +
+ .../CMakeFiles/core.dir/LZSSCompressor.cpp.obj     |    Bin 0 -> 10360 bytes
+ .../CMakeFiles/core.dir/LZSSCompressor.cpp.obj.d   |    210 +
+ .../CMakeFiles/core.dir/ZstdCompressor.cpp.obj     |    Bin 0 -> 7979 bytes
+ .../CMakeFiles/core.dir/ZstdCompressor.cpp.obj.d   |    226 +
+ .../__/processor/ChunkedStreamAdapter.cpp.obj      |    Bin 0 -> 30458 bytes
+ .../__/processor/ChunkedStreamAdapter.cpp.obj.d    |    125 +
+ build_py/src/core/CMakeFiles/core.dir/build.make   |    247 +
+ .../src/core/CMakeFiles/core.dir/cmake_clean.cmake |     27 +
+ .../CMakeFiles/core.dir/cmake_clean_target.cmake   |      3 +
+ .../CMakeFiles/core.dir/compiler_depend.internal   |   2990 +
+ .../core/CMakeFiles/core.dir/compiler_depend.make  |   4073 +
+ .../core/CMakeFiles/core.dir/compiler_depend.ts    |      2 +
+ build_py/src/core/CMakeFiles/core.dir/depend.make  |      2 +
+ build_py/src/core/CMakeFiles/core.dir/flags.make   |     10 +
+ .../src/core/CMakeFiles/core.dir/includes_CXX.rsp  |      1 +
+ build_py/src/core/CMakeFiles/core.dir/link.txt     |      2 +
+ .../src/core/CMakeFiles/core.dir/progress.make     |     11 +
+ build_py/src/core/CMakeFiles/progress.marks        |      1 +
+ build_py/src/core/Makefile                         |    446 +
+ build_py/src/core/cmake_install.cmake              |     39 +
+ build_py/src/core/libcore.a                        |    Bin 0 -> 208152 bytes
+ .../CMakeFiles/CMakeDirectoryInformation.cmake     |     16 +
+ .../CMakeFiles/processor.dir/DependInfo.cmake      |     25 +
+ .../CMakeFiles/processor.dir/Pipeline.cpp.obj      |    Bin 0 -> 17138 bytes
+ .../CMakeFiles/processor.dir/Pipeline.cpp.obj.d    |    214 +
+ .../processor.dir/PipelineBuilder.cpp.obj          |    Bin 0 -> 14013 bytes
+ .../processor.dir/PipelineBuilder.cpp.obj.d        |    222 +
+ .../processor.dir/StreamProcessor.cpp.obj          |    Bin 0 -> 43923 bytes
+ .../processor.dir/StreamProcessor.cpp.obj.d        |    225 +
+ .../processor/CMakeFiles/processor.dir/build.make  |    145 +
+ .../CMakeFiles/processor.dir/cmake_clean.cmake     |     15 +
+ .../processor.dir/cmake_clean_target.cmake         |      3 +
+ .../processor.dir/compiler_depend.internal         |    667 +
+ .../CMakeFiles/processor.dir/compiler_depend.make  |   1134 +
+ .../CMakeFiles/processor.dir/compiler_depend.ts    |      2 +
+ .../processor/CMakeFiles/processor.dir/depend.make |      2 +
+ .../processor/CMakeFiles/processor.dir/flags.make  |     10 +
+ .../CMakeFiles/processor.dir/includes_CXX.rsp      |      1 +
+ .../processor/CMakeFiles/processor.dir/link.txt    |      2 +
+ .../CMakeFiles/processor.dir/progress.make         |      5 +
+ build_py/src/processor/CMakeFiles/progress.marks   |      1 +
+ build_py/src/processor/Makefile                    |    284 +
+ build_py/src/processor/cmake_install.cmake         |     39 +
+ build_py/src/processor/libprocessor.a              |    Bin 0 -> 82852 bytes
+ .../CMakeFiles/CMakeDirectoryInformation.cmake     |     16 +
+ build_py/src/utils/CMakeFiles/progress.marks       |      1 +
+ build_py/src/utils/Makefile                        |    188 +
+ build_py/src/utils/cmake_install.cmake             |     39 +
+ .../CMakeFiles/CMakeDirectoryInformation.cmake     |     16 +
+ .../CMakeFiles/debug_dpflate.dir/DependInfo.cmake  |     23 +
+ .../tests/CMakeFiles/debug_dpflate.dir/build.make  |    117 +
+ .../CMakeFiles/debug_dpflate.dir/cmake_clean.cmake |     13 +
+ .../debug_dpflate.dir/compiler_depend.make         |      2 +
+ .../debug_dpflate.dir/compiler_depend.ts           |      2 +
+ .../tests/CMakeFiles/debug_dpflate.dir/depend.make |      2 +
+ .../tests/CMakeFiles/debug_dpflate.dir/flags.make  |     10 +
+ .../CMakeFiles/debug_dpflate.dir/includes_CXX.rsp  |      1 +
+ .../tests/CMakeFiles/debug_dpflate.dir/link.txt    |      3 +
+ .../CMakeFiles/debug_dpflate.dir/linkLibs.rsp      |      1 +
+ .../CMakeFiles/debug_dpflate.dir/objects1.rsp      |      1 +
+ .../CMakeFiles/debug_dpflate.dir/progress.make     |      3 +
+ .../debug_token_trace.dir/DependInfo.cmake         |     23 +
+ .../CMakeFiles/debug_token_trace.dir/build.make    |    113 +
+ .../debug_token_trace.dir/cmake_clean.cmake        |     13 +
+ .../debug_token_trace.dir/compiler_depend.make     |      2 +
+ .../debug_token_trace.dir/compiler_depend.ts       |      2 +
+ .../CMakeFiles/debug_token_trace.dir/depend.make   |      2 +
+ .../CMakeFiles/debug_token_trace.dir/flags.make    |     10 +
+ .../debug_token_trace.dir/includes_CXX.rsp         |      1 +
+ .../CMakeFiles/debug_token_trace.dir/link.txt      |      3 +
+ .../CMakeFiles/debug_token_trace.dir/linkLibs.rsp  |      1 +
+ .../CMakeFiles/debug_token_trace.dir/objects1.rsp  |      1 +
+ .../CMakeFiles/debug_token_trace.dir/progress.make |      3 +
+ build_py/tests/CMakeFiles/progress.marks           |      1 +
+ .../CMakeFiles/test_3hm_all.dir/DependInfo.cmake   |     23 +
+ .../tests/CMakeFiles/test_3hm_all.dir/build.make   |    117 +
+ .../CMakeFiles/test_3hm_all.dir/cmake_clean.cmake  |     13 +
+ .../test_3hm_all.dir/compiler_depend.make          |      2 +
+ .../CMakeFiles/test_3hm_all.dir/compiler_depend.ts |      2 +
+ .../tests/CMakeFiles/test_3hm_all.dir/depend.make  |      2 +
+ .../tests/CMakeFiles/test_3hm_all.dir/flags.make   |     10 +
+ .../CMakeFiles/test_3hm_all.dir/includes_CXX.rsp   |      1 +
+ .../tests/CMakeFiles/test_3hm_all.dir/link.txt     |      3 +
+ .../tests/CMakeFiles/test_3hm_all.dir/linkLibs.rsp |      1 +
+ .../tests/CMakeFiles/test_3hm_all.dir/objects1.rsp |      1 +
+ .../CMakeFiles/test_3hm_all.dir/progress.make      |      3 +
+ .../test_3hm_binary.dir/DependInfo.cmake           |     23 +
+ .../CMakeFiles/test_3hm_binary.dir/build.make      |    117 +
+ .../test_3hm_binary.dir/cmake_clean.cmake          |     13 +
+ .../test_3hm_binary.dir/compiler_depend.make       |      2 +
+ .../test_3hm_binary.dir/compiler_depend.ts         |      2 +
+ .../CMakeFiles/test_3hm_binary.dir/depend.make     |      2 +
+ .../CMakeFiles/test_3hm_binary.dir/flags.make      |     10 +
+ .../test_3hm_binary.dir/includes_CXX.rsp           |      1 +
+ .../tests/CMakeFiles/test_3hm_binary.dir/link.txt  |      3 +
+ .../CMakeFiles/test_3hm_binary.dir/linkLibs.rsp    |      1 +
+ .../CMakeFiles/test_3hm_binary.dir/objects1.rsp    |      1 +
+ .../CMakeFiles/test_3hm_binary.dir/progress.make   |      3 +
+ .../CMakeFiles/test_Deflate.dir/DependInfo.cmake   |     23 +
+ .../tests/CMakeFiles/test_Deflate.dir/build.make   |    113 +
+ .../CMakeFiles/test_Deflate.dir/cmake_clean.cmake  |     13 +
+ .../test_Deflate.dir/compiler_depend.make          |      2 +
+ .../CMakeFiles/test_Deflate.dir/compiler_depend.ts |      2 +
+ .../tests/CMakeFiles/test_Deflate.dir/depend.make  |      2 +
+ .../tests/CMakeFiles/test_Deflate.dir/flags.make   |     10 +
+ .../CMakeFiles/test_Deflate.dir/includes_CXX.rsp   |      1 +
+ .../tests/CMakeFiles/test_Deflate.dir/link.txt     |      3 +
+ .../tests/CMakeFiles/test_Deflate.dir/linkLibs.rsp |      1 +
+ .../tests/CMakeFiles/test_Deflate.dir/objects1.rsp |      1 +
+ .../CMakeFiles/test_Deflate.dir/progress.make      |      3 +
+ .../test_HuffmanTree3HM.dir/DependInfo.cmake       |     23 +
+ .../CMakeFiles/test_HuffmanTree3HM.dir/build.make  |    113 +
+ .../test_HuffmanTree3HM.dir/cmake_clean.cmake      |     13 +
+ .../test_HuffmanTree3HM.dir/compiler_depend.make   |      2 +
+ .../test_HuffmanTree3HM.dir/compiler_depend.ts     |      2 +
+ .../CMakeFiles/test_HuffmanTree3HM.dir/depend.make |      2 +
+ .../CMakeFiles/test_HuffmanTree3HM.dir/flags.make  |     10 +
+ .../test_HuffmanTree3HM.dir/includes_CXX.rsp       |      1 +
+ .../CMakeFiles/test_HuffmanTree3HM.dir/link.txt    |      3 +
+ .../test_HuffmanTree3HM.dir/linkLibs.rsp           |      1 +
+ .../test_HuffmanTree3HM.dir/objects1.rsp           |      1 +
+ .../test_HuffmanTree3HM.dir/progress.make          |      3 +
+ .../test_PackWriter.dir/DependInfo.cmake           |     23 +
+ .../CMakeFiles/test_PackWriter.dir/build.make      |    116 +
+ .../test_PackWriter.dir/cmake_clean.cmake          |     13 +
+ .../test_PackWriter.dir/compiler_depend.make       |      2 +
+ .../test_PackWriter.dir/compiler_depend.ts         |      2 +
+ .../CMakeFiles/test_PackWriter.dir/depend.make     |      2 +
+ .../CMakeFiles/test_PackWriter.dir/flags.make      |     10 +
+ .../test_PackWriter.dir/includes_CXX.rsp           |      1 +
+ .../tests/CMakeFiles/test_PackWriter.dir/link.txt  |      3 +
+ .../CMakeFiles/test_PackWriter.dir/linkLibs.rsp    |      1 +
+ .../CMakeFiles/test_PackWriter.dir/objects1.rsp    |      1 +
+ .../CMakeFiles/test_PackWriter.dir/progress.make   |      3 +
+ .../test_PackWriter_RoundTrip.dir/DependInfo.cmake |     23 +
+ .../test_PackWriter_RoundTrip.dir/build.make       |    117 +
+ .../cmake_clean.cmake                              |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../test_PackWriter_RoundTrip.dir/depend.make      |      2 +
+ .../test_PackWriter_RoundTrip.dir/flags.make       |     10 +
+ .../test_PackWriter_RoundTrip.dir/includes_CXX.rsp |      1 +
+ .../test_PackWriter_RoundTrip.dir/link.txt         |      3 +
+ .../test_PackWriter_RoundTrip.dir/linkLibs.rsp     |      1 +
+ .../test_PackWriter_RoundTrip.dir/objects1.rsp     |      1 +
+ .../test_PackWriter_RoundTrip.dir/progress.make    |      3 +
+ .../test_algorithm_comparison.dir/DependInfo.cmake |     23 +
+ .../test_algorithm_comparison.dir/build.make       |    117 +
+ .../cmake_clean.cmake                              |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../test_algorithm_comparison.dir/depend.make      |      2 +
+ .../test_algorithm_comparison.dir/flags.make       |     10 +
+ .../test_algorithm_comparison.dir/includes_CXX.rsp |      1 +
+ .../test_algorithm_comparison.dir/link.txt         |      3 +
+ .../test_algorithm_comparison.dir/linkLibs.rsp     |      1 +
+ .../test_algorithm_comparison.dir/objects1.rsp     |      1 +
+ .../test_algorithm_comparison.dir/progress.make    |      3 +
+ .../test_lzdp_binary.dir/DependInfo.cmake          |     23 +
+ .../CMakeFiles/test_lzdp_binary.dir/build.make     |    117 +
+ .../test_lzdp_binary.dir/cmake_clean.cmake         |     13 +
+ .../test_lzdp_binary.dir/compiler_depend.make      |      2 +
+ .../test_lzdp_binary.dir/compiler_depend.ts        |      2 +
+ .../CMakeFiles/test_lzdp_binary.dir/depend.make    |      2 +
+ .../CMakeFiles/test_lzdp_binary.dir/flags.make     |     10 +
+ .../test_lzdp_binary.dir/includes_CXX.rsp          |      1 +
+ .../tests/CMakeFiles/test_lzdp_binary.dir/link.txt |      3 +
+ .../CMakeFiles/test_lzdp_binary.dir/linkLibs.rsp   |      1 +
+ .../CMakeFiles/test_lzdp_binary.dir/objects1.rsp   |      1 +
+ .../CMakeFiles/test_lzdp_binary.dir/progress.make  |      3 +
+ .../DependInfo.cmake                               |     23 +
+ .../test_lzdp_dpflate_regression.dir/build.make    |    113 +
+ .../cmake_clean.cmake                              |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../test_lzdp_dpflate_regression.dir/depend.make   |      2 +
+ .../test_lzdp_dpflate_regression.dir/flags.make    |     10 +
+ .../includes_CXX.rsp                               |      1 +
+ .../test_lzdp_dpflate_regression.dir/link.txt      |      3 +
+ .../test_lzdp_dpflate_regression.dir/linkLibs.rsp  |      1 +
+ .../test_lzdp_dpflate_regression.dir/objects1.rsp  |      1 +
+ .../test_lzdp_dpflate_regression.dir/progress.make |      3 +
+ .../test_lzdp_dpflate_stream.dir/DependInfo.cmake  |     23 +
+ .../test_lzdp_dpflate_stream.dir/build.make        |    117 +
+ .../test_lzdp_dpflate_stream.dir/cmake_clean.cmake |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../test_lzdp_dpflate_stream.dir/depend.make       |      2 +
+ .../test_lzdp_dpflate_stream.dir/flags.make        |     10 +
+ .../test_lzdp_dpflate_stream.dir/includes_CXX.rsp  |      1 +
+ .../test_lzdp_dpflate_stream.dir/link.txt          |      3 +
+ .../test_lzdp_dpflate_stream.dir/linkLibs.rsp      |      1 +
+ .../test_lzdp_dpflate_stream.dir/objects1.rsp      |      1 +
+ .../test_lzdp_dpflate_stream.dir/progress.make     |      3 +
+ .../DependInfo.cmake                               |     23 +
+ .../build.make                                     |    117 +
+ .../cmake_clean.cmake                              |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../depend.make                                    |      2 +
+ .../flags.make                                     |     10 +
+ .../includes_CXX.rsp                               |      1 +
+ .../test_lzdp_memory_streaming_parity.dir/link.txt |      3 +
+ .../linkLibs.rsp                                   |      1 +
+ .../objects1.rsp                                   |      1 +
+ .../progress.make                                  |      3 +
+ .../test_lzss_noflag.dir/DependInfo.cmake          |     23 +
+ .../CMakeFiles/test_lzss_noflag.dir/build.make     |    117 +
+ .../test_lzss_noflag.dir/cmake_clean.cmake         |     13 +
+ .../test_lzss_noflag.dir/compiler_depend.make      |      2 +
+ .../test_lzss_noflag.dir/compiler_depend.ts        |      2 +
+ .../CMakeFiles/test_lzss_noflag.dir/depend.make    |      2 +
+ .../CMakeFiles/test_lzss_noflag.dir/flags.make     |     10 +
+ .../test_lzss_noflag.dir/includes_CXX.rsp          |      1 +
+ .../tests/CMakeFiles/test_lzss_noflag.dir/link.txt |      3 +
+ .../CMakeFiles/test_lzss_noflag.dir/linkLibs.rsp   |      1 +
+ .../CMakeFiles/test_lzss_noflag.dir/objects1.rsp   |      1 +
+ .../CMakeFiles/test_lzss_noflag.dir/progress.make  |      3 +
+ .../test_mixed_dpflate_only.dir/DependInfo.cmake   |     23 +
+ .../test_mixed_dpflate_only.dir/build.make         |    114 +
+ .../test_mixed_dpflate_only.dir/cmake_clean.cmake  |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../test_mixed_dpflate_only.dir/compiler_depend.ts |      2 +
+ .../test_mixed_dpflate_only.dir/depend.make        |      2 +
+ .../test_mixed_dpflate_only.dir/flags.make         |     10 +
+ .../test_mixed_dpflate_only.dir/includes_CXX.rsp   |      1 +
+ .../test_mixed_dpflate_only.dir/link.txt           |      3 +
+ .../test_mixed_dpflate_only.dir/linkLibs.rsp       |      1 +
+ .../test_mixed_dpflate_only.dir/objects1.rsp       |      1 +
+ .../test_mixed_dpflate_only.dir/progress.make      |      3 +
+ .../test_regression_baseline.dir/DependInfo.cmake  |     23 +
+ .../test_regression_baseline.dir/build.make        |    117 +
+ .../test_regression_baseline.dir/cmake_clean.cmake |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../test_regression_baseline.dir/depend.make       |      2 +
+ .../test_regression_baseline.dir/flags.make        |     10 +
+ .../test_regression_baseline.dir/includes_CXX.rsp  |      1 +
+ .../test_regression_baseline.dir/link.txt          |      3 +
+ .../test_regression_baseline.dir/linkLibs.rsp      |      1 +
+ .../test_regression_baseline.dir/objects1.rsp      |      1 +
+ .../test_regression_baseline.dir/progress.make     |      3 +
+ .../CMakeFiles/test_roundtrip.dir/DependInfo.cmake |     23 +
+ .../tests/CMakeFiles/test_roundtrip.dir/build.make |    113 +
+ .../test_roundtrip.dir/cmake_clean.cmake           |     13 +
+ .../test_roundtrip.dir/compiler_depend.make        |      2 +
+ .../test_roundtrip.dir/compiler_depend.ts          |      2 +
+ .../CMakeFiles/test_roundtrip.dir/depend.make      |      2 +
+ .../tests/CMakeFiles/test_roundtrip.dir/flags.make |     10 +
+ .../CMakeFiles/test_roundtrip.dir/includes_CXX.rsp |      1 +
+ .../tests/CMakeFiles/test_roundtrip.dir/link.txt   |      3 +
+ .../CMakeFiles/test_roundtrip.dir/linkLibs.rsp     |      1 +
+ .../CMakeFiles/test_roundtrip.dir/objects1.rsp     |      1 +
+ .../CMakeFiles/test_roundtrip.dir/progress.make    |      3 +
+ .../test_wcx_corrupt.dir/DependInfo.cmake          |     23 +
+ .../CMakeFiles/test_wcx_corrupt.dir/build.make     |    117 +
+ .../test_wcx_corrupt.dir/cmake_clean.cmake         |     13 +
+ .../test_wcx_corrupt.dir/compiler_depend.make      |      2 +
+ .../test_wcx_corrupt.dir/compiler_depend.ts        |      2 +
+ .../CMakeFiles/test_wcx_corrupt.dir/depend.make    |      2 +
+ .../CMakeFiles/test_wcx_corrupt.dir/flags.make     |     10 +
+ .../test_wcx_corrupt.dir/includes_CXX.rsp          |      1 +
+ .../tests/CMakeFiles/test_wcx_corrupt.dir/link.txt |      3 +
+ .../CMakeFiles/test_wcx_corrupt.dir/linkLibs.rsp   |      1 +
+ .../CMakeFiles/test_wcx_corrupt.dir/objects1.rsp   |      1 +
+ .../CMakeFiles/test_wcx_corrupt.dir/progress.make  |      3 +
+ .../DependInfo.cmake                               |     23 +
+ .../test_wcx_directory_archive.dir/build.make      |    117 +
+ .../cmake_clean.cmake                              |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../test_wcx_directory_archive.dir/depend.make     |      2 +
+ .../test_wcx_directory_archive.dir/flags.make      |     10 +
+ .../includes_CXX.rsp                               |      1 +
+ .../test_wcx_directory_archive.dir/link.txt        |      3 +
+ .../test_wcx_directory_archive.dir/linkLibs.rsp    |      1 +
+ .../test_wcx_directory_archive.dir/objects1.rsp    |      1 +
+ .../test_wcx_directory_archive.dir/progress.make   |      3 +
+ .../test_wcx_file_strict.dir/DependInfo.cmake      |     23 +
+ .../CMakeFiles/test_wcx_file_strict.dir/build.make |    117 +
+ .../test_wcx_file_strict.dir/cmake_clean.cmake     |     13 +
+ .../test_wcx_file_strict.dir/compiler_depend.make  |      2 +
+ .../test_wcx_file_strict.dir/compiler_depend.ts    |      2 +
+ .../test_wcx_file_strict.dir/depend.make           |      2 +
+ .../CMakeFiles/test_wcx_file_strict.dir/flags.make |     10 +
+ .../test_wcx_file_strict.dir/includes_CXX.rsp      |      1 +
+ .../CMakeFiles/test_wcx_file_strict.dir/link.txt   |      3 +
+ .../test_wcx_file_strict.dir/linkLibs.rsp          |      1 +
+ .../test_wcx_file_strict.dir/objects1.rsp          |      1 +
+ .../test_wcx_file_strict.dir/progress.make         |      3 +
+ .../test_wcx_strict_no_compat.dir/DependInfo.cmake |     23 +
+ .../test_wcx_strict_no_compat.dir/build.make       |    117 +
+ .../cmake_clean.cmake                              |     13 +
+ .../compiler_depend.make                           |      2 +
+ .../compiler_depend.ts                             |      2 +
+ .../test_wcx_strict_no_compat.dir/depend.make      |      2 +
+ .../test_wcx_strict_no_compat.dir/flags.make       |     10 +
+ .../test_wcx_strict_no_compat.dir/includes_CXX.rsp |      1 +
+ .../test_wcx_strict_no_compat.dir/link.txt         |      3 +
+ .../test_wcx_strict_no_compat.dir/linkLibs.rsp     |      1 +
+ .../test_wcx_strict_no_compat.dir/objects1.rsp     |      1 +
+ .../test_wcx_strict_no_compat.dir/progress.make    |      3 +
+ build_py/tests/Makefile                            |   1070 +
+ build_py/tests/cmake_install.cmake                 |     39 +
+ comparison_report.csv                              |     21 +
+ config/webcompress_settings.json                   |     45 +-
+ crc_out.txt                                        |      0
+ debug_3hm.log                                      |    346 +
+ debug_algorithm_comparison.log                     |      2 +
+ deflate_compressor_debug.log                       |    831 +
+ docs/algorithm_comparison_memory_latest.csv        |     36 +
+ ...-nonstreaming-vs-streaming-divergence-report.md |    130 +
+ docs/analysis/work_handover_report.md              |    391 +-
+ docs/bug_report.md                                 |    333 +
+ docs/cursor_understanding_lzdp_and_dpflate_d.md    |   1006 +
+ docs/debug_plan.md                                 |    466 +
+ docs/design/algorithm_decision_engine_design.md    |     72 +-
+ docs/design/flate-encoding-design.md               |    610 +
+ docs/design/lzdp-dpflate-work-report.md            |    298 +
+ docs/design/lzdp-file-pipeline-design.md           |     64 +
+ docs/design/lzdp_dp_design.md                      |    108 +-
+ docs/design/silent_exploration_interrupt-design.md |    400 +
+ docs/design/streaming-compression-design.md        |   1467 +
+ .../streaming-interrupt-checkpoint-design.md       |    500 +
+ docs/design/streaming-workspace-spec.md            |    115 +-
+ docs/design/wcx-streaming-remediation-log.md       |     57 +
+ docs/handoff_streaming_lzdp_work_2026-05-12.md     |    101 +
+ docs/handoff_work_summary.md                       |      2 +
+ docs/prompts(important).md                         |     65 +-
+ docs/reports/gui-crash-retrospective-zh.md         |    165 +
+ ...216\213\347\274\251\350\256\276\350\256\241.md" |   9223 ++
+ ...206\231\345\257\271\347\205\247\350\241\250.md" |     50 +
+ logs/gui.log                                       |     23 +-
+ lzss_gui_debug.log                                 |   1422 +
+ random_test.deflate                                |    Bin 50389 -> 51408 bytes
+ repetitive_test.deflate                            |    Bin 311 -> 311 bytes
+ .../benchmark/compress_test_1kib_random.bin        |    Bin 0 -> 1024 bytes
+ .../benchmark/compress_test_1kib_repetitive.bin    |      1 +
+ .../benchmark/compress_test_1kib_text.bin          |     12 +
+ .../benchmark/compress_test_1mib_random.bin        |    Bin 0 -> 1048576 bytes
+ .../benchmark/compress_test_1mib_repetitive.bin    |      1 +
+ .../benchmark/compress_test_1mib_text.bin          |  11651 ++
+ .../benchmark/compress_test_256kib_random.bin      |    Bin 0 -> 262144 bytes
+ .../benchmark/compress_test_256kib_repetitive.bin  |      1 +
+ .../benchmark/compress_test_256kib_text.bin        |   2913 +
+ .../benchmark/compress_test_4kib_random.bin        |    Bin 0 -> 4096 bytes
+ .../benchmark/compress_test_4kib_repetitive.bin    |      1 +
+ .../benchmark/compress_test_4kib_text.bin          |     46 +
+ .../benchmark/compress_test_4mib_random.bin        |    Bin 0 -> 4194304 bytes
+ .../benchmark/compress_test_4mib_repetitive.bin    |      1 +
+ .../benchmark/compress_test_4mib_text.bin          |  46604 +++++++
+ .../benchmark/compress_test_64kib_random.bin       |    Bin 0 -> 65536 bytes
+ .../benchmark/compress_test_64kib_repetitive.bin   |      1 +
+ .../benchmark/compress_test_64kib_text.bin         |    729 +
+ .../fixtures/uncompressed/benchmark/manifest.json  |     64 +
+ .../imdb-movie-reviews-word2vec-tfidf-bow.ipynb    | 124936 ++++++++++++++++++
+ ...50\200\346\250\241\345\236\213\357\274\211.pdf" |    Bin 0 -> 1141090 bytes
+ run.bat                                            |     42 +-
+ scripts/gen_compression_test_files.py              |    148 +
+ src/CMakeLists.txt                                 |      1 -
+ src/ade/include/CountMinSketch.hpp                 |      2 +-
+ src/ade/include/DecisionEngine.hpp                 |      6 +
+ src/algorithm/AlgorithmBase.cpp                    |      2 +
+ src/algorithm/Brotli.cpp                           |    108 +-
+ src/algorithm/CMakeLists.txt                       |      5 +-
+ src/algorithm/DPFlate.cpp                          |    899 +-
+ src/algorithm/Deflate.cpp                          |    202 +-
+ src/algorithm/HuffmanTree.cpp                      |     31 +-
+ src/algorithm/HuffmanTree3HM.cpp                   |    194 +
+ src/algorithm/Inflate.cpp                          |    146 +-
+ src/algorithm/Inflate3HM.cpp                       |    247 +
+ src/algorithm/LZDP.cpp                             |   1129 +-
+ src/algorithm/LZSS.cpp                             |    385 +-
+ src/algorithm/include/BlockProfile.hpp             |     26 +
+ src/algorithm/include/Brotli.hpp                   |      8 -
+ src/algorithm/include/DPFlate.hpp                  |    181 +-
+ src/algorithm/include/Deflate.hpp                  |     28 +-
+ src/algorithm/include/FileBitReader.hpp            |     60 +
+ src/algorithm/include/HuffmanTree.hpp              |     22 +-
+ src/algorithm/include/HuffmanTree3HM.hpp           |    141 +
+ src/algorithm/include/IAlgorithm.hpp               |     52 +-
+ src/algorithm/include/Inflate.hpp                  |     22 +-
+ src/algorithm/include/Inflate3HM.hpp               |     65 +
+ src/algorithm/include/LZDP.hpp                     |    159 +-
+ src/algorithm/include/LZSS.hpp                     |     97 +-
+ src/algorithm/include/LzStyleDpCell.hpp            |     27 -
+ src/algorithm/include/SpillBitStream.hpp           |    203 +
+ src/algorithm/include/TempFile.hpp                 |    193 +
+ src/algorithm/include/VirtualBuffer.hpp            |     86 +
+ src/api/CMakeLists.txt                             |      5 +-
+ src/{archiver => api}/WCXProtocol.cpp              |      7 +-
+ src/api/api.cpp                                    |    812 +-
+ src/{archiver => api}/include/WCXProtocol.hpp      |      4 +-
+ src/api/include/api.hpp                            |     95 +-
+ .../include/wcx_decompress_input.hpp}              |     13 +-
+ .../WCXReader.cpp => api/wcx_decompress_input.cpp} |      8 +-
+ src/archiver/CMakeLists.txt                        |      5 +-
+ src/archiver/PackWriter.cpp                        |     15 +-
+ src/archiver/include/Archiver.hpp                  |      4 +-
+ src/archiver/include/PackWriter.hpp                |      8 +-
+ src/bindings/pybind/CMakeLists.txt                 |     15 +-
+ src/bindings/pybind/pybind_module.cpp              |    598 +-
+ src/core/AlgorithmFactory.cpp                      |    127 +-
+ src/core/BrotliCompressor.cpp                      |     60 +
+ src/core/CMakeLists.txt                            |      7 +
+ src/core/DPFlateCompressor.cpp                     |    208 +
+ src/core/DeflateCompressor.cpp                     |    260 +
+ src/core/GzipCompressor.cpp                        |    118 +
+ src/core/LZDPCompressor.cpp                        |     73 +
+ src/core/LZSSCompressor.cpp                        |     97 +
+ src/core/ZstdCompressor.cpp                        |     53 +
+ src/core/include/AlgorithmFactory.hpp              |     67 +-
+ src/core/include/BrotliCompressor.hpp              |     42 +
+ src/core/include/DPFlateCompressor.hpp             |     81 +
+ src/core/include/DeflateCompressor.hpp             |     83 +
+ src/core/include/GzipCompressor.hpp                |     34 +
+ src/core/include/ICompressor.hpp                   |     40 +
+ src/core/include/LZDPCompressor.hpp                |     63 +
+ src/core/include/LZSSCompressor.hpp                |     55 +
+ src/core/include/ZstdCompressor.hpp                |     34 +
+ src/gui/ade/engine.py                              |      5 +-
+ src/gui/ade/explorer.py                            |     73 +-
+ src/gui/ade/params.py                              |     10 +-
+ src/gui/ade/training.py                            |      5 +-
+ src/gui/config/settings.py                         |    138 +-
+ src/gui/config/theme.py                            |      6 +-
+ src/gui/engine/bridge.py                           |      7 +-
+ src/gui/engine/compressor.py                       |    955 +-
+ src/gui/engine/decompress_log.py                   |     62 +
+ src/gui/engine/file_protocol.py                    |     58 +-
+ src/gui/engine/token_parser.py                     |     35 +-
+ src/gui/engine/viz_loader.py                       |    372 -
+ src/gui/main.py                                    |     19 +-
+ src/gui/models.py                                  |    202 +-
+ src/gui/ui/dialogs/block_heatmap_dialog.py         |      5 +-
+ src/gui/ui/dialogs/viz_dialog.py                   |    342 -
+ src/gui/ui/helpers.py                              |     57 +-
+ src/gui/ui/main_window.py                          |   1060 +-
+ src/gui/ui/panels/property_panel.py                |      9 +-
+ src/gui/ui/panels/resource_tree.py                 |      5 +-
+ src/gui/ui/table.py                                |    189 +-
+ src/gui/ui/views/analysis_view.py                  |     33 +-
+ src/gui/ui/views/compression_view.py               |      1 +
+ src/gui/ui/views/dashboard_view.py                 |      1 +
+ src/gui/ui/views/network_view.py                   |      1 +
+ src/gui/ui/views/visualizers/block.py              |    219 +
+ src/gui/ui/widgets/window_canvas.py                |    450 -
+ src/gui/ui/worker.py                               |    510 +-
+ src/gui/utils/interaction_log.py                   |     50 +
+ src/gui/utils/logging.py                           |     38 +-
+ src/gui/utils/workspace.py                         |     33 +-
+ src/gui/windows/heatmap.py                         |      4 +-
+ src/processor/ChunkedStreamAdapter.cpp             |     58 +
+ src/processor/Pipeline.cpp                         |      8 +
+ src/processor/PipelineBuilder.cpp                  |     21 +-
+ src/processor/StreamProcessor.cpp                  |      3 +-
+ src/processor/include/ChunkedStreamAdapter.hpp     |     27 +-
+ src/processor/include/Pipeline.hpp                 |      3 +
+ src/processor/include/PipelineBuilder.hpp          |      7 +-
+ src/processor/include/StreamChunkPolicy.hpp        |     35 +
+ src/processor/include/StreamProcessor.hpp          |      4 +
+ src/utils/include/BitWriter.hpp                    |     20 +-
+ src/utils/include/DebugLog.hpp                     |     94 +
+ src/viz/BackgroundWriter.cpp                       |     71 -
+ src/viz/CMakeLists.txt                             |     19 -
+ src/viz/DiskVizObserver.cpp                        |    124 -
+ src/viz/include/BackgroundWriter.hpp               |     52 -
+ src/viz/include/DiskVizObserver.hpp                |     59 -
+ src/viz/include/VizEvent.hpp                       |    154 -
+ stderr.txt                                         |      0
+ stdout.txt                                         |     43 +
+ streaming_test.log                                 |     18 +
+ test_algorithm_comparison_debug.log                |    919 +
+ test_mixed_dpflate_only.log                        |    577 +
+ tests/CMakeLists.txt                               |    220 +
+ tests/cpp/ade/test_feature_extractor.cpp           |      2 +-
+ tests/debug_dpflate.cpp                            |    375 +
+ tests/debug_token_trace.cpp                        |    167 +
+ tests/python/test_streaming_memory_roundtrip.py    |    143 +
+ tests/test.cpp                                     |     42 +-
+ tests/test_3hm_all.cpp                             |    232 +
+ tests/test_3hm_binary.cpp                          |     63 +
+ tests/test_Deflate.cpp                             |    465 +-
+ tests/test_HuffmanTree3HM.cpp                      |    383 +
+ tests/test_LZSS.cpp                                |      5 +-
+ tests/test_PackWriter.cpp                          |     55 +
+ tests/test_PackWriter_RoundTrip.cpp                |     71 +
+ tests/test_algorithm_comparison.cpp                |   1770 +
+ tests/test_dpflate_3hm_stream.cpp                  |    196 +
+ tests/test_lzdp_binary.cpp                         |     38 +
+ tests/test_lzdp_dpflate_regression.cpp             |    309 +
+ tests/test_lzdp_dpflate_stream.cpp                 |    172 +
+ tests/test_lzdp_memory_flag.cpp                    |    165 +
+ tests/test_lzdp_memory_streaming_parity.cpp        |    178 +
+ tests/test_lzss_noflag.cpp                         |    245 +
+ tests/test_mixed_dpflate_only.cpp                  |     90 +
+ tests/test_regression_baseline.cpp                 |    385 +
+ tests/test_roundtrip.cpp                           |    123 +-
+ tests/test_wcx_directory_archive.cpp               |    130 +
+ tests/test_wcx_strict_no_compat.cpp                |    113 +
+ 1347 files changed, 320372 insertions(+), 4566 deletions(-)
