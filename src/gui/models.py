@@ -244,6 +244,50 @@ def merge_decision_overrides_into_algo_config(
     return merged
 
 
+def sanitize_stage2_params(
+    algorithm: AlgorithmType,
+    overrides: Mapping[str, Any] | None,
+    *,
+    file_size: int = 0,
+) -> dict[str, int]:
+    """Clamp Stage2a / heuristic overrides to per-algorithm GUI bounds.
+
+    The param regressor emits a fixed 5-vector (LZDP-oriented names). Values are
+    mapped via :func:`merge_decision_overrides_into_algo_config` then clamped so
+    AUTO mode cannot pass e.g. ``window_size=259080`` into Brotli (max 65536).
+    """
+    if not overrides:
+        return {}
+    merged = merge_decision_overrides_into_algo_config(algorithm, {}, overrides)
+    defs = ALGORITHM_PARAMS.get(algorithm, [])
+    if not defs:
+        return {
+            k: int(v)
+            for k, v in merged.items()
+            if isinstance(v, (int, float)) and not isinstance(v, bool)
+        }
+
+    out: dict[str, int] = {}
+    for p in defs:
+        if p.key not in merged:
+            continue
+        try:
+            val = int(merged[p.key])
+        except (TypeError, ValueError):
+            continue
+        val = max(int(p.min_val), min(int(p.max_val), val))
+        if p.step > 1 and p.key in ("search_size", "window_size"):
+            base = int(p.min_val)
+            val = base + ((val - base) // int(p.step)) * int(p.step)
+            val = max(int(p.min_val), min(int(p.max_val), val))
+        if p.key in ("search_size", "window_size") and file_size > 0:
+            val = min(val, max(int(p.min_val), file_size))
+        if getattr(p, "choices", None) and val not in p.choices:
+            val = int(p.default)
+        out[p.key] = val
+    return out
+
+
 def format_algorithm_config_param_lines(
     algorithm: AlgorithmType,
     merged_config: Mapping[str, Any] | None,
@@ -350,6 +394,9 @@ class FileRecord(Record):
         self.decision_result: DecisionResult | None = None
         # 本次成功压缩时使用的算法参数字典（与全局配置解耦，供演示/解析复现）
         self.compression_config_snapshot: dict[str, int] | None = None
+        # Web phrase dictionary preprocess (WCX v3 flag 0x02); plaintext before encode.
+        self.web_dict_preprocess: bool = False
+        self.plaintext_snapshot: bytes | None = None
         #=====ADE Feature Vector (v3.0 - 20-dim Base Segment)============
         self.base_features = None
         self.detected_file_type = None

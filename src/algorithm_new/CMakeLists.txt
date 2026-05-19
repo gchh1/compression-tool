@@ -2,10 +2,9 @@ add_library(
     algorithm_new
     STATIC
     LZDP.cpp
-    pipeline/LZDPNonStreaming.cpp
-    pipeline/Phase1Dpforward.cpp
-    pipeline/Phase2Dpbacktrack.cpp
-    pipeline/LZDPStreamingPipeline.cpp
+    Deflate.cpp
+    LZSS.cpp
+    Dpflate.cpp
 )
 
 target_include_directories(

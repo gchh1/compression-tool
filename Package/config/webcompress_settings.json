@@ -52,6 +52,13 @@
   "ade": {
     "silent_explore_enabled": true,
     "retrain_min_new_samples": 50,
+    "stage2": {
+      "ea_algorithm": 1,
+      "ea_max_time_ms": 3000,
+      "ea_max_eval_kb": 512,
+      "ea_use_live_compress": true,
+      "nn_train_epochs": 50
+    },
     "explore_streaming_threshold_mb": 0.1,
     "explore_streaming_chunk_size_kb": 102,
     "explorer": {
@@ -68,8 +75,11 @@
       "l2_min_samples": 5
     }
   },
+  "compression": {
+    "use_web_resource_dict": false
+  },
   "streaming": {
-    "threshold_mb": 1.0,
+    "threshold_mb": 10.0,
     "chunk_size_kb": 200,
     "workspace_root": "",
     "per_algorithm": {
@@ -79,13 +89,13 @@
         "follow_global_threshold": true,
         "threshold_mb": 10.0
       },
-      "lzss": {
+      "lzdp": {
         "follow_global_chunk": true,
         "chunk_size_kb": 1024,
         "follow_global_threshold": true,
         "threshold_mb": 10.0
       },
-      "lzdp": {
+      "lzss": {
         "follow_global_chunk": true,
         "chunk_size_kb": 1024,
         "follow_global_threshold": true,

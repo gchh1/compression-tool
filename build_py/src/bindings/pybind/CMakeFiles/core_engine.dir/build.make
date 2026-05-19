@@ -120,6 +120,9 @@ src/bindings/pybind/core_engine.cp312-win_amd64.pyd: src/archiver/libarchiver.a
 src/bindings/pybind/core_engine.cp312-win_amd64.pyd: src/processor/libprocessor.a
 src/bindings/pybind/core_engine.cp312-win_amd64.pyd: src/core/libcore.a
 src/bindings/pybind/core_engine.cp312-win_amd64.pyd: src/algorithm/libalgorithm.a
+src/bindings/pybind/core_engine.cp312-win_amd64.pyd: _deps/google_brotli-build/libbrotlienc.a
+src/bindings/pybind/core_engine.cp312-win_amd64.pyd: _deps/google_brotli-build/libbrotlidec.a
+src/bindings/pybind/core_engine.cp312-win_amd64.pyd: _deps/google_brotli-build/libbrotlicommon.a
 src/bindings/pybind/core_engine.cp312-win_amd64.pyd: src/bindings/pybind/CMakeFiles/core_engine.dir/linkLibs.rsp
 src/bindings/pybind/core_engine.cp312-win_amd64.pyd: src/bindings/pybind/CMakeFiles/core_engine.dir/objects1.rsp
 src/bindings/pybind/core_engine.cp312-win_amd64.pyd: src/bindings/pybind/CMakeFiles/core_engine.dir/link.txt

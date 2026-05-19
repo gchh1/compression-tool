@@ -97,6 +97,9 @@ bin/test_lzss_noflag.exe: src/archiver/libarchiver.a
 bin/test_lzss_noflag.exe: src/processor/libprocessor.a
 bin/test_lzss_noflag.exe: src/core/libcore.a
 bin/test_lzss_noflag.exe: src/algorithm/libalgorithm.a
+bin/test_lzss_noflag.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_lzss_noflag.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_lzss_noflag.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_lzss_noflag.exe: tests/CMakeFiles/test_lzss_noflag.dir/linkLibs.rsp
 bin/test_lzss_noflag.exe: tests/CMakeFiles/test_lzss_noflag.dir/objects1.rsp
 bin/test_lzss_noflag.exe: tests/CMakeFiles/test_lzss_noflag.dir/link.txt

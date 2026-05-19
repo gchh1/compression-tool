@@ -57,7 +57,7 @@ struct DPNode {
     DPNode(
         size_t literal_count=0, 
         size_t match_count=0, 
-        int pre_pos=0, //为0表示空节点,可以为-1,因为文件第一个dp
+        int pre_pos=-2,
         const Triple& triple=Triple(0, 0, 0)
     ):literal_count(literal_count), match_count(match_count), pre_pos(pre_pos), triple(triple) {}
 };

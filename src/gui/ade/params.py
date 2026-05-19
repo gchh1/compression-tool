@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-import json
 import logging
-import math
-import time
 import uuid
 from pathlib import Path
 from typing import Any
@@ -13,7 +10,10 @@ from gui.models import ALGORITHM_PARAMS, AlgorithmType, FileRecord
 
 logger = logging.getLogger(__name__)
 
+
 class ParameterRegressor:
+    """Stage2a parameter regression — C++ MLP in ``core_engine`` (no PyTorch)."""
+
     _instance = None
 
     PARAM_NAMES = ['window_size', 'min_match', 'max_chain_length', 'lookahead_size', 'dp_range']
@@ -34,59 +34,53 @@ class ParameterRegressor:
     }
 
     def __init__(self):
-        self._model = None
-        self._has_torch = False
         self._training_data: list[ParamRegressionSample] = []
         self._input_dim = 39
         self._output_dim = 5
         self._hidden_dim = 128
-        self._is_trained = False
+        self._cpp_net = None
+        self._has_cpp = False
+        self._init_cpp_backend()
 
+    def _init_cpp_backend(self) -> None:
         try:
-            import torch
-            import torch.nn as nn
-            self._torch = torch
-            self._nn = nn
-            self._has_torch = True
-            logger.info("[param_regressor] PyTorch available")
-        except ImportError:
-            logger.warning("[param_regressor] PyTorch not available, Stage2 disabled")
+            from gui.engine.compressor import CompressionEngine
+
+            eng = CompressionEngine()
+            if eng.available and hasattr(eng._engine, 'ParamRegressorNet'):
+                self._cpp_net = eng._engine.ParamRegressorNet()
+                self._has_cpp = True
+                logger.info("[param_regressor] C++ ParamRegressorNet available")
+            else:
+                logger.warning(
+                    "[param_regressor] core_engine.ParamRegressorNet missing; "
+                    "rebuild core_engine for Stage2a NN"
+                )
+        except Exception as e:
+            logger.warning("[param_regressor] C++ backend init failed: %s", e)
 
     @classmethod
-    def get(cls) -> "ParameterRegressor":
+    def get(cls, *, force_reload: bool = False) -> "ParameterRegressor":
+        if force_reload:
+            cls._instance = None
         if cls._instance is None:
             cls._instance = cls()
+            try:
+                cls._instance.load_model()
+            except Exception:
+                pass
+        elif not cls._instance._has_cpp:
+            cls._instance._init_cpp_backend()
+            if cls._instance._has_cpp:
+                try:
+                    cls._instance.load_model()
+                except Exception:
+                    pass
         return cls._instance
 
     @property
     def is_ready(self) -> bool:
-        return self._has_torch and self._model is not None and self._is_trained
-
-    def build_model(self, input_dim: int | None = None, hidden_dim: int = 128) -> None:
-        if not self._has_torch:
-            raise RuntimeError("PyTorch not installed for parameter regression")
-
-        nn = self._nn
-        in_dim = input_dim or self._input_dim
-        self._input_dim = in_dim
-        self._hidden_dim = hidden_dim
-
-        self._model = nn.Sequential(
-            nn.Linear(in_dim, hidden_dim),
-            nn.ReLU(),
-            nn.BatchNorm1d(hidden_dim),
-            nn.Dropout(0.3),
-            nn.Linear(hidden_dim, hidden_dim // 2),
-            nn.ReLU(),
-            nn.BatchNorm1d(hidden_dim // 2),
-            nn.Dropout(0.2),
-            nn.Linear(hidden_dim // 2, 32),
-            nn.ReLU(),
-            nn.Linear(32, self._output_dim),
-        )
-
-        logger.info("[param_regressor] model built: input=%d, hidden=%d, output=%d",
-                    in_dim, hidden_dim, self._output_dim)
+        return bool(self._has_cpp and self._cpp_net is not None and self._cpp_net.is_trained())
 
     def _param_keys_for_algorithm(self, algorithm: AlgorithmType) -> list[str]:
         defs = ALGORITHM_PARAMS.get(algorithm, [])
@@ -95,7 +89,6 @@ class ParameterRegressor:
         return [k for k in self.PARAM_NAMES if k in self.PARAM_RANGES]
 
     def _normalize_params(self, params: dict[str, int], algorithm: AlgorithmType | None = None) -> list[float]:
-        """Normalize to fixed output dim; keys not used by ``algorithm`` are zero."""
         normalized = [0.0] * len(self.PARAM_NAMES)
         active_keys = (
             self._param_keys_for_algorithm(algorithm)
@@ -130,6 +123,10 @@ class ParameterRegressor:
         return one_hot
 
     def _extract_features(self, record: FileRecord, ade_result=None) -> list[float]:
+        base_features = getattr(record, 'base_features', None)
+        if base_features is not None and hasattr(base_features, 'vector'):
+            return self._features_from_v3_vector(list(base_features.vector))
+
         if ade_result is not None:
             base_features = [
                 ade_result.shannon_entropy / 8.0,
@@ -173,6 +170,37 @@ class ParameterRegressor:
             base.append(0.0)
         return base[:33]
 
+    def _build_input_vector(self, record: FileRecord, algorithm: AlgorithmType) -> list[float]:
+        return self._extract_features(record)[:33] + self._encode_algorithm(algorithm)
+
+    def _build_cpp_training_rows(self) -> list[tuple[list[float], list[float], float]]:
+        rows: list[tuple[list[float], list[float], float]] = []
+        for s in self._training_data:
+            feat_vec = [0.0] * 33
+            if any(k.startswith("f") for k in s.features):
+                for i in range(20):
+                    feat_vec[i] = float(s.features.get(f"f{i}", 0.0))
+            else:
+                feat_vec = [
+                    s.features.get('shannon_entropy', 0.5) / 8.0,
+                    s.features.get('confidence', 0.5),
+                    s.features.get('estimated_ratio', 0.5),
+                    1.0,
+                ] + [0.0] * 29
+
+            algo_one_hot = [0.0] * 6
+            algo_one_hot[s.algorithm_id % 6] = 1.0
+            input_vec = feat_vec[:33] + algo_one_hot
+
+            algo_type = None
+            for at, aid in self.ALGORITHM_MAP.items():
+                if aid == s.algorithm_id:
+                    algo_type = at
+                    break
+            targets = self._normalize_params(s.actual_params, algo_type)
+            rows.append((input_vec, targets, 1.0))
+        return rows
+
     def clear_ingested_samples(self) -> None:
         self._training_data.clear()
 
@@ -184,10 +212,6 @@ class ParameterRegressor:
         return out
 
     def ingest_v3_sample(self, sample: object) -> bool:
-        """
-        Ingest one JSONL row: arm = ``algorithm_used`` / ``algorithm_id``,
-        knobs = ``params_used`` (algorithm-specific), reward = ``compression_ratio``.
-        """
         from gui.ade.training import algorithm_type_from_v3
 
         if not getattr(sample, "is_valid", True):
@@ -215,9 +239,7 @@ class ParameterRegressor:
         pr = ParamRegressionSample()
         pr.sample_id = sample.sample_id or uuid.uuid4().hex[:12]
         pr.algorithm_id = int(slot)
-        pr.actual_params = {
-            k: int(v) for k, v in sample.params_used.items()
-        }
+        pr.actual_params = {k: int(v) for k, v in sample.params_used.items()}
         pr.compression_ratio = float(sample.compression_ratio)
         pr.compression_time_ms = float(sample.compression_time_ms)
         if sample.features_vector:
@@ -230,29 +252,20 @@ class ParameterRegressor:
 
     def predict(self, record: FileRecord, algorithm: AlgorithmType) -> dict[str, int] | None:
         if not self.is_ready:
-            logger.debug("[param_regressor] model not ready, returning default params")
+            logger.debug("[param_regressor] model not ready")
             return None
 
         try:
-            from gui.ade.engine import DecisionEngine
-            de = DecisionEngine.get()
+            input_vec = self._build_input_vector(record, algorithm)
+            normalized = self._cpp_net.predict(input_vec)
+            params = self._denormalize_params(normalized)
+            from gui.models import sanitize_stage2_params
 
-            features = self._extract_features(record)
-            algo_one_hot = self._encode_algorithm(algorithm)
-            input_vec = features[:33] + algo_one_hot
-
-            input_tensor = self._torch.tensor([input_vec], dtype=self._torch.float32)
-
-            with self._torch.no_grad():
-                output = self._model(input_tensor)
-                normalized_params = output[0].tolist()
-
-            params = self._denormalize_params(normalized_params)
-
-            logger.info("[param_regressor] predicted params for %s: %s",
+            file_size = int(getattr(record, "size", 0) or 0)
+            params = sanitize_stage2_params(algorithm, params, file_size=file_size)
+            logger.info("[param_regressor] C++ predicted params for %s: %s",
                         algorithm.value, params)
             return params
-
         except Exception as e:
             logger.error("[param_regressor] prediction failed: %s", e)
             return None
@@ -308,128 +321,36 @@ class ParameterRegressor:
         batch_size: int = 32,
         validation_split: float = 0.2,
     ) -> dict[str, float]:
-        if not self._has_torch:
-            raise RuntimeError("PyTorch not available")
+        if not self._has_cpp or self._cpp_net is None:
+            raise RuntimeError(
+                "C++ ParamRegressorNet 不可用，请重新编译 core_engine（含 ade ParamRegressorNet）"
+            )
 
-        if len(self._training_data) < 20:
-            raise ValueError(f"Need >=20 training samples, got {len(self._training_data)}")
+        if len(self._training_data) < 4:
+            raise ValueError(f"Need >=4 training samples, got {len(self._training_data)}")
 
-        logger.info("[param_regressor] starting training on %d samples", len(self._training_data))
+        rows = self._build_cpp_training_rows()
+        logger.info("[param_regressor] C++ training on %d samples", len(rows))
 
-        X, y_algo, y_params = [], [], []
-        for s in self._training_data:
-            feat_vec = [0.0] * 33
-            if any(k.startswith("f") for k in s.features):
-                for i in range(20):
-                    feat_vec[i] = float(s.features.get(f"f{i}", 0.0))
-            else:
-                feat_vec = [
-                    s.features.get('shannon_entropy', 0.5) / 8.0,
-                    s.features.get('confidence', 0.5),
-                    s.features.get('estimated_ratio', 0.5),
-                    1.0,
-                ] + [0.0] * 29
+        from gui.engine.compressor import CompressionEngine
+        TrainCfg = CompressionEngine()._engine.ParamRegressorTrainConfig
+        train_cfg = TrainCfg()
+        train_cfg.epochs = int(epochs)
+        train_cfg.learning_rate = float(lr)
+        train_cfg.batch_size = int(min(batch_size, max(1, len(rows))))
+        train_cfg.validation_split = float(validation_split)
+        if len(rows) < 8:
+            train_cfg.validation_split = 0.0
 
-            algo_one_hot = [0.0] * 6
-            algo_one_hot[s.algorithm_id % 6] = 1.0
-
-            input_vec = feat_vec[:33] + algo_one_hot
-            X.append(input_vec)
-            y_algo.append(s.algorithm_id)
-            algo_type = None
-            for at, aid in self.ALGORITHM_MAP.items():
-                if aid == s.algorithm_id:
-                    algo_type = at
-                    break
-            y_params.append(self._normalize_params(s.actual_params, algo_type))
-
-        import random
-        combined = list(zip(X, y_algo, y_params))
-        random.shuffle(combined)
-        X, y_algo, y_params = zip(*combined) if combined else ([], [], [])
-
-        split_idx = int(len(X) * (1 - validation_split))
-        X_train, X_val = list(X[:split_idx]), list(X[split_idx:])
-        y_train, y_val = list(y_params[:split_idx]), list(y_params[split_idx:])
-
-        if self._model is None:
-            self.build_model(len(X_train[0]) if X_train else 39)
-
-        dataset = list(zip(X_train, y_train))
-
-        optimizer = self._torch.optim.Adam(
-            self._model.parameters(),
-            lr=lr,
-            weight_decay=1e-5
-        )
-        criterion = self._torch.nn.MSELoss()
-
-        self._model.train()
-        best_val_loss = float('inf')
-        patience_counter = 0
-        patience_limit = 10
-        history = {'train_loss': [], 'val_loss': []}
-
-        for epoch in range(epochs):
-            epoch_loss = 0.0
-            random.shuffle(dataset)
-
-            for i in range(0, len(dataset), batch_size):
-                batch = dataset[i:i + batch_size]
-                if not batch:
-                    continue
-
-                x_batch = self._torch.tensor([d[0] for d in batch], dtype=self._torch.float32)
-                y_batch = self._torch.tensor([d[1] for d in batch], dtype=self._torch.float32)
-
-                optimizer.zero_grad()
-                output = self._model(x_batch)
-                loss = criterion(output, y_batch)
-                loss.backward()
-                self._torch.nn.utils.clip_grad_norm_(self._model.parameters(), 1.0)
-                optimizer.step()
-                epoch_loss += loss.item()
-
-            avg_train_loss = epoch_loss / max(len(dataset) // batch_size, 1)
-            history['train_loss'].append(avg_train_loss)
-
-            if X_val and y_val:
-                self._model.eval()
-                with self._torch.no_grad():
-                    val_x = self._torch.tensor(X_val, dtype=self._torch.float32)
-                    val_y = self._torch.tensor(y_val, dtype=self._torch.float32)
-                    val_output = self._model(val_x)
-                    val_loss = criterion(val_output, val_y).item()
-                history['val_loss'].append(val_loss)
-                self._model.train()
-
-                if val_loss < best_val_loss - 1e-6:
-                    best_val_loss = val_loss
-                    patience_counter = 0
-                else:
-                    patience_counter += 1
-
-                if patience_counter >= patience_limit:
-                    logger.info("[param_regressor] early stopping at epoch %d", epoch + 1)
-                    break
-
-            if (epoch + 1) % 10 == 0 or epoch == 0:
-                log_msg = f"[param_regressor] epoch {epoch+1}/{epochs} loss={avg_train_loss:.6f}"
-                if history['val_loss']:
-                    log_msg += f" val_loss={history['val_loss'][-1]:.6f}"
-                logger.info(log_msg)
-
-        self._model.eval()
-        self._is_trained = True
-
+        logger.info("[param_regressor] invoking C++ train (%d rows)", len(rows))
+        metrics = self._cpp_net.train(rows, train_cfg)
         final_metrics = {
-            'final_train_loss': history['train_loss'][-1] if history['train_loss'] else 0,
-            'final_val_loss': history['val_loss'][-1] if history['val_loss'] else 0,
-            'epochs_completed': epoch + 1,
-            'num_samples': len(self._training_data),
+            'final_train_loss': float(metrics.final_train_loss),
+            'final_val_loss': float(metrics.final_val_loss),
+            'epochs_completed': int(metrics.epochs_completed),
+            'num_samples': int(metrics.num_samples),
         }
-
-        logger.info("[param_regressor] training complete: %s", final_metrics)
+        logger.info("[param_regressor] C++ training complete: %s", final_metrics)
         return final_metrics
 
     def save_model(self, path: str | Path | None = None) -> bool:
@@ -440,73 +361,51 @@ class ParameterRegressor:
         target = Path(path) if path else self._get_default_model_path()
         try:
             target.parent.mkdir(parents=True, exist_ok=True)
-            state = {
-                'model_state_dict': self._model.state_dict(),
-                'input_dim': self._input_dim,
-                'hidden_dim': self._hidden_dim,
-                'is_trained': self._is_trained,
-                'num_training_samples': len(self._training_data),
-                'version': '3.0',
-            }
-            self._torch.save(state, target)
-            logger.info("[param_regressor] model saved to %s (%.1f KB)",
-                        target, target.stat().st_size / 1024)
-            return True
+            ok = bool(self._cpp_net.save(str(target)))
+            if ok:
+                logger.info("[param_regressor] C++ model saved to %s (%.1f KB)",
+                            target, target.stat().st_size / 1024)
+            return ok
         except Exception as e:
             logger.error("[param_regressor] failed to save model: %s", e)
             return False
 
     def load_model(self, path: str | Path | None = None) -> bool:
-        if not self._has_torch:
+        if not self._has_cpp or self._cpp_net is None:
             return False
 
         target = Path(path) if path else self._get_default_model_path()
         if not target.exists():
+            if self._cpp_net.try_load_default():
+                logger.info("[param_regressor] loaded default C++ model")
+                return True
             logger.info("[param_regressor] no saved model at %s", target)
             return False
 
         try:
-            state = self._torch.load(target, map_location='cpu')
-            self.build_model(state.get('input_dim'), state.get('hidden_dim'))
-            self._model.load_state_dict(state['model_state_dict'])
-            self._is_trained = state.get('is_trained', True)
-            self._model.eval()
-            logger.info("[param_regressor] model loaded from %s (samples=%d)",
-                        target, state.get('num_training_samples', 0))
-            return True
+            ok = bool(self._cpp_net.load(str(target)))
+            if ok:
+                logger.info("[param_regressor] C++ model loaded from %s", target)
+            return ok
         except Exception as e:
             logger.error("[param_regressor] failed to load model: %s", e)
             return False
 
     def _get_default_model_path(self) -> Path:
-        import sys
-        if getattr(sys, 'frozen', False):
-            base = Path(sys.executable).parent.parent
-            meipass = getattr(sys, "_MEIPASS", None)
-        else:
-            base = Path(__file__).resolve().parent.parent.parent.parent
-            meipass = None
-        candidates = [
-            base / "ade" / "param_regressor.pt",
-            base / "assets" / "ade" / "param_regressor_v3.pt",
-            base / "src" / "ade" / "data" / "param_regressor_v3.pt",
-        ]
-        if meipass:
-            candidates.insert(0, Path(meipass) / "ade" / "param_regressor.pt")
-        for c in candidates:
-            if c.parent.exists() or c == candidates[-1]:
-                return c
-        return candidates[-1]
+        try:
+            from gui.ade.training import get_training_store
+            return get_training_store()._base_dir / "param_regressor.bin"
+        except Exception:
+            return Path("ade") / "param_regressor.bin"
 
     def get_info(self) -> dict[str, Any]:
         return {
-            'available': self._has_torch,
+            'available': self._has_cpp,
+            'backend': 'cpp' if self._has_cpp else 'none',
             'ready': self.is_ready,
-            'trained': self._is_trained,
-            'model_built': self._model is not None,
+            'trained': self.is_ready,
             'num_samples': len(self._training_data),
             'input_dim': self._input_dim,
             'output_dim': self._output_dim,
             'hidden_dim': self._hidden_dim,
         }
-

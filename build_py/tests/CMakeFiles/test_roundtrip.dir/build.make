@@ -93,6 +93,9 @@ test_roundtrip_EXTERNAL_OBJECTS =
 bin/test_roundtrip.exe: tests/CMakeFiles/test_roundtrip.dir/test_roundtrip.cpp.obj
 bin/test_roundtrip.exe: tests/CMakeFiles/test_roundtrip.dir/build.make
 bin/test_roundtrip.exe: src/algorithm/libalgorithm.a
+bin/test_roundtrip.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_roundtrip.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_roundtrip.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_roundtrip.exe: tests/CMakeFiles/test_roundtrip.dir/linkLibs.rsp
 bin/test_roundtrip.exe: tests/CMakeFiles/test_roundtrip.dir/objects1.rsp
 bin/test_roundtrip.exe: tests/CMakeFiles/test_roundtrip.dir/link.txt

@@ -117,21 +117,14 @@ auto createAlgorithm(AlgorithmID id,
         case AlgorithmID::Brotli:
             return std::make_unique<SCA>(
                 [](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {
-                    algorithm::BrotliCompress brotli(65536, 3, 256);
-                    std::vector<uint8_t> out(data.size() + 1024);
-                    auto status = brotli.process(data, out, true);
-                    out.resize(status.bytes_produced);
-                    return out;
+                    return algorithm::brotli_encode(
+                        data, algorithm::BrotliParams{65536, 3, 256});
                 },
                 sca_chunk);
         case AlgorithmID::BrotliDecompress:
             return std::make_unique<SDA>(
                 [](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {
-                    algorithm::BrotliDecompress decompress;
-                    std::vector<uint8_t> out(std::max(data.size() * 4 + 65536, size_t(2097152)));
-                    auto status = decompress.process(data, out, true);
-                    out.resize(status.bytes_produced);
-                    return out;
+                    return algorithm::brotli_decode(data);
                 });
         case AlgorithmID::Zstd:
             return std::make_unique<SCA>(

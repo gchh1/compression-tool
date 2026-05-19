@@ -100,6 +100,9 @@ bin/test_cartesian_stream_matrix.exe: src/archiver/libarchiver.a
 bin/test_cartesian_stream_matrix.exe: src/processor/libprocessor.a
 bin/test_cartesian_stream_matrix.exe: src/core/libcore.a
 bin/test_cartesian_stream_matrix.exe: src/algorithm/libalgorithm.a
+bin/test_cartesian_stream_matrix.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_cartesian_stream_matrix.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_cartesian_stream_matrix.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_cartesian_stream_matrix.exe: tests/CMakeFiles/test_cartesian_stream_matrix.dir/linkLibs.rsp
 bin/test_cartesian_stream_matrix.exe: tests/CMakeFiles/test_cartesian_stream_matrix.dir/objects1.rsp
 bin/test_cartesian_stream_matrix.exe: tests/CMakeFiles/test_cartesian_stream_matrix.dir/link.txt

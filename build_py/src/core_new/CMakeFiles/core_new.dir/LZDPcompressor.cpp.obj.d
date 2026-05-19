@@ -117,22 +117,7 @@ src/core_new/CMakeFiles/core_new.dir/LZDPcompressor.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdint \
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdint.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdint.h \
- D:/AAA_C/compression-tool/src/algorithm_new/include/LZencoding.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/BitProcessor.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/Models.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_heap.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uniform_int_dist.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_tempbuf.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algo.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algobase.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_algorithm_defs.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/execution_defs.h \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/ByteView.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Streaming.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/fstream \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/istream \
@@ -185,7 +170,22 @@ src/core_new/CMakeFiles/core_new.dir/LZDPcompressor.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fstream.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/span \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array \
- D:/AAA_C/compression-tool/src/algorithm_new/include/pipeline/LZDPNonStreaming.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/BitProcessor.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/LZencoding.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/Models.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_heap.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uniform_int_dist.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_tempbuf.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algo.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algobase.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_algorithm_defs.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/execution_defs.h \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/EncodingTriple.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/pipeline/LZDPStreamingPipeline.hpp \
  D:/AAA_C/compression-tool/src/core_new/include/io/FileIO.hpp

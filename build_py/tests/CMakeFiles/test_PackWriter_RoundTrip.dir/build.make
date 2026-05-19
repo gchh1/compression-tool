@@ -97,6 +97,9 @@ bin/test_PackWriter_RoundTrip.exe: src/archiver/libarchiver.a
 bin/test_PackWriter_RoundTrip.exe: src/processor/libprocessor.a
 bin/test_PackWriter_RoundTrip.exe: src/core/libcore.a
 bin/test_PackWriter_RoundTrip.exe: src/algorithm/libalgorithm.a
+bin/test_PackWriter_RoundTrip.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_PackWriter_RoundTrip.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_PackWriter_RoundTrip.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_PackWriter_RoundTrip.exe: tests/CMakeFiles/test_PackWriter_RoundTrip.dir/linkLibs.rsp
 bin/test_PackWriter_RoundTrip.exe: tests/CMakeFiles/test_PackWriter_RoundTrip.dir/objects1.rsp
 bin/test_PackWriter_RoundTrip.exe: tests/CMakeFiles/test_PackWriter_RoundTrip.dir/link.txt

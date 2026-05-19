@@ -6,9 +6,10 @@ if "%PROJECT_DIR:~-1%"=="\" set "PROJECT_DIR=%PROJECT_DIR:~0,-1%"
 cd /d "%PROJECT_DIR%"
 set "PYTHONPATH=src"
 set "PKG_DIR=%PROJECT_DIR%\Package\bin"
-set "CMAKE_BUILD_DIR=%PROJECT_DIR%\build_py"
+rem Prefer ``build`` (often has vendored brotli already); ``build_py`` needs network on first configure.
+set "CMAKE_BUILD_DIR=%PROJECT_DIR%\build"
+if not exist "%CMAKE_BUILD_DIR%\CMakeCache.txt" set "CMAKE_BUILD_DIR=%PROJECT_DIR%\build_py"
 if not exist "%CMAKE_BUILD_DIR%\CMakeCache.txt" set "CMAKE_BUILD_DIR=%PROJECT_DIR%\build_debug"
-if not exist "%CMAKE_BUILD_DIR%\CMakeCache.txt" set "CMAKE_BUILD_DIR=%PROJECT_DIR%\build"
 set "CORE_ENGINE_DIR=%CMAKE_BUILD_DIR%\src\bindings\pybind"
 set "CORE_ENGINE_PYD=%CORE_ENGINE_DIR%\core_engine.cp312-win_amd64.pyd"
 set "PYI_WORK=%PROJECT_DIR%\build\PyInstaller"
@@ -62,6 +63,7 @@ pyinstaller --noconfirm --onefile --windowed --name "WebCompress" --icon "%PROJE
   --exclude-module tensorflow ^
   --add-data "%PROJECT_DIR%\assets\ade\default_model.bin;ade" ^
   --add-data "%PROJECT_DIR%\assets\ade\training_data_v3.json;ade" ^
+  --add-data "%PROJECT_DIR%\resources\dict\web_phrases.txt;resources/dict" ^
   --add-data "%CORE_ENGINE_PYD%;core_engine" ^
   --add-data "%CORE_ENGINE_DIR%\libgcc_s_seh-1.dll;core_engine" ^
   --add-data "%CORE_ENGINE_DIR%\libstdc++-6.dll;core_engine" ^

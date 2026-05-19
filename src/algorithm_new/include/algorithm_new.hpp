@@ -1,15 +1,20 @@
 #pragma once
 
-/// Umbrella for brick-based algorithm layer (see docs/design/streaming-compression-design.md).
-
 #include "BitProcessor.hpp"
 #include "ByteView.hpp"
+#include "Deflate.hpp"
+#include "Dpflate.hpp"
 #include "EncodingTriple.hpp"
+#include "HashChain.hpp"
+#include "Huffman.hpp"
+#include "Huffman_3HfMTree.hpp"
+#include "Huffman_Inflate.hpp"
+#include "KMP.hpp"
 #include "LZDP.hpp"
+#include "LZSS.hpp"
 #include "LZencoding.hpp"
 #include "Models.hpp"
 #include "RecordIO.hpp"
 #include "Streaming.hpp"
-#include "pipeline/Phase1Dpforward.hpp"
-#include "pipeline/LZDPNonStreaming.hpp"
-#include "pipeline/LZDPStreamingPipeline.hpp"
+#include "Utils.hpp"
+#include "config/Config.hpp"

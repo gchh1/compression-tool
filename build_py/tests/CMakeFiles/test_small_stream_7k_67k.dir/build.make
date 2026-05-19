@@ -100,6 +100,9 @@ bin/test_small_stream_7k_67k.exe: src/archiver/libarchiver.a
 bin/test_small_stream_7k_67k.exe: src/processor/libprocessor.a
 bin/test_small_stream_7k_67k.exe: src/core/libcore.a
 bin/test_small_stream_7k_67k.exe: src/algorithm/libalgorithm.a
+bin/test_small_stream_7k_67k.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_small_stream_7k_67k.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_small_stream_7k_67k.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_small_stream_7k_67k.exe: tests/CMakeFiles/test_small_stream_7k_67k.dir/linkLibs.rsp
 bin/test_small_stream_7k_67k.exe: tests/CMakeFiles/test_small_stream_7k_67k.dir/objects1.rsp
 bin/test_small_stream_7k_67k.exe: tests/CMakeFiles/test_small_stream_7k_67k.dir/link.txt

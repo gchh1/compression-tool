@@ -41,17 +41,14 @@ public:
         out_: 01011111 0|0001111 10|111100...
         */
         if (nbits <= 0 || nbits > 64) return;
-        // 超出指定位数部分截断
-        while(nbits>=8){
-            uint64_t mask = 0xFF << (nbits-8);
-            uint8_t byte = static_cast<uint8_t>(value & mask);
+        while (nbits >= 8) {
+            uint8_t byte = static_cast<uint8_t>((value >> (nbits - 8)) & 0xFF);
             buf(byte);
             flush();
             nbits -= 8;
         }
-        if (nbits>0){
-            uint64_t mask = (1ULL << (nbits)) - 1;
-            uint8_t byte = static_cast<uint8_t>(value & mask);
+        if (nbits > 0) {
+            uint8_t byte = static_cast<uint8_t>(value & ((1ULL << nbits) - 1));
             buf(byte, nbits);
             flush();
         }
@@ -93,13 +90,17 @@ public:
         fill();
         uint64_t mask = (1ULL << (nbits)) - 1;
         mask <<= (buffer.count - nbits);
-        value = buffer.buf & mask;
+        value = (buffer.buf & mask) >> (buffer.count - nbits);
         buffer.count -= nbits;
         buffer.buf &= (1ULL << buffer.count) - 1;
     }
     int getPendingBits() const { return buffer.count; }
     size_t getBytePos() const { return byte_pos_; }
-    
+
+    bool ensureBits(int needed) {
+        fill();
+        return buffer.count >= needed;
+    }
 
     void reset() {
         buffer.count = 0;

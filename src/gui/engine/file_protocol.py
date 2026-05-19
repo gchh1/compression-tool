@@ -11,7 +11,7 @@ from gui.engine.bridge import get_core_engine
 logger = logging.getLogger(__name__)
 
 MAGIC = b'WCMP'
-HEADER_VERSION = 2
+HEADER_VERSION = 3
 UNIFIED_EXTENSION = ".wcx"
 
 ALGO_CODE_STORED = 0
@@ -31,6 +31,7 @@ ALGO_CODE_MAP: dict[AlgorithmType, int] = {
 CODE_TO_ALGO: dict[int, AlgorithmType] = {v: k for k, v in ALGO_CODE_MAP.items()}
 
 FLAG_FOLDER = 1 << 0
+FLAG_WEB_DICT_PREPROCESS = 1 << 1
 
 
 class CompressedFileHeader:
@@ -44,12 +45,14 @@ class CompressedFileHeader:
         compressed_size: int,
         original_filename: str = "",
         is_folder: bool = False,
+        web_dict_preprocess: bool = False,
     ):
         self.algorithm = algorithm
         self.original_size = original_size
         self.compressed_size = compressed_size
         self.original_filename = original_filename
         self.is_folder = is_folder
+        self.web_dict_preprocess = bool(web_dict_preprocess)
 
     @property
     def algo_code(self) -> int:
@@ -62,7 +65,11 @@ class CompressedFileHeader:
     def to_bytes(self) -> bytes:
         filename_bytes = self.original_filename.encode("utf-8")
         filename_len = len(filename_bytes)
-        flags = FLAG_FOLDER if self.is_folder else 0
+        flags = 0
+        if self.is_folder:
+            flags |= FLAG_FOLDER
+        if self.web_dict_preprocess:
+            flags |= FLAG_WEB_DICT_PREPROCESS
         header = struct.pack(
             "<4sBBIIBHB",
             self.MAGIC,
@@ -95,6 +102,7 @@ class CompressedFileHeader:
             raise ValueError(f"Unknown algorithm code: {algo_code}")
 
         is_folder = bool(flags & FLAG_FOLDER)
+        web_dict_preprocess = bool(flags & FLAG_WEB_DICT_PREPROCESS)
 
         fname_start = cls.fixed_header_size()
         fname_end = fname_start + fname_len
@@ -102,7 +110,14 @@ class CompressedFileHeader:
             raise ValueError("Filename truncated in header")
         original_filename = data[fname_start:fname_end].decode("utf-8")
 
-        hdr = cls(algo, orig_size, comp_size, original_filename, is_folder=is_folder)
+        hdr = cls(
+            algo,
+            orig_size,
+            comp_size,
+            original_filename,
+            is_folder=is_folder,
+            web_dict_preprocess=web_dict_preprocess,
+        )
         hdr._header_total_size = fname_end
         return hdr
 
@@ -122,6 +137,7 @@ def _pack_compressed_file_python_mirror(
     original_size: int,
     original_filename: str = "",
     is_folder: bool = False,
+    web_dict_preprocess: bool = False,
 ) -> bytes:
     """Last-resort mirror of C++ ``wcx::buildHeaderBytes`` when ``core_engine`` is absent.
 
@@ -136,6 +152,7 @@ def _pack_compressed_file_python_mirror(
         compressed_size=len(payload),
         original_filename=original_filename or "",
         is_folder=bool(is_folder),
+        web_dict_preprocess=bool(web_dict_preprocess),
     )
     return header.to_bytes() + payload
 
@@ -146,8 +163,9 @@ def pack_compressed_file(
     original_size: int,
     original_filename: str = "",
     is_folder: bool = False,
+    web_dict_preprocess: bool = False,
 ) -> bytes:
-    """Wrap codec payload in WCMP v2 via C++ ``api::pack_wcx`` (canonical wire format).
+    """Wrap codec payload in WCMP v3 via C++ ``api::pack_wcx`` (canonical wire format).
 
   Python callers (GUI export, ADE after streaming completes, folder archive) invoke this
   at **completion** time only; streaming jobs hold raw/framed payload until then.
@@ -172,13 +190,19 @@ def pack_compressed_file(
             int(original_size),
             original_filename,
             bool(is_folder),
+            bool(web_dict_preprocess),
         )
         return bytes(packed)
     logger.warning(
-        "[file_protocol] core_engine.pack_wcx unavailable; using Python mirror of WCX v2"
+        "[file_protocol] core_engine.pack_wcx unavailable; using Python mirror of WCX v3"
     )
     return _pack_compressed_file_python_mirror(
-        compressed_data, algorithm, original_size, original_filename, is_folder
+        compressed_data,
+        algorithm,
+        original_size,
+        original_filename,
+        is_folder,
+        web_dict_preprocess,
     )
 
 
@@ -189,6 +213,7 @@ def finalize_codec_payload_to_wcx(
     original_filename: str = "",
     *,
     is_folder: bool = False,
+    web_dict_preprocess: bool = False,
 ) -> bytes:
     """Wrap a finished streaming/memory codec payload into WCX (ADE / export completion hook).
 
@@ -196,7 +221,12 @@ def finalize_codec_payload_to_wcx(
     this once so ``pack_wcx`` runs in C++ with the canonical ``WCXProtocol`` layout.
     """
     return pack_compressed_file(
-        payload, algorithm, int(original_size), original_filename, is_folder
+        payload,
+        algorithm,
+        int(original_size),
+        original_filename,
+        is_folder,
+        web_dict_preprocess,
     )
 
 
@@ -212,7 +242,10 @@ def wcx_bytes_for_file_record(record: object) -> bytes | None:
         algo = AlgorithmType.NONE
     name = getattr(record, "name", "") or ""
     orig = int(getattr(record, "size", 0) or 0)
-    return pack_compressed_file(blob, algo, orig, name, is_folder=False)
+    web_dict = bool(getattr(record, "web_dict_preprocess", False))
+    return pack_compressed_file(
+        blob, algo, orig, name, is_folder=False, web_dict_preprocess=web_dict
+    )
 
 
 def unpack_compressed_file(data: bytes) -> tuple[CompressedFileHeader, bytes]:
@@ -224,12 +257,14 @@ def unpack_compressed_file(data: bytes) -> tuple[CompressedFileHeader, bytes]:
         msg = getattr(unpacked, "error_message", "") or "unpack_wcx failed"
         raise ValueError(msg)
     algo = CODE_TO_ALGO.get(int(unpacked.algo_code), AlgorithmType.NONE)
+    web_dict = bool(getattr(unpacked, "web_dict_preprocess", False))
     header = CompressedFileHeader(
         algorithm=algo,
         original_size=int(unpacked.original_size),
         compressed_size=int(unpacked.compressed_size),
         original_filename=unpacked.original_filename,
         is_folder=bool(unpacked.is_folder),
+        web_dict_preprocess=web_dict,
     )
     return header, bytes(unpacked.payload)
 

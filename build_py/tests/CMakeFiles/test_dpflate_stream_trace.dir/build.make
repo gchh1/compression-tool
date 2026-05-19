@@ -96,6 +96,9 @@ bin/test_dpflate_stream_trace.exe: src/algorithm/libalgorithm.a
 bin/test_dpflate_stream_trace.exe: src/processor/libprocessor.a
 bin/test_dpflate_stream_trace.exe: src/core/libcore.a
 bin/test_dpflate_stream_trace.exe: src/algorithm/libalgorithm.a
+bin/test_dpflate_stream_trace.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_dpflate_stream_trace.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_dpflate_stream_trace.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_dpflate_stream_trace.exe: tests/CMakeFiles/test_dpflate_stream_trace.dir/linkLibs.rsp
 bin/test_dpflate_stream_trace.exe: tests/CMakeFiles/test_dpflate_stream_trace.dir/objects1.rsp
 bin/test_dpflate_stream_trace.exe: tests/CMakeFiles/test_dpflate_stream_trace.dir/link.txt

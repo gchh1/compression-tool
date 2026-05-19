@@ -141,6 +141,12 @@ def compress_memory_to_wcx_bytes(
 
     if not getattr(record, "raw_data", None):
         record.load_raw_data()
+    from gui.config.settings import get_use_web_resource_dict
+    from gui.engine.web_dict import prepare_file_record_for_compression
+
+    web_dict = False
+    if get_use_web_resource_dict() and algorithm != AlgorithmType.NONE:
+        web_dict = bool(prepare_file_record_for_compression(record))
     clear_simulate_cancel_env()
     _set_stream_cancel(False)
     engine = CompressionEngine()
@@ -148,11 +154,13 @@ def compress_memory_to_wcx_bytes(
         raise RuntimeError("core_engine not available")
     result = engine.smart_compress(record.raw_data, algorithm)
     payload = bytes(result.data) if not isinstance(result.data, bytes) else result.data
+    orig = int(getattr(record, "size", 0) or len(record.raw_data))
     wcx = finalize_codec_payload_to_wcx(
         payload,
         algorithm,
-        len(record.raw_data),
+        orig,
         getattr(record, "name", "") or "",
+        web_dict_preprocess=web_dict,
     )
     return wcx, result
 

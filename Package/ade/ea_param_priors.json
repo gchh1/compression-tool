@@ -1,0 +1,37 @@
+{
+  "version": "1.0",
+  "built_at": 1779169532.2328029,
+  "top_quantile": 0.25,
+  "by_algorithm": {
+    "deflate": {
+      "params": {
+        "search_size": 32767,
+        "lookahead_size": 256,
+        "min_match": 0,
+        "max_chain_length": 256,
+        "use_flag_encoding": 1,
+        "use_3hfmtree": 0,
+        "window_size": 259607,
+        "dp_range": 12
+      },
+      "sample_count": 29,
+      "best_quantile_count": 7,
+      "median_ratio": 0.6365296396918007
+    },
+    "lzdp": {
+      "params": {
+        "search_size": 131709,
+        "lookahead_size": 143,
+        "min_match": 24,
+        "use_flag_encoding": 1,
+        "window_size": 259331,
+        "max_chain_length": 509,
+        "dp_range": 12,
+        "dp_top": 12
+      },
+      "sample_count": 16,
+      "best_quantile_count": 4,
+      "median_ratio": 0.31147058906494884
+    }
+  }
+}

@@ -174,6 +174,54 @@ core_new/fast:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/build
 .PHONY : core_new/fast
 
+DPflatecompressor.obj: DPflatecompressor.cpp.obj
+.PHONY : DPflatecompressor.obj
+
+# target to build an object file
+DPflatecompressor.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/DPflatecompressor.cpp.obj
+.PHONY : DPflatecompressor.cpp.obj
+
+DPflatecompressor.i: DPflatecompressor.cpp.i
+.PHONY : DPflatecompressor.i
+
+# target to preprocess a source file
+DPflatecompressor.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/DPflatecompressor.cpp.i
+.PHONY : DPflatecompressor.cpp.i
+
+DPflatecompressor.s: DPflatecompressor.cpp.s
+.PHONY : DPflatecompressor.s
+
+# target to generate assembly for a file
+DPflatecompressor.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/DPflatecompressor.cpp.s
+.PHONY : DPflatecompressor.cpp.s
+
+Deflatecompressor.obj: Deflatecompressor.cpp.obj
+.PHONY : Deflatecompressor.obj
+
+# target to build an object file
+Deflatecompressor.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/Deflatecompressor.cpp.obj
+.PHONY : Deflatecompressor.cpp.obj
+
+Deflatecompressor.i: Deflatecompressor.cpp.i
+.PHONY : Deflatecompressor.i
+
+# target to preprocess a source file
+Deflatecompressor.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/Deflatecompressor.cpp.i
+.PHONY : Deflatecompressor.cpp.i
+
+Deflatecompressor.s: Deflatecompressor.cpp.s
+.PHONY : Deflatecompressor.s
+
+# target to generate assembly for a file
+Deflatecompressor.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/Deflatecompressor.cpp.s
+.PHONY : Deflatecompressor.cpp.s
+
 LZDPcompressor.obj: LZDPcompressor.cpp.obj
 .PHONY : LZDPcompressor.obj
 
@@ -198,6 +246,30 @@ LZDPcompressor.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/LZDPcompressor.cpp.s
 .PHONY : LZDPcompressor.cpp.s
 
+LZSScompressor.obj: LZSScompressor.cpp.obj
+.PHONY : LZSScompressor.obj
+
+# target to build an object file
+LZSScompressor.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/LZSScompressor.cpp.obj
+.PHONY : LZSScompressor.cpp.obj
+
+LZSScompressor.i: LZSScompressor.cpp.i
+.PHONY : LZSScompressor.i
+
+# target to preprocess a source file
+LZSScompressor.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/LZSScompressor.cpp.i
+.PHONY : LZSScompressor.cpp.i
+
+LZSScompressor.s: LZSScompressor.cpp.s
+.PHONY : LZSScompressor.s
+
+# target to generate assembly for a file
+LZSScompressor.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/LZSScompressor.cpp.s
+.PHONY : LZSScompressor.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -211,9 +283,18 @@ help:
 	@echo ... list_install_components
 	@echo ... rebuild_cache
 	@echo ... core_new
+	@echo ... DPflatecompressor.obj
+	@echo ... DPflatecompressor.i
+	@echo ... DPflatecompressor.s
+	@echo ... Deflatecompressor.obj
+	@echo ... Deflatecompressor.i
+	@echo ... Deflatecompressor.s
 	@echo ... LZDPcompressor.obj
 	@echo ... LZDPcompressor.i
 	@echo ... LZDPcompressor.s
+	@echo ... LZSScompressor.obj
+	@echo ... LZSScompressor.i
+	@echo ... LZSScompressor.s
 .PHONY : help
 
 

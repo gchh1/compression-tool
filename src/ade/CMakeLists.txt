@@ -23,6 +23,7 @@ add_library(
     features/FeatureVector.cpp
     features/MagicBytesDetector.cpp
     models/EvolutionaryAlgorithms.cpp
+    models/ParamRegressorNet.cpp
     models/RandomForest.cpp
     runtime/ADEBridge.cpp
     runtime/DecisionEngine.cpp

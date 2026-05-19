@@ -5,8 +5,6 @@
 #include <vector>
 
 #include "LZDP.hpp"
-#include "pipeline/LZDPNonStreaming.hpp"
-#include "pipeline/LZDPStreamingPipeline.hpp"
 
 namespace compressor::core_new {
 

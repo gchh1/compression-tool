@@ -47,6 +47,7 @@ class FileTableWidget(QTableWidget):
     request_heatmap = pyqtSignal(int)
     request_comparison = pyqtSignal(int)
     request_network = pyqtSignal(int)
+    request_folder_network = pyqtSignal(int)
     request_webpage_heatmap = pyqtSignal(int)
     request_folder_summary = pyqtSignal(int)
     request_decision_detail = pyqtSignal(int)
@@ -127,6 +128,14 @@ class FileTableWidget(QTableWidget):
                 folder_summary_action = menu.addAction("📋 文件夹压缩报告")
                 folder_comparison_action = menu.addAction("⚖ 算法对比")
                 webpage_heatmap_action = menu.addAction("🌐 网页资源热力图")
+                record.ensure_files_loaded()
+                folder_network_action = None
+                if any(
+                    f.status == CompressionStatus.DONE
+                    and (compressed_payload_size(f) > 0 or getattr(f, "is_stored", False))
+                    for f in record.files
+                ):
+                    folder_network_action = menu.addAction("🌐 网络传输模拟（整站）")
                 menu.addSeparator()
                 delete_action = menu.addAction("🗑 移除")
                 action = menu.exec(event.globalPos())
@@ -138,6 +147,8 @@ class FileTableWidget(QTableWidget):
                     self.request_comparison.emit(row)
                 elif action == webpage_heatmap_action:
                     self.request_webpage_heatmap.emit(row)
+                elif folder_network_action and action == folder_network_action:
+                    self.request_folder_network.emit(row)
             elif isinstance(record, FileRecord):
                 detail_action = menu.addAction("📊 查看决策详情...")
                 menu.addSeparator()

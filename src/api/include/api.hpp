@@ -42,6 +42,7 @@ struct WCXUnpackResult {
     size_t original_size{0};
     size_t compressed_size{0};
     bool is_folder{false};
+    bool web_dict_preprocess{false};
     std::string original_filename;
     std::vector<uint8_t> payload;
     std::string error_message;
@@ -86,7 +87,8 @@ auto pack_wcx(const std::vector<uint8_t>& compressed_data,
               AlgorithmID algorithm,
               size_t original_size,
               const std::string& original_filename = "",
-              bool is_folder = false) -> std::vector<uint8_t>;
+              bool is_folder = false,
+              bool web_dict_preprocess = false) -> std::vector<uint8_t>;
 
 auto unpack_wcx(const std::vector<uint8_t>& data) -> WCXUnpackResult;
 

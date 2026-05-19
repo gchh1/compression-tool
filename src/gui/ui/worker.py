@@ -129,7 +129,7 @@ class CompressionWorker(QThread):
         name = getattr(record, "name", "?")
         self.progress.emit(0, f"{name}: {message}")
 
-    def _flush_training_data(self):
+    def _flush_training_data(self, *, retrain: bool = True) -> None:
         try:
             from gui.ade.retrain import maybe_supplemental_retrain
             from gui.ade.training import get_training_store
@@ -137,7 +137,8 @@ class CompressionWorker(QThread):
             store = get_training_store()
             if store._dirty:
                 store.save(incremental=True)
-            maybe_supplemental_retrain()
+            if retrain:
+                maybe_supplemental_retrain()
         except Exception:
             pass
 
@@ -219,7 +220,7 @@ class CompressionWorker(QThread):
             pass
         self._save_counter += 1
         if self._save_counter % 10 == 0:
-            self._flush_training_data()
+            self._flush_training_data(retrain=False)
         try:
             from gui.ade.explore_log import log_explore
             from gui.ade.explorer import SilentExplorer
@@ -279,12 +280,22 @@ class CompressionWorker(QThread):
             forced_no_stream = False
 
             if isinstance(record, FileRecord):
+                # Always reload from disk: stale ``raw_data`` (e.g. prior web-dict encode)
+                # must not be reused after the user turns off the dictionary option.
+                record.web_dict_preprocess = False
+                record.plaintext_snapshot = None
+                record.base_features = None
+                record.detected_file_type = None
+                record.load_raw_data()
+
+                from gui.config.settings import get_use_web_resource_dict
+
+                _use_web_dict_cfg = get_use_web_resource_dict()
+
                 record.algorithm = self.algorithm
                 _auto_params = None
                 if self.algorithm == AlgorithmType.AUTO:
                     try:
-                        if not record.raw_data:
-                            record.load_raw_data()
                         record.extract_features()
                         
                         decision_engine = DecisionEngine.get()
@@ -315,24 +326,46 @@ class CompressionWorker(QThread):
                         logger.warning("[compress] ADE failed, fallback to LZDP: %s", e)
                         record.algorithm = AlgorithmType.LZDP
 
+                web_dict_active = False
+                if _use_web_dict_cfg and record.algorithm != AlgorithmType.NONE:
+                    from gui.engine.web_dict import prepare_file_record_for_compression
+
+                    if prepare_file_record_for_compression(record):
+                        web_dict_active = True
+                        forced_no_stream = True
+                        logger.info(
+                            "[compress] web resource dict preprocess enabled for %s",
+                            getattr(record, "name", "?"),
+                        )
+
                 if _auto_params or (self.algorithm == AlgorithmType.AUTO and record.base_features is not None):
                     from gui.engine.compressor import CompressionEngine
+                    from gui.models import merge_decision_overrides_into_algo_config, sanitize_stage2_params
+
                     current_cfg = CompressionEngine.get_config()
                     algo = record.algorithm
                     if not _auto_params:
                         _auto_params = _heuristic_params_for_record(record, algo)
                     if _auto_params:
-                        algo_cfg = dict(current_cfg.get(algo, {}))
-                        algo_cfg.update(_auto_params)
+                        file_sz = int(getattr(record, "size", 0) or 0)
+                        _auto_params = sanitize_stage2_params(
+                            algo, _auto_params, file_size=file_sz
+                        )
+                        algo_cfg = merge_decision_overrides_into_algo_config(
+                            algo, current_cfg.get(algo, {}), _auto_params
+                        )
                         full_cfg = dict(current_cfg)
                         full_cfg[algo] = algo_cfg
                         CompressionEngine.set_config(full_cfg, save=False)
                         logger.info("[compress] AUTO applied params for %s: %s",
                                    algo.value, _auto_params)
-                        forced_no_stream = True
+                        forced_no_stream = not engine.should_use_streaming(
+                            file_sz, algo
+                        )
 
                 use_streaming = (
                     not forced_no_stream
+                    and not web_dict_active
                     and hasattr(record, "size")
                     and bool(getattr(record, "path", None))
                     and record.algorithm != AlgorithmType.NONE
@@ -351,7 +384,8 @@ class CompressionWorker(QThread):
                 # Same threshold as above: avoid whole-file RAM + single pipeline.push when
                 # file-to-file streaming is available (chunked push must match compressFile).
                 if (
-                    isinstance(record, FileRecord)
+                    not web_dict_active
+                    and isinstance(record, FileRecord)
                     and bool(getattr(record, "path", None))
                     and record.algorithm != AlgorithmType.NONE
                     and engine.should_use_streaming(record.size, record.algorithm)
@@ -364,9 +398,6 @@ class CompressionWorker(QThread):
                     self._run_streaming_compress_branch(engine, record, folder_ref, snap)
                     return
 
-                if not getattr(record, "raw_data", None):
-                    self._compress_phase_notify(record, "正在读取文件…")
-                    record.load_raw_data()
                 if getattr(record, "base_features", None) is None:
                     self._compress_phase_notify(record, "正在提取特征…")
                     record.extract_features()
@@ -389,7 +420,13 @@ class CompressionWorker(QThread):
                         pass
                 # === DEBUG_BLOCK_END ===
 
-                logger.info("[compress] compressing with %s ...", record.algorithm.value)
+                logger.info(
+                    "[compress] compressing with %s (web_dict_cfg=%s web_dict_active=%s bytes=%d) ...",
+                    record.algorithm.value,
+                    _use_web_dict_cfg,
+                    web_dict_active,
+                    len(record.raw_data),
+                )
                 snap = CompressionEngine.snapshot_for_algorithm(record.algorithm)
                 can_stream_fallback = (
                     isinstance(record, FileRecord)
@@ -460,13 +497,18 @@ class CompressionWorker(QThread):
                     result.compressed_size,
                 )
 
-                original_size = len(record.raw_data)
+                original_size = int(getattr(record, "size", 0) or len(record.raw_data))
                 compressed_size = result.compressed_size
+                stored_plain = (
+                    record.plaintext_snapshot
+                    if getattr(record, "web_dict_preprocess", False) and record.plaintext_snapshot
+                    else record.raw_data
+                )
 
                 if compressed_size >= original_size:
                     logger.info("[compress] EXPANSION detected: %d >= %d, falling back to stored (raw)",
                                  compressed_size, original_size)
-                    record.compressed_data = record.raw_data
+                    record.compressed_data = stored_plain
                     record.compressed_path = None
                     record.algorithm = AlgorithmType.NONE
                     record.compression_time_ms = result.time_ms
@@ -490,7 +532,7 @@ class CompressionWorker(QThread):
                     pass
                 self._save_counter += 1
                 if self._save_counter % 10 == 0:
-                    self._flush_training_data()
+                    self._flush_training_data(retrain=False)
                 try:
                     from gui.ade.explore_log import log_explore
                     from gui.ade.explorer import SilentExplorer
@@ -540,34 +582,44 @@ class CompressionWorker(QThread):
             self.error.emit(record)
 
     def run(self) -> None:
+        from gui.ade.explorer import SilentExplorer
+
         try:
-            for row_idx, record in self.tasks:
-                if self._is_cancelled:
-                    break
-                if isinstance(record, FolderRecord):
-                    record.ensure_files_loaded()
-                    record.total_original = 0
-                    record.total_compressed = 0
-                    record.total_time_ms = 0.0
-                    record.compression_ratio = 1.0
-                    record.error_messages.clear()
-                    for f in record.files:
-                        f.status = CompressionStatus.PENDING
-                        f.compressed_data = None
-                        f.is_stored = False
-                    record.status = CompressionStatus.PENDING
-                    for filerecord in record.files:
-                        if self._is_cancelled:
-                            break
-                        self.single_compress(row_idx, filerecord, folder_ref=record)
-                elif isinstance(record, FileRecord):
-                    record.status = CompressionStatus.PENDING
-                    record.compressed_data = None
-                    record.is_stored = False
-                    self.single_compress(row_idx, record)
+            with SilentExplorer.user_compression_priority():
+                self._run_compress_tasks()
         finally:
             self._flush_training_data()
             _core_set_streaming_compress_cancel(False)
+
+    def _run_compress_tasks(self) -> None:
+        for row_idx, record in self.tasks:
+            if self._is_cancelled:
+                break
+            if isinstance(record, FolderRecord):
+                record.ensure_files_loaded()
+                record.total_original = 0
+                record.total_compressed = 0
+                record.total_time_ms = 0.0
+                record.compression_ratio = 1.0
+                record.error_messages.clear()
+                for f in record.files:
+                    f.status = CompressionStatus.PENDING
+                    f.compressed_data = None
+                    f.is_stored = False
+                    f.web_dict_preprocess = False
+                    f.plaintext_snapshot = None
+                record.status = CompressionStatus.PENDING
+                for filerecord in record.files:
+                    if self._is_cancelled:
+                        break
+                    self.single_compress(row_idx, filerecord, folder_ref=record)
+            elif isinstance(record, FileRecord):
+                record.status = CompressionStatus.PENDING
+                record.compressed_data = None
+                record.is_stored = False
+                record.web_dict_preprocess = False
+                record.plaintext_snapshot = None
+                self.single_compress(row_idx, record)
 
 
 class ComparisonWorker(QThread):
@@ -609,11 +661,25 @@ class ComparisonWorker(QThread):
         if self._is_cancelled:
             raise RuntimeError("已取消")
 
-    def _is_streaming_file(self, record: FileRecord, algo: AlgorithmType) -> bool:
-        return bool(getattr(record, "path", None)) and record.size > self._chunk_bytes(algo)
+    def _is_streaming_file(
+        self, engine, record: FileRecord, algo: AlgorithmType
+    ) -> bool:
+        """Chunked comparison only for very large files; never with web-dict input."""
+        from gui.config.settings import get_use_web_resource_dict
 
-    def _units_for_file(self, record: FileRecord, algo: AlgorithmType) -> int:
-        if self._is_streaming_file(record, algo):
+        if get_use_web_resource_dict():
+            return False
+        if not getattr(record, "path", None):
+            return False
+        # Below main compress streaming threshold: one-shot compare (matches gzip / memory path).
+        if not engine.should_use_streaming(record.size, algo):
+            return False
+        return record.size > self._chunk_bytes(algo)
+
+    def _units_for_file(
+        self, engine, record: FileRecord, algo: AlgorithmType
+    ) -> int:
+        if self._is_streaming_file(engine, record, algo):
             chunk = self._chunk_bytes(algo)
             return max(1, math.ceil(record.size / chunk))
         return 1
@@ -623,12 +689,32 @@ class ComparisonWorker(QThread):
         percent = int(min(99, self._done_units / max(1, self._total_units) * 100))
         self.progress.emit(percent, text)
 
-    def _read_file_data(self, record: FileRecord) -> bytes:
-        if getattr(record, "raw_data", None):
-            return record.raw_data
+    def _load_comparison_input(self, record: FileRecord) -> bytes:
+        """Plaintext from disk; optional web-dict encode (same input as main compress).
+
+        Never reuse ``record.raw_data`` — it may still hold a prior dictionary token
+        stream after compression, which makes every codec look worse in comparison.
+        """
         if getattr(record, "path", None):
-            return Path(record.path).read_bytes()
-        return b""
+            data = Path(record.path).read_bytes()
+        elif getattr(record, "raw_data", None):
+            data = bytes(record.raw_data)
+        else:
+            return b""
+        from gui.config.settings import get_use_web_resource_dict
+
+        if get_use_web_resource_dict():
+            from gui.engine.web_dict import encode
+
+            data = encode(data)
+        return data
+
+    @staticmethod
+    def _comparison_ratio(record: FileRecord, compressed_size: int) -> float:
+        original = int(getattr(record, "size", 0) or 0)
+        if original <= 0:
+            return 1.0
+        return compressed_size / original
 
     def _compress_data(self, engine, data: bytes, algo: AlgorithmType):
         from gui.ade.explorer import SilentExplorer
@@ -670,24 +756,25 @@ class ComparisonWorker(QThread):
 
     def _compare_file(self, engine, record: FileRecord, algo: AlgorithmType) -> dict:
         self._check_cancelled()
-        if self._is_streaming_file(record, algo):
+        if self._is_streaming_file(engine, record, algo):
             return self._compress_streaming_file(engine, record, algo)
 
-        data = self._read_file_data(record)
+        data = self._load_comparison_input(record)
         result = self._compress_data(engine, data, algo)
         if getattr(result, "error_message", ""):
             raise RuntimeError(result.error_message)
         self._emit_step(f"{algo.value}: {record.name}")
+        comp_sz = int(result.compressed_size)
         return {
             "name": algo.value,
-            "compressed_size": result.compressed_size,
-            "ratio": result.compression_ratio,
+            "compressed_size": comp_sz,
+            "ratio": self._comparison_ratio(record, comp_sz),
             "time_ms": result.time_ms,
         }
 
     def _run_file_comparison(self, engine, record: FileRecord) -> tuple[list[dict], str, int]:
         self._total_units = sum(
-            self._units_for_file(record, algo) for algo in self.algorithms
+            self._units_for_file(engine, record, algo) for algo in self.algorithms
         )
         results = []
         for algo in self.algorithms:
@@ -709,7 +796,7 @@ class ComparisonWorker(QThread):
             return [], record.name, 0
 
         self._total_units = sum(
-            self._units_for_file(f, algo)
+            self._units_for_file(engine, f, algo)
             for algo in self.algorithms
             for f in files
         )

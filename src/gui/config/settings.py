@@ -44,6 +44,14 @@ DEFAULTS = {
         "silent_explore_enabled": False,
         # JSONL 新增有效样本达到该数后触发 NN 参数回归补充训练（与 bandit warmup 无关）
         "retrain_min_new_samples": 50,
+        # Stage2：NN 参数回归 + EA（Stage2b 在线优化）
+        "stage2": {
+            "ea_algorithm": 1,
+            "ea_max_time_ms": 3000,
+            "ea_max_eval_kb": 512,
+            "ea_use_live_compress": True,
+            "nn_train_epochs": 50,
+        },
         # 静默探索专用 I/O（与用户主路径 streaming.* 独立；小文件走内存压测，不强制分块读盘）
         "explore_streaming_threshold_mb": float(STREAMING_THRESHOLD_MB),
         "explore_streaming_chunk_size_kb": int(STREAMING_CHUNK_SIZE_KB),
@@ -61,6 +69,10 @@ DEFAULTS = {
             "l1_min_samples": 3,
             "l2_min_samples": 5,
         },
+    },
+    "compression": {
+        # When true: load full file, apply web phrase dictionary, then run chosen codec (no streaming).
+        "use_web_resource_dict": False,
     },
     "streaming": {
         "threshold_mb": STREAMING_THRESHOLD_MB,
@@ -149,6 +161,9 @@ def _merge_with_defaults(user_data: dict) -> dict:
                 r_s[k] = v
     if "visualization" in user_data and isinstance(user_data["visualization"], dict):
         result["visualization"].update(user_data["visualization"])
+    if "compression" in user_data and isinstance(user_data["compression"], dict):
+        result.setdefault("compression", {})
+        result["compression"].update(user_data["compression"])
     if "ade" in user_data and isinstance(user_data["ade"], dict):
         result.setdefault("ade", {})
         for k, v in user_data["ade"].items():
@@ -249,6 +264,40 @@ def get_ade_explorer_tunables(config: dict | None = None) -> dict:
     return out
 
 
+def get_ade_stage2_settings(config: dict | None = None) -> dict:
+    """Merged Stage2 (NN + EA) settings from config + defaults."""
+    defaults = dict(DEFAULTS["ade"]["stage2"])
+    if config is None:
+        config = load_config()
+    raw = config.get("ade", {}).get("stage2") if isinstance(config.get("ade"), dict) else None
+    if isinstance(raw, dict):
+        defaults.update(raw)
+    try:
+        defaults["ea_algorithm"] = max(0, min(3, int(defaults.get("ea_algorithm", 1))))
+        defaults["ea_max_time_ms"] = max(100, min(60000, int(defaults.get("ea_max_time_ms", 3000))))
+        defaults["ea_max_eval_kb"] = max(64, min(8192, int(defaults.get("ea_max_eval_kb", 512))))
+        defaults["ea_use_live_compress"] = bool(defaults.get("ea_use_live_compress", True))
+        defaults["nn_train_epochs"] = max(5, min(500, int(defaults.get("nn_train_epochs", 50))))
+    except (TypeError, ValueError):
+        pass
+    return defaults
+
+
+def apply_stage2_to_decision_engine() -> None:
+    """Push persisted Stage2 settings into the live DecisionEngine singleton."""
+    try:
+        from gui.ade.engine import DecisionEngine
+
+        s = get_ade_stage2_settings()
+        de = DecisionEngine.get()
+        de.set_ea_algorithm(int(s["ea_algorithm"]))
+        de.set_ea_max_time(int(s["ea_max_time_ms"]))
+        de.set_ea_max_eval_bytes(int(s["ea_max_eval_kb"]) * 1024)
+        de.set_ea_use_live_compress(bool(s["ea_use_live_compress"]))
+    except Exception as e:
+        logger.debug("[settings] apply_stage2_to_decision_engine: %s", e)
+
+
 def get_ade_retrain_min_new_samples(config: dict | None = None) -> int:
     """Min new JSONL samples before supplemental param-regressor retrain."""
     if config is None:
@@ -314,6 +363,22 @@ def get_algo_config(config: dict | None = None) -> dict[AlgorithmType, dict[str,
         except (ValueError, TypeError):
             continue
     return result
+
+
+def get_use_web_resource_dict(config: dict | None = None) -> bool:
+    cfg = config if config is not None else load_config()
+    comp = cfg.get("compression") or {}
+    return bool(comp.get("use_web_resource_dict", False))
+
+
+def set_use_web_resource_dict(enabled: bool, config: dict | None = None) -> None:
+    """Update ``compression.use_web_resource_dict``; save only when *config* is omitted."""
+    target = config if config is not None else load_config()
+    comp = dict(target.get("compression") or {})
+    comp["use_web_resource_dict"] = bool(enabled)
+    target["compression"] = comp
+    if config is None:
+        save_config(target)
 
 
 def get_streaming_threshold(config: dict | None = None) -> float:

@@ -93,6 +93,9 @@ test_HuffmanTree3HM_EXTERNAL_OBJECTS =
 bin/test_HuffmanTree3HM.exe: tests/CMakeFiles/test_HuffmanTree3HM.dir/test_HuffmanTree3HM.cpp.obj
 bin/test_HuffmanTree3HM.exe: tests/CMakeFiles/test_HuffmanTree3HM.dir/build.make
 bin/test_HuffmanTree3HM.exe: src/algorithm/libalgorithm.a
+bin/test_HuffmanTree3HM.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_HuffmanTree3HM.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_HuffmanTree3HM.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_HuffmanTree3HM.exe: tests/CMakeFiles/test_HuffmanTree3HM.dir/linkLibs.rsp
 bin/test_HuffmanTree3HM.exe: tests/CMakeFiles/test_HuffmanTree3HM.dir/objects1.rsp
 bin/test_HuffmanTree3HM.exe: tests/CMakeFiles/test_HuffmanTree3HM.dir/link.txt

@@ -7,6 +7,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/ade.dir/features/MagicBytesDetector.cpp.obj.d"
   "CMakeFiles/ade.dir/models/EvolutionaryAlgorithms.cpp.obj"
   "CMakeFiles/ade.dir/models/EvolutionaryAlgorithms.cpp.obj.d"
+  "CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.obj"
+  "CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.obj.d"
   "CMakeFiles/ade.dir/models/RandomForest.cpp.obj"
   "CMakeFiles/ade.dir/models/RandomForest.cpp.obj.d"
   "CMakeFiles/ade.dir/runtime/ADEBridge.cpp.obj"

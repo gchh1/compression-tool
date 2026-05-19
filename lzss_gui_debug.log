@@ -1570,3 +1570,26 @@
 [Python::CompressionEngine.compress] LZSS data_size=3327
 [LZSSCompressor::compress] ENTER data_size=3327 dict=4095 min_match=0 flag=1
 [LZSSCompressor::compress] EXIT orig=3327 comp=1454 ratio=0.4370 time_ms=2.33 success=1
+[Python::CompressionEngine.compress] LZSS data_size=13448
+[LZSSCompressor::compress] ENTER data_size=13448 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=13448 comp=4289 ratio=0.3189 time_ms=12.91 success=1
+[Python::CompressionEngine.compress] LZSS data_size=44782
+[LZSSCompressor::compress] ENTER data_size=44782 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=44782 comp=9139 ratio=0.2041 time_ms=26.82 success=1
+[Python::CompressionEngine.compress] LZSS data_size=60975
+[LZSSCompressor::compress] ENTER data_size=60975 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=60975 comp=22189 ratio=0.3639 time_ms=425.39 success=1
+[Python::single_compress] LZSS raw_data=60975 use_streaming=False path=D:/AAA_C/compression-tool/resources/wow.html
+[Python::CompressionEngine.compress] LZSS data_size=60975
+[LZSSCompressor::compress] ENTER data_size=60975 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=60975 comp=22189 ratio=0.3639 time_ms=425.47 success=1
+[Python::single_compress] LZSS raw_data=56182 use_streaming=False path=D:/AAA_C/compression-tool/resources/wow.html
+[Python::CompressionEngine.compress] LZSS data_size=56182
+[LZSSCompressor::compress] ENTER data_size=56182 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=56182 comp=21441 ratio=0.3816 time_ms=410.78 success=1
+[Python::CompressionEngine.compress] LZSS data_size=56182
+[LZSSCompressor::compress] ENTER data_size=56182 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=56182 comp=21441 ratio=0.3816 time_ms=409.46 success=1
+[Python::CompressionEngine.compress] LZSS data_size=60975
+[LZSSCompressor::compress] ENTER data_size=60975 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=60975 comp=22189 ratio=0.3639 time_ms=445.68 success=1

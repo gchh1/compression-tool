@@ -25,9 +25,10 @@ private:
         Node* left;
         Node* right;
         bool is_leaf;
+        size_t order;
 
-        Node(uint32_t s, size_t f)
-            : sym(s), freq(f), left(nullptr), right(nullptr), is_leaf(true) {}
+        Node(uint32_t s, size_t f, size_t ord = 0)
+            : sym(s), freq(f), left(nullptr), right(nullptr), is_leaf(true), order(ord) {}
     };
 
     Node* root_{nullptr};
@@ -35,6 +36,7 @@ private:
     std::unordered_map<uint32_t, size_t> freq_;
     std::vector<Code> codes_;
     std::unordered_map<uint64_t, uint32_t> reverse_map_;
+    size_t node_order_{0};
 
     void generateCodes(const Node* node, uint64_t bits, uint16_t len) {
         if (!node) return;
@@ -55,23 +57,37 @@ public:
     }
 
     void build() {
-        auto cmp = [](const Node* a, const Node* b) { return a->freq > b->freq; };
+        auto cmp = [](const Node* a, const Node* b) {
+            if (a->freq != b->freq) return a->freq > b->freq;
+            return a->order > b->order;
+        };
         std::priority_queue<Node*, std::vector<Node*>, decltype(cmp)> pq(cmp);
 
+        node_order_ = 0;
         for (auto& kv : freq_) {
-            pq.push(new Node(kv.first, kv.second));
+            pq.push(new Node(kv.first, kv.second, node_order_++));
         }
 
         if (pq.empty()) return;
         if (pq.size() == 1) {
             Node* leaf = pq.top();
             pq.pop();
-            Node* root = new Node(0, leaf->freq);
+            Node* root = new Node(0, leaf->freq, node_order_++);
             root->left = leaf;
+            root->is_leaf = false;
             nodes_.push_back(leaf);
             nodes_.push_back(root);
             root_ = root;
             generateCodes(root, 0, 0);
+
+            std::vector<std::pair<uint32_t, uint8_t>> entries1;
+            for (size_t i = 0; i < codes_.size(); ++i) {
+                if (codes_[i].length > 0) {
+                    entries1.emplace_back(static_cast<uint32_t>(i), codes_[i].length);
+                }
+            }
+            rebuildCodesFromLengths(entries1);
+
             buildReverseMap();
             return;
         }
@@ -79,14 +95,25 @@ public:
         while (pq.size() > 1) {
             Node* a = pq.top(); pq.pop();
             Node* b = pq.top(); pq.pop();
-            Node* parent = new Node(0, a->freq + b->freq);
+            Node* parent = new Node(0, a->freq + b->freq, node_order_++);
             parent->left = a;
             parent->right = b;
+            parent->is_leaf = false;
             pq.push(parent);
+            nodes_.push_back(parent);
         }
 
         root_ = pq.top(); pq.pop();
         generateCodes(root_, 0, 0);
+
+        std::vector<std::pair<uint32_t, uint8_t>> entries;
+        for (size_t i = 0; i < codes_.size(); ++i) {
+            if (codes_[i].length > 0) {
+                entries.emplace_back(static_cast<uint32_t>(i), codes_[i].length);
+            }
+        }
+        rebuildCodesFromLengths(entries);
+
         buildReverseMap();
     }
 
@@ -103,7 +130,7 @@ public:
         }
     }
 
-    uint32_t decodeFromMap(utils::BitReader& reader) const {
+    uint32_t decodeFromMap(compressor::utils::BitReader& reader) const {
         uint64_t code = 0;
         int len = 0;
         while (true) {
@@ -124,14 +151,13 @@ public:
 
     std::vector<uint8_t> encode() const {
         std::vector<uint8_t> out;
-        utils::BitWriter bw(out);
+        compressor::utils::BitWriter bw(out);
         size_t count = 0;
         for (size_t i = 0; i < codes_.size(); i++) {
             if (codes_[i].length > 0) count++;
         }
 
-        if (count > 255) count = 255;
-        bw.writeBits(count, 8);
+        bw.writeBits(count, 16);
 
         size_t written = 0;
         for (size_t i = 0; i < codes_.size() && written < count; i++) {
@@ -166,7 +192,11 @@ public:
         }
 
         auto sorted = entries;
-        std::sort(sorted.begin(), sorted.end());
+        std::sort(sorted.begin(), sorted.end(),
+            [](const std::pair<uint32_t, uint8_t>& a, const std::pair<uint32_t, uint8_t>& b) {
+                if (a.second != b.second) return a.second < b.second;
+                return a.first < b.first;
+            });
         for (auto& e : sorted) {
             size_t need = static_cast<size_t>(e.first) + 1;
             if (need > codes_.size()) codes_.resize(need);
@@ -176,9 +206,9 @@ public:
     }
 
     void decode(const std::vector<uint8_t>& data) {
-        utils::BitReader br(data);
+        compressor::utils::BitReader br(data);
         uint64_t count;
-        br.readBits(count, 8);
+        br.readBits(count, 16);
 
         std::vector<std::pair<uint32_t, uint8_t>> entries;
         for (size_t i = 0; i < count; i++) {

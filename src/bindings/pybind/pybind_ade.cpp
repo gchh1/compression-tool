@@ -4,6 +4,7 @@
 
 #include "ADEBridge.hpp"
 #include "EvolutionaryAlgorithms.hpp"
+#include "ParamRegressorNet.hpp"
 #include "RandomForest.hpp"
 
 namespace py = pybind11;
@@ -83,6 +84,55 @@ void init_ade(py::module_& m) {
         .def("predict_padded", &compressor::ade::ADEBridge::predict_padded,
             py::arg("features"),
             "Predict algorithm label from 33-dim padded features");
+}
+
+void init_param_regressor(py::module_& m) {
+    py::class_<compressor::ade::ParamRegressorTrainConfig>(m, "ParamRegressorTrainConfig")
+        .def(py::init<>())
+        .def_readwrite("epochs", &compressor::ade::ParamRegressorTrainConfig::epochs)
+        .def_readwrite("learning_rate", &compressor::ade::ParamRegressorTrainConfig::learning_rate)
+        .def_readwrite("batch_size", &compressor::ade::ParamRegressorTrainConfig::batch_size)
+        .def_readwrite("validation_split",
+                       &compressor::ade::ParamRegressorTrainConfig::validation_split)
+        .def_readwrite("random_seed", &compressor::ade::ParamRegressorTrainConfig::random_seed);
+
+    py::class_<compressor::ade::ParamRegressorTrainMetrics>(m, "ParamRegressorTrainMetrics")
+        .def(py::init<>())
+        .def_readonly("final_train_loss",
+                      &compressor::ade::ParamRegressorTrainMetrics::final_train_loss)
+        .def_readonly("final_val_loss",
+                      &compressor::ade::ParamRegressorTrainMetrics::final_val_loss)
+        .def_readonly("epochs_completed",
+                      &compressor::ade::ParamRegressorTrainMetrics::epochs_completed)
+        .def_readonly("num_samples", &compressor::ade::ParamRegressorTrainMetrics::num_samples);
+
+    py::class_<compressor::ade::ParamRegressorNet>(m, "ParamRegressorNet")
+        .def(py::init<>())
+        .def("is_trained", &compressor::ade::ParamRegressorNet::is_trained)
+        .def("predict", &compressor::ade::ParamRegressorNet::predict, py::arg("features"),
+             py::call_guard<py::gil_scoped_release>())
+        .def(
+            "train",
+            [](compressor::ade::ParamRegressorNet& net,
+               const std::vector<std::tuple<std::vector<float>, std::vector<float>, float>>&
+                   rows,
+               const compressor::ade::ParamRegressorTrainConfig& config) {
+                std::vector<compressor::ade::ParamRegressionRow> data;
+                data.reserve(rows.size());
+                for (const auto& row : rows) {
+                    compressor::ade::ParamRegressionRow r;
+                    r.features = std::get<0>(row);
+                    r.targets = std::get<1>(row);
+                    r.weight = std::get<2>(row);
+                    data.push_back(std::move(r));
+                }
+                return net.train(data, config);
+            },
+            py::arg("rows"), py::arg("config") = compressor::ade::ParamRegressorTrainConfig{},
+            py::call_guard<py::gil_scoped_release>())
+        .def("save", &compressor::ade::ParamRegressorNet::save, py::arg("filepath"))
+        .def("load", &compressor::ade::ParamRegressorNet::load, py::arg("filepath"))
+        .def("try_load_default", &compressor::ade::ParamRegressorNet::try_load_default);
 }
 
 void init_ea(py::module_& m) {

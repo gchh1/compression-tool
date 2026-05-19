@@ -96,6 +96,9 @@ bin/test_dpflate_bin64k_3k_stream.exe: src/algorithm/libalgorithm.a
 bin/test_dpflate_bin64k_3k_stream.exe: src/processor/libprocessor.a
 bin/test_dpflate_bin64k_3k_stream.exe: src/core/libcore.a
 bin/test_dpflate_bin64k_3k_stream.exe: src/algorithm/libalgorithm.a
+bin/test_dpflate_bin64k_3k_stream.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_dpflate_bin64k_3k_stream.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_dpflate_bin64k_3k_stream.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_dpflate_bin64k_3k_stream.exe: tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/linkLibs.rsp
 bin/test_dpflate_bin64k_3k_stream.exe: tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/objects1.rsp
 bin/test_dpflate_bin64k_3k_stream.exe: tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/link.txt

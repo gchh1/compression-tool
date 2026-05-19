@@ -383,3 +383,129 @@ target_link_libraries(
     PRIVATE
     algorithm_new
 )
+
+add_executable(
+    test_algorithm_new_lzss_deflate
+    test_algorithm_new_lzss_deflate.cpp
+)
+
+target_include_directories(
+    test_algorithm_new_lzss_deflate
+    PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/core_new/include
+    ${CMAKE_SOURCE_DIR}/src/algorithm_new/include
+)
+
+target_link_libraries(
+    test_algorithm_new_lzss_deflate
+    PRIVATE
+    core_new
+    algorithm_new
+)
+
+add_executable(
+    test_lzss_roundtrip_debug
+    test_lzss_roundtrip_debug.cpp
+)
+
+target_include_directories(
+    test_lzss_roundtrip_debug
+    PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/algorithm_new/include
+)
+
+target_link_libraries(
+    test_lzss_roundtrip_debug
+    PRIVATE
+    algorithm_new
+)
+
+add_executable(
+    test_lzss_noflag_debug
+    test_lzss_noflag_debug.cpp
+)
+
+target_include_directories(
+    test_lzss_noflag_debug
+    PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/algorithm_new/include
+)
+
+target_link_libraries(
+    test_lzss_noflag_debug
+    PRIVATE
+    algorithm_new
+)
+
+add_executable(
+    test_lzss_noflag_text10k
+    test_lzss_noflag_text10k.cpp
+)
+
+target_include_directories(
+    test_lzss_noflag_text10k
+    PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/algorithm_new/include
+)
+
+target_link_libraries(
+    test_lzss_noflag_text10k
+    PRIVATE
+    algorithm_new
+)
+
+add_executable(
+    test_lzss_noflag_minimal
+    test_lzss_noflag_minimal.cpp
+)
+
+target_include_directories(
+    test_lzss_noflag_minimal
+    PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/algorithm_new/include
+)
+
+target_link_libraries(
+    test_lzss_noflag_minimal
+    PRIVATE
+    algorithm_new
+)
+
+add_executable(
+    test_lzss_noflag_sizes
+    test_lzss_noflag_sizes.cpp
+)
+
+target_include_directories(
+    test_lzss_noflag_sizes
+    PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/algorithm_new/include
+)
+
+target_link_libraries(
+    test_lzss_noflag_sizes
+    PRIVATE
+    algorithm_new
+)
+
+add_executable(
+    test_deflate_huffman_minimal
+    test_deflate_huffman_minimal.cpp
+)
+
+target_link_libraries(
+    test_deflate_huffman_minimal
+    PRIVATE
+    algorithm_new
+)
+
+add_executable(
+    test_lzdp_debug
+    test_lzdp_debug.cpp
+)
+
+target_link_libraries(
+    test_lzdp_debug
+    PRIVATE
+    algorithm_new
+)

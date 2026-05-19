@@ -103,12 +103,7 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/vector.tcc \
  D:/AAA_C/compression-tool/src/algorithm_new/include/LZDP.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/climits \
- D:/AAA_C/compression-tool/src/algorithm_new/include/LZencoding.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/BitProcessor.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/Models.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/ByteView.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Streaming.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/fstream \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/istream \
@@ -191,4 +186,41 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fstream.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/span \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array \
- D:/AAA_C/compression-tool/src/algorithm_new/include/ByteView.hpp
+ D:/AAA_C/compression-tool/src/algorithm_new/include/BitProcessor.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/LZencoding.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/Models.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/EncodingTriple.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/filesystem \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_fwd.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/chrono.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ratio \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/limits \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ctime \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/parse_numbers.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_path.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/locale \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_facets_nonio.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/time_members.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/messages_members.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_facets_nonio.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_conv.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/iomanip \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/quoted_string.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/sstream \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/sstream.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/codecvt \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/concurrence.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/shared_ptr.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/shared_ptr_base.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocated_ptr.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unique_ptr.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/align.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_dir.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_ops.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/utility \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_relops.h \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/RecordIO.hpp

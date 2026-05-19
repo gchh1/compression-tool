@@ -102,6 +102,9 @@ def run_gui():
         from gui.config.settings import get_silent_explore_enabled
 
         SilentExplorer.apply_tunables_from_settings()
+        from gui.config.settings import apply_stage2_to_decision_engine
+
+        apply_stage2_to_decision_engine()
         if get_silent_explore_enabled():
             logging.getLogger("gui.explore").info(
                 "[explore] silent exploration enabled (see ade.silent_explore_enabled)"

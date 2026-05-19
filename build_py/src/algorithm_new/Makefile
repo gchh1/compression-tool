@@ -174,6 +174,54 @@ algorithm_new/fast:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/build
 .PHONY : algorithm_new/fast
 
+Deflate.obj: Deflate.cpp.obj
+.PHONY : Deflate.obj
+
+# target to build an object file
+Deflate.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj
+.PHONY : Deflate.cpp.obj
+
+Deflate.i: Deflate.cpp.i
+.PHONY : Deflate.i
+
+# target to preprocess a source file
+Deflate.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.i
+.PHONY : Deflate.cpp.i
+
+Deflate.s: Deflate.cpp.s
+.PHONY : Deflate.s
+
+# target to generate assembly for a file
+Deflate.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.s
+.PHONY : Deflate.cpp.s
+
+Dpflate.obj: Dpflate.cpp.obj
+.PHONY : Dpflate.obj
+
+# target to build an object file
+Dpflate.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj
+.PHONY : Dpflate.cpp.obj
+
+Dpflate.i: Dpflate.cpp.i
+.PHONY : Dpflate.i
+
+# target to preprocess a source file
+Dpflate.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.i
+.PHONY : Dpflate.cpp.i
+
+Dpflate.s: Dpflate.cpp.s
+.PHONY : Dpflate.s
+
+# target to generate assembly for a file
+Dpflate.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.s
+.PHONY : Dpflate.cpp.s
+
 LZDP.obj: LZDP.cpp.obj
 .PHONY : LZDP.obj
 
@@ -198,101 +246,29 @@ LZDP.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.s
 .PHONY : LZDP.cpp.s
 
-pipeline/LZDPNonStreaming.obj: pipeline/LZDPNonStreaming.cpp.obj
-.PHONY : pipeline/LZDPNonStreaming.obj
+LZSS.obj: LZSS.cpp.obj
+.PHONY : LZSS.obj
 
 # target to build an object file
-pipeline/LZDPNonStreaming.cpp.obj:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/LZDPNonStreaming.cpp.obj
-.PHONY : pipeline/LZDPNonStreaming.cpp.obj
+LZSS.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj
+.PHONY : LZSS.cpp.obj
 
-pipeline/LZDPNonStreaming.i: pipeline/LZDPNonStreaming.cpp.i
-.PHONY : pipeline/LZDPNonStreaming.i
-
-# target to preprocess a source file
-pipeline/LZDPNonStreaming.cpp.i:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/LZDPNonStreaming.cpp.i
-.PHONY : pipeline/LZDPNonStreaming.cpp.i
-
-pipeline/LZDPNonStreaming.s: pipeline/LZDPNonStreaming.cpp.s
-.PHONY : pipeline/LZDPNonStreaming.s
-
-# target to generate assembly for a file
-pipeline/LZDPNonStreaming.cpp.s:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/LZDPNonStreaming.cpp.s
-.PHONY : pipeline/LZDPNonStreaming.cpp.s
-
-pipeline/LZDPStreamingPipeline.obj: pipeline/LZDPStreamingPipeline.cpp.obj
-.PHONY : pipeline/LZDPStreamingPipeline.obj
-
-# target to build an object file
-pipeline/LZDPStreamingPipeline.cpp.obj:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/LZDPStreamingPipeline.cpp.obj
-.PHONY : pipeline/LZDPStreamingPipeline.cpp.obj
-
-pipeline/LZDPStreamingPipeline.i: pipeline/LZDPStreamingPipeline.cpp.i
-.PHONY : pipeline/LZDPStreamingPipeline.i
+LZSS.i: LZSS.cpp.i
+.PHONY : LZSS.i
 
 # target to preprocess a source file
-pipeline/LZDPStreamingPipeline.cpp.i:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/LZDPStreamingPipeline.cpp.i
-.PHONY : pipeline/LZDPStreamingPipeline.cpp.i
+LZSS.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.i
+.PHONY : LZSS.cpp.i
 
-pipeline/LZDPStreamingPipeline.s: pipeline/LZDPStreamingPipeline.cpp.s
-.PHONY : pipeline/LZDPStreamingPipeline.s
-
-# target to generate assembly for a file
-pipeline/LZDPStreamingPipeline.cpp.s:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/LZDPStreamingPipeline.cpp.s
-.PHONY : pipeline/LZDPStreamingPipeline.cpp.s
-
-pipeline/Phase1Dpforward.obj: pipeline/Phase1Dpforward.cpp.obj
-.PHONY : pipeline/Phase1Dpforward.obj
-
-# target to build an object file
-pipeline/Phase1Dpforward.cpp.obj:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/Phase1Dpforward.cpp.obj
-.PHONY : pipeline/Phase1Dpforward.cpp.obj
-
-pipeline/Phase1Dpforward.i: pipeline/Phase1Dpforward.cpp.i
-.PHONY : pipeline/Phase1Dpforward.i
-
-# target to preprocess a source file
-pipeline/Phase1Dpforward.cpp.i:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/Phase1Dpforward.cpp.i
-.PHONY : pipeline/Phase1Dpforward.cpp.i
-
-pipeline/Phase1Dpforward.s: pipeline/Phase1Dpforward.cpp.s
-.PHONY : pipeline/Phase1Dpforward.s
+LZSS.s: LZSS.cpp.s
+.PHONY : LZSS.s
 
 # target to generate assembly for a file
-pipeline/Phase1Dpforward.cpp.s:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/Phase1Dpforward.cpp.s
-.PHONY : pipeline/Phase1Dpforward.cpp.s
-
-pipeline/Phase2Dpbacktrack.obj: pipeline/Phase2Dpbacktrack.cpp.obj
-.PHONY : pipeline/Phase2Dpbacktrack.obj
-
-# target to build an object file
-pipeline/Phase2Dpbacktrack.cpp.obj:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/Phase2Dpbacktrack.cpp.obj
-.PHONY : pipeline/Phase2Dpbacktrack.cpp.obj
-
-pipeline/Phase2Dpbacktrack.i: pipeline/Phase2Dpbacktrack.cpp.i
-.PHONY : pipeline/Phase2Dpbacktrack.i
-
-# target to preprocess a source file
-pipeline/Phase2Dpbacktrack.cpp.i:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/Phase2Dpbacktrack.cpp.i
-.PHONY : pipeline/Phase2Dpbacktrack.cpp.i
-
-pipeline/Phase2Dpbacktrack.s: pipeline/Phase2Dpbacktrack.cpp.s
-.PHONY : pipeline/Phase2Dpbacktrack.s
-
-# target to generate assembly for a file
-pipeline/Phase2Dpbacktrack.cpp.s:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/Phase2Dpbacktrack.cpp.s
-.PHONY : pipeline/Phase2Dpbacktrack.cpp.s
+LZSS.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.s
+.PHONY : LZSS.cpp.s
 
 # Help Target
 help:
@@ -307,21 +283,18 @@ help:
 	@echo ... list_install_components
 	@echo ... rebuild_cache
 	@echo ... algorithm_new
+	@echo ... Deflate.obj
+	@echo ... Deflate.i
+	@echo ... Deflate.s
+	@echo ... Dpflate.obj
+	@echo ... Dpflate.i
+	@echo ... Dpflate.s
 	@echo ... LZDP.obj
 	@echo ... LZDP.i
 	@echo ... LZDP.s
-	@echo ... pipeline/LZDPNonStreaming.obj
-	@echo ... pipeline/LZDPNonStreaming.i
-	@echo ... pipeline/LZDPNonStreaming.s
-	@echo ... pipeline/LZDPStreamingPipeline.obj
-	@echo ... pipeline/LZDPStreamingPipeline.i
-	@echo ... pipeline/LZDPStreamingPipeline.s
-	@echo ... pipeline/Phase1Dpforward.obj
-	@echo ... pipeline/Phase1Dpforward.i
-	@echo ... pipeline/Phase1Dpforward.s
-	@echo ... pipeline/Phase2Dpbacktrack.obj
-	@echo ... pipeline/Phase2Dpbacktrack.i
-	@echo ... pipeline/Phase2Dpbacktrack.s
+	@echo ... LZSS.obj
+	@echo ... LZSS.i
+	@echo ... LZSS.s
 .PHONY : help
 
 

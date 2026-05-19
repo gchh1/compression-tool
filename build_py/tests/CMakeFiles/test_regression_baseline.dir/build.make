@@ -97,6 +97,9 @@ bin/test_regression_baseline.exe: src/archiver/libarchiver.a
 bin/test_regression_baseline.exe: src/processor/libprocessor.a
 bin/test_regression_baseline.exe: src/core/libcore.a
 bin/test_regression_baseline.exe: src/algorithm/libalgorithm.a
+bin/test_regression_baseline.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_regression_baseline.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_regression_baseline.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_regression_baseline.exe: tests/CMakeFiles/test_regression_baseline.dir/linkLibs.rsp
 bin/test_regression_baseline.exe: tests/CMakeFiles/test_regression_baseline.dir/objects1.rsp
 bin/test_regression_baseline.exe: tests/CMakeFiles/test_regression_baseline.dir/link.txt

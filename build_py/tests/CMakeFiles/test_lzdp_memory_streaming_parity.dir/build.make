@@ -97,6 +97,9 @@ bin/test_lzdp_memory_streaming_parity.exe: src/archiver/libarchiver.a
 bin/test_lzdp_memory_streaming_parity.exe: src/processor/libprocessor.a
 bin/test_lzdp_memory_streaming_parity.exe: src/core/libcore.a
 bin/test_lzdp_memory_streaming_parity.exe: src/algorithm/libalgorithm.a
+bin/test_lzdp_memory_streaming_parity.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_lzdp_memory_streaming_parity.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_lzdp_memory_streaming_parity.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_lzdp_memory_streaming_parity.exe: tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/linkLibs.rsp
 bin/test_lzdp_memory_streaming_parity.exe: tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/objects1.rsp
 bin/test_lzdp_memory_streaming_parity.exe: tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/link.txt

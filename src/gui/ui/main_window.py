@@ -719,8 +719,42 @@ class DecisionEngineManagerDialog(QDialog):
         self._cfg_retrain_spin.setToolTip("JSONL 新增样本达到该数后触发参数回归补充训练")
         io_form.addRow("补充训练阈值:", self._cfg_retrain_spin)
 
+        stage2_gb = QGroupBox("Stage2 · C++ NN 参数回归 + C++ EA")
+        stage2_form = QFormLayout(stage2_gb)
+
+        self._cfg_ea_algo_combo = QComboBox()
+        self._cfg_ea_algo_combo.addItem("关闭 EA", 0)
+        self._cfg_ea_algo_combo.addItem("遗传算法 (GA)", 1)
+        self._cfg_ea_algo_combo.addItem("粒子群 (PSO)", 2)
+        self._cfg_ea_algo_combo.addItem("CMA-ES", 3)
+        stage2_form.addRow("EA 算法:", self._cfg_ea_algo_combo)
+
+        self._cfg_ea_time_spin = QSpinBox()
+        self._cfg_ea_time_spin.setRange(100, 60000)
+        self._cfg_ea_time_spin.setSuffix(" ms")
+        self._cfg_ea_time_spin.setToolTip("Stage2b 单次参数搜索时间上限")
+        stage2_form.addRow("EA 时限:", self._cfg_ea_time_spin)
+
+        self._cfg_ea_eval_kb_spin = QSpinBox()
+        self._cfg_ea_eval_kb_spin.setRange(64, 8192)
+        self._cfg_ea_eval_kb_spin.setSuffix(" KB")
+        self._cfg_ea_eval_kb_spin.setToolTip("EA 实压缩评估时最多读取的文件前缀大小")
+        stage2_form.addRow("EA 评估读盘:", self._cfg_ea_eval_kb_spin)
+
+        self._cfg_ea_live_btn = _streaming_follow_toggle_button(
+            "EA 使用实压缩适应度（小文件）",
+            checked=True,
+        )
+        stage2_form.addRow("", self._cfg_ea_live_btn)
+
+        self._cfg_nn_epochs_spin = QSpinBox()
+        self._cfg_nn_epochs_spin.setRange(5, 500)
+        self._cfg_nn_epochs_spin.setToolTip("点击「训练 NN」时使用的 epoch 数")
+        stage2_form.addRow("NN 训练 epoch:", self._cfg_nn_epochs_spin)
+
         scroll_layout.addWidget(config_group)
         scroll_layout.addWidget(io_gb)
+        scroll_layout.addWidget(stage2_gb)
 
         stages = [
             ("冷启动 (0-50)", 0.40),
@@ -764,7 +798,29 @@ class DecisionEngineManagerDialog(QDialog):
         self._rf_train_hint.setWordWrap(True)
         action_layout.addWidget(self._rf_train_hint)
 
+        self._train_nn_btn = QPushButton("训练 NN 参数回归")
+        self._train_nn_btn.setToolTip(
+            "从 JSONL 训练 C++ 参数回归网络 (param_regressor.bin)，"
+            "需样本含 params_used"
+        )
+        self._train_nn_btn.clicked.connect(self._on_train_nn_model)
+        action_layout.addWidget(self._train_nn_btn)
+
+        self._train_stage2_btn = QPushButton("训练 Stage2 (NN+EA)")
+        self._train_stage2_btn.setToolTip(
+            "训练 NN 并从 JSONL 最优样本校准 EA 先验 (ea_param_priors.json)"
+        )
+        self._train_stage2_btn.clicked.connect(self._on_train_stage2)
+        action_layout.addWidget(self._train_stage2_btn)
+
+        self._stage2_train_hint = QLabel("")
+        self._stage2_train_hint.setStyleSheet("color: #888; font-size: 12px; padding: 4px 0;")
+        self._stage2_train_hint.setWordWrap(True)
+        action_layout.addWidget(self._stage2_train_hint)
+
         self._rf_train_worker = None
+        self._nn_train_worker = None
+        self._stage2_train_worker = None
         layout.addWidget(action_group)
 
     def _de_cfg_load_from_disk(self) -> None:
@@ -775,10 +831,12 @@ class DecisionEngineManagerDialog(QDialog):
                 get_ade_explore_streaming_threshold_mb,
                 get_ade_explorer_tunables,
                 get_ade_retrain_min_new_samples,
+                get_ade_stage2_settings,
                 get_silent_explore_enabled,
                 load_config,
             )
             cfg = load_config()
+            s2 = get_ade_stage2_settings(cfg)
             t = get_ade_explorer_tunables(cfg)
             self._cfg_enabled_btn.setChecked(get_silent_explore_enabled(cfg))
             self._cfg_epsilon_spin.setValue(float(t["epsilon_base"]))
@@ -801,6 +859,14 @@ class DecisionEngineManagerDialog(QDialog):
                 int(get_ade_explore_streaming_chunk_kb(cfg))
             )
             self._cfg_retrain_spin.setValue(int(get_ade_retrain_min_new_samples(cfg)))
+            if hasattr(self, "_cfg_ea_algo_combo"):
+                ea_id = int(s2.get("ea_algorithm", 1))
+                idx = self._cfg_ea_algo_combo.findData(ea_id)
+                self._cfg_ea_algo_combo.setCurrentIndex(idx if idx >= 0 else 1)
+                self._cfg_ea_time_spin.setValue(int(s2.get("ea_max_time_ms", 3000)))
+                self._cfg_ea_eval_kb_spin.setValue(int(s2.get("ea_max_eval_kb", 512)))
+                self._cfg_ea_live_btn.setChecked(bool(s2.get("ea_use_live_compress", True)))
+                self._cfg_nn_epochs_spin.setValue(int(s2.get("nn_train_epochs", 50)))
         except Exception as e:
             logger.debug("[de_manager] _de_cfg_load_from_disk: %s", e)
 
@@ -818,6 +884,13 @@ class DecisionEngineManagerDialog(QDialog):
             self._cfg_explore_chunk_spin.value()
         )
         full["ade"]["retrain_min_new_samples"] = int(self._cfg_retrain_spin.value())
+        full["ade"]["stage2"] = {
+            "ea_algorithm": int(self._cfg_ea_algo_combo.currentData() or 0),
+            "ea_max_time_ms": int(self._cfg_ea_time_spin.value()),
+            "ea_max_eval_kb": int(self._cfg_ea_eval_kb_spin.value()),
+            "ea_use_live_compress": bool(self._cfg_ea_live_btn.isChecked()),
+            "nn_train_epochs": int(self._cfg_nn_epochs_spin.value()),
+        }
         full["ade"]["explorer"] = {
             "epsilon_base": float(self._cfg_epsilon_spin.value()),
             "alpha_ucb": float(self._cfg_alpha_spin.value()),
@@ -833,8 +906,11 @@ class DecisionEngineManagerDialog(QDialog):
         }
         save_config(full)
         SilentExplorer.apply_tunables_from_settings()
+        from gui.config.settings import apply_stage2_to_decision_engine
+
+        apply_stage2_to_decision_engine()
         self._refresh()
-        QMessageBox.information(self, "已保存", "决策引擎 / 探索器配置已写入配置文件并生效。")
+        QMessageBox.information(self, "已保存", "决策引擎 / 探索器 / Stage2 配置已写入并生效。")
 
     def _on_de_cfg_restore_defaults(self) -> None:
         from gui.config.settings import get_defaults
@@ -862,6 +938,15 @@ class DecisionEngineManagerDialog(QDialog):
             int(ade.get("explore_streaming_chunk_size_kb", STREAMING_CHUNK_SIZE_KB))
         )
         self._cfg_retrain_spin.setValue(int(ade.get("retrain_min_new_samples", 50)))
+        s2 = ade.get("stage2", {})
+        if hasattr(self, "_cfg_ea_algo_combo"):
+            ea_id = int(s2.get("ea_algorithm", 1))
+            idx = self._cfg_ea_algo_combo.findData(ea_id)
+            self._cfg_ea_algo_combo.setCurrentIndex(idx if idx >= 0 else 1)
+            self._cfg_ea_time_spin.setValue(int(s2.get("ea_max_time_ms", 3000)))
+            self._cfg_ea_eval_kb_spin.setValue(int(s2.get("ea_max_eval_kb", 512)))
+            self._cfg_ea_live_btn.setChecked(bool(s2.get("ea_use_live_compress", True)))
+            self._cfg_nn_epochs_spin.setValue(int(s2.get("nn_train_epochs", 50)))
 
     def _on_reset_explorer(self):
         reply = QMessageBox.question(
@@ -944,6 +1029,172 @@ class DecisionEngineManagerDialog(QDialog):
         worker.finished_with_result.connect(on_done)
         worker.start()
 
+    def _start_ade_train_dialog(
+        self,
+        *,
+        title: str,
+        confirm_text: str,
+        worker_factory,
+        disable_buttons: list,
+    ) -> None:
+        from PyQt6.QtWidgets import QProgressDialog
+
+        reply = QMessageBox.question(
+            self,
+            title,
+            confirm_text,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        if reply != QMessageBox.StandardButton.Yes:
+            return
+
+        for btn in disable_buttons:
+            if btn is not None:
+                btn.setEnabled(False)
+
+        progress = QProgressDialog(f"{title}…", None, 0, 0, self)
+        progress.setWindowTitle("ADE 训练")
+        progress.setWindowModality(Qt.WindowModality.WindowModal)
+        progress.setMinimumDuration(0)
+        progress.setCancelButton(None)
+        progress.show()
+
+        try:
+            worker = worker_factory(self)
+        except Exception as e:
+            logger.exception("[main_window] ADE train worker creation failed")
+            progress.close()
+            for btn in disable_buttons:
+                if btn is not None:
+                    btn.setEnabled(True)
+            QMessageBox.critical(self, "无法开始训练", str(e))
+            return None
+
+        self._ade_train_progress = progress
+
+        def on_progress(msg: str) -> None:
+            p = getattr(self, "_ade_train_progress", None)
+            if p is not None:
+                try:
+                    p.setLabelText(msg)
+                except RuntimeError:
+                    pass
+
+        def on_done(result) -> None:
+            p = getattr(self, "_ade_train_progress", None)
+            if p is not None:
+                try:
+                    p.close()
+                except RuntimeError:
+                    pass
+            self._ade_train_progress = None
+            for btn in disable_buttons:
+                if btn is not None:
+                    btn.setEnabled(True)
+            if worker is self._nn_train_worker:
+                self._nn_train_worker = None
+            if worker is self._stage2_train_worker:
+                self._stage2_train_worker = None
+            self._refresh()
+            if getattr(result, "ok", False):
+                QMessageBox.information(self, "训练完成", result.message)
+            else:
+                QMessageBox.warning(self, "训练失败", result.message)
+
+        worker.progress.connect(on_progress)
+        worker.finished_with_result.connect(on_done)
+        worker.start()
+        return worker
+
+    def _on_train_nn_model(self) -> None:
+        from gui.ade.nn_train import (
+            MIN_NN_SAMPLES,
+            MIN_NN_SAMPLES_RECOMMENDED,
+            NNTrainWorker,
+            count_nn_ready_samples,
+            describe_nn_sample_gap,
+        )
+        from gui.ade.params import ParameterRegressor
+
+        if self._nn_train_worker is not None and self._nn_train_worker.isRunning():
+            QMessageBox.information(self, "训练中", "NN 训练正在进行，请稍候。")
+            return
+        if not ParameterRegressor.get()._has_cpp:
+            QMessageBox.warning(
+                self,
+                "无法训练",
+                "C++ ParamRegressorNet 不可用。\n"
+                "请重新编译 core_engine 并更新 WebCompress.exe（不依赖 PyTorch）。",
+            )
+            return
+        ready = count_nn_ready_samples()
+        if ready < MIN_NN_SAMPLES:
+            QMessageBox.warning(
+                self,
+                "样本不足",
+                f"当前可用于 NN 的样本 {ready} 条，至少需要 {MIN_NN_SAMPLES} 条。\n\n"
+                f"{describe_nn_sample_gap()}",
+            )
+            return
+
+        confirm = f"将用 {ready} 条 JSONL 样本训练 param_regressor.bin（C++ MLP）。\n\n"
+        if ready < MIN_NN_SAMPLES_RECOMMENDED:
+            confirm += f"（建议 ≥{MIN_NN_SAMPLES_RECOMMENDED} 条；当前较少，模型可能欠拟合。）\n\n"
+        confirm += "是否继续？"
+
+        self._nn_train_worker = self._start_ade_train_dialog(
+            title="训练 NN",
+            confirm_text=confirm,
+            worker_factory=lambda parent: NNTrainWorker(parent),
+            disable_buttons=[self._train_nn_btn, self._train_stage2_btn],
+        )
+
+    def _on_train_stage2(self) -> None:
+        from gui.ade.nn_train import (
+            MIN_NN_SAMPLES,
+            count_nn_ready_samples,
+            describe_nn_sample_gap,
+        )
+        from gui.ade.params import ParameterRegressor
+        from gui.ade.stage2_train import Stage2TrainWorker
+
+        if self._stage2_train_worker is not None and self._stage2_train_worker.isRunning():
+            QMessageBox.information(self, "训练中", "Stage2 训练正在进行，请稍候。")
+            return
+        if not ParameterRegressor.get()._has_cpp:
+            QMessageBox.warning(
+                self,
+                "无法训练",
+                "C++ ParamRegressorNet 不可用，请重新编译 core_engine。",
+            )
+            return
+        ready = count_nn_ready_samples()
+        if ready < MIN_NN_SAMPLES:
+            QMessageBox.warning(
+                self,
+                "样本不足",
+                f"NN 可用样本 {ready} 条，至少需要 {MIN_NN_SAMPLES} 条。\n\n"
+                f"{describe_nn_sample_gap()}",
+            )
+            return
+
+        self._stage2_train_worker = self._start_ade_train_dialog(
+            title="训练 Stage2",
+            confirm_text=(
+                f"将依次：\n"
+                f"1) 训练 NN 参数回归（{ready} 条样本）\n"
+                f"2) 从 JSONL 校准 EA 先验 (ea_param_priors.json)\n\n"
+                "是否继续？"
+            ),
+            worker_factory=lambda parent: Stage2TrainWorker(parent),
+            disable_buttons=[
+                self._train_nn_btn,
+                self._train_stage2_btn,
+                self._train_rf_btn,
+            ],
+        )
+
     def _refresh(self):
         try:
             from gui.ade.engine import DecisionEngine
@@ -1007,20 +1258,64 @@ class DecisionEngineManagerDialog(QDialog):
 
         try:
             from gui.ade.rf_train import MIN_RF_SAMPLES, count_rf_ready_samples
+            from gui.ade.nn_train import (
+                MIN_NN_SAMPLES,
+                MIN_NN_SAMPLES_RECOMMENDED,
+                count_nn_ready_samples,
+            )
+            from gui.ade.params import ParameterRegressor
+            from gui.ade.ea_tune import load_ea_priors, resolve_ea_priors_path
             from gui.engine.compressor import CompressionEngine
 
-            ready = count_rf_ready_samples()
+            ready_rf = count_rf_ready_samples()
+            ready_nn = count_nn_ready_samples()
             eng_ok = CompressionEngine().available
+            reg = ParameterRegressor.get()
+            if not reg._has_cpp and CompressionEngine().available:
+                reg = ParameterRegressor.get(force_reload=True)
+            cpp_ok = reg._has_cpp
+            nn_ready = reg.is_ready
+            priors = load_ea_priors()
+            n_priors = len(priors.get("by_algorithm") or {})
+
             if hasattr(self, "_train_rf_btn"):
-                self._train_rf_btn.setEnabled(eng_ok and ready >= MIN_RF_SAMPLES)
+                self._train_rf_btn.setEnabled(eng_ok and ready_rf >= MIN_RF_SAMPLES)
             if hasattr(self, "_rf_train_hint"):
                 if not eng_ok:
                     hint = "core_engine 不可用，无法训练 RF。"
-                elif ready < MIN_RF_SAMPLES:
-                    hint = f"RF 可用样本约 {ready}/{MIN_RF_SAMPLES}，继续压缩以收集数据。"
+                elif ready_rf < MIN_RF_SAMPLES:
+                    hint = f"RF 可用样本约 {ready_rf}/{MIN_RF_SAMPLES}，继续压缩以收集数据。"
                 else:
-                    hint = f"可训练 RF（约 {ready} 条有效样本）。"
+                    hint = f"可训练 RF（约 {ready_rf} 条有效样本）。"
                 self._rf_train_hint.setText(hint)
+
+            # NN: enable when C++ backend loaded; sample check happens on click.
+            if hasattr(self, "_train_nn_btn"):
+                self._train_nn_btn.setEnabled(cpp_ok)
+            if hasattr(self, "_train_stage2_btn"):
+                self._train_stage2_btn.setEnabled(cpp_ok)
+            if hasattr(self, "_stage2_train_hint"):
+                if not cpp_ok:
+                    s2hint = (
+                        "C++ ParamRegressorNet 未加载：请用新编译的 core_engine 并重打 WebCompress.exe。"
+                        " EA 仍可用（C++ ParameterOptimizer）。"
+                    )
+                elif ready_nn < MIN_NN_SAMPLES:
+                    s2hint = (
+                        f"可点训练 NN，但样本仅 {ready_nn} 条（需 ≥{MIN_NN_SAMPLES}）。"
+                        f" 建议继续收集 DEFLATE/LZSS/LZDP 等带 params 的样本。"
+                    )
+                elif ready_nn < MIN_NN_SAMPLES_RECOMMENDED:
+                    s2hint = (
+                        f"可训练 NN（{ready_nn} 条，建议 ≥{MIN_NN_SAMPLES_RECOMMENDED}）；"
+                        f" EA 先验 {n_priors} 算法；NN 已加载: {'是' if nn_ready else '否'}。"
+                    )
+                else:
+                    s2hint = (
+                        f"可训练 NN（{ready_nn} 条）；EA 先验 {n_priors} 算法；"
+                        f"NN 已加载: {'是' if nn_ready else '否'}。"
+                    )
+                self._stage2_train_hint.setText(s2hint)
         except Exception:
             pass
 
@@ -1134,18 +1429,40 @@ class AlgorithmConfigDialog(QDialog):
         )
         layout.addWidget(ade_note)
 
+        from gui.config.settings import (
+            load_config as _cfg_load_stream,
+            get_use_web_resource_dict,
+        )
+
+        _stream_file_cfg = _cfg_load_stream()
+        self._web_dict_btn = _streaming_follow_toggle_button(
+            "使用网页资源字典",
+            checked=get_use_web_resource_dict(_stream_file_cfg),
+        )
+        self._web_dict_btn.setToolTip(
+            "勾选后：整文件读入内存，用预设 HTML/CSS/JS 短语表替换后再走所选算法；"
+            "WCX 头标记 v3 标志位；不走流式路径。"
+        )
+        layout.addWidget(self._web_dict_btn)
+        web_dict_note = QLabel(
+            "词典预处理在压缩前替换常见网页片段，解压时自动还原；原始大小以磁盘明文为准。"
+        )
+        web_dict_note.setWordWrap(True)
+        web_dict_note.setStyleSheet(
+            f"color: {ThemeManager.hex('text_muted')}; font-size: 11px; padding: 0 0 8px 0;"
+        )
+        layout.addWidget(web_dict_note)
+
         try:
             from gui.engine.compressor import CompressionEngine
 
             current_config = CompressionEngine.get_config()
 
             from gui.config.settings import (
-                load_config as _cfg_load_stream,
                 get_streaming_chunk_size,
                 get_streaming_per_algorithm,
                 get_streaming_threshold,
             )
-            _stream_file_cfg = _cfg_load_stream()
             _global_chunk_kb = get_streaming_chunk_size(_stream_file_cfg)
             _global_threshold_mb = float(get_streaming_threshold(_stream_file_cfg))
             _per_algo_saved = get_streaming_per_algorithm(_stream_file_cfg)
@@ -1475,6 +1792,10 @@ class AlgorithmConfigDialog(QDialog):
             )
         if self._streaming_chunk_spin:
             self._streaming_chunk_spin.setValue(STREAMING_CHUNK_SIZE_KB)
+        if getattr(self, "_web_dict_btn", None) is not None:
+            from gui.config.settings import get_use_web_resource_dict
+
+            self._web_dict_btn.setChecked(get_use_web_resource_dict())
         dpa = get_defaults()["streaming"]["per_algorithm"]
         for algo, pack in self._per_algo_stream_widgets.items():
             follow_cb = pack["follow"]
@@ -1513,7 +1834,7 @@ class AlgorithmConfigDialog(QDialog):
                 float(self._streaming_threshold_spin.value())
             )
 
-        from gui.config.settings import load_config, save_config
+        from gui.config.settings import load_config, save_config, set_use_web_resource_dict
 
         full = load_config()
         if "streaming" not in full:
@@ -1538,6 +1859,8 @@ class AlgorithmConfigDialog(QDialog):
                     ent["threshold_mb"] = float(thresh_sb.value())
                 pa_out[algo.value] = ent
             full["streaming"]["per_algorithm"] = pa_out
+        if getattr(self, "_web_dict_btn", None) is not None:
+            set_use_web_resource_dict(bool(self._web_dict_btn.isChecked()), full)
         save_config(full)
 
         self.accept()
@@ -1618,6 +1941,7 @@ class MainWindow(QMainWindow):
         self._table.request_heatmap.connect(self._on_view_heatmap_row)
         self._table.request_comparison.connect(self._on_view_comparison_row)
         self._table.request_network.connect(self._on_view_network_row)
+        self._table.request_folder_network.connect(self._on_folder_network_row)
         self._table.request_webpage_heatmap.connect(self._on_webpage_heatmap)
         self._table.request_folder_summary.connect(self._on_folder_summary)
         self._table.request_decision_detail.connect(self._on_view_decision_detail)
@@ -2148,6 +2472,11 @@ class MainWindow(QMainWindow):
             )
             raise RuntimeError(em)
         out = bytes(result.data)
+        from gui.engine.web_dict import postprocess_after_codec
+
+        out = postprocess_after_codec(
+            out, web_dict_preprocess=bool(getattr(header, "web_dict_preprocess", False))
+        )
         if header.original_size and len(out) != int(header.original_size):
             log_decompress(
                 "gui_payload_size_mismatch",
@@ -2595,6 +2924,45 @@ class MainWindow(QMainWindow):
             return
         self._run_network_sim(record)
 
+    def _on_folder_network_row(self, row: int) -> None:
+        logger.info("[view] folder network sim from right-click, row=%d", row)
+        record = self._table.get_record(row)
+        if not isinstance(record, FolderRecord):
+            return
+        from gui.engine.network_transfer import target_from_folder_record
+        from gui.windows.network_sim import folder_transfer_totals
+
+        target = target_from_folder_record(record)
+        inp = folder_transfer_totals(record)
+        if target is None or inp is None:
+            QMessageBox.information(
+                self,
+                "提示",
+                "文件夹中没有已压缩完成的资源，无法进行整站传输模拟",
+            )
+            return
+        self._run_network_sim_input(inp, benchmark_target=target)
+
+    def _run_network_sim_input(self, inp, benchmark_target=None) -> None:
+        try:
+            from gui.ui.dialogs.network_sim_dialog import NetworkSimDialog
+
+            dlg = NetworkSimDialog(
+                original_size=inp.original_size,
+                compressed_size=inp.compressed_size,
+                compression_time_ms=inp.compression_time_ms,
+                filename=inp.label,
+                algorithm=inp.algorithm,
+                scope_note=inp.scope_note,
+                benchmark_target=benchmark_target,
+                parent=self,
+            )
+            dlg.exec()
+            logger.info("[view] network sim dialog closed")
+        except Exception as e:
+            logger.error("[view] network sim failed: %s", e, exc_info=True)
+            QMessageBox.warning(self, "网络模拟错误", f"生成网络传输模拟失败:\n{e}")
+
     def _open_heatmap(self, record: FileRecord) -> None:
         logger.info("[view] opening heatmap for %s (%d bytes, algo=%s)",
                      record.name, record.size, record.algorithm.value)
@@ -2817,23 +3185,25 @@ class MainWindow(QMainWindow):
     #         self._run_network_sim(record)
 
     def _run_network_sim(self, record: FileRecord) -> None:
-        logger.info("[view] running network sim for %s (orig=%d, comp=%d, time=%.1fms)",
-                     record.name, record.size, _compressed_size(record), record.compression_time_ms)
-        try:
-            from gui.ui.dialogs.network_sim_dialog import NetworkSimDialog
-            dlg = NetworkSimDialog(
-                original_size=record.size,
-                compressed_size=_compressed_size(record),
-                compression_time_ms=record.compression_time_ms,
-                filename=record.name,
-                algorithm=record.algorithm.value,
-                parent=self,
-            )
-            dlg.exec()
-            logger.info("[view] network sim dialog closed")
-        except Exception as e:
-            logger.error("[view] network sim failed: %s", e, exc_info=True)
-            QMessageBox.warning(self, "网络模拟错误", f"生成网络传输模拟失败:\n{e}")
+        logger.info(
+            "[view] running network sim for %s (orig=%d, comp=%d, time=%.1fms)",
+            record.name,
+            record.size,
+            _compressed_size(record),
+            record.compression_time_ms,
+        )
+        from gui.engine.network_transfer import target_from_file_record
+        from gui.windows.network_sim import NetworkSimInput
+
+        target = target_from_file_record(record)
+        inp = NetworkSimInput(
+            original_size=record.size,
+            compressed_size=_compressed_size(record),
+            compression_time_ms=record.compression_time_ms,
+            label=record.name,
+            algorithm=record.algorithm.value,
+        )
+        self._run_network_sim_input(inp, benchmark_target=target)
 
     def _on_webpage_heatmap(self, row: int) -> None:
         logger.info("[view] webpage heatmap from right-click, row=%d", row)

@@ -96,6 +96,9 @@ bin/test_PackWriter.exe: src/archiver/libarchiver.a
 bin/test_PackWriter.exe: src/processor/libprocessor.a
 bin/test_PackWriter.exe: src/core/libcore.a
 bin/test_PackWriter.exe: src/algorithm/libalgorithm.a
+bin/test_PackWriter.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_PackWriter.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_PackWriter.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_PackWriter.exe: tests/CMakeFiles/test_PackWriter.dir/linkLibs.rsp
 bin/test_PackWriter.exe: tests/CMakeFiles/test_PackWriter.dir/objects1.rsp
 bin/test_PackWriter.exe: tests/CMakeFiles/test_PackWriter.dir/link.txt

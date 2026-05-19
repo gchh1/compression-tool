@@ -1,32 +1,37 @@
 {
-  "total_samples": 592,
-  "valid_samples": 592,
-  "invalid_samples": 16,
-  "last_save_time": 1779111017.2869563,
-  "last_retrain_total_samples": 0,
-  "last_retrain_time": 0.0,
+  "total_samples": 1299,
+  "valid_samples": 1299,
+  "invalid_samples": 22,
+  "last_save_time": 1779187409.1023874,
+  "last_retrain_total_samples": 1287,
+  "last_retrain_time": 1779181497.2609625,
   "data_version": "3.0",
   "algorithm_distribution": {
     "myflate": 6,
     "lzmine": 5,
-    "lzss": 32,
-    "lzdp": 263,
-    "dpflate": 145,
-    "deflate": 94,
-    "gzip": 4,
-    "none": 21,
+    "lzss": 38,
+    "lzdp": 348,
+    "dpflate": 152,
+    "deflate": 550,
+    "gzip": 8,
+    "none": 160,
     "zstd": 11,
-    "brotli": 11
+    "brotli": 22
   },
   "type_distribution": {
-    "UNKNOWN": 542,
-    "AUDIO_WAV": 12,
-    "IMAGE_PNG": 30,
-    "IMAGE_BMP": 4,
-    "IMAGE_JPEG": 4
+    "UNKNOWN": 1069,
+    "AUDIO_WAV": 23,
+    "IMAGE_PNG": 151,
+    "IMAGE_BMP": 8,
+    "IMAGE_JPEG": 44,
+    "VIDEO_MKV": 3,
+    "AUDIO_MP3": 2
   },
-  "last_rf_train_time": 1779111017.2869563,
-  "last_rf_train_samples": 565,
+  "last_rf_train_time": 1779170425.461791,
+  "last_rf_train_samples": 835,
   "last_rf_train_backend": "ade.train",
-  "last_rf_model_path": "Package\\ade\\default_model.bin"
+  "last_rf_model_path": "D:\\AAA_C\\compression-tool\\Package\\ade\\default_model.bin",
+  "exploration_samples": 31,
+  "last_nn_train_time": 1779170486.0762613,
+  "last_nn_train_samples": 216
 }

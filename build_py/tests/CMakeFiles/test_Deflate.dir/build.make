@@ -97,6 +97,9 @@ bin/test_deflate.exe: src/archiver/libarchiver.a
 bin/test_deflate.exe: src/processor/libprocessor.a
 bin/test_deflate.exe: src/core/libcore.a
 bin/test_deflate.exe: src/algorithm/libalgorithm.a
+bin/test_deflate.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_deflate.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_deflate.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_deflate.exe: tests/CMakeFiles/test_deflate.dir/linkLibs.rsp
 bin/test_deflate.exe: tests/CMakeFiles/test_deflate.dir/objects1.rsp
 bin/test_deflate.exe: tests/CMakeFiles/test_deflate.dir/link.txt

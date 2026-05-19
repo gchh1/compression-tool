@@ -8,11 +8,10 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "D:/AAA_C/compression-tool/src/algorithm_new/Deflate.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj.d"
+  "D:/AAA_C/compression-tool/src/algorithm_new/Dpflate.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/algorithm_new/LZDP.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj.d"
-  "D:/AAA_C/compression-tool/src/algorithm_new/pipeline/LZDPNonStreaming.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/LZDPNonStreaming.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/LZDPNonStreaming.cpp.obj.d"
-  "D:/AAA_C/compression-tool/src/algorithm_new/pipeline/LZDPStreamingPipeline.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/LZDPStreamingPipeline.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/LZDPStreamingPipeline.cpp.obj.d"
-  "D:/AAA_C/compression-tool/src/algorithm_new/pipeline/Phase1Dpforward.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/Phase1Dpforward.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/Phase1Dpforward.cpp.obj.d"
-  "D:/AAA_C/compression-tool/src/algorithm_new/pipeline/Phase2Dpbacktrack.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/Phase2Dpbacktrack.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/pipeline/Phase2Dpbacktrack.cpp.obj.d"
+  "D:/AAA_C/compression-tool/src/algorithm_new/LZSS.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

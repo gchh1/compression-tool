@@ -61,6 +61,7 @@ auto buffer_to_u8vec(py::buffer buf) -> std::vector<uint8_t> {
 }  // namespace
 
 void init_ade(py::module_& m);
+void init_param_regressor(py::module_& m);
 void init_ea(py::module_& m);
 
 PYBIND11_MODULE(core_engine, m) {
@@ -110,14 +111,12 @@ PYBIND11_MODULE(core_engine, m) {
             "compress",
             [](ICompressor& self, py::buffer buf) {
                 return self.compress(buffer_to_u8vec(buf));
-            },
-            py::call_guard<py::gil_scoped_release>())
+            })
         .def(
             "decompress",
             [](ICompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
-            },
-            py::call_guard<py::gil_scoped_release>())
+            })
         .def("get_algorithm_name", &ICompressor::get_algorithm_name);
 
     py::class_<DeflateCompressor, ICompressor,
@@ -151,14 +150,12 @@ PYBIND11_MODULE(core_engine, m) {
             "compress",
             [](DeflateCompressor& self, py::buffer buf) {
                 return self.compress(buffer_to_u8vec(buf));
-            },
-            py::call_guard<py::gil_scoped_release>())
+            })
         .def(
             "decompress",
             [](DeflateCompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
-            },
-            py::call_guard<py::gil_scoped_release>());
+            });
 
     py::class_<LZSSCompressor, ICompressor,
                std::shared_ptr<LZSSCompressor>>(m, "LZSSCompressor")
@@ -175,14 +172,12 @@ PYBIND11_MODULE(core_engine, m) {
             "compress",
             [](LZSSCompressor& self, py::buffer buf) {
                 return self.compress(buffer_to_u8vec(buf));
-            },
-            py::call_guard<py::gil_scoped_release>())
+            })
         .def(
             "decompress",
             [](LZSSCompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
-            },
-            py::call_guard<py::gil_scoped_release>());
+            });
 
     py::class_<LZDPCompressor, ICompressor,
                std::shared_ptr<LZDPCompressor>>(m, "LZDPCompressor")
@@ -218,14 +213,12 @@ PYBIND11_MODULE(core_engine, m) {
             "compress",
             [](LZDPCompressor& self, py::buffer buf) {
                 return self.compress(buffer_to_u8vec(buf));
-            },
-            py::call_guard<py::gil_scoped_release>())
+            })
         .def(
             "decompress",
             [](LZDPCompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
-            },
-            py::call_guard<py::gil_scoped_release>());
+            });
 
     py::class_<compressor::algorithm::LZDP::Triple>(m, "LZDPTriple")
         .def_readonly("offset", &compressor::algorithm::LZDP::Triple::offset)
@@ -291,14 +284,12 @@ PYBIND11_MODULE(core_engine, m) {
             "compress",
             [](DPFlateCompressor& self, py::buffer buf) {
                 return self.compress(buffer_to_u8vec(buf));
-            },
-            py::call_guard<py::gil_scoped_release>())
+            })
         .def(
             "decompress",
             [](DPFlateCompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
-            },
-            py::call_guard<py::gil_scoped_release>());
+            });
 
     py::class_<GzipCompressor, ICompressor,
                std::shared_ptr<GzipCompressor>>(m, "GzipCompressor")
@@ -309,14 +300,12 @@ PYBIND11_MODULE(core_engine, m) {
             "compress",
             [](GzipCompressor& self, py::buffer buf) {
                 return self.compress(buffer_to_u8vec(buf));
-            },
-            py::call_guard<py::gil_scoped_release>())
+            })
         .def(
             "decompress",
             [](GzipCompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
-            },
-            py::call_guard<py::gil_scoped_release>());
+            });
 
     py::class_<BrotliCompressor, ICompressor,
                std::shared_ptr<BrotliCompressor>>(m, "BrotliCompressor")
@@ -331,14 +320,12 @@ PYBIND11_MODULE(core_engine, m) {
             "compress",
             [](BrotliCompressor& self, py::buffer buf) {
                 return self.compress(buffer_to_u8vec(buf));
-            },
-            py::call_guard<py::gil_scoped_release>())
+            })
         .def(
             "decompress",
             [](BrotliCompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
-            },
-            py::call_guard<py::gil_scoped_release>());
+            });
 
     py::class_<ZstdCompressor, ICompressor,
                std::shared_ptr<ZstdCompressor>>(m, "ZstdCompressor")
@@ -349,14 +336,12 @@ PYBIND11_MODULE(core_engine, m) {
             "compress",
             [](ZstdCompressor& self, py::buffer buf) {
                 return self.compress(buffer_to_u8vec(buf));
-            },
-            py::call_guard<py::gil_scoped_release>())
+            })
         .def(
             "decompress",
             [](ZstdCompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
-            },
-            py::call_guard<py::gil_scoped_release>());
+            });
 
     // ===== 打包器 File 结构体 =====
 
@@ -464,6 +449,8 @@ PYBIND11_MODULE(core_engine, m) {
         .def_readwrite("original_size", &compressor::api::WCXUnpackResult::original_size)
         .def_readwrite("compressed_size", &compressor::api::WCXUnpackResult::compressed_size)
         .def_readwrite("is_folder", &compressor::api::WCXUnpackResult::is_folder)
+        .def_readwrite("web_dict_preprocess",
+                        &compressor::api::WCXUnpackResult::web_dict_preprocess)
         .def_readwrite("original_filename", &compressor::api::WCXUnpackResult::original_filename)
         .def_property(
             "payload",
@@ -480,11 +467,13 @@ PYBIND11_MODULE(core_engine, m) {
              compressor::core::AlgorithmID algorithm,
              size_t original_size,
              const std::string& original_filename,
-             bool is_folder) -> py::bytes {
+             bool is_folder,
+             bool web_dict_preprocess) -> py::bytes {
               auto packed = compressor::api::pack_wcx(buffer_to_u8vec(buf), algorithm,
                                                        original_size,
                                                        original_filename,
-                                                       is_folder);
+                                                       is_folder,
+                                                       web_dict_preprocess);
               return vector_to_pybytes(packed);
           },
           py::arg("compressed_data"),
@@ -492,6 +481,7 @@ PYBIND11_MODULE(core_engine, m) {
           py::arg("original_size"),
           py::arg("original_filename") = "",
           py::arg("is_folder") = false,
+          py::arg("web_dict_preprocess") = false,
           // Keep GIL: returning py::bytes after gil_scoped_release faulted on Windows (0xC0000005).
           "Pack WCX header + payload (WCXProtocol in C++; Python must not redefine the wire format)");
 
@@ -500,7 +490,6 @@ PYBIND11_MODULE(core_engine, m) {
               return compressor::api::unpack_wcx(buffer_to_u8vec(buf));
           },
           py::arg("data"),
-          py::call_guard<py::gil_scoped_release>(),
           "Unpack WCX header and payload");
 
     m.def("pipeline_compress",
@@ -525,7 +514,6 @@ PYBIND11_MODULE(core_engine, m) {
           py::arg("dpflate_pipeline") = std::nullopt,
           py::arg("deflate_pipeline") = std::nullopt,
           py::arg("stream_chunk_bytes") = size_t{0},
-          py::call_guard<py::gil_scoped_release>(),
           "Compress data using a pipeline (same optional pipeline structs as compressFile).");
 
     m.def("pipeline_decompress",
@@ -550,7 +538,6 @@ PYBIND11_MODULE(core_engine, m) {
           py::arg("dpflate_pipeline") = std::nullopt,
           py::arg("deflate_pipeline") = std::nullopt,
           py::arg("stream_chunk_bytes") = size_t{0},
-          py::call_guard<py::gil_scoped_release>(),
           "Decompress data using a pipeline (optional structs for pool / symmetry).");
 
     m.def("pipeline_compress_file",
@@ -580,7 +567,6 @@ PYBIND11_MODULE(core_engine, m) {
           py::arg("lzdp_whole_file") = std::nullopt,
           py::arg("dpflate_pipeline") = std::nullopt,
           py::arg("deflate_pipeline") = std::nullopt,
-          py::call_guard<py::gil_scoped_release>(),
           "Streaming compress a file in chunks. stream_chunk_bytes is clamped to 64 KiB–128 MiB "
           "(default 1 MiB when 0); same policy as LZDP/DPFlate pipeline chunk size. "
           "Deflate: ``algorithm::Deflate`` streaming core (same interaction as DPFlate/LZDP); "
@@ -614,7 +600,6 @@ PYBIND11_MODULE(core_engine, m) {
           py::arg("lzdp_whole_file") = std::nullopt,
           py::arg("dpflate_pipeline") = std::nullopt,
           py::arg("deflate_pipeline") = std::nullopt,
-          py::call_guard<py::gil_scoped_release>(),
           "Streaming compress a directory tree to one WCX (folder flag); same optional params as "
           "pipeline_compress_file.");
 
@@ -629,7 +614,6 @@ PYBIND11_MODULE(core_engine, m) {
           },
           py::arg("input_path"), py::arg("output_path"), py::arg("chain"),
           py::arg("stream_chunk_bytes") = size_t{0},
-          py::call_guard<py::gil_scoped_release>(),
           "WCX payload <=256MiB is read fully before decode; larger payloads use chunked reads. "
           "Decompressed output is always written in chunks to disk (stream_chunk_bytes sizes the pool).");
 
@@ -642,6 +626,9 @@ PYBIND11_MODULE(core_engine, m) {
 
     // ===== ADE (Algorithm Decision Engine) =====
     init_ade(m);
+
+    // ===== Stage2a param regressor (C++ MLP) =====
+    init_param_regressor(m);
 
     // ===== EA (Evolutionary Algorithms) - Parameter Optimizer =====
     init_ea(m);

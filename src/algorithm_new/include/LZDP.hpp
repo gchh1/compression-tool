@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <vector>
 
+#include "ByteView.hpp"
 #include "LZencoding.hpp"
 #include "Models.hpp"
 #include "Utils.hpp"
@@ -80,3 +81,71 @@ public:
 };
 
 }  // namespace compressor::algorithm
+
+// ──── Pipeline ────
+
+#include "EncodingTriple.hpp"
+#include "Models.hpp"
+
+namespace compressor::algorithm::pipeline {
+
+struct LZDPNonStreamingResult {
+    std::vector<uint8_t> compressed;
+    std::vector<Triple> triples;
+};
+
+LZDPNonStreamingResult compress_bytes(
+    const std::vector<uint8_t>& input,
+    const LZDPConfig& config);
+
+std::vector<uint8_t> decompress_bytes(
+    const std::vector<uint8_t>& compressed,
+    const LZDPConfig& config);
+
+struct Phase1Result {
+    size_t total_input_bytes{0};
+    models::DPNode terminal_node{};
+};
+
+Phase1Result run_phase1_dpforward(
+    LZDP& lzdp,
+    const LZDPConfig& config,
+    const std::string& input_path,
+    const std::string& temp_a_path,
+    size_t chunk_size);
+
+struct Phase2Result {
+    size_t total_tokens{0};
+    std::vector<Triple> triples;
+};
+
+Phase2Result run_phase2_dpbacktrack(
+    LZDP& lzdp,
+    const Phase1Result& phase1,
+    const std::string& temp_a_path,
+    const std::string& temp_b_path,
+    size_t chunk_size);
+
+struct LZDPStreamingOptions {
+    size_t chunk_size{1 << 20};
+    std::string workspace_dir;
+    std::string temp_a_name{"temp_a.dp"};
+    std::string temp_b_name{"temp_b.tok"};
+};
+
+class LZDPStreamingPipeline {
+public:
+    explicit LZDPStreamingPipeline(LZDPConfig config, LZDPStreamingOptions options);
+
+    void compress_file(const std::string& input_path, const std::string& output_path);
+
+private:
+    LZDPConfig config_;
+    LZDPStreamingOptions options_;
+    LZDP lzdp_;
+
+    std::string temp_a_path() const;
+    std::string temp_b_path() const;
+};
+
+}  // namespace compressor::algorithm::pipeline

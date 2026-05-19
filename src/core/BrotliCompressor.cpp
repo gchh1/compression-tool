@@ -1,27 +1,25 @@
 #include "BrotliCompressor.hpp"
 
-#include <algorithm>
 #include <chrono>
 #include <cstdint>
 #include <vector>
 
 #include "Brotli.hpp"
 
-namespace compressor {
-namespace core {
+namespace compressor::core {
 
 auto BrotliCompressor::compress(std::vector<uint8_t> data) -> CompressorResult {
     CompressorResult result;
-    auto start_time = std::chrono::high_resolution_clock::now();
+    const auto start_time = std::chrono::high_resolution_clock::now();
 
-    algorithm::BrotliCompress brotli(window_size_, min_match_ == 0 ? 3 : min_match_, max_chain_length_);
-    std::vector<uint8_t> out(data.size() + 1024);
-    auto status = brotli.process(data, out, true);
-    out.resize(status.bytes_produced);
+    algorithm::BrotliParams params;
+    params.window_size = window_size_;
+    params.min_match = min_match_ == 0 ? 3 : min_match_;
+    params.max_chain_length = max_chain_length_;
 
-    result.data = std::move(out);
+    result.data = algorithm::brotli_encode(data, params);
 
-    auto end_time = std::chrono::high_resolution_clock::now();
+    const auto end_time = std::chrono::high_resolution_clock::now();
     result.original_size = data.size();
     result.compressed_size = result.data.size();
     if (result.original_size > 0) {
@@ -30,31 +28,25 @@ auto BrotliCompressor::compress(std::vector<uint8_t> data) -> CompressorResult {
     }
     std::chrono::duration<double, std::milli> elapsed = end_time - start_time;
     result.time_ms = elapsed.count();
-    result.success = true;
+    result.success = !result.data.empty() || data.empty();
 
     return result;
 }
 
 auto BrotliCompressor::decompress(std::vector<uint8_t> data) -> CompressorResult {
     CompressorResult result;
-    auto start_time = std::chrono::high_resolution_clock::now();
+    const auto start_time = std::chrono::high_resolution_clock::now();
 
-    algorithm::BrotliDecompress decompress;
-    std::vector<uint8_t> out(std::max(data.size() * 4 + 65536, size_t(2097152)));
-    auto status = decompress.process(data, out, true);
-    out.resize(status.bytes_produced);
+    result.data = algorithm::brotli_decode(data);
 
-    result.data = std::move(out);
-
-    auto end_time = std::chrono::high_resolution_clock::now();
+    const auto end_time = std::chrono::high_resolution_clock::now();
     result.original_size = data.size();
     result.compressed_size = result.data.size();
     std::chrono::duration<double, std::milli> elapsed = end_time - start_time;
     result.time_ms = elapsed.count();
-    result.success = true;
+    result.success = !result.data.empty() || data.empty();
 
     return result;
 }
 
-}
-}
+}  // namespace compressor::core

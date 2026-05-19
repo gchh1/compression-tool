@@ -1,0 +1,14 @@
+# Target labels
+ google_brotli-populate
+# Source files and their labels
+D:/AAA_C/compression-tool/build_py/_deps/google_brotli-subbuild/CMakeFiles/google_brotli-populate
+D:/AAA_C/compression-tool/build_py/_deps/google_brotli-subbuild/CMakeFiles/google_brotli-populate.rule
+D:/AAA_C/compression-tool/build_py/_deps/google_brotli-subbuild/CMakeFiles/google_brotli-populate-complete.rule
+D:/AAA_C/compression-tool/build_py/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-build.rule
+D:/AAA_C/compression-tool/build_py/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-configure.rule
+D:/AAA_C/compression-tool/build_py/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-download.rule
+D:/AAA_C/compression-tool/build_py/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-install.rule
+D:/AAA_C/compression-tool/build_py/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-mkdir.rule
+D:/AAA_C/compression-tool/build_py/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-patch.rule
+D:/AAA_C/compression-tool/build_py/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-test.rule
+D:/AAA_C/compression-tool/build_py/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-update.rule

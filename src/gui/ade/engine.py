@@ -31,6 +31,8 @@ class DecisionEngine:
         self._data_path: Path | None = None
         self._ea_algorithm = 1
         self._ea_max_time_ms = 3000
+        self._ea_max_eval_bytes = 512 * 1024
+        self._ea_use_live_compress = True
         self._ade = None
         self._current_record: FileRecord | None = None
         self._init_ade()
@@ -61,6 +63,18 @@ class DecisionEngine:
         except Exception as e:
             logger.warning("[decision] ADE init failed: %s", e)
             self._ade = None
+
+        try:
+            ParameterRegressor.get()
+        except Exception as e:
+            logger.debug("[decision] param regressor init: %s", e)
+
+        try:
+            from gui.ade.ea_tune import load_ea_priors
+
+            load_ea_priors()
+        except Exception as e:
+            logger.debug("[decision] stage2 priors init: %s", e)
 
     def reload_rf_model(self) -> bool:
         """Reload ``default_model.bin`` after user-initiated RF training."""
@@ -121,7 +135,9 @@ class DecisionEngine:
     @classmethod
     def get(cls) -> "DecisionEngine":
         if cls._instance is None:
-            cls._instance = cls()
+            inst = cls.__new__(cls)
+            cls._instance = inst
+            inst.__init__()
         return cls._instance
 
     def set_mode(self, mode: DecisionMode) -> None:
@@ -141,6 +157,51 @@ class DecisionEngine:
 
     def set_ea_max_time(self, ms: int) -> None:
         self._ea_max_time_ms = max(100, min(ms, 60000))
+
+    def set_ea_max_eval_bytes(self, nbytes: int) -> None:
+        self._ea_max_eval_bytes = max(4096, min(nbytes, 16 * 1024 * 1024))
+
+    def set_ea_use_live_compress(self, enabled: bool) -> None:
+        self._ea_use_live_compress = bool(enabled)
+
+    def _ea_trial_overrides(self, algorithm: AlgorithmType, cpp_params) -> dict[str, int]:
+        from gui.models import merge_decision_overrides_into_algo_config
+
+        raw = {
+            "window_size": int(cpp_params.window_size),
+            "min_match": int(cpp_params.min_match),
+            "max_chain_length": int(cpp_params.max_chain_length),
+            "lookahead_size": int(cpp_params.lookahead_size),
+            "dp_range": int(getattr(cpp_params, "dp_range", 0) or 0),
+        }
+        dsm = int(getattr(cpp_params, "dp_sub_match_max", 0) or 0)
+        if dsm > 0:
+            raw["dp_sub_match_max"] = dsm
+        return merge_decision_overrides_into_algo_config(algorithm, {}, raw)
+
+    def _ea_live_fitness(self, algorithm: AlgorithmType, cpp_params) -> float | None:
+        if not self._ea_use_live_compress or self._ea_algorithm == 0:
+            return None
+        record = self._current_record
+        if record is None:
+            return None
+        max_b = self._ea_max_eval_bytes
+        data = b""
+        try:
+            path = getattr(record, "path", "") or ""
+            if path and Path(path).is_file():
+                with open(path, "rb") as f:
+                    data = f.read(max_b)
+            elif getattr(record, "raw_data", None):
+                raw = record.raw_data
+                data = bytes(raw[:max_b]) if not isinstance(raw, bytes) else raw[:max_b]
+        except Exception as e:
+            logger.debug("[decision] EA eval read failed: %s", e)
+            return None
+        if len(data) < 64:
+            return None
+        overrides = self._ea_trial_overrides(algorithm, cpp_params)
+        return self._engine.compress_with_overrides(data, algorithm, overrides)
 
     def decide(self, record: FileRecord) -> DecisionResult:
         if self._ade is None:
@@ -226,15 +287,25 @@ class DecisionEngine:
             try:
                 nn_params = regressor.predict(self._current_record, algorithm)
                 if nn_params:
+                    from gui.models import sanitize_stage2_params
+
+                    file_size = int(getattr(self._current_record, "size", 0) or 0)
+                    nn_params = sanitize_stage2_params(
+                        algorithm, nn_params, file_size=file_size
+                    )
                     logger.info("[decision] Stage2a: NN predicted params for %s: %s",
                                 algorithm.value, nn_params)
                     return nn_params
             except Exception as e:
                 logger.debug("[decision] Stage2a NN prediction failed: %s", e)
 
+        if self._ea_algorithm == 0:
+            return None
         if not self._engine.available:
             return None
         try:
+            from gui.ade.ea_tune import get_prior_params, prior_fitness_penalty
+
             eng = self._engine._engine
             if not hasattr(eng, 'ParameterOptimizer'):
                 return None
@@ -243,32 +314,57 @@ class DecisionEngine:
             opt.set_algorithm(self._ea_algorithm)
 
             bounds = eng.ParameterBounds()
+            prior = get_prior_params(algorithm)
             default_cfg = ALGORITHM_PARAMS.get(algorithm, {})
+            if prior:
+                target_ws = prior.get('search_size', prior.get('window_size', 32768))
+                target_mm = prior.get('min_match', default_cfg.get('min_match', 3))
+                target_mc = prior.get('max_chain_length', default_cfg.get('max_chain_length', 128))
+                target_la = prior.get('lookahead_size', default_cfg.get('lookahead_size', 64))
+                target_dp = prior.get(
+                    'dp_top',
+                    prior.get('dp_sub_match_max', prior.get('dp_range', default_cfg.get('dp_range', 2))),
+                )
+            else:
+                target_ws = default_cfg.get('search_size', default_cfg.get('window_size', 32768))
+                target_mm = default_cfg.get('min_match', 3)
+                target_mc = default_cfg.get('max_chain_length', 128)
+                target_la = default_cfg.get('lookahead_size', 64)
+                target_dp = default_cfg.get('dp_top', default_cfg.get('dp_sub_match_max', default_cfg.get('dp_range', 2)))
 
-            target_ws = default_cfg.get('window_size', 32768)
-            target_mm = default_cfg.get('min_match', 3)
-            target_mc = default_cfg.get('max_chain_length', 128)
-            target_la = default_cfg.get('lookahead_size', 64)
-            target_dp = default_cfg.get('dp_range', 2)
+            core_algo_id = {
+                AlgorithmType.DEFLATE: int(eng.AlgorithmID.DEFLATE),
+                AlgorithmType.LZSS: int(eng.AlgorithmID.LZSS),
+                AlgorithmType.LZDP: int(eng.AlgorithmID.LZDP),
+                AlgorithmType.DPFLATE: int(eng.AlgorithmID.DPFLATE),
+                AlgorithmType.GZIP: int(eng.AlgorithmID.DEFLATE),
+                AlgorithmType.BROTLI: int(eng.AlgorithmID.BROTLI),
+                AlgorithmType.ZSTD: int(eng.AlgorithmID.ZSTD),
+            }.get(algorithm, int(eng.AlgorithmID.LZDP))
 
             def fitness(params):
+                live = self._ea_live_fitness(algorithm, params)
+                if live is not None:
+                    return float(live)
+                trial = self._ea_trial_overrides(algorithm, params)
+                pen = prior_fitness_penalty(algorithm, trial)
                 ws_err = abs(params.window_size - target_ws) / max(target_ws, 1)
                 mm_err = abs(params.min_match - target_mm) / max(target_mm, 1)
                 mc_err = abs(params.max_chain_length - target_mc) / max(target_mc, 1)
                 la_err = abs(params.lookahead_size - target_la) / max(target_la, 1)
                 dp_err = abs(params.dp_range - target_dp) / max(target_dp, 1)
-                return ws_err + mm_err + mc_err + la_err + dp_err
+                return 0.7 * pen + 0.3 * (ws_err + mm_err + mc_err + la_err + dp_err)
 
-            ea_result = opt.optimize(fitness, bounds, algo_id=1, max_time_ms=self._ea_max_time_ms)
+            ea_result = opt.optimize(
+                fitness, bounds, algo_id=core_algo_id, max_time_ms=self._ea_max_time_ms
+            )
             best = ea_result.best_params
-            logger.info("[decision] Stage2b: EA optimized params for %s", algorithm.value)
-            return {
-                'window_size': best.window_size,
-                'min_match': best.min_match,
-                'max_chain_length': best.max_chain_length,
-                'lookahead_size': best.lookahead_size,
-                'dp_range': best.dp_range,
-            }
+            logger.info(
+                "[decision] Stage2b: EA optimized params for %s (fitness=%.4f)",
+                algorithm.value,
+                ea_result.best_fitness,
+            )
+            return self._ea_trial_overrides(algorithm, best)
         except Exception as e:
             logger.debug("[decision] EA param optimization skipped: %s", e)
             return None
@@ -478,6 +574,8 @@ class DecisionEngine:
             'sample_count': self.sample_count,
             'ea_algorithm': self._ea_algorithm,
             'ea_max_time_ms': self._ea_max_time_ms,
+            'ea_max_eval_bytes': self._ea_max_eval_bytes,
+            'ea_use_live_compress': self._ea_use_live_compress,
         }
         if self._ade is not None:
             try:

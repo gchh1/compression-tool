@@ -1,0 +1,2 @@
+D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc libbrotlidec.a CMakeFiles/brotlidec.dir/c/dec/bit_reader.c.obj CMakeFiles/brotlidec.dir/c/dec/decode.c.obj CMakeFiles/brotlidec.dir/c/dec/huffman.c.obj CMakeFiles/brotlidec.dir/c/dec/state.c.obj
+D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe libbrotlidec.a

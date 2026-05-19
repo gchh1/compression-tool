@@ -313,13 +313,17 @@ auto pack_wcx(const std::vector<uint8_t>& compressed_data,
               AlgorithmID algorithm,
               size_t original_size,
               const std::string& original_filename,
-              bool is_folder) -> std::vector<uint8_t> {
+              bool is_folder,
+              bool web_dict_preprocess) -> std::vector<uint8_t> {
     uint8_t code = wcx::toAlgoCode(algorithm);
     auto orig_u32 = static_cast<uint32_t>(std::min<size_t>(original_size, UINT32_MAX));
     auto comp_u32 = static_cast<uint32_t>(std::min<size_t>(compressed_data.size(), UINT32_MAX));
     auto out = wcx::buildHeaderBytes(code, orig_u32, comp_u32, original_filename);
-    if (is_folder && out.size() >= 15) {
-        out[14] = static_cast<uint8_t>(1);  // FLAG_FOLDER
+    if (out.size() >= 15) {
+        uint8_t flags = 0;
+        if (is_folder) flags |= 0x01;
+        if (web_dict_preprocess) flags |= 0x02;
+        out[14] = flags;
     }
     out.insert(out.end(), compressed_data.begin(), compressed_data.end());
     return out;
@@ -339,6 +343,7 @@ auto unpack_wcx(const std::vector<uint8_t>& data) -> WCXUnpackResult {
     result.compressed_size = header.compressed_size;
     result.original_filename = header.original_filename;
     result.is_folder = (header.flags & 0x01) != 0;
+    result.web_dict_preprocess = (header.flags & 0x02) != 0;
     if (header.total_size > data.size()) {
         result.error_message = "WCX payload offset out of range";
         return result;

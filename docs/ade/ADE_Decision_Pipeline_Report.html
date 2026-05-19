@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADE 决策流水线算法报告</title>
+
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    tags: 'none'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (typeof mermaid !== 'undefined') {
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+  }
+});
+</script>
+
+<style>
+  :root {
+    --fg: #1f2328;
+    --muted: #57606a;
+    --accent: #4a90d9;
+    --border: #d0d7de;
+    --soft: #f6f8fa;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--fg);
+    background: #fff;
+    line-height: 1.75;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: #1a1a1a;
+    line-height: 1.3;
+    margin-top: 1.8em;
+    margin-bottom: 0.6em;
+  }
+  h1 { font-size: 1.9em; border-bottom: 2px solid var(--accent); padding-bottom: 8px; margin-top: 0.4em; }
+  h2 { font-size: 1.5em; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  h3 { font-size: 1.22em; color: #2c3e50; }
+  h4 { font-size: 1.05em; color: #34495e; }
+
+  p { margin: 0.8em 0; }
+  ul, ol { margin: 0.6em 0; padding-left: 28px; }
+  li { margin: 4px 0; }
+  li > p { margin: 0.3em 0; }
+
+  blockquote {
+    margin: 12px 0;
+    padding: 6px 14px;
+    border-left: 4px solid var(--accent);
+    background: var(--soft);
+    color: var(--muted);
+  }
+
+  code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    background: #eef1f4;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.92em;
+  }
+  pre {
+    background: var(--soft);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    line-height: 1.5;
+    font-size: 13.5px;
+  }
+  pre code { background: none; padding: 0; }
+  pre.mermaid {
+    background: transparent;
+    border: none;
+    padding: 0;
+    text-align: center;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 16px 0;
+    font-size: 0.95em;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: var(--soft); font-weight: 600; }
+  tr:nth-child(even) td { background: #fafbfc; }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+  }
+
+  mjx-container { font-size: 1.02em; }
+  mjx-container[display="true"] { margin: 0.8em 0; }
+
+  .footer {
+    margin-top: 60px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.88em;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<h1 id="ade-决策流水线算法报告">ADE 决策流水线算法报告</h1>
+<h2 id="0-文档来源与范围">0. 文档来源与范围</h2>
+<table>
+<tr><th>项目</th><th>内容</th></tr>
+<tr><td><strong>模块</strong></td><td>Algorithm Decision Engine (ADE) — WebCompress 智能压缩决策</td></tr>
+<tr><td><strong>版本</strong></td><td>训练数据 v3.0；特征向量 v3.0（Base 20 维 + Extension 5–8 维）</td></tr>
+<tr><td><strong>规范参照</strong></td><td>本文档结构与记号风格对齐 <code>docs/ade/ERL-Re^2.md</code>、<code>docs/ade/ERL_Re2_Report.html</code></td></tr>
+<tr><td><strong>设计讨论</strong></td><td><code>docs/ade/algorithm_decision_engine_design.md</code></td></tr>
+<tr><td><strong>实现根目录</strong></td><td><code>src/ade/</code>（C++）、<code>src/gui/ade/</code>（Python 编排）、<code>core_engine</code>（pybind）</td></tr>
+<tr><td><strong>资产路径</strong></td><td><code>Package/ade/</code> 或 <code>assets/ade/</code>：<code>ade_training_v3.jsonl</code>、<code>default_model.bin</code>、<code>param_regressor.bin</code>、<code>ea_param_priors.json</code></td></tr>
+</table>
+<blockquote>
+<p><strong>命名</strong>：下文 <strong>Stage0</strong> 指特征提取；<strong>Stage1</strong> 指算法分类（RF）；<strong>Stage2a</strong> 指参数回归 MLP；<strong>Stage2b</strong> 指 EA 黑盒精调；<strong>Collect</strong> 指静默探索与 JSONL 采集。与 ERL-Re² 的「三阶段 RL–EA 主循环」不同，ADE 是 <strong>单步决策 + 离线/在线混合训练</strong>，无 MDP 轨迹与 PeVFA。</p>
+</blockquote>
+<hr />
+<h2 id="1-算法概述">1. 算法概述</h2>
+<h3 id="1-1-一句话定位">1.1 一句话定位</h3>
+<p><strong>ADE</strong> 在 AUTO 模式下对单个文件执行：<strong>流式/内存特征提取 →（规则或 RF）算法分类 →（NN 预测或默认）参数初值 →（可选 EA）预算内精调</strong>，并将结果写入压缩管线与 <code>ade_training_v3.jsonl</code> 以持续改进 Stage1/2 模型。</p>
+<h3 id="1-2-设计动机-why-双阶段-ea">1.2 设计动机（Why 双阶段 + EA）</h3>
+<table>
+<tr><th>问题</th><th>ADE 做法</th></tr>
+<tr><td>算法众多、特征异构</td><td>v3 分段特征（Base + 类型 Extension），RF 学习非线性边界</td></tr>
+<tr><td>同算法下参数空间高维、评估贵</td><td>Stage2a 监督回归给出初值；Stage2b 仅在毫秒级预算内局部搜索</td></tr>
+<tr><td>冷启动 / 模型未训练</td><td><code>RuleEngine</code> 熵分层启发式；RF 未加载时回退规则</td></tr>
+<tr><td>标签稀缺（<code>params_used</code> 少）</td><td>静默探索（AC-UCB）+ 用户压缩行为一并写入 JSONL</td></tr>
+<tr><td>部署约束</td><td>RF / 小 MLP / EA 均在 <strong>C++</strong>；GUI 仅编排，Stage2a <strong>不依赖 PyTorch</strong></td></tr>
+</table>
+<h3 id="1-3-流水线阶段总览">1.3 流水线阶段总览</h3>
+<table>
+<tr><th>阶段</th><th>名称</th><th>目的</th><th>典型实现</th></tr>
+<tr><td><strong>Stage0</strong></td><td>特征提取</td><td>将文件映射为固定维向量 $\mathbf{x}$</td><td><code>FeatureExtractorV3</code></td></tr>
+<tr><td><strong>Stage0′</strong></td><td>规则引擎（可选）</td><td>可解释启发式；ML 未就绪时的保底</td><td><code>RuleEngine</code></td></tr>
+<tr><td><strong>Stage1</strong></td><td>算法分类</td><td>$\mathbf{x} \mapsto$ 算法 ID $a^\*$</td><td><code>RandomForest</code> → <code>default_model.bin</code></td></tr>
+<tr><td><strong>Stage2a</strong></td><td>参数回归</td><td>$(\mathbf{x}, a) \mapsto$ 归一化参数 $\hat{\mathbf{p}}$</td><td><code>ParamRegressorNet</code> → <code>param_regressor.bin</code></td></tr>
+<tr><td><strong>Stage2b</strong></td><td>EA 精调</td><td>在 bounds 内最小化 fitness $f(\mathbf{p})$</td><td><code>ParameterOptimizer</code>（GA/PSO/CMA-ES）</td></tr>
+<tr><td><strong>Collect</strong></td><td>数据采集</td><td>沉淀 $(\mathbf{x}, a, \mathbf{p}, \text{ratio})$</td><td><code>TrainingDataStore</code> + <code>SilentExplorer</code></td></tr>
+</table>
+<pre class="mermaid">
+flowchart TB
+  subgraph infer [推理路径 AUTO]
+    F[文件 bytes] --> E[Stage0 特征 x]
+    E --> M{ADE 模式}
+    M -->|RULE| R[Stage0′ RuleEngine]
+    M -->|ML_HYBRID / ML_ONLY| RF[Stage1 RF]
+    R --> A[算法 a]
+    RF --> A
+    A --> N[Stage2a NN 可选]
+    N --> P[参数初值 p0]
+    P --> EA[Stage2b EA 可选]
+    EA --> OUT[CompressionDecision]
+  end
+  subgraph train [训练路径 用户/后台]
+    OUT --> J[ade_training_v3.jsonl]
+    J --> TR1[训练 RF]
+    J --> TR2[训练 ParamRegressorNet]
+    J --> PR[ea_param_priors.json]
+  end
+</pre>
+<hr />
+<h2 id="2-数学基础与符号说明">2. 数学基础与符号说明</h2>
+<h3 id="2-1-主要符号">2.1 主要符号</h3>
+<table>
+<tr><th>符号</th><th>含义</th><th>维度 / 类型</th></tr>
+<tr><td>$\mathcal{F}$</td><td>原始文件字节序列</td><td>变长 $N$</td></tr>
+<tr><td>$\mathbf{x}_b$</td><td>Base 特征段</td><td>$\mathbb{R}^{20}$</td></tr>
+<tr><td>$\mathbf{x}_e$</td><td>Extension 特征段（按文件类型）</td><td>$\mathbb{R}^{d_e}$，$d_e \in \{4,5,6,7,8\}$</td></tr>
+<tr><td>$\mathbf{x}$</td><td>拼接特征 $\mathbf{x}_b \Vert \mathbf{x}_e$</td><td>$\mathbb{R}^{20+d_e}$</td></tr>
+<tr><td>$\tilde{\mathbf{x}}$</td><td>ML 填充向量 <code>to_padded_array</code></td><td>$\mathbb{R}^{33}$，不足维补零</td></tr>
+<tr><td>$a$</td><td>压缩算法 ID</td><td>$a \in \mathcal{A}$，<code>AlgorithmID</code> 枚举</td></tr>
+<tr><td>$\mathbf{p}$</td><td>算法超参数向量</td><td>见 §2.3；Stage2 核心 5 维</td></tr>
+<tr><td>$y$</td><td>RF 分类标签</td><td>$y = \texttt{algorithm\_id\_to\_label}(a) \in \mathbb{Z}$</td></tr>
+<tr><td>$\hat{y}$</td><td>RF 预测标签</td><td>集成投票</td></tr>
+<tr><td>$\hat{\mathbf{p}}_\text{norm}$</td><td>NN 输出（归一化）</td><td>$[0,1]^5$</td></tr>
+<tr><td>$f(\mathbf{p})$</td><td>EA 适应度</td><td>越小越好（压缩比或代理损失）</td></tr>
+<tr><td>$\rho$</td><td>压缩比</td><td>$\rho = \lvert \text{output} \rvert / \lvert \mathcal{F} \rvert$</td></tr>
+<tr><td>$\mathcal{D}_\text{jsonl}$</td><td>训练集</td><td>JSON Lines，每行一个 <code>TrainingSampleV3</code></td></tr>
+</table>
+<h3 id="2-2-特征填充-stage0-stage1-输入">2.2 特征填充（Stage0 → Stage1 输入）</h3>
+<p>实现将 Base 与 Extension <strong>拷贝到定长缓冲区</strong>（<code>FeatureVectorV3::to_padded_array</code>）：</p>
+<p>\[\tilde{\mathbf{x}} = \bigl[ x_0,\ldots,x_{19},\; x_{20},\ldots,x_{19+d_e},\; 0,\ldots,0 \bigr]^\top \in \mathbb{R}^{33}\]</p>
+<p>其中 $x_{20+k}$ 来自对应 <code>ExtensionType</code> 的 union 内存布局；$d_e$ 由 <code>ext_dim</code> 决定，未用槽位为 $0$。</p>
+<p><strong>Shannon 熵</strong>（Base 维 $x_3$，用于规则分层）：</p>
+<p>\[H(\mathcal{F}) = -\sum_{b=0}^{255} p_b \log_2 p_b,\quad p_b = \frac{\text{count}(b)}{N}\]</p>
+<p>规则引擎使用阈值 $H &lt; 3.0$、$3.0 \le H &lt; 5.5$、$5.5 \le H &lt; 7.0$、$H \ge 7.0$ 四档（见 <code>RuleEngine::decide</code>）。</p>
+<h3 id="2-3-参数向量与归一化-stage2">2.3 参数向量与归一化（Stage2）</h3>
+<p>Stage2a/2b 在 C++ <code>AlgorithmParams</code> 与 GUI 之间对齐五元组（算法相关子集可能只用其中几项）：</p>
+<table>
+<tr><th>索引</th><th>键名</th><th>典型范围 $[\underline{p}_j, \overline{p}_j]$</th></tr>
+<tr><td>1</td><td><code>window_size</code> / <code>search_size</code></td><td>$[1024,\,524288]$</td></tr>
+<tr><td>2</td><td><code>min_match</code></td><td>$[2,\,96]$</td></tr>
+<tr><td>3</td><td><code>max_chain_length</code></td><td>$[4,\,1024]$</td></tr>
+<tr><td>4</td><td><code>lookahead_size</code></td><td>$[8,\,512]$</td></tr>
+<tr><td>5</td><td><code>dp_range</code> / <code>dp_top</code> / <code>dp_sub_match_max</code></td><td>$[1,\,24]$（算法相关）</td></tr>
+</table>
+<p><strong>归一化</strong>（<code>ParameterRegressor._normalize_params</code>）：</p>
+<p>\[\hat{p}_j = \mathrm{clip}\left( \frac{p_j - \underline{p}_j}{\overline{p}_j - \underline{p}_j},\; 0,\; 1 \right)\]</p>
+<p><strong>反归一化</strong>（预测后取整）：</p>
+<p>\[p_j = \mathrm{round}\bigl( \hat{p}_j (\overline{p}_j - \underline{p}_j) + \underline{p}_j \bigr)\]</p>
+<p>Stage2a 网络输入为 <strong>33 维特征 + 6 维算法 one-hot</strong>：</p>
+<p>\[\mathbf{z} = \tilde{\mathbf{x}} \Vert \mathrm{onehot}(a) \in \mathbb{R}^{39}\]</p>
+<p>one-hot 槽位映射：<code>DEFLATE=0, LZSS=1, LZDP=2, DPFLATE=3, BROTLI=4, ZSTD=5</code>（<code>ParameterRegressor.ALGORITHM_MAP</code>）。</p>
+<h3 id="2-4-压缩比与-ea-适应度">2.4 压缩比与 EA 适应度</h3>
+<p><strong>真实压缩比</strong>（越小越好）：</p>
+<p>\[\rho = \frac{\lvert C(\mathcal{F}; a, \mathbf{p}) \rvert}{\max(\lvert \mathcal{F} \rvert,\, 1)}\]</p>
+<p>其中 $C$ 为引擎试压（可截断前 $B_\text{eval}$ 字节，<code>ea_max_eval_bytes</code>）。</p>
+<p><strong>代理适应度</strong>（无法 live compress 时，<code>engine._optimize_params</code>）：</p>
+<p>\[f_\text{prior}(\mathbf{p}) = 0.7 \cdot d_\text{JSONL}(\mathbf{p}) + 0.3 \sum_{j=1}^{5} \frac{\lvert p_j - p_j^\text{tgt} \rvert}{\max(p_j^\text{tgt}, 1)}\]</p>
+<p>$d_\text{JSONL}$ 来自 <code>ea_param_priors.json</code> 与当前参数的距离惩罚（<code>prior_fitness_penalty</code>）；$p_j^\text{tgt}$ 为 JSONL 高分位样本的中位数先验。</p>
+<p><strong>Live 模式</strong>：$f(\mathbf{p}) = \rho$（直接返回试压压缩比）。</p>
+<hr />
+<h2 id="3-stage0-特征提取">3. Stage0：特征提取</h2>
+<h3 id="3-1-目的">3.1 目的</h3>
+<p>在单次遍历（或采样窗口）内计算 <strong>与算法选择相关的统计量</strong>，输出 <code>FeatureVectorV3</code>，供规则、RF、NN 共用。</p>
+<h3 id="3-2-base-段-20-维-全体文件">3.2 Base 段（20 维，全体文件）</h3>
+<table>
+<tr><th>索引</th><th>字段</th><th>说明</th></tr>
+<tr><td>0–2</td><td><code>file_size_log2</code>, <code>magic_confidence</code>, <code>printable_ratio</code></td><td>元数据</td></tr>
+<tr><td>3–10</td><td>熵、字节分布、游程等</td><td>统计</td></tr>
+<tr><td>11–15</td><td><code>header_entropy</code>, <code>skewness</code>, <code>kurtosis</code>…</td><td>结构；<strong>skewness 为加密/随机检测关键量</strong></td></tr>
+<tr><td>16–19</td><td>bigram、RLE/dict 潜力</td><td>N-gram 聚合</td></tr>
+</table>
+<p>定义见 <code>src/ade/include/FeatureVectorV3.hpp</code> 中 <code>BaseSegment</code>。</p>
+<h3 id="3-3-extension-段-按-filetype-路由">3.3 Extension 段（按 <code>FileType</code> 路由）</h3>
+<table>
+<tr><th><code>ExtensionType</code></th><th>维度 $d_e$</th><th>典型用途</th></tr>
+<tr><td>TEXT</td><td>5</td><td>源码/标记语言</td></tr>
+<tr><td>IMAGE</td><td>8</td><td>含 <code>is_lossless_original</code></td></tr>
+<tr><td>AUDIO / VIDEO</td><td>6 / 7</td><td>多媒体是否已压缩</td></tr>
+<tr><td>ARCHIVE</td><td>4</td><td>再压缩潜力</td></tr>
+<tr><td>BINARY</td><td>5</td><td>PE/ELF/加密等</td></tr>
+</table>
+<h3 id="3-4-伪代码">3.4 伪代码</h3>
+<pre><code>
+Algorithm 0  FeatureExtractionV3
+
+Input:  byte stream F, optional max_scan_bytes
+Output: FeatureVectorV3 v (base, ext_type, ext)
+
+1. Detect FileType via magic bytes → ext_type
+2. Single pass over F (or prefix):
+     update histogram, runs, Count-Min sketch for bigrams,
+     sliding-window local entropy, extension-specific parsers
+3. Fill v.base[0..19] with normalized scalars
+4. If ext_type ≠ NONE:
+     fill v.ext union; v.ext_dim ← d_e
+5. Return v
+</code></pre>
+<p><strong>复杂度</strong>：$O(N)$ 时间，$O(1)$ 额外空间（固定草图与窗口缓冲）。</p>
+<hr />
+<h2 id="4-stage0-规则引擎">4. Stage0′：规则引擎</h2>
+<h3 id="4-1-目的">4.1 目的</h3>
+<p>提供 <strong>零模型依赖</strong> 的可解释决策；在 <code>Mode::RULE_BASED</code> 下单独使用；在 <code>ML_HYBRID</code> 下与 RF 比较置信度。</p>
+<h3 id="4-2-决策逻辑-摘要">4.2 决策逻辑（摘要）</h3>
+<pre><code>
+Algorithm 0′  RuleEngine.decide(x)
+
+1. If is_already_compressed(x) or is_multimedia_already_compressed(x):
+       return SKIP
+2. H ← x.base.shannon_entropy
+3. If H &lt; 3.0:     return decide_low_entropy(x)      // LZSS / DEFLATE / DPFLATE
+4. If H &lt; 5.5:     return decide_medium_entropy(x)  // 文本→BROTLI/DPFLATE；混合→LZDP/ZSTD
+5. If H &lt; 7.0:     return decide_high_entropy(x)
+6. Else:           return decide_very_high_entropy(x)
+</code></pre>
+<p>每条分支设置 <code>AlgorithmID</code>、<code>AlgorithmParams</code> 默认值、<code>estimated_ratio</code>、<code>confidence</code>、<code>reason</code> 字符串。</p>
+<h3 id="4-3-ml-混合模式置信度比较">4.3 ML 混合模式置信度比较</h3>
+<p>\[\text{output} = \begin{cases} \text{decide\_ml}(\tilde{\mathbf{x}}) & \text{if } c_\text{ML} > c_\text{rule} \\ \text{decide\_rule}(\mathbf{x}) & \text{otherwise} \end{cases}\]</p>
+<p>其中 $c_\text{ML} = \max_k \hat{P}(y=k \mid \tilde{\mathbf{x}})$ 为 RF 最大类概率（<code>decide_ml</code>）。</p>
+<hr />
+<h2 id="5-stage1-随机森林算法分类">5. Stage1：随机森林算法分类</h2>
+<h3 id="5-1-目的">5.1 目的</h3>
+<p>学习映射 $\tilde{\mathbf{x}} \mapsto y$，在用户 AUTO 压缩时自动选择 <strong>主压缩算法</strong>（不含 Stage2 细参；细参由 Stage2 负责）。</p>
+<h3 id="5-2-单棵决策树-gini-分裂">5.2 单棵决策树：Gini 分裂</h3>
+<p>对节点样本索引集 $\mathcal{I}$，特征 $j$ 阈值 $t$ 划分 $\mathcal{I} = \mathcal{I}_L \cup \mathcal{I}_R$。</p>
+<p><strong>Gini 不纯度</strong>：</p>
+<p>\[G(\mathcal{I}) = 1 - \sum_{k=1}^{K} p_k^2,\quad p_k = \frac{\lvert \{ i \in \mathcal{I} : y_i = k \} \rvert}{\lvert \mathcal{I} \rvert}\]</p>
+<p><strong>分裂增益</strong>（实现为不纯度下降）：</p>
+<p>\[\Delta = G(\mathcal{I}) - \frac{\lvert \mathcal{I}_L \rvert}{\lvert \mathcal{I} \rvert} G(\mathcal{I}_L) - \frac{\lvert \mathcal{I}_R \rvert}{\lvert \mathcal{I} \rvert} G(\mathcal{I}_R)\]</p>
+<p>选择 $(j^\*, t^\*) = \arg\max \Delta$，递归至 <code>max_depth</code> 或 <code>min_samples_leaf</code>。</p>
+<p><strong>叶节点预测</strong>：$\hat{y} = \arg\max_k p_k$（多数类）。</p>
+<h3 id="5-3-随机森林集成">5.3 随机森林集成</h3>
+<p>训练 $T$ 棵树（默认 $T=100$），每棵树在 bootstrap 子集 $\tilde{\mathcal{D}}_t$（比例 <code>bootstrap_ratio=0.8</code>）上训练，分裂时随机子特征（<code>max_features</code>）。</p>
+<p><strong>预测</strong>：</p>
+<p>\[\hat{y} = \mathrm{mode}\bigl\{ h_t(\tilde{\mathbf{x}}) \bigr\}_{t=1}^{T}\]</p>
+<p><strong>类概率</strong>（各树叶分布平均）：</p>
+<p>\[\hat{P}(y=k \mid \tilde{\mathbf{x}}) = \frac{1}{T} \sum_{t=1}^{T} \pi_t^{(k)}(\tilde{\mathbf{x}})\]</p>
+<p><strong>置信度</strong>：$c_\text{ML} = \max_k \hat{P}(y=k \mid \tilde{\mathbf{x}})$。</p>
+<h3 id="5-4-标签与算法-id">5.4 标签与算法 ID</h3>
+<p>C++ 中 <code>algorithm_id_to_label(id) = static_cast&lt;int&gt;(id)</code>，即枚举值即训练标签。GUI 训练时常用子集映射（<code>ALGORITHM_TYPE_TO_ADE_LABEL</code>）。</p>
+<h3 id="5-5-伪代码">5.5 伪代码</h3>
+<pre><code>
+Algorithm 1  RandomForest.train(D, config)
+
+1. trees ← ∅
+2. For t = 1 .. T:
+3.     D_t ← BootstrapSample(D, ratio=0.8)
+4.     trees.add( BuildTree(D_t, depth=0) )
+5. Save trees → default_model.bin
+
+Function BuildTree(D, depth):
+    If pure(D) or depth ≥ max_depth or |D| &lt; min_split:
+        Return Leaf(majority_class(D))
+    (j*, t*) ← argmax Δ Gini split on D
+    Split D into D_L, D_R by feature j* ≤ t*
+    Return Node(j*, t*, BuildTree(D_L), BuildTree(D_R))
+
+Algorithm 1′  RandomForest.predict(x̃)
+1. votes ← [ h_t(x̃) for t in 1..T ]
+2. Return mode(votes); proba ← average leaf distributions
+</code></pre>
+<h3 id="5-6-离线训练-gui">5.6 离线训练（GUI）</h3>
+<ul>
+<li>数据源：<code>ade_training_v3.jsonl</code>（<code>features_vector</code> 20 维 + <code>algorithm_used</code>）。</li>
+<li>入口：<code>gui/ade/rf_train.py</code> → <code>ADE.train()</code> / <code>train_ade_model</code>。</li>
+<li>最低样本：<code>MIN_RF_SAMPLES = 30</code>，至少 2 个类别。</li>
+</ul>
+<hr />
+<h2 id="6-stage2a-参数回归网络-paramregressornet">6. Stage2a：参数回归网络（ParamRegressorNet）</h2>
+<h3 id="6-1-目的">6.1 目的</h3>
+<p>在 <strong>算法已定</strong> 为 $a$ 时，从 $(\tilde{\mathbf{x}}, a)$ 回归归一化超参 $\hat{\mathbf{p}}_\text{norm}$，作为 EA 初值或直接使用（EA 关闭时）。</p>
+<h3 id="6-2-网络结构-c-全连接-mlp">6.2 网络结构（C++ 全连接 MLP）</h3>
+<p>\[\mathbf{h}_1 = \mathrm{ReLU}(W_1 \mathbf{z} + \mathbf{b}_1),\quad W_1 \in \mathbb{R}^{128 \times 39}\]</p>
+<p>\[\mathbf{h}_2 = \mathrm{ReLU}(W_2 \mathbf{h}_1 + \mathbf{b}_2),\quad W_2 \in \mathbb{R}^{64 \times 128}\]</p>
+<p>\[\mathbf{h}_3 = \mathrm{ReLU}(W_3 \mathbf{h}_2 + \mathbf{b}_3),\quad W_3 \in \mathbb{R}^{32 \times 64}\]</p>
+<p>\[\hat{\mathbf{p}}_\text{norm} = \sigma(W_4 \mathbf{h}_3 + \mathbf{b}_4),\quad W_4 \in \mathbb{R}^{5 \times 32}\]</p>
+<p>$\sigma$ 为逐维 sigmoid，输出 $\in (0,1)^5$。</p>
+<h3 id="6-3-训练目标">6.3 训练目标</h3>
+<p>样本 $(\mathbf{z}_i, \mathbf{p}_i^\*)$，$\mathbf{p}_i^\*$ 为 <code>params_used</code> 归一化后的目标。</p>
+<p><strong>加权 MSE</strong>（实现为 batch 内平均平方误差）：</p>
+<p>\[\mathcal{L} = \frac{1}{B} \sum_{i \in \mathcal{B}} \sum_{j=1}^{5} w_i \,\bigl( \hat{p}_{ij} - p_{ij}^\* \bigr)^2\]</p>
+<p><strong>反向传播</strong>：标准全连接反向传播；ReLU 导数为 $\mathbb{1}_{z&gt;0}$；sigmoid 输出层链式法则。</p>
+<p><strong>小样本策略</strong>（$|\mathcal{D}| &lt; 8$）：</p>
+<ul>
+<li><code>validation_split ← 0</code>（全部样本训练）；</li>
+<li>C++ 侧 <code>train_end = data.size()</code>，避免 holdout 越界。</li>
+</ul>
+<p><strong>早停</strong>：验证损失连续 <code>patience_limit=10</code> epoch 无改进则停止。</p>
+<h3 id="6-4-伪代码">6.4 伪代码</h3>
+<pre><code>
+Algorithm 2  ParamRegressorNet.train(rows, config)
+
+Input:  rows = {(z_i, p*_i, w_i)}, |rows| ≥ 4
+1. Initialize W1..W4, b1..b4 ~ N(0, 0.05²)
+2. Shuffle rows; if |rows| ≥ 8: split train/val by validation_split
+3. For epoch = 1 .. epochs:
+4.     L_train ← MiniBatchSGD(train_indices, lr, batch_size)
+5.     L_val   ← ForwardOnly(val_indices)
+6.     If no val improvement for 10 epochs: break
+7. Mark trained; optional save → param_regressor.bin
+
+Algorithm 2′  ParamRegressorNet.predict(z)
+1. Forward z → p̂_norm ∈ (0,1)^5
+2. Denormalize per PARAM_RANGES → integer params p
+</code></pre>
+<h3 id="6-5-推理优先级-gui-decisionengine-_optimize_params">6.5 推理优先级（GUI <code>DecisionEngine._optimize_params</code>）</h3>
+<pre><code>
+If ParamRegressor.is_ready and current file record exists:
+    p ← NN.predict(record, algorithm a)
+    If p valid: return p   // Stage2a 成功则跳过 EA
+Else:
+    Continue to Stage2b
+</code></pre>
+<hr />
+<h2 id="7-stage2b-进化算法参数精调">7. Stage2b：进化算法参数精调</h2>
+<h3 id="7-1-目的">7.1 目的</h3>
+<p>在 <strong>有界整数空间</strong> $\prod_j [\underline{p}_j, \overline{p}_j]$ 内最小化 $f(\mathbf{p})$，弥补 NN 样本不足或试压与真实管线差异。</p>
+<h3 id="7-2-搜索空间编码">7.2 搜索空间编码</h3>
+<p><code>ParameterBounds</code> 将 <code>AlgorithmParams</code> 与 $\mathbb{R}^5$ 双向映射（<code>to_vector</code> / <code>from_vector</code>），搜索后 <code>clamp</code> 到合法区间。</p>
+<h3 id="7-3-遗传算法-默认-ea-算法">7.3 遗传算法（默认 EA 算法）</h3>
+<p><strong>个体</strong>：$\mathbf{p}^{(i)}$ + fitness $f_i$。</p>
+<p><strong>一代主循环</strong>（<code>GeneticAlgorithm::optimize</code>）：</p>
+<p>1. 评估种群；按 $f$ 升序排序（最小化）。</p>
+<p>2. 精英保留：前 $\lceil \rho N \rceil$ 个体（<code>elitism_ratio=0.1</code>）。</p>
+<p>3. 轮盘赌锦标赛选亲；以 <code>crossover_rate</code> 均匀交叉各维（连续向量插值 + 取整）。</p>
+<p>4. 以 <code>mutation_rate</code> 扰动基因。</p>
+<p>5. 直至 <code>max_generations</code>、<code>max_time_ms</code> 或停滞 <code>stagnation_limit</code>。</p>
+<p><strong>适应度评估次数</strong>：计入 <code>OptimizationResult.total_evaluations</code>。</p>
+<h3 id="7-4-粒子群-pso-与-cma-es">7.4 粒子群（PSO）与 CMA-ES</h3>
+<table>
+<tr><th>算法</th><th>状态</th><th>更新要点</th></tr>
+<tr><td>PSO</td><td><code>ParticleSwarmOptimization</code></td><td>速度/位置更新，认知+社会项，<code>inertia_decay</code></td></tr>
+<tr><td>CMA-ES</td><td><code>CMAESOptimizer</code></td><td>协方差矩阵自适应，特征分解采样</td></tr>
+</table>
+<p><code>ParameterOptimizer::set_algorithm</code>：<code>0=None, 1=GA, 2=PSO, 3=CMA-ES</code>。</p>
+<h3 id="7-5-伪代码">7.5 伪代码</h3>
+<pre><code>
+Algorithm 3  Stage2b.ParameterOptimizer.optimize(f, bounds, max_time)
+
+Input:  fitness f(p), bounds, time budget
+1. Select backend ∈ {GA, PSO, CMA-ES} from config
+2. Initialize population / swarm / N(μ, Σ)
+3. Repeat:
+4.     For each candidate p: fit[p] ← f(p)   // may call live compress
+5.     If time ≥ max_time_ms or converged: break
+6.     Genetic / PSO / CMA update step
+7. Return p* = argmin fit[p]
+</code></pre>
+<p><strong>GUI 试压</strong>（<code>Algorithm 3-Live</code>）：</p>
+<pre><code>
+Function EA_LiveFitness(p):
+    Read first B_eval bytes of file
+    ρ ← CompressWithOverrides(data, algorithm a, p)
+    Return ρ
+</code></pre>
+<hr />
+<h2 id="8-collect-数据采集与训练闭环">8. Collect：数据采集与训练闭环</h2>
+<h3 id="8-1-目的">8.1 目的</h3>
+<p>构建 $\mathcal{D}_\text{jsonl}$，使 Stage1/2 与 EA 先验可持续更新；<strong>不面向终端用户展示</strong>（静默探索）。</p>
+<h3 id="8-2-样本结构-trainingsamplev3">8.2 样本结构（<code>TrainingSampleV3</code>）</h3>
+<table>
+<tr><th>字段</th><th>角色</th></tr>
+<tr><td><code>features_vector</code></td><td>20 维 Base（RF 主用）</td></tr>
+<tr><td><code>algorithm_used</code> / <code>algorithm_id</code></td><td>算法臂标签</td></tr>
+<tr><td><code>params_used</code></td><td>Stage2 监督标签（稀缺）</td></tr>
+<tr><td><code>compression_ratio</code></td><td>奖励/质量</td></tr>
+<tr><td><code>compression_time_ms</code></td><td>可选多目标权重</td></tr>
+</table>
+<p>存储：<code>ade_training_v3.jsonl</code>，JSON Lines 追加写。</p>
+<h3 id="8-3-静默探索-ac-ucb-概要">8.3 静默探索（AC-UCB 概要）</h3>
+<ul>
+<li><strong>上下文</strong>：20 维特征 → <code>FeatureClusterSpace</code> 聚类。</li>
+<li><strong>臂</strong>：算法 × 参数组合。</li>
+<li><strong>奖励</strong>：压缩比 $\rho$（越低越好）。</li>
+<li><strong>策略</strong>：UCB 类探索，在主流压缩完成后可选触发（见 <code>gui/ade/explorer.py</code>）。</li>
+</ul>
+<h3 id="8-4-训练触发矩阵">8.4 训练触发矩阵</h3>
+<table>
+<tr><th>操作</th><th>产物</th><th>最低数据量（实现侧）</th></tr>
+<tr><td>用户「训练 RF 模型」</td><td><code>default_model.bin</code></td><td>≥30 条，≥2 类</td></tr>
+<tr><td>用户「训练 NN 参数回归」</td><td><code>param_regressor.bin</code></td><td>≥4 条含 <code>params_used</code></td></tr>
+<tr><td>后台 <code>maybe_supplemental_retrain</code></td><td>可选增量 NN</td><td>配置阈值</td></tr>
+<tr><td>构建 EA 先验</td><td><code>ea_param_priors.json</code></td><td>每算法 ≥5 条带 <code>params_used</code></td></tr>
+</table>
+<hr />
+<h2 id="9-端到端推理主流程">9. 端到端推理主流程</h2>
+<h3 id="9-1-伪代码-auto-单文件">9.1 伪代码（AUTO 单文件）</h3>
+<pre><code>
+Algorithm 4  ADE.Decide(file record r)
+
+1. x̃, meta ← ADE.analyze_file(r.path) or analyze(r.raw_data)
+      // Stage0 inside analyze
+2. a, c, reason ← C++ AlgorithmDecisionEngine.decide(x) with mode ∈ {RULE, ML_HYBRID, ML_ONLY}
+3. If a ∈ {NONE, SKIP}: return DecisionResult(a, params=∅)
+4. p ← OptimizeParams(a, r):
+5.     If Stage2a ready: p ← NN.predict(r, a); if p ≠ ∅: return p
+6.     If EA disabled: return default_params(a)
+7.     p* ← EA.optimize(f, bounds, time=ea_max_time_ms)
+8.     return DecisionResult(a, params=p*, confidence=c, reason)
+9. After user compression (optional): append TrainingSampleV3 to jsonl
+10. After success (optional): SilentExplore(r) for extra arms
+</code></pre>
+<h3 id="9-2-c-python-边界">9.2 C++ / Python 边界</h3>
+<table>
+<tr><th>层</th><th>职责</th></tr>
+<tr><td><code>ADEBridge</code> / <code>core_engine.ADE</code></td><td>Stage0 + Stage1（C++）</td></tr>
+<tr><td><code>gui.ade.engine.DecisionEngine</code></td><td>模式、Stage2a/2b 编排、试压</td></tr>
+<tr><td><code>gui.ade.params.ParameterRegressor</code></td><td>Stage2a Python 包装</td></tr>
+<tr><td><code>core_engine.ParameterOptimizer</code></td><td>Stage2b C++ EA</td></tr>
+</table>
+<hr />
+<h2 id="10-超参数汇总">10. 超参数汇总</h2>
+<h3 id="10-1-特征与-rf">10.1 特征与 RF</h3>
+<table>
+<tr><th>参数</th><th>符号</th><th>默认</th></tr>
+<tr><td>填充维度</td><td>—</td><td>33</td></tr>
+<tr><td>树数量</td><td>$T$</td><td>100</td></tr>
+<tr><td>最大深度</td><td>—</td><td>10</td></tr>
+<tr><td>Bootstrap 比例</td><td>—</td><td>0.8</td></tr>
+<tr><td>min_samples_split</td><td>—</td><td>5</td></tr>
+</table>
+<h3 id="10-2-paramregressornet">10.2 ParamRegressorNet</h3>
+<table>
+<tr><th>参数</th><th>默认</th></tr>
+<tr><td>输入维</td><td>39</td></tr>
+<tr><td>隐层</td><td>128 → 64 → 32</td></tr>
+<tr><td>输出维</td><td>5</td></tr>
+<tr><td><code>learning_rate</code></td><td>0.001</td></tr>
+<tr><td><code>batch_size</code></td><td>min(32, |rows|)</td></tr>
+<tr><td><code>epochs</code></td><td>50（GUI 可配）</td></tr>
+<tr><td><code>validation_split</code></td><td>0.2（|rows|&lt;8 时为 0）</td></tr>
+</table>
+<h3 id="10-3-ea-gui-ade-stage2">10.3 EA（GUI <code>ade.stage2</code>）</h3>
+<table>
+<tr><th>参数</th><th>默认</th></tr>
+<tr><td><code>ea_algorithm</code></td><td>1 (GA)</td></tr>
+<tr><td><code>ea_max_time_ms</code></td><td>3000</td></tr>
+<tr><td><code>ea_max_eval_bytes</code></td><td>512 KiB</td></tr>
+<tr><td><code>ea_use_live_compress</code></td><td>true</td></tr>
+<tr><td>GA <code>population_size</code></td><td>50</td></tr>
+<tr><td>GA <code>max_generations</code></td><td>100</td></tr>
+</table>
+<h3 id="10-4-规则引擎熵阈值">10.4 规则引擎熵阈值</h3>
+<table>
+<tr><th>区间</th><th>分支函数</th></tr>
+<tr><td>$H &lt; 3.0$</td><td><code>decide_low_entropy</code></td></tr>
+<tr><td>$3.0 \le H &lt; 5.5$</td><td><code>decide_medium_entropy</code></td></tr>
+<tr><td>$5.5 \le H &lt; 7.0$</td><td><code>decide_high_entropy</code></td></tr>
+<tr><td>$H \ge 7.0$</td><td><code>decide_very_high_entropy</code></td></tr>
+</table>
+<hr />
+<h2 id="11-与-erl-re²-报告的结构对照">11. 与 ERL-Re² 报告的结构对照</h2>
+<table>
+<tr><th>ERL-Re² 章节</th><th>ADE 本文对应</th></tr>
+<tr><td>设计动机</td><td>§1.2</td></tr>
+<tr><td>符号表</td><td>§2</td></tr>
+<tr><td>网络架构</td><td>§5.2（RF 树）、§6.2（MLP）</td></tr>
+<tr><td>主循环伪代码</td><td>§9</td></tr>
+<tr><td>超参数表</td><td>§10</td></tr>
+<tr><td>Ablation / 实验</td><td>见 <code>algorithm_decision_engine_design.md</code> 待测项；生产指标为 $\rho$ 与决策延迟</td></tr>
+</table>
+<blockquote>
+<p><strong>说明</strong>：ERL-Re² 的 PeVFA、共享 $Z_\phi$、行为级 $W_i$ 进化属于 <strong>序贯 RL–EA</strong>；ADE Stage2b 为 <strong>单步黑盒优化</strong>，二者问题形态不同。若未来引入「按参数维整列交叉」的 GA，可单列 §7.6 与 ERL-Re² 的 $\otimes_d$ 对齐，见 <code>docs/ade/ERL-Re^2.md</code> §2.3。</p>
+</blockquote>
+<hr />
+<h2 id="12-实现映射与相关文档">12. 实现映射与相关文档</h2>
+<table>
+<tr><th>组件</th><th>头文件 / 模块</th></tr>
+<tr><td>特征 v3</td><td><code>FeatureVectorV3.hpp</code>, <code>FeatureExtractorV3.hpp</code></td></tr>
+<tr><td>规则</td><td><code>DecisionEngine.hpp</code> → <code>RuleEngine</code></td></tr>
+<tr><td>RF</td><td><code>RandomForest.hpp</code></td></tr>
+<tr><td>决策引擎</td><td><code>DecisionEngine.cpp</code>, <code>ADEBridge.cpp</code></td></tr>
+<tr><td>Stage2a</td><td><code>ParamRegressorNet.hpp</code>, <code>models/ParamRegressorNet.cpp</code></td></tr>
+<tr><td>Stage2b</td><td><code>EvolutionaryAlgorithms.hpp</code>, <code>models/EvolutionaryAlgorithms.cpp</code></td></tr>
+<tr><td>GUI 编排</td><td><code>gui/ade/engine.py</code>, <code>params.py</code>, <code>rf_train.py</code>, <code>nn_train.py</code></td></tr>
+<tr><td>数据</td><td><code>gui/ade/training.py</code>, <code>explorer.py</code>, <code>ea_tune.py</code></td></tr>
+</table>
+<table>
+<tr><th>文档</th><th>内容</th></tr>
+<tr><td><code>algorithm_decision_engine_design.md</code></td><td>需求与架构决策记录</td></tr>
+<tr><td><code>flate-encoding-design.md</code></td><td><code>use_3hfmtree</code>、Huffman 槽位等编码细节</td></tr>
+<tr><td><code>ERL-Re^2.md</code></td><td>演化–强化学习参考（非 ADE 实现规格）</td></tr>
+</table>
+<hr />
+<h2 id="13-附录-rf-特征重要性">13. 附录：RF 特征重要性</h2>
+<p>训练后 <code>RandomForest::feature_importance()</code> 返回长度 33 的向量，各维为分裂增益累计（归一化）。用于 GUI「决策详情」解释，对应 $\tilde{\mathbf{x}}$ 各维对 $\hat{y}$ 的影响排序。</p>
+<hr />
+<p><em>文档生成依据仓库实现快照（2026-05）；若枚举或路径变更，以 <code>src/ade/include/</code> 与 <code>gui/ade/</code> 源码为准。</em></p>
+<div class="footer">
+  <p>ADE 决策流水线算法报告 · 与 <code>ADE-Decision-Pipeline.md</code> 内容一致 · WebCompress</p>
+</div>
+</body>
+</html>

@@ -2,6 +2,9 @@ add_library(
     core_new
     STATIC
     LZDPcompressor.cpp
+    DPflatecompressor.cpp
+    LZSScompressor.cpp
+    Deflatecompressor.cpp
 )
 
 target_include_directories(

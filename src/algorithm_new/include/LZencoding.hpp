@@ -92,10 +92,18 @@ inline std::vector<uint8_t> writetriple(
             }
         }
     }else{
+        size_t run_remaining = 0;
         for (const algorithm::Triple &triple:triples){
-            if (triple.offset==0 && triple.length==1){
+            if (run_remaining > 0){
                 val = static_cast<uint64_t>(triple.literal);
                 writer.writeBits(val, 8);
+                run_remaining--;
+            }else if (triple.offset == 0){
+                val = static_cast<uint64_t>(triple.offset);
+                val<<=config.length_bits;
+                val|= static_cast<uint64_t>(triple.length);
+                writer.writeBits(val, config.offset_bits+config.length_bits);
+                run_remaining = triple.length;
             }else{
                 val = static_cast<uint64_t>(triple.offset);
                 val<<=config.length_bits;
@@ -117,49 +125,55 @@ inline std::vector<Triple> readtriple(
     std::vector<Triple> result;
     uint64_t val;
 
-    //用于非flag编码，记录当前字面值的长度
     size_t literal_size = 0;
 
-    while (reader.getBytePos() < input.size()){
+    while (reader.ensureBits(8)) {
         if (config.use_flag_encoding){
            uint32_t offset;
            uint32_t length;
            uint8_t literal;
            reader.readBits(val, 1);
-           if (val == 1){// 字面值
+           if (val == 1){
+                if (!reader.ensureBits(8)) break;
                 reader.readBits(val, 8);
                 literal = static_cast<uint8_t>(val);
                 result.push_back(algorithm::Triple(0,1,literal));
            }else{
-                reader.readBits(val, config.offset_bits+config.length_bits);
+                int match_bits = config.offset_bits + config.length_bits;
+                if (!reader.ensureBits(match_bits)) break;
+                reader.readBits(val, match_bits);
                 offset = static_cast<uint32_t>(val>>(config.length_bits));
-                val &= (1ULL<<(config.length_bits)-1);
+                val &= ((1ULL << config.length_bits) - 1);
                 length = static_cast<uint32_t>(val);
                 result.push_back(algorithm::Triple(offset,length,0));
             }
 
         }
         else{
-            uint32_t offset;
-            uint32_t length;
+            uint32_t offset = 0;
+            uint32_t length = 0;
             uint8_t literal;
             if (literal_size == 0){
-                reader.readBits(val, config.offset_bits+config.length_bits);
+                int match_bits = config.offset_bits + config.length_bits;
+                if (!reader.ensureBits(match_bits)) break;
+                reader.readBits(val, match_bits);
                 offset = static_cast<uint32_t>(val>>(config.length_bits));
-                if (offset == 0){//返回的结果是不包含literalrun
+                if (offset == 0){
+                    uint64_t mask_val = (1ULL << config.length_bits) - 1;
+                    val &= mask_val;
+                    length = static_cast<uint32_t>(val);
+                    literal_size = length;
                     continue;
                 }
-                val &= (1ULL<<(config.length_bits)-1);
+                val &= ((1ULL << config.length_bits) - 1);
                 length = static_cast<uint32_t>(val);
                 result.push_back(algorithm::Triple(offset,length,0));
             }else{
+                if (!reader.ensureBits(8)) break;
                 reader.readBits(val, 8);
                 literal = static_cast<uint8_t>(val);
                 result.push_back(algorithm::Triple(0,1,literal));
                 literal_size--;
-            }
-            if (offset == 0){
-                literal_size=length;
             }
         }
 
@@ -180,34 +194,35 @@ inline std::vector<Triple> readtriple(
 
 inline std::vector<uint8_t> decode_triple(const std::vector<Triple>& triples, const EncodingConfig& config, compressor::utils::_buffer& buffer){
     std::vector<uint8_t> result;
-    compressor::utils::BitWriter writer(result, buffer);
-    uint64_t val;
-    for (const Triple &triple:triples){
-        if (config.use_flag_encoding){
-            if (triple.offset == 0 && triple.length == 1){
-                val = static_cast<uint64_t>(triple.literal);
-                writer.writeBits(val, 8);
-            }else{
-                val = static_cast<uint64_t>(triple.offset);
-                val<<=config.length_bits;
-                val|=static_cast<uint64_t>(triple.length);
-                
-                writer.writeBits(val, config.offset_bits+config.length_bits+1);
+    size_t idx = 0;
+    while (idx < triples.size()) {
+        const Triple& triple = triples[idx];
+        if (triple.offset == 0 && triple.length == 0) {
+            result.push_back(triple.literal);
+            ++idx;
+        } else if (triple.offset == 0 && triple.length == 1) {
+            result.push_back(triple.literal);
+            ++idx;
+        } else if (triple.offset > 0 && triple.length > 0) {
+            if (triple.offset <= result.size()) {
+                size_t copy_start = result.size() - triple.offset;
+                for (uint32_t i = 0; i < triple.length; ++i) {
+                    result.push_back(result[copy_start + i]);
+                }
             }
-        }else{
-            if (triple.offset == 0 && triple.length == 1){
-                val = static_cast<uint64_t>(triple.literal);
-                writer.writeBits(val, 8);
-            }else{
-                val = static_cast<uint64_t>(triple.offset);
-                val<<=config.length_bits;
-                val|=static_cast<uint64_t>(triple.length);
-                writer.writeBits(val, config.offset_bits+config.length_bits);
+            ++idx;
+        } else if (triple.offset == 0 && triple.length > 1) {
+            uint32_t run_len = triple.length;
+            for (uint32_t i = 0; i < run_len && idx + 1 + i < triples.size(); ++i) {
+                result.push_back(triples[idx + 1 + i].literal);
             }
+            idx += 1 + run_len;
+        } else {
+            ++idx;
         }
     }
-    buffer = writer.getBuf();
-    return writer.getOutput();
+    buffer = {0, 0};
+    return result;
 }
 
 

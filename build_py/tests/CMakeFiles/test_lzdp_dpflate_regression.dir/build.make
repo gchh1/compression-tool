@@ -93,6 +93,9 @@ test_lzdp_dpflate_regression_EXTERNAL_OBJECTS =
 bin/test_lzdp_dpflate_regression.exe: tests/CMakeFiles/test_lzdp_dpflate_regression.dir/test_lzdp_dpflate_regression.cpp.obj
 bin/test_lzdp_dpflate_regression.exe: tests/CMakeFiles/test_lzdp_dpflate_regression.dir/build.make
 bin/test_lzdp_dpflate_regression.exe: src/algorithm/libalgorithm.a
+bin/test_lzdp_dpflate_regression.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_lzdp_dpflate_regression.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_lzdp_dpflate_regression.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_lzdp_dpflate_regression.exe: tests/CMakeFiles/test_lzdp_dpflate_regression.dir/linkLibs.rsp
 bin/test_lzdp_dpflate_regression.exe: tests/CMakeFiles/test_lzdp_dpflate_regression.dir/objects1.rsp
 bin/test_lzdp_dpflate_regression.exe: tests/CMakeFiles/test_lzdp_dpflate_regression.dir/link.txt

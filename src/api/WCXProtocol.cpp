@@ -11,7 +11,7 @@ namespace compressor::api::wcx {
 namespace {
 
 constexpr std::array<uint8_t, 4> WCX_MAGIC{{'W', 'C', 'M', 'P'}};
-constexpr uint8_t WCX_VERSION = 2;
+constexpr uint8_t WCX_VERSION = 3;
 
 auto writeU16LE(std::ostream& os, uint16_t v) -> void {
     uint8_t b[2] = {static_cast<uint8_t>(v & 0xFF),

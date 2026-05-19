@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ERL & ERL-Re² 算法报告</title>
+
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    tags: 'none'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+
+<style>
+  :root {
+    --fg: #1f2328;
+    --muted: #57606a;
+    --accent: #4a90d9;
+    --border: #d0d7de;
+    --soft: #f6f8fa;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--fg);
+    background: #fff;
+    line-height: 1.75;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: #1a1a1a;
+    line-height: 1.3;
+    margin-top: 1.8em;
+    margin-bottom: 0.6em;
+  }
+  h1 { font-size: 1.9em; border-bottom: 2px solid var(--accent); padding-bottom: 8px; margin-top: 0.4em; }
+  h2 { font-size: 1.5em; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  h3 { font-size: 1.22em; color: #2c3e50; }
+  h4 { font-size: 1.05em; color: #34495e; }
+
+  p { margin: 0.8em 0; }
+  ul, ol { margin: 0.6em 0; padding-left: 28px; }
+  li { margin: 4px 0; }
+  li > p { margin: 0.3em 0; }
+
+  blockquote {
+    margin: 12px 0;
+    padding: 6px 14px;
+    border-left: 4px solid var(--accent);
+    background: var(--soft);
+    color: var(--muted);
+  }
+
+  code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    background: #eef1f4;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.92em;
+  }
+  pre {
+    background: var(--soft);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    line-height: 1.5;
+    font-size: 13.5px;
+  }
+  pre code { background: none; padding: 0; }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 16px 0;
+    font-size: 0.95em;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: var(--soft); font-weight: 600; }
+  tr:nth-child(even) td { background: #fafbfc; }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+  }
+
+  mjx-container { font-size: 1.02em; }
+  mjx-container[display="true"] { margin: 0.8em 0; }
+
+  .footer {
+    margin-top: 60px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.88em;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<h1 id="erl-re2">ERL-Re² 算法报告</h1>
+<h2 id="0">0. 论文来源</h2>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>标题</strong></td>
+<td>ERL-Re²: Efficient Evolutionary Reinforcement Learning with Shared State Representation and Individual Policy Representation</td>
+</tr>
+<tr>
+<td><strong>作者</strong></td>
+<td>Jianye Hao, Pengyi Li, Hongyao Tang, Yan Zheng, Xian Fu, Zhaopeng Meng</td>
+</tr>
+<tr>
+<td><strong>机构</strong></td>
+<td>College of Intelligence and Computing, Tianjin University</td>
+</tr>
+<tr>
+<td><strong>会议</strong></td>
+<td><strong>ICLR 2023</strong></td>
+</tr>
+<tr>
+<td><strong>arXiv</strong></td>
+<td>arXiv:2210.17375v2，2023-06-30</td>
+</tr>
+<tr>
+<td><strong>代码</strong></td>
+<td><a href="https://github.com/yeshenpy/ERL-Re2">https://github.com/yeshenpy/ERL-Re2</a></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>命名</strong>：论文里写作 <em>ERL-Re2</em>。 "Re²" 在 §3 标题中被解读为 <strong>Two-scale State Representation and Policy Representation</strong>（双尺度：共享状态表示 + 个体策略表示），亦可读作"representational reuse"——所有 EA/RL 个体复用同一非线性状态编码器 \(Z_\phi\)，并在其诱导的线性策略空间中演化。</p>
+</blockquote>
+<hr />
+<h2 id="1">1. 算法概述</h2>
+<h3 id="11">1.1 一句话定位</h3>
+<p><strong>ERL-Re²</strong> 是把"标准 ERL 的非线性策略种群"替换为"<strong>共享状态编码器 \(Z_\phi\) + 个体线性策略矩阵 \(W_i\)</strong>"的三阶段混合优化算法，并配合 <strong>行为级遗传操作</strong> 与 <strong>PeVFA 替代适应度</strong> 大幅提升样本效率。</p>
+<h3 id="12-why-re2">1.2 设计动机（Why Re²）</h3>
+<p>相对标准 ERL 类工作（ERL/PDERL/CERL/CEM-RL），作者指出三个核心问题：</p>
+<ol>
+<li>
+<p><strong>知识不共享 / 表示冗余</strong></p>
+<ul>
+<li>RL Actor 与每个 EA 个体都独立学一套非线性状态特征</li>
+<li>任何一个体学到的有用表示<strong>无法直接传递</strong>给其他个体</li>
+<li>个体间靠 replay 隐式共享，耦合极弱</li>
+</ul>
+</li>
+<li>
+<p><strong>参数级遗传，行为语义不清</strong></p>
+<ul>
+<li>标准 ERL 在权重矩阵元素上做 k-point 交叉 / 高斯变异</li>
+<li>非线性网络下，权重小扰动 ↛ 行为小变化；常出现 <strong>policy crash</strong></li>
+<li>交叉得到的子代行为不可解释（"交换第 3 层第 5 个神经元"无物理意义）</li>
+</ul>
+</li>
+<li>
+<p><strong>EA 样本效率瓶颈</strong></p>
+<ul>
+<li>每代对种群做 <strong>MC 完整 episode 评估</strong></li>
+<li>评估成本随 episode 长度线性增长，与 RL 部分的样本利用率不匹配</li>
+</ul>
+</li>
+</ol>
+<h3 id="13">1.3 三个核心创新</h3>
+<table>
+<thead>
+<tr>
+<th>创新</th>
+<th>解决了什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>共享状态表示 \(Z_\phi\) + 个体线性策略 \(W_i\)</strong></td>
+<td>共享非线性特征学习；个体只在低维线性空间演化；显式知识共享</td>
+</tr>
+<tr>
+<td><strong>行为级遗传操作 b-Crossover / b-Mutation（\(\otimes_d\)）</strong></td>
+<td>在 \(W\) 的"动作维度行"上操作；语义清晰；不干扰其它动作维</td>
+</tr>
+<tr>
+<td><strong>PeVFA + Partial Rollout 替代适应度 \(\hat{f}(W_i)\)</strong></td>
+<td>用 \(H\) 步部分轨迹 + PeVFA bootstrap 估算 fitness，降低评估成本</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2">2. 数学基础与符号说明</h2>
+<h3 id="21-4-e">2.1 主要符号（论文 §4 与附录 E）</h3>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>含义</th>
+<th>维度 / 类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\(Z_\phi\)</td>
+<td>共享状态编码器（非线性 MLP）</td>
+<td>\(Z_\phi:\mathbb{R}^{|\mathcal{S}|}\to\mathbb{R}^d,\ d=300\)</td>
+</tr>
+<tr>
+<td>\(z_t = Z_\phi(s_t)\)</td>
+<td>状态 \(s_t\) 的共享特征</td>
+<td>\(z_t\in\mathbb{R}^d\)</td>
+</tr>
+<tr>
+<td>\(W_i\)</td>
+<td>第 \(i\) 个体的线性策略矩阵</td>
+<td>\(W_i\in\mathbb{R}^{(d+1)\times|\mathcal{A}|}\)</td>
+</tr>
+<tr>
+<td>\(W_{i,[1:d]}\)</td>
+<td>\(W_i\) 的前 \(d\) 行（权重）</td>
+<td>\(\mathbb{R}^{d\times|\mathcal{A}|}\)</td>
+</tr>
+<tr>
+<td>\(W_{i,[d+1]}\)</td>
+<td>\(W_i\) 的第 \(d{+}1\) 行（偏置）</td>
+<td>\(\mathbb{R}^{|\mathcal{A}|}\)</td>
+</tr>
+<tr>
+<td>\(\pi_i(s)\)</td>
+<td>个体 \(i\) 的策略函数</td>
+<td>\(\mathbb{R}^{|\mathcal{A}|}\in[-1,1]\)</td>
+</tr>
+<tr>
+<td>\(\pi_{rl}\)</td>
+<td>RL 智能体策略（同一形式）</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>\(\mathbb{P}\)</td>
+<td>EA 种群</td>
+<td>\(\mathbb{P}=\{W_1,\ldots,W_n\},\ n=5\)</td>
+</tr>
+<tr>
+<td>\(\mathbb{Q}_\theta(s,a,W)\)</td>
+<td><strong>PeVFA</strong>（策略扩展值函数）</td>
+<td>见 §3.2</td>
+</tr>
+<tr>
+<td>\(Q_\psi(s,a)\)</td>
+<td>RL Critic</td>
+<td>标准双 Q（TD3 实现）</td>
+</tr>
+<tr>
+<td>\(\mathcal{D}\)</td>
+<td>共享经验回放</td>
+<td>由 EA 与 RL 共同填充</td>
+</tr>
+<tr>
+<td>\(H\)</td>
+<td>部分 rollout 步长</td>
+<td>\(H\in\{50, 200\}\)（按任务）</td>
+</tr>
+<tr>
+<td>\(p\)</td>
+<td>用 MC（完整 episode）的概率</td>
+<td>与 surrogate 互补，\(1-p\) 用 \(\hat{f}\)</td>
+</tr>
+<tr>
+<td>\(K\)</td>
+<td>更新 \(Z_\phi\) 时从种群采样的个体数</td>
+<td>\(K\in\{1,3\}\)</td>
+</tr>
+<tr>
+<td>\(\alpha\)</td>
+<td>b-Mutation 中动作维被选中概率</td>
+<td><strong>固定 \(\alpha=1.0\)</strong></td>
+</tr>
+<tr>
+<td>\(\beta\)</td>
+<td>被选维内参数扰动比例</td>
+<td>按任务，0.2 ~ 1.0</td>
+</tr>
+<tr>
+<td>\(\gamma\)</td>
+<td>折扣因子</td>
+<td>0.99（Swimmer 例外用 0.999）</td>
+</tr>
+<tr>
+<td>\(e\)</td>
+<td>精英数量</td>
+<td><strong>\(e=1\)</strong>（固定）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-41">2.2 个体策略的构造（论文 §4.1）</h3>
+<p>每个智能体的策略为 <strong>共享非线性特征 → 个体线性映射 → 激活</strong> 的两阶段结构：</p>
+<p>$$
+\boxed{\pi_i(s) = \mathrm{act}\bigl(Z_\phi(s)^\top W_{i,[1:d]} + W_{i,[d+1]}\bigr)}
+$$</p>
+<p>其中 \(\mathrm{act}\) 为 \(\tanh\)（确定性策略；论文脚注说明可推广到随机策略）。</p>
+<p><strong>维度链</strong>：</p>
+<p>$$
+\underbrace{Z_\phi(s_t)}_{1\times d}\cdot\underbrace{W_{i,[1:d]}}_{d\times|\mathcal{A}|}\;+\;\underbrace{W_{i,[d+1]}}_{1\times|\mathcal{A}|}\;\xrightarrow{\mathrm{act}}\;\underbrace{\pi_i(s_t)}_{1\times|\mathcal{A}|}
+$$</p>
+<p><strong>参数节省</strong>：标准 ERL 个体是完整 MLP（数十万到数百万参数）；ERL-Re² 个体仅 \((d+1)\times|\mathcal{A}|\) 个参数（例如 \(|\mathcal{A}|=6\) 时为 \(301\times 6=1806\)）。EA 在更低维空间搜索，效率显著提升。</p>
+<h3 id="23-math68-eq4">2.3 行为级交叉算子 \(\otimes_d\)（论文 Eq.(4)）</h3>
+<p>给定 \(A,B\in\mathbb{R}^{(d+1)\times|\mathcal{A}|}\) 与动作维度子集 \(d\subseteq\{1,\ldots,|\mathcal{A}|\}\)（每维以 50% 概率被选中）：</p>
+<p>$$
+\boxed{(A\otimes_d B)_{[:,i]} = \begin{cases}B_{[:,i]} & i\in d\\ A_{[:,i]} & i\notin d\end{cases}}
+$$</p>
+<blockquote>
+<p>注意：交换的是<strong>列</strong>——即"对应某个动作维度的整列参数"（含偏置元素）。<strong>语义</strong>："子代继承父代 A 控制大多数动作的策略，但借用父代 B 控制 \(d\) 中那些动作维的策略"。例如交换关节 2 的列 = "我借用你控制关节 2 的方法"。</p>
+</blockquote>
+<p>一对子代写作：</p>
+<p>$$
+(W_{c_1}, W_{c_2}) = (W_{p_1}\otimes_{d_1} W_{p_2},\ W_{p_2}\otimes_{d_2} W_{p_1})
+$$</p>
+<h3 id="24-math72-eq3">2.4 替代适应度 \(\hat{f}(W_i)\)（论文 Eq.(3)）</h3>
+<p>$$
+\boxed{\hat{f}(W_i) = \underbrace{\sum_{t=0}^{H-1}\gamma^t r_t}_{\text{H 步部分回报}} + \underbrace{\gamma^H\,\mathbb{Q}_\theta\bigl(s_H,\pi_i(s_H),W_i\bigr)}_{\text{PeVFA 估计的剩余价值}}}
+$$</p>
+<p><strong>推导</strong>：从无穷期回报展开</p>
+<p>$$
+G_0 = \sum_{t=0}^{\infty}\gamma^t r_t = \sum_{t=0}^{H-1}\gamma^t r_t + \gamma^H\!\sum_{t=H}^{\infty}\gamma^{t-H}r_t = \sum_{t=0}^{H-1}\gamma^t r_t + \gamma^H\, Q^{\pi_i}(s_H,\pi_i(s_H))
+$$</p>
+<p>把无法直接拿到的 \(Q^{\pi_i}\) 用 <strong>PeVFA</strong> 近似。PeVFA 把策略表示 \(W_i\) 作为输入，用同一网络同时维护多个策略的 \(Q\) 值。</p>
+<p><strong>优势</strong>：</p>
+<ol>
+<li><strong>速度</strong>：\(H\) 步 rollout（通常 50~200）vs 完整 episode（可能 1000+ 步）</li>
+<li><strong>样本效率</strong>：PeVFA 复用历史数据</li>
+<li><strong>理论保证</strong>：PeVFA 精确时 \(\hat{f}(W_i)\approx f(W_i)\)</li>
+</ol>
+<h3 id="25-critic-eq1">2.5 双 Critic 损失（论文 Eq.(1)）</h3>
+<p><strong>PeVFA 损失</strong>（为 EA 种群服务，对策略表示 \(W\) 同时建模）：</p>
+<p>$$
+\mathcal{L}_\mathbb{Q}(\theta) = \mathbb{E}_{(s,a,r,s')\sim\mathcal{D},\,W_i\sim\mathbb{P}}\!\left[\bigl(r+\gamma\,\mathbb{Q}_{\theta'}(s',\pi_i(s'),W_i) - \mathbb{Q}_\theta(s,a,W_i)\bigr)^2\right]
+$$</p>
+<p><strong>RL Critic 损失</strong>（为 RL 智能体服务）：</p>
+<p>$$
+\mathcal{L}_Q(\psi) = \mathbb{E}_{(s,a,r,s')\sim\mathcal{D}}\!\left[\bigl(r+\gamma\,Q_{\psi'}(s',\pi_{rl}'(s')) - Q_\psi(s,a)\bigr)^2\right]
+$$</p>
+<blockquote>
+<p><strong>实现细节（附录 E.2）</strong>：PeVFA 与 RL Critic <strong>均用原始 \(s\) 作为输入</strong>（不经 \(Z_\phi\)），避免 actor-critic 共享表示带来的相互干扰；TD3 实现使用 <strong>clipped double Q</strong>。</p>
+</blockquote>
+<h3 id="26-eq2">2.6 共享表示更新（论文 Eq.(2)）</h3>
+<p><strong>核心思想</strong>：\(Z_\phi\) 应让 <strong>RL 智能体与 \(K\) 个采样到的 EA 个体</strong> 的总 \(Q\) 值同时变大。</p>
+<p>$$
+\boxed{\mathcal{L}_Z(\phi) = -\mathbb{E}_{s\sim\mathcal{D},\,\{W_{j_m}\}_{m=1}^{K}\sim\mathbb{P}}\!\left[Q_\psi(s,\pi_{rl}(s)) + \sum_{m=1}^{K}\mathbb{Q}_\theta\bigl(s,\pi_{j_m}(s),W_{j_m}\bigr)\right]}
+$$</p>
+<p><strong>梯度反向传播路径</strong>：对每个 \(Q(s,\pi(s),\cdot)\) 项使用链式法则：</p>
+<p>$$
+\nabla_\phi Q\bigl(s,\pi(s)\bigr) = \underbrace{\nabla_a Q(s,a)\big|_{a=\pi(s)}}_{\text{Critic 局部梯度}}\cdot\underbrace{\nabla_\phi \pi(s)}_{\text{策略对 }\phi\text{ 的梯度}}
+$$</p>
+<p>而 \(\pi(s)=\mathrm{act}(Z_\phi(s)^\top W+b)\)，所以：</p>
+<p>$$
+\nabla_\phi \pi(s) = \mathrm{diag}\bigl(1-\mathrm{act}^2(\cdot)\bigr)\cdot W^\top \cdot \nabla_\phi Z_\phi(s)
+$$</p>
+<p>\(K\) 个 EA 个体 + RL 共 \(K{+}1\) 项的梯度求和，构成"统一方向"。</p>
+<h3 id="27-rl-actor-eq5">2.7 RL Actor 损失（论文 Eq.(5)）</h3>
+<p>$$
+\mathcal{L}_{\mathrm{RL}}(W_{rl}) = -\mathbb{E}_{s\sim\mathcal{D}}\bigl[Q_\psi(s,\pi_{rl}(s))\bigr],\quad \pi_{rl}(s) = \mathrm{act}\bigl(Z_\phi(s)^\top W_{rl,[1:d]} + W_{rl,[d+1]}\bigr)
+$$</p>
+<p><strong>策略梯度</strong>（与 DDPG 同构）：</p>
+<p>$$
+\nabla_{W_{rl}}\mathcal{L}_{\mathrm{RL}} = -\mathbb{E}_s\!\left[\nabla_a Q_\psi(s,a)\big|_{a=\pi_{rl}(s)}\cdot\nabla_{W_{rl}}\pi_{rl}(s)\right]
+$$</p>
+<h3 id="28">2.8 目标网络软更新</h3>
+<p>$$
+\theta'\leftarrow(1-\tau)\theta'+\tau\theta,\quad \psi'\leftarrow(1-\tau)\psi'+\tau\psi,\quad W_{rl}'\leftarrow(1-\tau)W_{rl}'+\tau W_{rl}
+$$</p>
+<hr />
+<h2 id="3-e2-table-4-5">3. 网络架构（论文附录 E.2 / Table 4-5）</h2>
+<h3 id="31-math88">3.1 共享状态编码器 \(Z_\phi\)</h3>
+<p>$$
+Z_\phi:\ s\xrightarrow{\text{FC}(|\mathcal{S}|,400)\to\tanh}h_1\xrightarrow{\text{FC}(400,300)\to\tanh}z\in\mathbb{R}^{300}
+$$</p>
+<ul>
+<li>两层全连接：<code>(|S| → 400) → (400 → 300)</code></li>
+<li>激活：tanh（确保输出有界，便于线性策略 + tanh 输出）</li>
+<li>输出维度 \(d=300\)（全文固定）</li>
+</ul>
+<h3 id="32-pevfa-math90">3.2 PeVFA \(\mathbb{Q}_\theta(s,a,W)\) 的实现结构</h3>
+<p>PeVFA 需要把策略矩阵 \(W\in\mathbb{R}^{301\times|\mathcal{A}|}\) 编码成定长嵌入：</p>
+<ol>
+<li><strong>策略编码器</strong>：对 \(W\) 的每一列（\(\mathbb{R}^{301}\)，对应一个动作维度），用 <strong>3 层 FC（宽 64）+ LeakyReLU</strong> 编码为 64 维</li>
+<li><strong>动作维度池化</strong>：在 \(|\mathcal{A}|\) 个 64 维向量上做 <strong>mean pooling</strong>，得到 64 维 policy embedding \(\bar{e}_W\)</li>
+<li><strong>价值网络</strong>：把 \((s, a, \bar{e}_W)\) 拼接（输入维 \(|\mathcal{S}|+|\mathcal{A}|+64\)）→ <code>400 → 300 → 1</code></li>
+</ol>
+<p>实现上采用 <strong>TD3 双 Q</strong>（clipped double Q）。</p>
+<h3 id="33-rl-critic-math98">3.3 RL Critic \(Q_\psi(s,a)\)</h3>
+<p>标准 TD3 双 Q 结构，<strong>输入 \(s,a\) 不经 \(Z_\phi\)</strong>（避免与 actor 表示耦合）。</p>
+<hr />
+<h2 id="4">4. 算法伪代码</h2>
+<h3 id="41-algorithm-1erl-re2">4.1 Algorithm 1：ERL-Re² 主循环</h3>
+<pre><code class="language-text">Algorithm 1  ERL with Two-scale State and Policy Representation (ERL-Re²)
+
+Input:  EA 种群大小 n=5；MC 概率 p；H 步 partial rollout 长度
+Init:   共享编码器 Z_φ（参数 φ）；RL 线性策略 W_rl ∈ R^{(d+1)×|A|}
+        EA 种群 P = {W_1, ..., W_n}（随机初始化）
+        RL Critic Q_ψ；PeVFA Q_θ；目标网络 θ', ψ', W_rl'
+        共享回放 D = ∅
+
+repeat
+  # ─── Phase 1: 数据收集与适应度评估 ───
+  if Random() &gt; p then
+      对每个 W_i ∈ P，在 Z_φ 下做 H 步 rollout，用 surrogate 适应度 \hat{f}(W_i)
+  else
+      对每个 W_i ∈ P，在 Z_φ 下做完整 episode，用 MC 回报作为 f(W_i)
+  end if
+  对 RL 智能体（W_rl + Z_φ）做完整 episode（OU 噪声），收集经验
+  把上述所有轨迹存入 D
+
+  # ─── Phase 2: 个体尺度优化 ───
+  从 D 采样 mini-batch B
+  更新 PeVFA Q_θ（Eq. 1）和 RL Critic Q_ψ（Eq. 1）
+  对种群 P 做 GA：选择 + b-Crossover + b-Mutation（Algorithm 2）
+  对 W_rl 做策略梯度更新（Eq. 5）：W_rl ← W_rl − η·∇L_RL
+  if generation mod ω == 0 then
+      用 W_rl 替换 P 中适应度最低的个体
+  end if
+
+  # ─── Phase 3: 共同尺度优化 ───
+  从 P 采样 K 个 {W_{j_1}, ..., W_{j_K}}
+  更新 Z_φ（Eq. 2）：φ ← φ − η_φ·∇L_Z(φ)
+  软更新目标网络: θ', ψ', W_rl'
+until 达到最大环境步数
+
+return (best W_i in P, Z_φ)
+</code></pre>
+<h3 id="42-algorithm-2pderl-style-b-crossover-b-mutation">4.2 Algorithm 2：行为级遗传操作（PDERL-style 选择 + b-Crossover / b-Mutation）</h3>
+<pre><code class="language-text">Algorithm 2  Behavioral Genetic Operations
+
+Input:  种群 P = {W_1, ..., W_n}；适应度 {f_i}；α, β
+
+# 选择
+按 f_i 对 P 降序排序
+精英 E = {W_(1)}                        ▷ e = 1
+生成获胜者 Win：重复 (n − 1) 次:
+    从非精英中随机抽 3 个，取适应度最高者加入 Win
+丢弃者 Dis = P \ (E ∪ Win)
+
+# b-Crossover
+while Dis ≠ ∅ do
+    从 Dis 取 W_{d_1}, W_{d_2}
+    从 E 与 Win 各随机取 W_e, W_w
+    克隆: W_{p_1} ← W_e；W_{p_2} ← W_w
+    对每个动作维 i ∈ {1, ..., |A|}：
+        以 0.5 概率把 W_{p_1} 的第 i 列换为 W_{p_2} 的第 i 列
+        反之亦然
+    用 (W_{p_1}, W_{p_2}) 替换 (W_{d_1}, W_{d_2})
+end while
+
+# b-Mutation
+for each W ∈ P \ E do
+    if r() &lt; 0.9 then                    ▷ 整体变异概率
+        for each 动作维 i ∈ {1, ..., |A|} do
+            if r() &lt; α then              ▷ α = 1.0
+                对 W 的第 i 列：随机选 β 比例的元素，
+                按以下三选一扰动：
+                    90% : 加 N(0, 0.1)   ▷ 小变异
+                    5%  : 加 N(0, 1.0)   ▷ 大变异
+                    5%  : 重置为 N(0, 1) ▷ 重置
+            end if
+        end for
+    end if
+end for
+</code></pre>
+<h3 id="43-algorithm-3cem-f1-ga">4.3 Algorithm 3：CEM 变体（论文附录 F.1，可替换 GA）</h3>
+<p>ERL-Re² 也可用 <strong>CEM</strong> 替换 Algorithm 2 的种群生成：维护 \((\mu,\Sigma)\)，每代从 \(\mathcal{N}(\mu,\Sigma)\) 采 \(n\) 个个体；用前 \(n/2\) 精英更新分布。Phase 1/2/3 其余结构不变。</p>
+<hr />
+<h2 id="5">5. 超参数</h2>
+<h3 id="51-e3">5.1 通用超参（论文附录 E.3）</h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>符号</th>
+<th>取值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>种群大小</td>
+<td>\(n\)</td>
+<td><strong>5</strong></td>
+</tr>
+<tr>
+<td>特征维度</td>
+<td>\(d\)</td>
+<td><strong>300</strong></td>
+</tr>
+<tr>
+<td>精英数</td>
+<td>\(e\)</td>
+<td><strong>1</strong></td>
+</tr>
+<tr>
+<td>折扣因子</td>
+<td>\(\gamma\)</td>
+<td>0.99（Swimmer 用 <strong>0.999</strong>）</td>
+</tr>
+<tr>
+<td>整体变异概率</td>
+<td>—</td>
+<td>0.9</td>
+</tr>
+<tr>
+<td>动作维选中概率</td>
+<td>\(\alpha\)</td>
+<td><strong>1.0</strong></td>
+</tr>
+<tr>
+<td>小/大/重置扰动比例</td>
+<td>—</td>
+<td>90% / 5% / 5%</td>
+</tr>
+<tr>
+<td>训练步数</td>
+<td>—</td>
+<td>\(1\times 10^6\)（部分长尾实验 \(3\times 10^6\)）</td>
+</tr>
+<tr>
+<td>种子数</td>
+<td>—</td>
+<td>5（95% 置信带）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-table-6-td3-table-7-ddpg">5.2 逐环境超参（论文 Table 6: TD3 版，Table 7: DDPG 版）</h3>
+<table>
+<thead>
+<tr>
+<th>环境</th>
+<th>TD3: \((p, \beta, H, K)\)</th>
+<th>DDPG: \((p, \beta, H, K)\)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HalfCheetah</td>
+<td>(0.3, 1.0, 200, 1)</td>
+<td>(0.5, 1.0, 200, 1)</td>
+</tr>
+<tr>
+<td>Walker2d</td>
+<td>(0.8, 0.2, 50, 1)</td>
+<td>(0.8, 0.2, 50, 1)</td>
+</tr>
+<tr>
+<td>Swimmer</td>
+<td>(0.3, 1.0, 200, 3)</td>
+<td>(0.3, 0.5, 200, 3)</td>
+</tr>
+<tr>
+<td>Hopper</td>
+<td>(0.8, 0.2, 50, 3)</td>
+<td>(0.8, 0.7, 50, 3)</td>
+</tr>
+<tr>
+<td>Ant</td>
+<td>(0.5, 0.7, 200, 1)</td>
+<td>(0.7, 0.5, 200, 1)</td>
+</tr>
+<tr>
+<td>Humanoid</td>
+<td>(0.5, 0.5, 200, 1)</td>
+<td>(0.7, 0.5, 200, 1)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>调参直觉</strong>：</p>
+<ul>
+<li>稳定 locomotion（Walker、Hopper）：\(\beta\) 小、\(H\) 短 → 避免行为剧烈变化</li>
+<li>高动作维 / 探索强（HalfCheetah、Swimmer）：\(\beta\) 大、\(H\) 长 → 鼓励多样性</li>
+<li>关键观察：附录 E.3 说明即使 <strong>\(p=1\)（始终 MC，关闭 surrogate）也能与现有 baseline 竞争</strong></li>
+</ul>
+<hr />
+<h2 id="6">6. 实验设置</h2>
+<h3 id="61">6.1 环境</h3>
+<p><strong>6 个 MuJoCo v2</strong>：HalfCheetah, Walker2d, Hopper, Swimmer, Ant, Humanoid</p>
+<blockquote>
+<p><strong>重要</strong>：ERL-Re² 论文实验<strong>不包含 Reacher</strong>（先前版本笔记有误）。</p>
+</blockquote>
+<h3 id="62">6.2 基线</h3>
+<ul>
+<li><strong>纯 RL</strong>：DDPG, TD3, SAC, PPO</li>
+<li><strong>ERL 系</strong>：ERL (Khadka 2018), CERL, PDERL, CEM-RL</li>
+<li>每个方法都报告 DDPG 与 TD3 两个 RL 主干版本</li>
+<li>实现：基于官方代码 + stable-baselines3；ERL-Re² 基于 <strong>PDERL</strong> 代码库</li>
+</ul>
+<h3 id="63">6.3 评估</h3>
+<ul>
+<li>训练步数 \(1\times 10^6\)（部分 \(3\times 10^6\)）</li>
+<li>5 个随机种子，报告均值 + 95% 置信带</li>
+<li>种群规模：每方法在 \(\{5,10\}\) 中取最优；ERL-Re² 固定 5</li>
+</ul>
+<hr />
+<h2 id="7">7. 关键实验结论</h2>
+<h3 id="71">7.1 整体性能</h3>
+<ul>
+<li>ERL-Re²-TD3 / ERL-Re²-DDPG 相对所有 baselines <strong>收敛速度提升约 5×</strong>（达到同等性能所需步数）</li>
+<li>在 6 个 MuJoCo 任务上<strong>全面优于</strong> ERL/CERL/PDERL/CEM-RL</li>
+</ul>
+<h3 id="72-ablation-fig6-fig10">7.2 关键 Ablation（论文 Fig.6, Fig.10）</h3>
+<table>
+<thead>
+<tr>
+<th>Ablation</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>只保留 Eq.(2) 中 Critic 项（无 PeVFA 项更新 \(Z_\phi\)）</td>
+<td>性能下降</td>
+</tr>
+<tr>
+<td>只保留 PeVFA 项（无 Critic 项）</td>
+<td>性能下降</td>
+</tr>
+<tr>
+<td>\(K\) 取 1 vs 3</td>
+<td>任务相关，需调</td>
+</tr>
+<tr>
+<td>用参数级遗传（标准 ERL 做法）替换 b-Crossover/Mutation</td>
+<td>显著变差 — 行为级操作是关键</td>
+</tr>
+<tr>
+<td>关掉 surrogate（\(p=1\)，始终 MC）</td>
+<td>仍优于多数 baseline，但失去样本效率优势</td>
+</tr>
+<tr>
+<td>仅 b-Crossover 或仅 b-Mutation</td>
+<td>都各有贡献，组合最佳</td>
+</tr>
+</tbody>
+</table>
+<h3 id="73-erl">7.3 相对标准 ERL 的提升</h3>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>提升</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>样本效率</td>
+<td>2-3×</td>
+<td>\(\hat{f}\) 减少 rollout 步数</td>
+</tr>
+<tr>
+<td>收敛速度</td>
+<td>30-50%</td>
+<td>行为级操作 + 共享表示加速学习</td>
+</tr>
+<tr>
+<td>可解释性</td>
+<td>显著</td>
+<td>线性策略可直接可视化、按动作维分析</td>
+</tr>
+<tr>
+<td>计算开销</td>
+<td>降低</td>
+<td>线性策略前向比深度 MLP 快</td>
+</tr>
+<tr>
+<td>参数效率</td>
+<td>100~1000×</td>
+<td>个体只需 \((d+1)|\mathcal{A}|\) 参数，标准 ERL 需要数十万</td>
+</tr>
+</tbody>
+</table>
+<h3 id="74">7.4 三种核心机制的语义对比</h3>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>标准 ERL</th>
+<th>ERL-Re²</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>个体策略结构</td>
+<td>完整非线性 MLP \(\pi(\cdot\mid\theta^\pi)\)</td>
+<td>\(\pi_i(s)=\mathrm{act}(Z_\phi(s)^\top W_{i,[1:d]}+W_{i,[d+1]})\)</td>
+</tr>
+<tr>
+<td>交叉操作对象</td>
+<td>网络权重矩阵片段交换</td>
+<td>动作维度整列交换 \(A\otimes_d B\)</td>
+</tr>
+<tr>
+<td>变异操作对象</td>
+<td>权重矩阵元素级噪声</td>
+<td>动作维度整列扰动</td>
+</tr>
+<tr>
+<td>知识共享</td>
+<td>仅通过 replay 间接共享</td>
+<td>\(Z_\phi\) 显式共享 + replay 间接共享</td>
+</tr>
+<tr>
+<td>EA 值估计</td>
+<td>MC 回报 \(f(\pi)=\sum r_t\)</td>
+<td>MC 或 PeVFA 替代 \(\hat{f}(W)\)</td>
+</tr>
+<tr>
+<td>Critic 结构</td>
+<td>单 \(Q_\psi\)（仅 RL）</td>
+<td>\(Q_\psi\)（RL）+ \(\mathbb{Q}_\theta(s,a,W)\)（EA）</td>
+</tr>
+<tr>
+<td>状态表示学习</td>
+<td>无显式机制</td>
+<td>通过 Eq.(2) 显式联合优化</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8">8. 项目实现说明</h2>
+<h3 id="81">8.1 仓库目录结构</h3>
+<pre><code class="language-text">EX2_ERL-Re^2/
+├── erl_re2/                      # 核心算法包
+│   ├── algorithm.py              # ERL-Re² 主算法
+│   ├── networks.py               # StateEncoder / PeVFA / RLCritic
+│   ├── linear_policy.py          # 线性策略 (LinearPolicy, RLPolicy)
+│   ├── genetic_ops.py            # 行为级遗传算子
+│   └── replay_buffer.py          # 共享经验回放
+├── experiments/
+│   ├── locomotion/
+│   │   ├── train_halfcheetah.py
+│   │   └── train_ant.py
+│   └── manipulation/
+│       └── train_reacher.py      # 自定义扩展实验（非论文环境）
+├── outputs/
+├── docs/                         # 本报告与论文 PDF
+└── README.md
+</code></pre>
+<h3 id="82">8.2 快速开始</h3>
+<pre><code class="language-bash">pip install torch numpy gymnasium &quot;gymnasium[mujoco]&quot;
+
+cd experiments/locomotion
+python train_halfcheetah.py --gens 50 --pop-size 5
+</code></pre>
+<hr />
+<h2 id="9">9. 参考文献</h2>
+<p>[1] Hao, J., Li, P., Tang, H., Zheng, Y., Fu, X., &amp; Meng, Z. (2023). <em>ERL-Re²: Efficient Evolutionary Reinforcement Learning with Shared State Representation and Individual Policy Representation</em>. <strong>ICLR 2023</strong>. arXiv:2210.17375.</p>
+<p>[2] Khadka, S., &amp; Tumer, K. (2018). <em>Evolution-Guided Policy Gradient in Reinforcement Learning</em> (ERL). NeurIPS 2018.</p>
+<p>[3] Khadka, S., Majumdar, S., Nassar, T., et al. (2019). <em>Collaborative Evolutionary Reinforcement Learning</em> (CERL). ICML 2019.</p>
+<p>[4] Bodnar, C., Day, B., &amp; Lió, P. (2020). <em>Proximal Distilled Evolutionary Reinforcement Learning</em> (PDERL). AAAI 2020.</p>
+<p>[5] Pourchot, A., &amp; Sigaud, O. (2019). <em>CEM-RL: Combining Evolutionary and Gradient-Based Methods for Policy Search</em>. ICLR 2019.</p>
+<p>[6] Tang, H., Meng, Z., Hao, J., et al. (2022). <em>Policy-Extended Value Function Approximator</em> (PeVFA). AAAI 2022.</p>
+<p>[7] Lillicrap, T. P., Hunt, J. J., Pritzel, A., et al. (2016). <em>Continuous Control with Deep Reinforcement Learning</em> (DDPG). ICLR 2016.</p>
+<p>[8] Fujimoto, S., van Hoof, H., &amp; Meger, D. (2018). <em>Addressing Function Approximation Error in Actor-Critic Methods</em> (TD3). ICML 2018.</p>
+<p>[9] Haarnoja, T., Zhou, A., Abbeel, P., &amp; Levine, S. (2018). <em>Soft Actor-Critic</em> (SAC). ICML 2018.</p>
+<p>[10] Schulman, J., Wolski, F., Dhariwal, P., et al. (2017). <em>Proximal Policy Optimization Algorithms</em> (PPO). arXiv:1707.06347.</p>
+<p>[11] Sigaud, O. (2022). <em>Combining Evolution and Deep Reinforcement Learning for Policy Search: a Survey</em>. arXiv:2203.14009.</p>
+<p>[12] Gangwani, T., &amp; Peng, J. (2018). <em>Policy Optimization by Genetic Distillation</em>. ICLR 2018.</p>
+<p>[13] Todorov, E., Erez, T., &amp; Tassa, Y. (2012). <em>MuJoCo: A Physics Engine for Model-Based Control</em>. IROS 2012.</p>
+<div class="footer">由 scripts/md2html.py 从 Markdown 自动生成 · 与源文件严格对齐</div>
+</body>
+</html>

@@ -608,6 +608,118 @@ test_algorithm_new_phase2/fast:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase2.dir\build.make tests/CMakeFiles/test_algorithm_new_phase2.dir/build
 .PHONY : test_algorithm_new_phase2/fast
 
+# Convenience name for target.
+tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/rule
+.PHONY : tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/rule
+
+# Convenience name for target.
+test_algorithm_new_lzss_deflate: tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/rule
+.PHONY : test_algorithm_new_lzss_deflate
+
+# fast build rule for target.
+test_algorithm_new_lzss_deflate/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzss_deflate.dir\build.make tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/build
+.PHONY : test_algorithm_new_lzss_deflate/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_lzss_roundtrip_debug.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzss_roundtrip_debug.dir/rule
+.PHONY : tests/CMakeFiles/test_lzss_roundtrip_debug.dir/rule
+
+# Convenience name for target.
+test_lzss_roundtrip_debug: tests/CMakeFiles/test_lzss_roundtrip_debug.dir/rule
+.PHONY : test_lzss_roundtrip_debug
+
+# fast build rule for target.
+test_lzss_roundtrip_debug/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_roundtrip_debug.dir\build.make tests/CMakeFiles/test_lzss_roundtrip_debug.dir/build
+.PHONY : test_lzss_roundtrip_debug/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_lzss_noflag_debug.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzss_noflag_debug.dir/rule
+.PHONY : tests/CMakeFiles/test_lzss_noflag_debug.dir/rule
+
+# Convenience name for target.
+test_lzss_noflag_debug: tests/CMakeFiles/test_lzss_noflag_debug.dir/rule
+.PHONY : test_lzss_noflag_debug
+
+# fast build rule for target.
+test_lzss_noflag_debug/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_debug.dir\build.make tests/CMakeFiles/test_lzss_noflag_debug.dir/build
+.PHONY : test_lzss_noflag_debug/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_lzss_noflag_text10k.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzss_noflag_text10k.dir/rule
+.PHONY : tests/CMakeFiles/test_lzss_noflag_text10k.dir/rule
+
+# Convenience name for target.
+test_lzss_noflag_text10k: tests/CMakeFiles/test_lzss_noflag_text10k.dir/rule
+.PHONY : test_lzss_noflag_text10k
+
+# fast build rule for target.
+test_lzss_noflag_text10k/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_text10k.dir\build.make tests/CMakeFiles/test_lzss_noflag_text10k.dir/build
+.PHONY : test_lzss_noflag_text10k/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_lzss_noflag_minimal.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzss_noflag_minimal.dir/rule
+.PHONY : tests/CMakeFiles/test_lzss_noflag_minimal.dir/rule
+
+# Convenience name for target.
+test_lzss_noflag_minimal: tests/CMakeFiles/test_lzss_noflag_minimal.dir/rule
+.PHONY : test_lzss_noflag_minimal
+
+# fast build rule for target.
+test_lzss_noflag_minimal/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_minimal.dir\build.make tests/CMakeFiles/test_lzss_noflag_minimal.dir/build
+.PHONY : test_lzss_noflag_minimal/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_lzss_noflag_sizes.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzss_noflag_sizes.dir/rule
+.PHONY : tests/CMakeFiles/test_lzss_noflag_sizes.dir/rule
+
+# Convenience name for target.
+test_lzss_noflag_sizes: tests/CMakeFiles/test_lzss_noflag_sizes.dir/rule
+.PHONY : test_lzss_noflag_sizes
+
+# fast build rule for target.
+test_lzss_noflag_sizes/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_sizes.dir\build.make tests/CMakeFiles/test_lzss_noflag_sizes.dir/build
+.PHONY : test_lzss_noflag_sizes/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_deflate_huffman_minimal.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_deflate_huffman_minimal.dir/rule
+.PHONY : tests/CMakeFiles/test_deflate_huffman_minimal.dir/rule
+
+# Convenience name for target.
+test_deflate_huffman_minimal: tests/CMakeFiles/test_deflate_huffman_minimal.dir/rule
+.PHONY : test_deflate_huffman_minimal
+
+# fast build rule for target.
+test_deflate_huffman_minimal/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_huffman_minimal.dir\build.make tests/CMakeFiles/test_deflate_huffman_minimal.dir/build
+.PHONY : test_deflate_huffman_minimal/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_lzdp_debug.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzdp_debug.dir/rule
+.PHONY : tests/CMakeFiles/test_lzdp_debug.dir/rule
+
+# Convenience name for target.
+test_lzdp_debug: tests/CMakeFiles/test_lzdp_debug.dir/rule
+.PHONY : test_lzdp_debug
+
+# fast build rule for target.
+test_lzdp_debug/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_debug.dir\build.make tests/CMakeFiles/test_lzdp_debug.dir/build
+.PHONY : test_lzdp_debug/fast
+
 debug_dpflate.obj: debug_dpflate.cpp.obj
 .PHONY : debug_dpflate.obj
 
@@ -851,6 +963,30 @@ test_algorithm_new_lzdp.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzdp.dir\build.make tests/CMakeFiles/test_algorithm_new_lzdp.dir/test_algorithm_new_lzdp.cpp.s
 .PHONY : test_algorithm_new_lzdp.cpp.s
 
+test_algorithm_new_lzss_deflate.obj: test_algorithm_new_lzss_deflate.cpp.obj
+.PHONY : test_algorithm_new_lzss_deflate.obj
+
+# target to build an object file
+test_algorithm_new_lzss_deflate.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzss_deflate.dir\build.make tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/test_algorithm_new_lzss_deflate.cpp.obj
+.PHONY : test_algorithm_new_lzss_deflate.cpp.obj
+
+test_algorithm_new_lzss_deflate.i: test_algorithm_new_lzss_deflate.cpp.i
+.PHONY : test_algorithm_new_lzss_deflate.i
+
+# target to preprocess a source file
+test_algorithm_new_lzss_deflate.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzss_deflate.dir\build.make tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/test_algorithm_new_lzss_deflate.cpp.i
+.PHONY : test_algorithm_new_lzss_deflate.cpp.i
+
+test_algorithm_new_lzss_deflate.s: test_algorithm_new_lzss_deflate.cpp.s
+.PHONY : test_algorithm_new_lzss_deflate.s
+
+# target to generate assembly for a file
+test_algorithm_new_lzss_deflate.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzss_deflate.dir\build.make tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/test_algorithm_new_lzss_deflate.cpp.s
+.PHONY : test_algorithm_new_lzss_deflate.cpp.s
+
 test_algorithm_new_phase1.obj: test_algorithm_new_phase1.cpp.obj
 .PHONY : test_algorithm_new_phase1.obj
 
@@ -922,6 +1058,30 @@ test_cartesian_stream_matrix.s: test_cartesian_stream_matrix.cpp.s
 test_cartesian_stream_matrix.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_cartesian_stream_matrix.dir/test_cartesian_stream_matrix.cpp.s
 .PHONY : test_cartesian_stream_matrix.cpp.s
+
+test_deflate_huffman_minimal.obj: test_deflate_huffman_minimal.cpp.obj
+.PHONY : test_deflate_huffman_minimal.obj
+
+# target to build an object file
+test_deflate_huffman_minimal.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_huffman_minimal.dir\build.make tests/CMakeFiles/test_deflate_huffman_minimal.dir/test_deflate_huffman_minimal.cpp.obj
+.PHONY : test_deflate_huffman_minimal.cpp.obj
+
+test_deflate_huffman_minimal.i: test_deflate_huffman_minimal.cpp.i
+.PHONY : test_deflate_huffman_minimal.i
+
+# target to preprocess a source file
+test_deflate_huffman_minimal.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_huffman_minimal.dir\build.make tests/CMakeFiles/test_deflate_huffman_minimal.dir/test_deflate_huffman_minimal.cpp.i
+.PHONY : test_deflate_huffman_minimal.cpp.i
+
+test_deflate_huffman_minimal.s: test_deflate_huffman_minimal.cpp.s
+.PHONY : test_deflate_huffman_minimal.s
+
+# target to generate assembly for a file
+test_deflate_huffman_minimal.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_huffman_minimal.dir\build.make tests/CMakeFiles/test_deflate_huffman_minimal.dir/test_deflate_huffman_minimal.cpp.s
+.PHONY : test_deflate_huffman_minimal.cpp.s
 
 test_dpflate_3hm_stream.obj: test_dpflate_3hm_stream.cpp.obj
 .PHONY : test_dpflate_3hm_stream.obj
@@ -1043,6 +1203,30 @@ test_lzdp_cartesian_stream_matrix.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/test_lzdp_cartesian_stream_matrix.cpp.s
 .PHONY : test_lzdp_cartesian_stream_matrix.cpp.s
 
+test_lzdp_debug.obj: test_lzdp_debug.cpp.obj
+.PHONY : test_lzdp_debug.obj
+
+# target to build an object file
+test_lzdp_debug.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_debug.dir\build.make tests/CMakeFiles/test_lzdp_debug.dir/test_lzdp_debug.cpp.obj
+.PHONY : test_lzdp_debug.cpp.obj
+
+test_lzdp_debug.i: test_lzdp_debug.cpp.i
+.PHONY : test_lzdp_debug.i
+
+# target to preprocess a source file
+test_lzdp_debug.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_debug.dir\build.make tests/CMakeFiles/test_lzdp_debug.dir/test_lzdp_debug.cpp.i
+.PHONY : test_lzdp_debug.cpp.i
+
+test_lzdp_debug.s: test_lzdp_debug.cpp.s
+.PHONY : test_lzdp_debug.s
+
+# target to generate assembly for a file
+test_lzdp_debug.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_debug.dir\build.make tests/CMakeFiles/test_lzdp_debug.dir/test_lzdp_debug.cpp.s
+.PHONY : test_lzdp_debug.cpp.s
+
 test_lzdp_dpflate_regression.obj: test_lzdp_dpflate_regression.cpp.obj
 .PHONY : test_lzdp_dpflate_regression.obj
 
@@ -1162,6 +1346,126 @@ test_lzss_noflag.s: test_lzss_noflag.cpp.s
 test_lzss_noflag.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag.dir\build.make tests/CMakeFiles/test_lzss_noflag.dir/test_lzss_noflag.cpp.s
 .PHONY : test_lzss_noflag.cpp.s
+
+test_lzss_noflag_debug.obj: test_lzss_noflag_debug.cpp.obj
+.PHONY : test_lzss_noflag_debug.obj
+
+# target to build an object file
+test_lzss_noflag_debug.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_debug.dir\build.make tests/CMakeFiles/test_lzss_noflag_debug.dir/test_lzss_noflag_debug.cpp.obj
+.PHONY : test_lzss_noflag_debug.cpp.obj
+
+test_lzss_noflag_debug.i: test_lzss_noflag_debug.cpp.i
+.PHONY : test_lzss_noflag_debug.i
+
+# target to preprocess a source file
+test_lzss_noflag_debug.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_debug.dir\build.make tests/CMakeFiles/test_lzss_noflag_debug.dir/test_lzss_noflag_debug.cpp.i
+.PHONY : test_lzss_noflag_debug.cpp.i
+
+test_lzss_noflag_debug.s: test_lzss_noflag_debug.cpp.s
+.PHONY : test_lzss_noflag_debug.s
+
+# target to generate assembly for a file
+test_lzss_noflag_debug.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_debug.dir\build.make tests/CMakeFiles/test_lzss_noflag_debug.dir/test_lzss_noflag_debug.cpp.s
+.PHONY : test_lzss_noflag_debug.cpp.s
+
+test_lzss_noflag_minimal.obj: test_lzss_noflag_minimal.cpp.obj
+.PHONY : test_lzss_noflag_minimal.obj
+
+# target to build an object file
+test_lzss_noflag_minimal.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_minimal.dir\build.make tests/CMakeFiles/test_lzss_noflag_minimal.dir/test_lzss_noflag_minimal.cpp.obj
+.PHONY : test_lzss_noflag_minimal.cpp.obj
+
+test_lzss_noflag_minimal.i: test_lzss_noflag_minimal.cpp.i
+.PHONY : test_lzss_noflag_minimal.i
+
+# target to preprocess a source file
+test_lzss_noflag_minimal.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_minimal.dir\build.make tests/CMakeFiles/test_lzss_noflag_minimal.dir/test_lzss_noflag_minimal.cpp.i
+.PHONY : test_lzss_noflag_minimal.cpp.i
+
+test_lzss_noflag_minimal.s: test_lzss_noflag_minimal.cpp.s
+.PHONY : test_lzss_noflag_minimal.s
+
+# target to generate assembly for a file
+test_lzss_noflag_minimal.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_minimal.dir\build.make tests/CMakeFiles/test_lzss_noflag_minimal.dir/test_lzss_noflag_minimal.cpp.s
+.PHONY : test_lzss_noflag_minimal.cpp.s
+
+test_lzss_noflag_sizes.obj: test_lzss_noflag_sizes.cpp.obj
+.PHONY : test_lzss_noflag_sizes.obj
+
+# target to build an object file
+test_lzss_noflag_sizes.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_sizes.dir\build.make tests/CMakeFiles/test_lzss_noflag_sizes.dir/test_lzss_noflag_sizes.cpp.obj
+.PHONY : test_lzss_noflag_sizes.cpp.obj
+
+test_lzss_noflag_sizes.i: test_lzss_noflag_sizes.cpp.i
+.PHONY : test_lzss_noflag_sizes.i
+
+# target to preprocess a source file
+test_lzss_noflag_sizes.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_sizes.dir\build.make tests/CMakeFiles/test_lzss_noflag_sizes.dir/test_lzss_noflag_sizes.cpp.i
+.PHONY : test_lzss_noflag_sizes.cpp.i
+
+test_lzss_noflag_sizes.s: test_lzss_noflag_sizes.cpp.s
+.PHONY : test_lzss_noflag_sizes.s
+
+# target to generate assembly for a file
+test_lzss_noflag_sizes.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_sizes.dir\build.make tests/CMakeFiles/test_lzss_noflag_sizes.dir/test_lzss_noflag_sizes.cpp.s
+.PHONY : test_lzss_noflag_sizes.cpp.s
+
+test_lzss_noflag_text10k.obj: test_lzss_noflag_text10k.cpp.obj
+.PHONY : test_lzss_noflag_text10k.obj
+
+# target to build an object file
+test_lzss_noflag_text10k.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_text10k.dir\build.make tests/CMakeFiles/test_lzss_noflag_text10k.dir/test_lzss_noflag_text10k.cpp.obj
+.PHONY : test_lzss_noflag_text10k.cpp.obj
+
+test_lzss_noflag_text10k.i: test_lzss_noflag_text10k.cpp.i
+.PHONY : test_lzss_noflag_text10k.i
+
+# target to preprocess a source file
+test_lzss_noflag_text10k.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_text10k.dir\build.make tests/CMakeFiles/test_lzss_noflag_text10k.dir/test_lzss_noflag_text10k.cpp.i
+.PHONY : test_lzss_noflag_text10k.cpp.i
+
+test_lzss_noflag_text10k.s: test_lzss_noflag_text10k.cpp.s
+.PHONY : test_lzss_noflag_text10k.s
+
+# target to generate assembly for a file
+test_lzss_noflag_text10k.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_text10k.dir\build.make tests/CMakeFiles/test_lzss_noflag_text10k.dir/test_lzss_noflag_text10k.cpp.s
+.PHONY : test_lzss_noflag_text10k.cpp.s
+
+test_lzss_roundtrip_debug.obj: test_lzss_roundtrip_debug.cpp.obj
+.PHONY : test_lzss_roundtrip_debug.obj
+
+# target to build an object file
+test_lzss_roundtrip_debug.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_roundtrip_debug.dir\build.make tests/CMakeFiles/test_lzss_roundtrip_debug.dir/test_lzss_roundtrip_debug.cpp.obj
+.PHONY : test_lzss_roundtrip_debug.cpp.obj
+
+test_lzss_roundtrip_debug.i: test_lzss_roundtrip_debug.cpp.i
+.PHONY : test_lzss_roundtrip_debug.i
+
+# target to preprocess a source file
+test_lzss_roundtrip_debug.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_roundtrip_debug.dir\build.make tests/CMakeFiles/test_lzss_roundtrip_debug.dir/test_lzss_roundtrip_debug.cpp.i
+.PHONY : test_lzss_roundtrip_debug.cpp.i
+
+test_lzss_roundtrip_debug.s: test_lzss_roundtrip_debug.cpp.s
+.PHONY : test_lzss_roundtrip_debug.s
+
+# target to generate assembly for a file
+test_lzss_roundtrip_debug.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_roundtrip_debug.dir\build.make tests/CMakeFiles/test_lzss_roundtrip_debug.dir/test_lzss_roundtrip_debug.cpp.s
+.PHONY : test_lzss_roundtrip_debug.cpp.s
 
 test_mixed_dpflate_only.obj: test_mixed_dpflate_only.cpp.obj
 .PHONY : test_mixed_dpflate_only.obj
@@ -1377,20 +1681,28 @@ help:
 	@echo ... test_PackWriter_RoundTrip
 	@echo ... test_algorithm_comparison
 	@echo ... test_algorithm_new_lzdp
+	@echo ... test_algorithm_new_lzss_deflate
 	@echo ... test_algorithm_new_phase1
 	@echo ... test_algorithm_new_phase2
 	@echo ... test_cartesian_stream_matrix
 	@echo ... test_deflate
+	@echo ... test_deflate_huffman_minimal
 	@echo ... test_dpflate_3hm_stream
 	@echo ... test_dpflate_bin64k_3k_stream
 	@echo ... test_dpflate_stream_trace
 	@echo ... test_lzdp_binary
 	@echo ... test_lzdp_cartesian_stream_matrix
+	@echo ... test_lzdp_debug
 	@echo ... test_lzdp_dpflate_regression
 	@echo ... test_lzdp_dpflate_stream
 	@echo ... test_lzdp_memory_flag
 	@echo ... test_lzdp_memory_streaming_parity
 	@echo ... test_lzss_noflag
+	@echo ... test_lzss_noflag_debug
+	@echo ... test_lzss_noflag_minimal
+	@echo ... test_lzss_noflag_sizes
+	@echo ... test_lzss_noflag_text10k
+	@echo ... test_lzss_roundtrip_debug
 	@echo ... test_mixed_dpflate_only
 	@echo ... test_regression_baseline
 	@echo ... test_roundtrip
@@ -1429,6 +1741,9 @@ help:
 	@echo ... test_algorithm_new_lzdp.obj
 	@echo ... test_algorithm_new_lzdp.i
 	@echo ... test_algorithm_new_lzdp.s
+	@echo ... test_algorithm_new_lzss_deflate.obj
+	@echo ... test_algorithm_new_lzss_deflate.i
+	@echo ... test_algorithm_new_lzss_deflate.s
 	@echo ... test_algorithm_new_phase1.obj
 	@echo ... test_algorithm_new_phase1.i
 	@echo ... test_algorithm_new_phase1.s
@@ -1438,6 +1753,9 @@ help:
 	@echo ... test_cartesian_stream_matrix.obj
 	@echo ... test_cartesian_stream_matrix.i
 	@echo ... test_cartesian_stream_matrix.s
+	@echo ... test_deflate_huffman_minimal.obj
+	@echo ... test_deflate_huffman_minimal.i
+	@echo ... test_deflate_huffman_minimal.s
 	@echo ... test_dpflate_3hm_stream.obj
 	@echo ... test_dpflate_3hm_stream.i
 	@echo ... test_dpflate_3hm_stream.s
@@ -1453,6 +1771,9 @@ help:
 	@echo ... test_lzdp_cartesian_stream_matrix.obj
 	@echo ... test_lzdp_cartesian_stream_matrix.i
 	@echo ... test_lzdp_cartesian_stream_matrix.s
+	@echo ... test_lzdp_debug.obj
+	@echo ... test_lzdp_debug.i
+	@echo ... test_lzdp_debug.s
 	@echo ... test_lzdp_dpflate_regression.obj
 	@echo ... test_lzdp_dpflate_regression.i
 	@echo ... test_lzdp_dpflate_regression.s
@@ -1468,6 +1789,21 @@ help:
 	@echo ... test_lzss_noflag.obj
 	@echo ... test_lzss_noflag.i
 	@echo ... test_lzss_noflag.s
+	@echo ... test_lzss_noflag_debug.obj
+	@echo ... test_lzss_noflag_debug.i
+	@echo ... test_lzss_noflag_debug.s
+	@echo ... test_lzss_noflag_minimal.obj
+	@echo ... test_lzss_noflag_minimal.i
+	@echo ... test_lzss_noflag_minimal.s
+	@echo ... test_lzss_noflag_sizes.obj
+	@echo ... test_lzss_noflag_sizes.i
+	@echo ... test_lzss_noflag_sizes.s
+	@echo ... test_lzss_noflag_text10k.obj
+	@echo ... test_lzss_noflag_text10k.i
+	@echo ... test_lzss_noflag_text10k.s
+	@echo ... test_lzss_roundtrip_debug.obj
+	@echo ... test_lzss_roundtrip_debug.i
+	@echo ... test_lzss_roundtrip_debug.s
 	@echo ... test_mixed_dpflate_only.obj
 	@echo ... test_mixed_dpflate_only.i
 	@echo ... test_mixed_dpflate_only.s

@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "LZDPcompressor.hpp"
-#include "pipeline/LZDPNonStreaming.hpp"
 
 static std::vector<uint8_t> sample_text() {
     const std::string s =

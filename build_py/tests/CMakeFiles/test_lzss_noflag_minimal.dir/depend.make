@@ -1,0 +1,2 @@
+# Empty dependencies file for test_lzss_noflag_minimal.
+# This may be replaced when dependencies are built.

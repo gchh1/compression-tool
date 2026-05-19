@@ -97,6 +97,9 @@ bin/test_wcx_corrupt.exe: src/archiver/libarchiver.a
 bin/test_wcx_corrupt.exe: src/processor/libprocessor.a
 bin/test_wcx_corrupt.exe: src/core/libcore.a
 bin/test_wcx_corrupt.exe: src/algorithm/libalgorithm.a
+bin/test_wcx_corrupt.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_wcx_corrupt.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_wcx_corrupt.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_wcx_corrupt.exe: tests/CMakeFiles/test_wcx_corrupt.dir/linkLibs.rsp
 bin/test_wcx_corrupt.exe: tests/CMakeFiles/test_wcx_corrupt.dir/objects1.rsp
 bin/test_wcx_corrupt.exe: tests/CMakeFiles/test_wcx_corrupt.dir/link.txt

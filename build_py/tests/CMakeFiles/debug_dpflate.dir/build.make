@@ -97,6 +97,9 @@ bin/debug_dpflate.exe: src/archiver/libarchiver.a
 bin/debug_dpflate.exe: src/processor/libprocessor.a
 bin/debug_dpflate.exe: src/core/libcore.a
 bin/debug_dpflate.exe: src/algorithm/libalgorithm.a
+bin/debug_dpflate.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/debug_dpflate.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/debug_dpflate.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/debug_dpflate.exe: tests/CMakeFiles/debug_dpflate.dir/linkLibs.rsp
 bin/debug_dpflate.exe: tests/CMakeFiles/debug_dpflate.dir/objects1.rsp
 bin/debug_dpflate.exe: tests/CMakeFiles/debug_dpflate.dir/link.txt

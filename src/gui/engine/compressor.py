@@ -238,6 +238,31 @@ class CompressionEngine:
         _apply_huffman_slot_config(comp, algorithm, algo_cfg)
         return comp
 
+    def compress_with_overrides(
+        self,
+        data: bytes,
+        algorithm: AlgorithmType,
+        overrides: dict[str, int],
+    ) -> float:
+        """Compress in memory with param overrides; return ratio (1.0 on failure)."""
+        if not data or not self.available:
+            return 1.0
+        from gui.models import merge_decision_overrides_into_algo_config
+
+        with CompressionEngine._engine_op_lock:
+            cfg = CompressionEngine._deep_copy_config(CompressionEngine._get_config_unlocked())
+        base = dict(cfg.get(algorithm, {}))
+        cfg[algorithm] = merge_decision_overrides_into_algo_config(algorithm, base, overrides)
+        try:
+            compressor = self._create_compressor(algorithm, cfg)
+            result = compressor.compress(data)
+            if not getattr(result, "success", False):
+                return 1.0
+            return float(getattr(result, "compression_ratio", 1.0) or 1.0)
+        except Exception as e:
+            logger.debug("[engine] compress_with_overrides failed: %s", e)
+            return 1.0
+
     def compress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE):
         if algorithm == AlgorithmType.TRANSFORMER:
             from gui.algorithms.transformer_compressor import TransformerCompressor, HAS_TORCH
@@ -698,6 +723,11 @@ class CompressionEngine:
             )
 
         out_bytes = dr.data if isinstance(dr.data, (bytes, bytearray)) else bytes(dr.data)
+        from gui.engine.web_dict import postprocess_after_codec
+
+        out_bytes = postprocess_after_codec(
+            out_bytes, web_dict_preprocess=bool(getattr(hdr, "web_dict_preprocess", False))
+        )
         orig_decl = int(hdr.original_size)
         written = len(out_bytes)
         part_path = f"{output_path}.part"

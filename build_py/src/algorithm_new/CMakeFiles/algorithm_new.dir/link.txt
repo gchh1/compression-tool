@@ -1,2 +1,2 @@
-D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc libalgorithm_new.a CMakeFiles/algorithm_new.dir/LZDP.cpp.obj CMakeFiles/algorithm_new.dir/pipeline/LZDPNonStreaming.cpp.obj CMakeFiles/algorithm_new.dir/pipeline/Phase1Dpforward.cpp.obj CMakeFiles/algorithm_new.dir/pipeline/Phase2Dpbacktrack.cpp.obj CMakeFiles/algorithm_new.dir/pipeline/LZDPStreamingPipeline.cpp.obj
+D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc libalgorithm_new.a CMakeFiles/algorithm_new.dir/LZDP.cpp.obj CMakeFiles/algorithm_new.dir/Deflate.cpp.obj CMakeFiles/algorithm_new.dir/LZSS.cpp.obj CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj
 D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe libalgorithm_new.a

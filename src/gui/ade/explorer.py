@@ -655,6 +655,7 @@ class SilentExplorer:
             self.explore_count += 1
             end_fields = summarize_stream_result(stream_res)
             end_fields.pop("job_id", None)
+            end_fields.pop("success", None)
             log_explore(
                 "async_done",
                 job_id=job_id,
