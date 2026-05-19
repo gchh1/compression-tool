@@ -17,7 +17,7 @@ from PyQt6.QtWidgets import (
     QSplitter, QTextEdit, QGroupBox, QScrollBar, QWidget,
 )
 
-from gui.engine.viz_loader import VizLoader, HuffmanTreeBuilt, MatchEvent, BlockBoundary, DPStateEvent
+from gui.engine.viz_loader import VizLoader, HuffmanTreeBuilt, MatchEvent, BlockBoundary
 from gui.ui.widgets.window_canvas import WindowCanvas
 
 logger = logging.getLogger(__name__)
@@ -111,7 +111,7 @@ class VizDialog(QDialog):
         self._match_events: list[MatchEvent] = []   # current page
         self._page_start: int = 0
         self._blocks: list[BlockBoundary] = []
-        self._dp_states: list[DPStateEvent] = []
+        self._dp_total: int = 0
         self._huffman_trees: list[HuffmanTreeBuilt] = []
 
         self.setWindowTitle(f"压缩可视化 — {viz_path}")
@@ -203,9 +203,9 @@ class VizDialog(QDialog):
             self._huffman_trees = self._loader.load_huffman_trees()
 
             try:
-                self._dp_states = self._loader.load_dp_states()
+                self._dp_total = self._loader.dp_count
             except Exception:
-                self._dp_states = []
+                self._dp_total = 0
 
             match_total = self._loader.match_count
             self._step_slider.setMaximum(max(0, match_total - 1))
@@ -217,8 +217,8 @@ class VizDialog(QDialog):
                 f"块: {len(self._blocks)}  "
                 f"v{self._loader.version}"
             )
-            if self._dp_states:
-                info += f"  DP状态: {len(self._dp_states)}"
+            if self._dp_total:
+                info += f"  DP状态: {self._dp_total}"
             self._info_label.setText(info)
 
             self._update_block_summary()

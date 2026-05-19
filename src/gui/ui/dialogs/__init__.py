@@ -4,10 +4,8 @@ Submodules are **not** imported eagerly from this package. Import explicitly, fo
 
 - ``from gui.ui.dialogs.heatmap_dialog import HeatmapDialog``
 - ``from gui.ui.dialogs.huffman_dialog import HuffmanTreeDialog``
-- ``from gui.ui.dialogs.lz_demo_dialog import LZDPDPDialog, LZSliderDialog``
 - ``from gui.ui.dialogs.block_heatmap_dialog import BlockHeatmapDialog``
 - ``from gui.ui.dialogs.network_sim_dialog import NetworkSimDialog``
-- ``from gui.ui.dialogs.flate_demo_dialog import FlateDemoDialog``
 - ``from gui.ui.dialogs.comparison_dialog import ComparisonDialog``
 
 Token heatmap widgets live in ``gui.ui.views.visualizers.token_heatmap``; Huffman

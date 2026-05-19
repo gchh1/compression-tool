@@ -13,7 +13,8 @@ v2 (section-based):
     Section 0:     MatchEvent[9] × N0
     Section 1:     BlockBoundary[24] × N1
     Section 2:     HuffmanTreeBuilt[7+alpha_sz] × N2
-    Section 3:     DPStateEvent[17] × N3
+    Section 3:     DPStateEvent[18] × N3
+    Section 4:     DPCandidateEvent[10] × N4
     Footer:        total_events:u32 + footer_start:u64 = 12 bytes
 """
 
@@ -60,29 +61,41 @@ class DPStateEvent:
     match_offset: int
     match_length: int
     is_chosen: bool
+    reachable: bool
+
+
+@dataclass(slots=True)
+class DPCandidateEvent:
+    position: int
+    offset: int
+    length: int
+    literal: int
+    is_chosen: bool
 
 
 # ── Constants ──────────────────────────────────────────────────────
 
 VIZ_MAGIC = 0x305A4956   # "VIZ0" LE
 VIZ_HEADER_SIZE = 8       # magic + version
-NUM_EVENT_TYPES = 4
+NUM_EVENT_TYPES = 5
 
 # v1 serialized payload sizes (WITH 1-byte type tag)
-EVENT_SIZES_V1 = {0: 10, 1: 25, 2: -1, 3: 18}
+EVENT_SIZES_V1 = {0: 10, 1: 25, 2: -1, 3: 19, 4: 11}
 
 # v2 serialized payload sizes (NO type tag)
-EVENT_SIZES_V2 = {0: 9, 1: 24, 2: -1, 3: 17}
+EVENT_SIZES_V2 = {0: 9, 1: 24, 2: -1, 3: 18, 4: 10}
 
 # Struct formats for fixed-size events (no type tag — v2)
-MATCH_FMT = struct.Struct("<I H H B")       # 9 bytes
-BLOCK_FMT = struct.Struct("<I I I I I I")    # 24 bytes
-DPSTATE_FMT = struct.Struct("<I I I H H B")  # 17 bytes
+MATCH_FMT = struct.Struct("<I H H B")         # 9 bytes
+BLOCK_FMT = struct.Struct("<I I I I I I")      # 24 bytes
+DPSTATE_FMT = struct.Struct("<I I I H H B B")  # 18 bytes
+DPCANDIDATE_FMT = struct.Struct("<I H H B B")  # 10 bytes
 
 # v1 formats (with leading type tag skipped by caller)
-MATCH_FMT_V1 = struct.Struct("<x I H H B")         # skip type, 9 payload
-BLOCK_FMT_V1 = struct.Struct("<x I I I I I I")     # skip type, 24 payload
-DPSTATE_FMT_V1 = struct.Struct("<x I I I H H B")   # skip type, 17 payload
+MATCH_FMT_V1 = struct.Struct("<x I H H B")           # skip type, 9 payload
+BLOCK_FMT_V1 = struct.Struct("<x I I I I I I")       # skip type, 24 payload
+DPSTATE_FMT_V1 = struct.Struct("<x I I I H H B B")   # skip type, 18 payload
+DPCANDIDATE_FMT_V1 = struct.Struct("<x I H H B B")   # skip type, 10 payload
 
 # ── mmap page size for lazy MatchEvent loading ─────────────────────
 
@@ -135,7 +148,12 @@ class VizLoader:
     @property
     def dp_count(self) -> int:
         sz = self._section_sizes.get(3, 0)
-        return sz // 17 if self._version >= 2 else 0
+        return sz // 18 if self._version >= 2 else 0
+
+    @property
+    def dp_candidate_count(self) -> int:
+        sz = self._section_sizes.get(4, 0)
+        return sz // 10 if self._version >= 2 else 0
 
     # ── mmap init ──────────────────────────────────────────────────
 
@@ -243,6 +261,99 @@ class VizLoader:
             results.append(MatchEvent(*MATCH_FMT.unpack_from(data, i * elem_sz)))
         return results
 
+    def get_dp_state_page(self, start_idx: int, page_bytes: int = MATCH_PAGE_BYTES) -> list[DPStateEvent]:
+        """O(1) page-based DPStateEvent access via mmap (v2 only)."""
+        if self._version < 2:
+            raise RuntimeError("Random access requires .viz v2")
+        off = self._section_offsets.get(3)
+        size = self._section_sizes.get(3, 0)
+        if off is None or size == 0:
+            return []
+        elem_sz = 18
+        max_idx = size // elem_sz
+        if start_idx >= max_idx:
+            return []
+        count = min(page_bytes // elem_sz, max_idx - start_idx)
+        mm = self._ensure_mmap()
+        data = mm[off + start_idx * elem_sz : off + (start_idx + count) * elem_sz]
+        results: list[DPStateEvent] = []
+        for i in range(count):
+            e = DPStateEvent(*DPSTATE_FMT.unpack_from(data, i * elem_sz))
+            e.is_chosen = bool(e.is_chosen)
+            e.reachable = bool(e.reachable)
+            results.append(e)
+        return results
+
+    def get_dp_candidate_page(self, start_idx: int, page_bytes: int = MATCH_PAGE_BYTES) -> list[DPCandidateEvent]:
+        """O(1) page-based DPCandidateEvent access via mmap (v2 only)."""
+        if self._version < 2:
+            raise RuntimeError("Random access requires .viz v2")
+        off = self._section_offsets.get(4)
+        size = self._section_sizes.get(4, 0)
+        if off is None or size == 0:
+            return []
+        elem_sz = 10
+        max_idx = size // elem_sz
+        if start_idx >= max_idx:
+            return []
+        count = min(page_bytes // elem_sz, max_idx - start_idx)
+        mm = self._ensure_mmap()
+        data = mm[off + start_idx * elem_sz : off + (start_idx + count) * elem_sz]
+        results: list[DPCandidateEvent] = []
+        for i in range(count):
+            e = DPCandidateEvent(*DPCANDIDATE_FMT.unpack_from(data, i * elem_sz))
+            e.is_chosen = bool(e.is_chosen)
+            results.append(e)
+        return results
+
+    # ── Lazy token iteration (page-based, zero re-compression) ─────────
+
+    def iter_match_tokens(self, page_bytes: int = MATCH_PAGE_BYTES):
+        """Page-based generator yielding ``MatchEvent`` → token data.
+
+        Each item is a plain dict: ``{type, original_start, original_length,
+        match_offset}``.  No Python objects for every event are held
+        simultaneously — only the current page is materialised.
+
+        Callers that need ``Token`` objects (from ``.token_parser``) should
+        use ``tokens_from_viz()`` instead.
+        """
+        total = self.match_count
+        elem_sz = 9
+        off = self._section_offsets.get(0)
+        size = self._section_sizes.get(0, 0)
+        if off is None or size == 0:
+            return
+
+        mm = self._ensure_mmap()
+        for page_start in range(0, total, page_bytes // elem_sz):
+            count = min(page_bytes // elem_sz, total - page_start)
+            data = mm[off + page_start * elem_sz : off + (page_start + count) * elem_sz]
+            for i in range(count):
+                pos, m_off, m_len, literal = MATCH_FMT.unpack_from(data, i * elem_sz)
+                if m_off == 0 and m_len == 0:
+                    yield {"type": "literal", "original_start": pos,
+                           "original_length": 1, "match_offset": 0, "literal": literal}
+                elif m_off == 0:
+                    yield {"type": "literal_run", "original_start": pos,
+                           "original_length": m_len, "match_offset": 0, "literal": 0}
+                else:
+                    yield {"type": "match", "original_start": pos,
+                           "original_length": m_len + 1, "match_offset": m_off, "literal": 0}
+
+    @staticmethod
+    def _match_dict_to_token(d: dict, compressed_size: float = 0.0) -> "Token":
+        from gui.engine.token_parser import Token, TokenType
+        _type_map = {"literal": TokenType.LITERAL, "literal_run": TokenType.LITERAL_RUN,
+                     "match": TokenType.MATCH}
+        return Token(
+            type=_type_map.get(d["type"], TokenType.LITERAL),
+            original_start=d["original_start"],
+            original_length=d["original_length"],
+            compressed_size=compressed_size,
+            match_offset=d.get("match_offset", 0),
+        )
+
     # ── v2 bulk load (still uses mmap, returns Python objects) ─────
 
     def load_match_events(self) -> list[MatchEvent]:
@@ -262,11 +373,24 @@ class VizLoader:
 
     def load_dp_states(self) -> list[DPStateEvent]:
         if self._version >= 2:
-            result = self._load_fixed_section(3, 17, DPSTATE_FMT, DPStateEvent)
+            result = self._load_fixed_section(3, 18, DPSTATE_FMT, DPStateEvent)
+            for r in result:
+                r.is_chosen = bool(r.is_chosen)
+                r.reachable = bool(r.reachable)
+            return result
+        result = self._scan_v1(3, DPSTATE_FMT_V1, DPStateEvent)
+        for r in result:
+            r.is_chosen = bool(r.is_chosen)
+            r.reachable = bool(r.reachable)
+        return result
+
+    def load_dp_candidates(self) -> list[DPCandidateEvent]:
+        if self._version >= 2:
+            result = self._load_fixed_section(4, 10, DPCANDIDATE_FMT, DPCandidateEvent)
             for r in result:
                 r.is_chosen = bool(r.is_chosen)
             return result
-        result = self._scan_v1(3, DPSTATE_FMT_V1, DPStateEvent)
+        result = self._scan_v1(4, DPCANDIDATE_FMT_V1, DPCandidateEvent)
         for r in result:
             r.is_chosen = bool(r.is_chosen)
         return result

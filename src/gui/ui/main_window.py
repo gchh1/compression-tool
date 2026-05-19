@@ -33,7 +33,6 @@ from gui.models import (
     get_default_config,
     merge_decision_overrides_into_algo_config,
     format_algorithm_config_param_lines,
-    LZDP_DP_VIZ_MAX_SIZE,
     STREAMING_CHUNK_SIZE_KB,
     STREAMING_THRESHOLD_MB,
 )
@@ -1013,7 +1012,7 @@ class AlgorithmConfigDialog(QDialog):
                 "流式模式说明：文件超过阈值时自动启用；C++ pipeline 使用 terminator 分帧"
                 "（[4B长度][数据]…[4B 0]）。\n"
                 "全局「流式分块大小」与「流式阈值」为各算法默认值；各算法页可分别取消「跟随全局」单独设置。\n"
-                "LZDP 文件管线与内存压缩共用同一套 ``LZDPCompressor`` 语义（整文件明文缓冲后单次 compress / compress_dp；见 docs/design/lzdp-file-pipeline-design.md）。"
+                "LZDP 文件管线与内存压缩共用同一套 ``api::pipeline_compress`` 语义（整文件明文缓冲后单次压缩；见 docs/design/lzdp-file-pipeline-design.md）。"
                 "DPFlate 文件流式固定为外存 DP + 整文件 Huffman 路径（§16.6）。"
             )
             desc_label.setWordWrap(True)
@@ -1251,44 +1250,6 @@ class AlgorithmConfigDialog(QDialog):
         self.accept()
 
 
-class CompressDemoDialog(QDialog):
-    def __init__(self, record: FileRecord, algorithm: AlgorithmType, parent=None):
-        super().__init__(parent)
-        self._record = record
-        self._algorithm = algorithm
-        self.setWindowTitle(f"压缩演示 - {record.name}")
-        self.setMinimumWidth(500)
-        self._setup_ui()
-
-    def _setup_ui(self) -> None:
-        layout = QVBoxLayout(self)
-
-        info_layout = QVBoxLayout()
-        info_layout.addWidget(QLabel(f"文件: {self._record.path}"))
-        info_layout.addWidget(QLabel(f"大小: {formatted_size(self._record.size)}"))
-        info_layout.addWidget(QLabel(f"类型: {self._record.type.value}"))
-        info_layout.addWidget(QLabel(f"算法: {self._algorithm.value}"))
-
-        status_text = self._record.status.value
-        info_layout.addWidget(QLabel(f"状态: {status_text}"))
-
-        if compressed_payload_size(self._record) > 0:
-            stored_tag = " [stored]" if getattr(self._record, 'is_stored', False) else ""
-            info_layout.addWidget(QLabel(f"压缩后: {formatted_size(_compressed_size(self._record))}{stored_tag}"))
-            info_layout.addWidget(QLabel(f"压缩率: {self._record.compression_ratio * 100:.1f}%"))
-            info_layout.addWidget(QLabel(f"耗时: {self._record.compression_time_ms:.1f}ms"))
-
-        layout.addLayout(info_layout)
-        layout.addSpacing(16)
-
-        btn_layout = QHBoxLayout()
-        close_btn = QPushButton("Close")
-        close_btn.clicked.connect(self.accept)
-        btn_layout.addStretch()
-        btn_layout.addWidget(close_btn)
-        layout.addLayout(btn_layout)
-
-
 # ============================================================
 #  主窗口
 # ============================================================
@@ -1322,13 +1283,13 @@ class MainWindow(QMainWindow):
         self.setStatusBar(bar)
         bar.addPermanentWidget(self._statusbar)
 
-        self._table.request_demo.connect(self._on_compress_demo)
         self._table.request_heatmap.connect(self._on_view_heatmap_row)
         self._table.request_comparison.connect(self._on_view_comparison_row)
         self._table.request_network.connect(self._on_view_network_row)
         self._table.request_webpage_heatmap.connect(self._on_webpage_heatmap)
         self._table.request_folder_summary.connect(self._on_folder_summary)
         self._table.request_decision_detail.connect(self._on_view_decision_detail)
+        self._table.request_view_viz.connect(self._on_view_viz_file)
 
         try:
             from gui.ade.explorer import SilentExplorer
@@ -1682,137 +1643,6 @@ class MainWindow(QMainWindow):
             w = self._worker
             cancelled = bool(w and getattr(w, "_is_cancelled", False))
             log_ui_flush("compress.finished_ui", cancelled=cancelled)
-
-    # ========== 压缩演示 ==========
-    def _on_compress_demo(self, row: int) -> None:
-        logger.info("[demo] START row=%d", row)
-        record = self._table.get_record(row)
-        if not isinstance(record, FileRecord):
-            QMessageBox.information(self, "提示", "压缩演示仅支持单文件")
-            return
-        from gui.engine.token_parser import can_parse, get_parser
-        from gui.models import TEXT_EXTENSIONS, SCRIPT_EXTENSIONS
-
-        ext = Path(record.name).suffix.lower() if "." in record.name else ""
-        is_text = ext in (TEXT_EXTENSIONS | SCRIPT_EXTENSIONS | frozenset({".html", ".htm", ".css", ".json", ".xml"}))
-        logger.info("[demo] name=%s algo=%s is_text=%s ext=%s", record.name, record.algorithm.value, is_text, ext)
-
-        if can_parse(record.algorithm) and not getattr(record, 'is_stored', False):
-            logger.info("[demo] can_parse=True, getting parser")
-            parser = get_parser(record.algorithm)
-            _demo_params = getattr(record, 'compression_config_snapshot', None)
-            if parser is not None:
-                container = file_record_compression_blob(record)
-                if not container:
-                    QMessageBox.information(
-                        self,
-                        "提示",
-                        "没有可用的压缩数据（流式压缩结果保存在磁盘 .wcx 中）。",
-                    )
-                    return
-                record.load_raw_data()
-                parse_input = strip_wcx_if_present(container)
-                raw_sz = len(record.raw_data) if record.raw_data else 0
-                logger.info("[demo] parsing payload=%d raw_data=%d", len(parse_input), raw_sz)
-                pr = parser.parse(
-                    parse_input, record.raw_data, compression_params=_demo_params
-                )
-                logger.info("[demo] parse done, tokens=%d", len(pr.tokens))
-                if is_text and len(pr.tokens) > 0:
-                    text = record.raw_data.decode('utf-8', errors='replace')
-                    byte_to_char = []
-                    char_idx = 0
-                    for ch in text:
-                        byte_len = len(ch.encode('utf-8'))
-                        for _ in range(byte_len):
-                            byte_to_char.append(char_idx)
-                        char_idx += 1
-                    logger.info("[demo] text len=%d byte_to_char len=%d", len(text), len(byte_to_char))
-
-                    _LZ_ALGOS = {AlgorithmType.LZSS, AlgorithmType.LZDP}
-                    if record.algorithm in _LZ_ALGOS:
-                        if record.algorithm == AlgorithmType.LZDP:
-                            logger.info("[demo] LZDP path, getting dp_viz")
-                            dp_viz = None
-                            if len(record.raw_data) <= LZDP_DP_VIZ_MAX_SIZE:
-                                try:
-                                    from gui.engine.compressor import CompressionEngine
-                                    from gui.ade.explorer import SilentExplorer
-
-                                    engine = CompressionEngine()
-                                    with SilentExplorer.user_compression_priority():
-                                        comp = engine.create_compressor_for_visualization(
-                                            AlgorithmType.LZDP, _demo_params
-                                        )
-                                        dp_viz = comp.get_dp_visualization(list(record.raw_data), 0)
-                                    logger.info("[demo] dp_viz OK, steps=%d path=%d", len(dp_viz.steps), len(dp_viz.optimal_path))
-                                except Exception as e:
-                                    logger.warning("[demo] get_dp_visualization failed: %s", e, exc_info=True)
-                                    dp_viz = None
-                            else:
-                                logger.info("[demo] raw_data too large (%d) for dp_viz, skipping", len(record.raw_data))
-                            logger.info("[demo] creating LZDPDPDialog")
-                            from gui.ui.dialogs.lz_demo_dialog import LZDPDPDialog
-                            dlg = LZDPDPDialog(text, pr.tokens, byte_to_char,
-                                                 dp_viz, record.name, record.algorithm.value, parent=self)
-                            logger.info("[demo] LZDPDPDialog created, calling exec")
-                            dlg.exec()
-                            logger.info("[demo] LZDPDPDialog closed")
-                        else:
-                            logger.info("[demo] LZSS path, creating LZSliderDialog")
-                            from gui.ui.dialogs.lz_demo_dialog import LZSliderDialog
-                            dlg = LZSliderDialog(text, pr.tokens, byte_to_char,
-                                                 record.name, record.algorithm.value, parent=self)
-                            logger.info("[demo] LZSliderDialog created, calling exec")
-                            dlg.exec()
-                            logger.info("[demo] LZSliderDialog closed")
-                        return
-
-                    _FLATE_ALGOS = {AlgorithmType.DPFLATE, AlgorithmType.DEFLATE}
-                    if record.algorithm in _FLATE_ALGOS:
-                        logger.info("[demo] Flate path, creating FlateDemoDialog")
-                        from gui.ui.dialogs.flate_demo_dialog import FlateDemoDialog
-                        huffman_trees = pr.huffman_trees if pr.huffman_trees else None
-                        
-                        dp_viz = None
-                        if record.algorithm == AlgorithmType.DPFLATE:
-                            if len(record.raw_data) <= LZDP_DP_VIZ_MAX_SIZE:
-                                try:
-                                    from gui.engine.compressor import CompressionEngine
-                                    from gui.ade.explorer import SilentExplorer
-
-                                    engine = CompressionEngine()
-                                    with SilentExplorer.user_compression_priority():
-                                        comp = engine.create_compressor_for_visualization(
-                                            AlgorithmType.DPFLATE, _demo_params
-                                        )
-                                        lzdp_comp = engine.create_compressor_for_visualization(
-                                            AlgorithmType.LZDP, _demo_params
-                                        )
-                                        lzdp_comp.set_min_match(comp.get_min_match())
-                                        lzdp_comp.set_match_engine(comp.get_match_engine())
-                                        dp_viz = lzdp_comp.get_dp_visualization(list(record.raw_data), 0)
-                                except Exception as e:
-                                    logger.warning("[demo] DPFlate get_dp_visualization failed: %s", e)
-
-                        dlg = FlateDemoDialog(text, pr.tokens, byte_to_char,
-                                              record.name, record.algorithm.value,
-                                              huffman_trees=huffman_trees, dp_viz=dp_viz, parent=self)
-                        logger.info("[demo] FlateDemoDialog created, calling exec")
-                        dlg.exec()
-                        logger.info("[demo] FlateDemoDialog closed")
-                        return
-
-                    logger.info("[demo] non-LZ/non-Flate path (e.g. pure Huffman), showing info")
-                    QMessageBox.information(
-                        self, "提示",
-                        f"算法「{record.algorithm.value}」暂不支持交互式演示。\n\n"
-                        f"请使用「📊 压缩热力图」查看该算法的压缩可视化。"
-                    )
-                    return
-
-        dlg = CompressDemoDialog(record, self._algo_selector.current_algorithm, parent=self)
-        dlg.exec()
 
     def _decompress_payload(self, engine, header, payload) -> bytes:
         from gui.engine.decompress_log import log_decompress, summarize_result
@@ -2288,32 +2118,98 @@ class MainWindow(QMainWindow):
             return
         self._run_network_sim(record)
 
+    def _on_view_viz_file(self, row: int) -> None:
+        """Open .viz file visualization for a compressed record."""
+        logger.info("[view] viz file from right-click, row=%d", row)
+        record = self._table.get_record(row)
+        if not isinstance(record, FileRecord):
+            return
+        viz_path = getattr(record, "viz_path", None)
+        if not viz_path or not Path(viz_path).is_file():
+            QMessageBox.information(self, "提示", "该文件没有关联的 .viz 可视化数据")
+            return
+        from gui.ui.dialogs.viz_dialog import VizDialog
+        dlg = VizDialog(viz_path, source_path=getattr(record, "path", ""), parent=self)
+        dlg.exec()
+
     def _open_heatmap(self, record: FileRecord) -> None:
         logger.info("[view] opening heatmap for %s (%d bytes, algo=%s)",
                      record.name, record.size, record.algorithm.value)
         try:
+            from gui.models import TEXT_EXTENSIONS, SCRIPT_EXTENSIONS
+            from gui.engine.token_parser import Token, TokenType
+
+            ext = Path(record.name).suffix.lower() if "." in record.name else ""
+            is_text = ext in (TEXT_EXTENSIONS | SCRIPT_EXTENSIONS | frozenset({".html", ".htm", ".css", ".json", ".xml"}))
+            logger.info("[heatmap] ext=%s is_text=%s algo=%s", ext, is_text, record.algorithm.value)
+
+            # Preferred path: derive tokens from .viz MatchEvent section (no re-compression).
+            viz_path = getattr(record, "viz_path", None)
+            if viz_path and Path(viz_path).is_file() and is_text:
+                from gui.engine.viz_loader import VizLoader
+                loader = VizLoader(viz_path)
+                try:
+                    if loader.match_count == 0:
+                        logger.info("[heatmap] viz has no MatchEvents, falling back")
+                    else:
+                        tokens: list[Token] = []
+                        for d in loader.iter_match_tokens():
+                            t = VizLoader._match_dict_to_token(d)
+                            # Estimate compressed size for heatmap ratio coloring.
+                            if t.type == TokenType.MATCH:
+                                t.compressed_size = 3.0
+                            elif t.type == TokenType.LITERAL_RUN:
+                                t.compressed_size = float(t.original_length)
+                            else:
+                                t.compressed_size = 1.0
+                            tokens.append(t)
+                        logger.info("[heatmap] tokens from viz: %d", len(tokens))
+
+                        record.load_raw_data()
+                        text = record.raw_data.decode('utf-8', errors='replace')
+                        byte_to_char = []
+                        char_idx = 0
+                        for ch in text:
+                            byte_len = len(ch.encode('utf-8'))
+                            for _ in range(byte_len):
+                                byte_to_char.append(char_idx)
+                            char_idx += 1
+
+                        from gui.ui.dialogs.heatmap_dialog import HeatmapDialog
+                        stats = {
+                            'original_size': record.size,
+                            'compressed_size': _compressed_size(record),
+                            'ratio': record.compression_ratio,
+                            'token_count': len(tokens),
+                            'match_count': sum(1 for t in tokens if t.type == TokenType.MATCH),
+                            'time_ms': record.compression_time_ms,
+                        }
+                        dlg = HeatmapDialog(text, tokens, byte_to_char,
+                                            record.name, record.algorithm.value, stats,
+                                            parent=self)
+                        dlg.exec()
+                        logger.info("[view] heatmap from viz opened")
+                        return
+                finally:
+                    loader.close()
+
+            # Fallback: reverse-parse compressed bitstream (non-viz or binary file).
             record.load_raw_data()
             container = file_record_compression_blob(record) or b""
             parse_payload = strip_wcx_if_present(container)
 
             from gui.engine.token_parser import can_parse, get_parser
-            from gui.models import TEXT_EXTENSIONS, SCRIPT_EXTENSIONS
-
-            ext = Path(record.name).suffix.lower() if "." in record.name else ""
-            is_text = ext in (TEXT_EXTENSIONS | SCRIPT_EXTENSIONS | frozenset({".html", ".htm", ".css", ".json", ".xml"}))
-            logger.info("[heatmap] ext=%s is_text=%s can_parse=%s", ext, is_text, can_parse(record.algorithm))
-
             if can_parse(record.algorithm) and not getattr(record, 'is_stored', False):
                 parser = get_parser(record.algorithm)
                 _hm_params = getattr(record, 'compression_config_snapshot', None)
-                logger.info("[heatmap] parser=%s, calling parse", type(parser).__name__)
                 if parser is not None:
                     if not container:
                         QMessageBox.warning(self, "热力图错误", "无法读取压缩数据（内存或磁盘 .wcx）")
                         return
-                    pr = parser.parse(
-                        parse_payload, record.raw_data, compression_params=_hm_params
-                    )
+                    _hm_raw = record.raw_data
+                    if record.algorithm == AlgorithmType.LZDP:
+                        _hm_raw = None
+                    pr = parser.parse(parse_payload, _hm_raw, compression_params=_hm_params)
                     logger.info("[heatmap] parse done, tokens=%d", len(pr.tokens))
                     if is_text:
                         text = record.raw_data.decode('utf-8', errors='replace')

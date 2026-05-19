@@ -5,7 +5,7 @@ import math
 from dataclasses import dataclass, field
 from enum import Enum
 
-from gui.models import AlgorithmType, LZDP_DP_VIZ_MAX_SIZE
+from gui.models import AlgorithmType
 
 logger = logging.getLogger(__name__)
 
@@ -174,106 +174,7 @@ class LZDPTokenParser(TokenParser):
         raw_data: bytes | None = None,
         compression_params: dict[str, int] | None = None,
     ) -> ParseResult:
-        if raw_data is not None:
-            dp_result = self._parse_via_dp(raw_data, compression_params)
-            if dp_result is not None:
-                return dp_result
         return self._parse_reverse(compressed_data)
-
-    def _parse_via_dp(
-        self,
-        raw_data: bytes,
-        compression_params: dict[str, int] | None = None,
-    ) -> ParseResult | None:
-        try:
-            import core_engine
-        except ImportError:
-            return None
-
-        if len(raw_data) > LZDP_DP_VIZ_MAX_SIZE:
-            logger.info("[LZDPTokenParser] raw_data too large (%d) for DP viz, skipping", len(raw_data))
-            return None
-
-        try:
-            from gui.engine.compressor import CompressionEngine
-            from gui.ade.explorer import SilentExplorer
-
-            eng = CompressionEngine()
-            if eng.available:
-                with SilentExplorer.user_compression_priority():
-                    comp = eng.create_compressor_for_visualization(
-                        AlgorithmType.LZDP, compression_params
-                    )
-                    # 0 => C++ 使用压缩器上的 dp_range_（与算法配置里「DP优化深度」一致）
-                    viz = comp.get_dp_visualization(list(raw_data), 0)
-            else:
-                comp = core_engine.LZDPCompressor()
-                if compression_params:
-                    for key, val in compression_params.items():
-                        setter = getattr(comp, f"set_{key}", None)
-                        if setter:
-                            setter(int(val))
-                with SilentExplorer.user_compression_priority():
-                    viz = comp.get_dp_visualization(list(raw_data), 0)
-
-            tokens: list[Token] = []
-            cursor = 0
-
-            for triple in viz.optimal_path:
-                if triple.offset == 0 and triple.length == 0:
-                    tokens.append(Token(
-                        type=TokenType.LITERAL,
-                        original_start=cursor,
-                        original_length=1,
-                        compressed_size=self.SEARCH_BYTELENGTH + self.LOOKAHEAD_BYTELENGTH + 1,
-                    ))
-                    cursor += 1
-                elif triple.offset == 0:
-                    tokens.append(Token(
-                        type=TokenType.LITERAL_RUN,
-                        original_start=cursor,
-                        original_length=triple.length,
-                        compressed_size=self.SEARCH_BYTELENGTH + self.LOOKAHEAD_BYTELENGTH + triple.length,
-                    ))
-                    cursor += triple.length
-                else:
-                    tokens.append(Token(
-                        type=TokenType.MATCH,
-                        original_start=cursor,
-                        original_length=triple.length + 1,
-                        compressed_size=self.SEARCH_BYTELENGTH + self.LOOKAHEAD_BYTELENGTH + 1,
-                        match_offset=triple.offset,
-                    ))
-                    cursor += triple.length + 1
-
-            return ParseResult(
-                tokens=tokens,
-                original_size=cursor,
-                compressed_payload_size=len(raw_data),
-                algorithm="lzdp",
-                dp_steps=self._extract_dp_steps(viz),
-            )
-        except Exception as e:
-            logger.warning("[LZDPTokenParser] DP parse failed: %s", e, exc_info=True)
-            return None
-
-    def _extract_dp_steps(self, viz) -> list[dict]:
-        steps = []
-        for step in viz.steps:
-            candidates = []
-            for c in step.candidates:
-                candidates.append({
-                    "offset": c.offset,
-                    "length": c.length,
-                    "literal": c.literal,
-                    "is_chosen": c.is_chosen,
-                })
-            steps.append({
-                "position": step.position,
-                "candidates": candidates,
-                "best_token_count": step.best_token_count,
-            })
-        return steps
 
     def _parse_reverse(self, compressed_data: bytes) -> ParseResult:
         tokens: list[Token] = []

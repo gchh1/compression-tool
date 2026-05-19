@@ -43,13 +43,13 @@ class FileTableWidget(QTableWidget):
     Check_Role = Qt.ItemDataRole.UserRole + 1
 
     selection_changed = pyqtSignal()
-    request_demo = pyqtSignal(int)
     request_heatmap = pyqtSignal(int)
     request_comparison = pyqtSignal(int)
     request_network = pyqtSignal(int)
     request_webpage_heatmap = pyqtSignal(int)
     request_folder_summary = pyqtSignal(int)
     request_decision_detail = pyqtSignal(int)
+    request_view_viz = pyqtSignal(int)
 
     _SEL_TOGGLE = (
         QItemSelectionModel.SelectionFlag.Toggle | QItemSelectionModel.SelectionFlag.Rows
@@ -145,13 +145,16 @@ class FileTableWidget(QTableWidget):
                 copy_path_action = menu.addAction("📋 复制文件路径")
                 menu.addSeparator()
                 
+                # [VIZ] Add "view .viz" action when viz file is available
+                viz_action = None
+                if record.status == CompressionStatus.DONE and getattr(record, "viz_path", None):
+                    viz_action = menu.addAction("🔍 查看压缩可视化 (.viz)")
+
                 if record.status == CompressionStatus.DONE and (record.compressed_data or record.compressed_path):
-                    demo_action = menu.addAction("🔧 压缩演示")
                     heatmap_action = menu.addAction("📊 压缩热力图")
                     comparison_action = menu.addAction("⚖ 算法对比")
                     network_action = menu.addAction("🌐 网络传输模拟")
                 else:
-                    demo_action = None
                     heatmap_action = None
                     comparison_action = None
                     network_action = None
@@ -168,14 +171,14 @@ class FileTableWidget(QTableWidget):
                     self._copy_file_path(record)
                 elif action == delete_action:
                     self.remove_row(row)
-                elif demo_action and action == demo_action:
-                    self.request_demo.emit(row)
                 elif heatmap_action and action == heatmap_action:
                     self.request_heatmap.emit(row)
                 elif comparison_action and action == comparison_action:
                     self.request_comparison.emit(row)
                 elif network_action and action == network_action:
                     self.request_network.emit(row)
+                elif viz_action and action == viz_action:
+                    self.request_view_viz.emit(row)
             else:
                 delete_action = menu.addAction("🗑 移除")
                 action = menu.exec(event.globalPos())
