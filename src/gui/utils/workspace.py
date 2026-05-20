@@ -41,13 +41,19 @@ def tmp_dir() -> Path:
     return p
 
 
+_layout_ensured = False
+
+
 def ensure_workspace_layout() -> None:
-    """Create ``compressed/``, ``tmp/``, ``jobs/``, ``decompressed/``; sweep stale artifacts."""
+    """Create ``compressed/``, ``tmp/``, ``jobs/``, ``decompressed/``; sweep stale artifacts on first call only."""
+    global _layout_ensured
     compressed_dir()
     tmp_dir()
     (workspace_root() / "jobs").mkdir(parents=True, exist_ok=True)
     (workspace_root() / "decompressed").mkdir(parents=True, exist_ok=True)
-    sweep_workspace_transient_artifacts()
+    if not _layout_ensured:
+        _layout_ensured = True
+        sweep_workspace_transient_artifacts()
     # C++ DP spill (TempFile) reads this and writes under ``<root>/tmp/`` (see TempFile.hpp).
     os.environ["WEBCOMPRESS_WORKSPACE"] = os.fsdecode(workspace_root())
 

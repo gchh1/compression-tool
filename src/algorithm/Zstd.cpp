@@ -354,6 +354,15 @@ auto ZstdCompress::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
 
     if (is_last_chunk) {
         output_buffer_ = compress(input_buffer_);
+
+        notifyObservers(BlockBoundary{0, 0,
+                                      static_cast<uint32_t>(input_buffer_.size()),
+                                      static_cast<uint32_t>(input_buffer_.size()),
+                                      0,
+                                      static_cast<uint32_t>(output_buffer_.size())});
+        notifyBlockFinish();
+        notifyCompressionFinish();
+
         writer_.writeBytes(output_buffer_.data(), output_buffer_.size());
         finished_ = true;
         status.done = true;

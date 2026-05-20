@@ -50,6 +50,30 @@ def _compressed_size(record: Record) -> int:
     return compressed_payload_size(record)
 
 
+def _read_file_text_mmap(filepath: str) -> tuple[str, list[int]]:
+    """mmap *filepath* → decoded text + byte-to-char index.
+
+    Uses ``mmap`` so the OS manages the underlying pages; the only large
+    allocation is the decoded Python string.  Does **not** persist raw
+    bytes on ``record.raw_data``.
+    """
+    import mmap
+    with open(filepath, "rb") as f:
+        with mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ) as mm:
+            raw = mm.read()
+    try:
+        text = raw.decode("utf-8", errors="replace")
+    finally:
+        del raw
+    byte_to_char: list[int] = []
+    char_idx = 0
+    for ch in text:
+        for _ in range(len(ch.encode("utf-8"))):
+            byte_to_char.append(char_idx)
+        char_idx += 1
+    return text, byte_to_char
+
+
 WINDOW_WIDTH = 900
 WINDOW_HEIGHT = 700
 
@@ -2165,15 +2189,7 @@ class MainWindow(QMainWindow):
                             tokens.append(t)
                         logger.info("[heatmap] tokens from viz: %d", len(tokens))
 
-                        record.load_raw_data()
-                        text = record.raw_data.decode('utf-8', errors='replace')
-                        byte_to_char = []
-                        char_idx = 0
-                        for ch in text:
-                            byte_len = len(ch.encode('utf-8'))
-                            for _ in range(byte_len):
-                                byte_to_char.append(char_idx)
-                            char_idx += 1
+                        text, byte_to_char = _read_file_text_mmap(record.path)
 
                         from gui.ui.dialogs.heatmap_dialog import HeatmapDialog
                         stats = {
@@ -2194,7 +2210,6 @@ class MainWindow(QMainWindow):
                     loader.close()
 
             # Fallback: reverse-parse compressed bitstream (non-viz or binary file).
-            record.load_raw_data()
             container = file_record_compression_blob(record) or b""
             parse_payload = strip_wcx_if_present(container)
 
@@ -2206,20 +2221,11 @@ class MainWindow(QMainWindow):
                     if not container:
                         QMessageBox.warning(self, "热力图错误", "无法读取压缩数据（内存或磁盘 .wcx）")
                         return
-                    _hm_raw = record.raw_data
-                    if record.algorithm == AlgorithmType.LZDP:
-                        _hm_raw = None
-                    pr = parser.parse(parse_payload, _hm_raw, compression_params=_hm_params)
+                    # No parser consumes raw_data anymore; always pass None.
+                    pr = parser.parse(parse_payload, None, compression_params=_hm_params)
                     logger.info("[heatmap] parse done, tokens=%d", len(pr.tokens))
                     if is_text:
-                        text = record.raw_data.decode('utf-8', errors='replace')
-                        byte_to_char = []
-                        char_idx = 0
-                        for ch in text:
-                            byte_len = len(ch.encode('utf-8'))
-                            for _ in range(byte_len):
-                                byte_to_char.append(char_idx)
-                            char_idx += 1
+                        text, byte_to_char = _read_file_text_mmap(record.path)
 
                         from gui.ui.dialogs.heatmap_dialog import HeatmapDialog
                         stats = {
@@ -2240,7 +2246,7 @@ class MainWindow(QMainWindow):
 
                     from gui.ui.dialogs.block_heatmap_dialog import BlockHeatmapDialog
                     dlg = BlockHeatmapDialog(
-                        raw_data=record.raw_data,
+                        raw_data=Path(record.path).read_bytes(),
                         compressed_data=parse_payload,
                         filename=record.name,
                         algorithm=record.algorithm.value,
@@ -2256,7 +2262,7 @@ class MainWindow(QMainWindow):
             from gui.ui.dialogs.block_heatmap_dialog import BlockHeatmapDialog
             logger.info("[view] falling back to block-based heatmap (Qt native)")
             dlg = BlockHeatmapDialog(
-                raw_data=record.raw_data,
+                raw_data=Path(record.path).read_bytes(),
                 compressed_data=parse_payload,
                 filename=record.name,
                 algorithm=record.algorithm.value,

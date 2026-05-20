@@ -70,6 +70,19 @@ auto DPFlate::reset(void) -> void {
 
     huff_reset_entropy_tables();
 
+    // ============================================================
+    // [VIZ] Reset visualization tracking — restored from 8672f99
+    // ============================================================
+    input_pos_ = 0;
+    block_index_ = 0;
+    block_input_start_ = 0;
+    block_literal_count_ = 0;
+    block_match_count_ = 0;
+    block_output_start_ = 0;
+    // ============================================================
+    // [VIZ END]
+    // ============================================================
+
     auto calc_bit_width = [](size_t v) -> int {
         int bits = 0;
         if (v == 0) return 1;
@@ -361,6 +374,20 @@ auto DPFlate::handleBacktrack(AlgorithmStatus& status, bool is_last_chunk) -> vo
 
         huff_backtrack_accumulate_token(length, offset, literal_run_len_3hm);
 
+        // ============================================================
+        // [VIZ] Emit match/literal event during backtrack — restored from 8672f99
+        // ============================================================
+        if (length == 0) {
+            notifyObservers(MatchEvent{static_cast<uint32_t>(total_in_len_ - cur), 0, 0, static_cast<uint8_t>(offset)});
+            ++block_literal_count_;
+        } else {
+            notifyObservers(MatchEvent{static_cast<uint32_t>(total_in_len_ - cur), offset, length, 0});
+            ++block_match_count_;
+        }
+        // ============================================================
+        // [VIZ END]
+        // ============================================================
+
         if (length == 0) {
             cur -= 1;
         } else {
@@ -587,6 +614,8 @@ bool DPFlate::huff_build_tree_and_write_trees(AlgorithmStatus& st) {
                       huffman_tree_3hm_->getTreeSize());
         }
         // === DEBUG_BLOCK_END ===
+        // [VIZ] Track block output start — restored from 8672f99
+        block_output_start_ = writer_.getBytesWritten();
         if (!writer_.ensureSpace(8 + huffman_tree_3hm_->getTreeSize())) {
             st.need_output = true;
             return false;
@@ -601,6 +630,32 @@ bool DPFlate::huff_build_tree_and_write_trees(AlgorithmStatus& st) {
         std::make_unique<HuffmanTree>(dist_freq_, DISTANCE_DICTIONARY_SIZE, DISTANCE_SYMBOL_BITS);
     dictionary_ = huffman_tree_->buildDictionary();
     dist_dictionary_ = dist_tree_->buildDictionary();
+
+    // ============================================================
+    // [VIZ] Emit Huffman tree built events — restored from 8672f99
+    // ============================================================
+    {
+        HuffmanTreeBuilt lit_tree_ev;
+        lit_tree_ev.block_index = block_index_;
+        lit_tree_ev.tree_type = 0;
+        lit_tree_ev.alphabet_size = DEFLATE_ALPHABET_SIZE;
+        for (size_t i = 0; i < DEFLATE_ALPHABET_SIZE && i < 286; ++i)
+            lit_tree_ev.code_lengths[i] = dictionary_[i].length;
+        notifyObservers(lit_tree_ev);
+    }
+    {
+        HuffmanTreeBuilt dist_tree_ev;
+        dist_tree_ev.block_index = block_index_;
+        dist_tree_ev.tree_type = 1;
+        dist_tree_ev.alphabet_size = DISTANCE_DICTIONARY_SIZE;
+        for (size_t i = 0; i < DISTANCE_DICTIONARY_SIZE && i < 286; ++i)
+            dist_tree_ev.code_lengths[i] = dist_dictionary_[i].length;
+        notifyObservers(dist_tree_ev);
+    }
+    // ============================================================
+    // [VIZ END]
+    // ============================================================
+
     // === DEBUG_BLOCK_BEGIN (可删除) ===
     static int dbg_flate_tree_cnt = 0;
     if (++dbg_flate_tree_cnt <= 50) {
@@ -610,6 +665,8 @@ bool DPFlate::huff_build_tree_and_write_trees(AlgorithmStatus& st) {
                   static_cast<unsigned long long>(total_tokens_));
     }
     // === DEBUG_BLOCK_END ===
+    // [VIZ] Track block output start — restored from 8672f99
+    block_output_start_ = writer_.getBytesWritten();
     if (!writer_.ensureSpace(8 + huffman_tree_->getTreeSize() + dist_tree_->getTreeSize())) {
         st.need_output = true;
         return false;
@@ -700,6 +757,25 @@ bool DPFlate::huff_emit_token_stream(AlgorithmStatus& st) {
             }
             literal_run.clear();
         }
+        // ============================================================
+        // [VIZ] Emit block boundary + finish — restored from 8672f99
+        // ============================================================
+        {
+            BlockBoundary bb;
+            bb.block_index = block_index_;
+            bb.input_start = block_input_start_;
+            bb.input_bytes = total_in_len_;
+            bb.literal_count = block_literal_count_;
+            bb.match_count = block_match_count_;
+            bb.output_bytes = writer_.getBytesWritten() - block_output_start_;
+            notifyObservers(bb);
+            notifyBlockFinish();
+        }
+        notifyCompressionFinish();
+        // ============================================================
+        // [VIZ END]
+        // ============================================================
+
         writer_.flush();
         // === DEBUG_BLOCK_BEGIN (可删除) ===
         static int dbg_emit_3hm_done_cnt = 0;
@@ -759,6 +835,26 @@ bool DPFlate::huff_emit_token_stream(AlgorithmStatus& st) {
         return false;
     }
     writeHuffmanCode(writer_, dictionary_[256]);
+
+    // ============================================================
+    // [VIZ] Emit block boundary + finish — restored from 8672f99
+    // ============================================================
+    {
+        BlockBoundary bb;
+        bb.block_index = block_index_;
+        bb.input_start = block_input_start_;
+        bb.input_bytes = total_in_len_;
+        bb.literal_count = block_literal_count_;
+        bb.match_count = block_match_count_;
+        bb.output_bytes = writer_.getBytesWritten() - block_output_start_;
+        notifyObservers(bb);
+        notifyBlockFinish();
+    }
+    notifyCompressionFinish();
+    // ============================================================
+    // [VIZ END]
+    // ============================================================
+
     writer_.flush();
     // === DEBUG_BLOCK_BEGIN (可删除) ===
     static int dbg_emit_flate_done_cnt = 0;

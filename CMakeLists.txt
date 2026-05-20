@@ -9,6 +9,7 @@ project(
 # ========= set c++ standard =========
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Keep build products inside build tree to avoid polluting source repo.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -27,6 +28,7 @@ option(BUILD_PYTHON "Build Pybind11 bindings for PyQt desktop app" ON)
 
 # === DEBUG_BLOCK_BEGIN (可删除) ===
 add_definitions(-DDEBUG_LOG_ENABLED=1)
+
 # === DEBUG_BLOCK_END ===
 
 # ========= add subdirectories ========="

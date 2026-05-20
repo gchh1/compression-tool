@@ -512,6 +512,31 @@ LZDP::DPVisualization LZDP::get_dp_visualization(
     return viz;
 }
 
+void LZDP_OutOfCore::emitVizDPState(uint32_t abs_pos, uint32_t cost,
+                                       uint16_t length, uint16_t offset) {
+    if (!hasObservers()) return;
+    bool reachable = (cost != UINT32_MAX);
+    uint32_t predecessor = 0;
+    if (abs_pos > 0) {
+        predecessor = (length == 0) ? (abs_pos - 1) : (abs_pos - length);
+    }
+    notifyObservers(DPStateEvent{abs_pos,
+                                 reachable ? cost : 0,
+                                 predecessor,
+                                 offset,
+                                 length,
+                                 reachable ? uint8_t{1} : uint8_t{0},
+                                 reachable ? uint8_t{1} : uint8_t{0}});
+}
+
+void LZDP_OutOfCore::emitVizDPCandidate(uint32_t abs_pos, uint16_t offset,
+                                        uint16_t length, uint8_t literal,
+                                        bool is_chosen) {
+    if (!hasObservers()) return;
+    notifyObservers(DPCandidateEvent{abs_pos, offset, length, literal,
+                                     is_chosen ? uint8_t{1} : uint8_t{0}});
+}
+
 void lzdp_ooc_collect_one_index(LZDP_OutOfCore& self, size_t pos_idx, uint32_t abs_pos) {
     auto& cur = self.dp_states_[abs_pos % self.dp_slot_count_];
 
@@ -520,9 +545,15 @@ void lzdp_ooc_collect_one_index(LZDP_OutOfCore& self, size_t pos_idx, uint32_t a
                   abs_pos, pos_idx, cur.cost, cur.length, cur.offset);
     }
 
+    // Emit DPStateEvent for this position
+    self.emitVizDPState(abs_pos, cur.cost, cur.length, cur.offset);
+
     // 1. Literal transition
     auto& next_lit = self.dp_states_[(abs_pos + 1) % self.dp_slot_count_];
-    if (cur.cost + self.lit_cost_ < next_lit.cost) {
+    bool lit_chosen = (cur.cost + self.lit_cost_ < next_lit.cost);
+    self.emitVizDPCandidate(abs_pos, 0, 0,
+                            self.input_buffer_[pos_idx], lit_chosen);
+    if (lit_chosen) {
         next_lit.cost = cur.cost + self.lit_cost_;
         next_lit.length = 0;
         next_lit.offset = self.input_buffer_[pos_idx];
@@ -551,7 +582,11 @@ void lzdp_ooc_collect_one_index(LZDP_OutOfCore& self, size_t pos_idx, uint32_t a
             for (auto& kr : kmp_results) {
                 auto& nm =
                     self.dp_states_[(abs_pos + kr.length) % self.dp_slot_count_];
-                if (cur.cost + self.match_cost_ < nm.cost) {
+                bool match_chosen = (cur.cost + self.match_cost_ < nm.cost);
+                self.emitVizDPCandidate(
+                    abs_pos, static_cast<uint16_t>(kr.offset),
+                    static_cast<uint16_t>(kr.length), 0, match_chosen);
+                if (match_chosen) {
                     nm.cost = cur.cost + self.match_cost_;
                     nm.length = static_cast<uint16_t>(kr.length);
                     nm.offset = static_cast<uint16_t>(kr.offset);
@@ -581,7 +616,11 @@ void lzdp_ooc_collect_one_index(LZDP_OutOfCore& self, size_t pos_idx, uint32_t a
                     if (match_len >= self.MIN_MATCH) {
                         auto& nm =
                             self.dp_states_[(abs_pos + match_len) % self.dp_slot_count_];
-                        if (cur.cost + self.match_cost_ < nm.cost) {
+                        bool match_chosen = (cur.cost + self.match_cost_ < nm.cost);
+                        self.emitVizDPCandidate(
+                            abs_pos, static_cast<uint16_t>(dist),
+                            static_cast<uint16_t>(match_len), 0, match_chosen);
+                        if (match_chosen) {
                             nm.cost = cur.cost + self.match_cost_;
                             nm.length = static_cast<uint16_t>(match_len);
                             nm.offset = static_cast<uint16_t>(dist);
@@ -778,7 +817,11 @@ auto LZDP_OutOfCore::handleCollectInput(AlgorithmStatus& status, bool is_last_ch
         
         DEBUG_LOG("[LZDP_OutOfCore] COLLECT done: total_in_len=%u final_state=(len=%u off=%u cost=%u)",
                   total_in_len_, cur.length, cur.offset, cur.cost);
-        
+
+        notifyObservers(BlockBoundary{0, 0, total_in_len_,
+                                      total_in_len_, 0, 0});
+        notifyBlockFinish();
+
         state_ = State::BACKTRACK;
     }
 }
@@ -812,6 +855,14 @@ auto LZDP_OutOfCore::handleBacktrack(AlgorithmStatus& status, bool is_last_chunk
             DEBUG_LOG("[LZDP_OutOfCore] BACKTRACK cur=%u len=%u off=%u", cur, length, offset);
         }
         bt_count++;
+
+        // Emit MatchEvent for this token on the optimal path
+        if (length == 0) {
+            notifyObservers(MatchEvent{cur - 1, 0, 0,
+                                       static_cast<uint8_t>(offset)});
+        } else {
+            notifyObservers(MatchEvent{cur - length, offset, length, 0});
+        }
 
         spill_b_.writePackedLink(spill_spec_, length, offset);
         token_lengths_.push_back(length);
@@ -912,6 +963,7 @@ auto LZDP_OutOfCore::handleEmitTokens(AlgorithmStatus& status, bool is_last_chun
     }
     
     writer_.flush();
+    notifyCompressionFinish();
     status.done = true;
 }
 

@@ -221,6 +221,13 @@ private:
     auto hashBucket3(size_t pos_idx) const -> size_t;
     auto reseedHashChainPrefix(size_t end_exclusive) -> void;
 
+    /// Emit DPStateEvent for position abs_pos (called during forward pass).
+    void emitVizDPState(uint32_t abs_pos, uint32_t cost,
+                        uint16_t length, uint16_t offset);
+    /// Emit DPCandidateEvent for a candidate considered at abs_pos.
+    void emitVizDPCandidate(uint32_t abs_pos, uint16_t offset,
+                            uint16_t length, uint8_t literal, bool is_chosen);
+
     auto handleCollectInput(AlgorithmStatus& status, bool is_last_chunk) -> void;
     auto handleBacktrack(AlgorithmStatus& status, bool is_last_chunk) -> void;
     auto handleEmitTokens(AlgorithmStatus& status, bool is_last_chunk) -> void;

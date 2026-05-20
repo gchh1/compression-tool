@@ -23,11 +23,6 @@ struct CompressResult {
     std::string error_message;
 };
 
-struct WebFile {
-    std::string name;
-    std::vector<uint8_t> content;
-};
-
 struct WCXUnpackResult {
     bool success{false};
     uint8_t algo_code{0};
@@ -64,15 +59,6 @@ auto decompress(const std::vector<uint8_t>& data,
                   const core::DpflatePipelineParams* dpflate_pipeline = nullptr,
                   const core::DeflatePipelineParams* deflate_pipeline = nullptr,
                   std::size_t streaming_compress_chunk_bytes = 0) -> CompressResult;
-
-/// Pack multiple files into a compressed archive using an algorithm chain.
-auto packAndCompress(const std::vector<WebFile>& files,
-                     std::span<const AlgorithmID> chain)
-    -> std::vector<uint8_t>;
-
-/// Unpack a compressed archive back into individual files.
-auto decompressAndUnpack(const std::vector<uint8_t>& data)
-    -> std::vector<WebFile>;
 
 auto pack_wcx(const std::vector<uint8_t>& compressed_data,
               AlgorithmID algorithm,
@@ -125,23 +111,6 @@ auto decompressFile(const std::string& input_path,
                     const std::string& output_path,
                     std::span<const AlgorithmID> chain,
                     size_t stream_chunk_bytes = 0) -> CompressResult;
-
-/// Recursively pack and compress a directory into an archive file.
-/// Writes to `output_path + ".part"` then renames to `output_path` on success.
-auto compressDirectory(const std::string& dir_path,
-                       const std::string& output_path,
-                       std::span<const AlgorithmID> chain,
-                       size_t stream_chunk_bytes = 0,
-                       uint32_t file_compress_opts = core::kFileCompressOptsNone,
-                       const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
-                       const core::DpflatePipelineParams* dpflate_pipeline = nullptr,
-                       const core::DeflatePipelineParams* deflate_pipeline = nullptr)
-    -> CompressResult;
-
-/// Unpack a compressed archive to disk, preserving directory structure.
-auto decompressAndUnpackToDisk(const std::string& input_path,
-                                const std::string& output_dir)
-    -> CompressResult;
 
 #endif  // __EMSCRIPTEN__
 

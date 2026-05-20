@@ -4,32 +4,16 @@
     "lzss": {
       "search_size": 4095,
       "lookahead_size": 18,
-      "min_match": 3
-    },
-    "lzmine": {
-      "search_size": 4096,
-      "lookahead_size": 256,
-      "min_match": 3,
-      "dp_depth": 3
-    },
-    "myflate": {
-      "search_size": 4096,
-      "lookahead_size": 256,
-      "min_match": 4,
-      "dp_depth": 6,
-      "max_chain_length": 256
-    },
-    "deflate": {
-      "search_size": 32768,
       "min_match": 0,
-      "max_chain_length": 256,
-      "use_3hfmtree": 0,
-      "lookahead_size": 258,
-      "dp_sub_match_max": 6,
-      "match_engine": 1,
-      "use_flag_encoding": 0,
-      "huffman_offset_chunk_bits": 8,
-      "huffman_length_chunk_bits": 8
+      "use_flag_encoding": 1
+    },
+    "lzdp": {
+      "search_size": 4096,
+      "lookahead_size": 256,
+      "min_match": 0,
+      "dp_top": 3,
+      "match_engine": 0,
+      "use_flag_encoding": 0
     },
     "dpflate": {
       "search_size": 4096,
@@ -43,23 +27,82 @@
       "huffman_offset_chunk_bits": 8,
       "huffman_length_chunk_bits": 8
     },
+    "deflate": {
+      "search_size": 32768,
+      "lookahead_size": 258,
+      "min_match": 0,
+      "max_chain_length": 256,
+      "use_flag_encoding": 1,
+      "use_3hfmtree": 0,
+      "huffman_offset_chunk_bits": 8,
+      "huffman_length_chunk_bits": 8
+    },
     "gzip": {
       "compression_level": 6
     },
     "brotli": {
       "window_size": 65536,
-      "min_match": 3,
+      "min_match": 0,
       "max_chain_length": 256
     },
     "zstd": {
       "compression_level": 3
     }
   },
+  "ade": {
+    "silent_explore_enabled": false
+  },
   "streaming": {
-    "threshold_mb": 10,
-    "chunk_size_kb": 1024
+    "threshold_mb": 10.0,
+    "chunk_size_kb": 1024,
+    "workspace_root": "",
+    "per_algorithm": {
+      "deflate": {
+        "follow_global_chunk": true,
+        "chunk_size_kb": 1024,
+        "follow_global_threshold": true,
+        "threshold_mb": 10.0
+      },
+      "lzdp": {
+        "follow_global_chunk": true,
+        "chunk_size_kb": 1024,
+        "follow_global_threshold": true,
+        "threshold_mb": 10.0
+      },
+      "lzss": {
+        "follow_global_chunk": true,
+        "chunk_size_kb": 1024,
+        "follow_global_threshold": true,
+        "threshold_mb": 10.0
+      },
+      "dpflate": {
+        "follow_global_chunk": true,
+        "chunk_size_kb": 1024,
+        "follow_global_threshold": true,
+        "threshold_mb": 10.0
+      },
+      "gzip": {
+        "follow_global_chunk": true,
+        "chunk_size_kb": 1024,
+        "follow_global_threshold": true,
+        "threshold_mb": 10.0
+      },
+      "brotli": {
+        "follow_global_chunk": true,
+        "chunk_size_kb": 1024,
+        "follow_global_threshold": true,
+        "threshold_mb": 10.0
+      },
+      "zstd": {
+        "follow_global_chunk": true,
+        "chunk_size_kb": 1024,
+        "follow_global_threshold": true,
+        "threshold_mb": 10.0
+      }
+    }
   },
   "visualization": {
+    "lzdp_dp_viz_max_size": 131072,
     "lzmine_dp_viz_max_size": 65536
   },
   "theme": {

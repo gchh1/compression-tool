@@ -18,20 +18,28 @@ namespace compressor::viz {
 /// Submits are non-blocking (move shared_ptr + notify).  The worker thread
 /// writes to the file; when a WriteTask is destroyed the shared_ptr resets
 /// and MemoryPool's custom deleter returns the buffer.
+///
+/// An append-mode constructor is provided for cases where the file already
+/// contains a header or prefix written by the caller.
 class BackgroundWriter {
 public:
     struct WriteTask {
-        std::shared_ptr<std::vector<uint8_t>> buf;
+        std::shared_ptr<const std::vector<uint8_t>> buf;
         size_t size;
     };
 
+    /// Open ``path`` for writing (truncate).
     explicit BackgroundWriter(const std::string& path);
+
+    /// Open ``path`` in append mode — caller has already written a prefix.
+    BackgroundWriter(const std::string& path, bool append);
+
     ~BackgroundWriter();
 
     BackgroundWriter(const BackgroundWriter&) = delete;
     BackgroundWriter& operator=(const BackgroundWriter&) = delete;
 
-    void submit(std::shared_ptr<std::vector<uint8_t>> buf, size_t size);
+    void submit(std::shared_ptr<const std::vector<uint8_t>> buf, size_t size);
     void stop();
 
 private:
@@ -39,6 +47,7 @@ private:
 
     std::string path_;
     std::ofstream file_;
+    bool append_{false};
 
     // Synchronization primitives — must be initialized before worker_
     std::mutex mutex_;

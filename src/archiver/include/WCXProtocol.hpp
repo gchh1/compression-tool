@@ -32,7 +32,7 @@ auto writeHeader(std::ofstream& output, uint8_t algo_code,
                  uint32_t original_size, uint32_t compressed_size,
                  const std::string& original_filename) -> bool;
 
-auto patchCompressedSize(std::ofstream& output, uint32_t compressed_size)
+auto patchCompressedSize(std::ostream& output, uint32_t compressed_size)
     -> bool;
 
 auto tryReadHeader(std::ifstream& input, HeaderView& out) -> bool;

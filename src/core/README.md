@@ -1,15 +1,14 @@
 # Core Layer
 
-This directory contains compressor semantics, parameter mapping, factory patterns, and strategy orchestration.
+This directory contains algorithm parameter structures, factory `createAlgorithm()`, and strategy orchestration.
 
 ## Responsibilities
-- Wraps raw algorithms from the `algorithm/` layer into stateful `*Compressor` classes.
-- Standardizes parameter setters/getters (e.g., `set_dp_top`, `get_dp_top`).
-- Exposes `AlgorithmFactory` to instantiate compressors by type.
-- Serves as the domain layer for compression logic and object lifecycle.
+- Defines parameter structs (`LzdpWholeFileParams`, `DpflatePipelineParams`, `DeflatePipelineParams`) for algorithm construction.
+- `AlgorithmFactory` maps `AlgorithmID` → `algorithm::IAlgorithm` instances.
+- `AlgorithmFactory.cpp` owns the single-point per-algorithm configuration mapping (knobs → `algorithm::*` ctor).
 
 ## Naming Dictionary
-- Compressor classes should end with `Compressor` (e.g., `LZDPCompressor`, `DPFlateCompressor`).
+- Algorithm implementations live in `algorithm/` (e.g., `LZDP_OutOfCore`, `DPFlate`, `Deflate`).
 - Parameter names:
   - `dp_top` (was `dp_depth` for LZDP)
   - `dp_sub_match_max` (was `dp_depth` for DPFlate)

@@ -174,6 +174,19 @@ private:
     static constexpr size_t DEFLATE_SYMBOL_BITS = 9;
     static constexpr size_t DISTANCE_SYMBOL_BITS = 5;
 
+    // ============================================================
+    // [VIZ] Visualization tracking fields — restored from 8672f99
+    // ============================================================
+    uint32_t input_pos_{0};
+    uint32_t block_index_{0};
+    uint32_t block_input_start_{0};
+    uint32_t block_literal_count_{0};
+    uint32_t block_match_count_{0};
+    size_t block_output_start_{0};  // writer bytes at block start
+    // ============================================================
+    // [VIZ END]
+    // ============================================================
+
     void getLengthCode(size_t length, uint16_t& code, uint8_t& extra_bits, uint16_t& extra_val);
     void getDistCode(size_t dist, uint8_t& code, uint8_t& extra_bits, uint16_t& extra_val);
 };

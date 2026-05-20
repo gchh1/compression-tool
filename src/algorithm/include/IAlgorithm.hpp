@@ -52,6 +52,7 @@ class IAlgorithm {
 
 // Bring viz types into algorithm namespace for backward compatibility
 using compressor::viz::BlockBoundary;
+using compressor::viz::DPCandidateEvent;
 using compressor::viz::DPStateEvent;
 using compressor::viz::HuffmanTreeBuilt;
 using compressor::viz::IVizObserver;
@@ -103,6 +104,8 @@ class AlgorithmBase : public IAlgorithm {
             obs->onCompressionFinish();
         }
     }
+
+    bool hasObservers() const { return !observers_.empty(); }
 
    private:
     std::vector<IVizObserver*> observers_;

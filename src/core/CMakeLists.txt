@@ -2,14 +2,7 @@ add_library(
     core
     STATIC
     AlgorithmFactory.cpp
-    LZSSCompressor.cpp
-    DeflateCompressor.cpp
-    LZDPCompressor.cpp
-    DPFlateCompressor.cpp
     ../processor/ChunkedStreamAdapter.cpp
-    GzipCompressor.cpp
-    BrotliCompressor.cpp
-    ZstdCompressor.cpp
 )
 
 target_include_directories(

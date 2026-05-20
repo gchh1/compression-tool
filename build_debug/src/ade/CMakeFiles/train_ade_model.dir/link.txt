@@ -1,3 +1,0 @@
-D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E rm -f CMakeFiles\train_ade_model.dir/objects.a
-D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc CMakeFiles\train_ade_model.dir/objects.a @CMakeFiles\train_ade_model.dir\objects1.rsp
-D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe -g -Wl,--whole-archive CMakeFiles\train_ade_model.dir/objects.a -Wl,--no-whole-archive -o ..\..\bin\train_ade_model.exe -Wl,--out-implib,libtrain_ade_model.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\train_ade_model.dir\linkLibs.rsp

@@ -7,11 +7,17 @@ BackgroundWriter::BackgroundWriter(const std::string& path)
     , file_(path, std::ios::binary | std::ios::trunc)
     , worker_(&BackgroundWriter::workerLoop, this) {}
 
+BackgroundWriter::BackgroundWriter(const std::string& path, bool /*append*/)
+    : path_(path)
+    , file_(path, std::ios::binary | std::ios::app)
+    , append_(true)
+    , worker_(&BackgroundWriter::workerLoop, this) {}
+
 BackgroundWriter::~BackgroundWriter() {
     stop();
 }
 
-void BackgroundWriter::submit(std::shared_ptr<std::vector<uint8_t>> buf,
+void BackgroundWriter::submit(std::shared_ptr<const std::vector<uint8_t>> buf,
                               size_t size) {
     {
         std::lock_guard lock(mutex_);

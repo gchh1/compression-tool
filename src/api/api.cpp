@@ -13,13 +13,12 @@
 #include <span>
 #include <vector>
 
+#include "BackgroundWriter.hpp"
 #include "DataChunk.hpp"
 #include "DebugLog.hpp"
 #include "DiskVizObserver.hpp"
 #include "IAlgorithm.hpp"
 #include "MemoryPool.hpp"
-#include "PackReader.hpp"
-#include "PackWriter.hpp"
 #include "Pipeline.hpp"
 #include "StreamChunkPolicy.hpp"
 #include "WCXProtocol.hpp"
@@ -28,7 +27,6 @@
 #ifndef __EMSCRIPTEN__
 #include <filesystem>
 #include <fstream>
-#include "FileReader.hpp"
 #include "WCXReader.hpp"
 
 namespace fs = std::filesystem;
@@ -36,8 +34,12 @@ namespace fs = std::filesystem;
 
 namespace compressor::api {
 
+using namespace compressor::algorithm;
 using namespace compressor::archiver;
 using namespace compressor::archiver::wcx;
+using namespace compressor::core;
+using namespace compressor::memory;
+using namespace compressor::processor;
 
 #ifndef __EMSCRIPTEN__
 namespace detail_stream_cancel {
@@ -55,31 +57,19 @@ void set_streaming_compress_cancel_requested(bool requested) {
 }
 #endif
 
-namespace {
+/// Pool chunk count is sized proportionally to input file size, bounded [4, 32].
+/// For a 100 KB file this yields 4 chunks (vs. former fixed 32), cutting small-file
+/// heap allocation ~8× while keeping enough headroom for burst emission.
+constexpr size_t kStreamingPipelinePoolChunksMin = 4;
+constexpr size_t kStreamingPipelinePoolChunksMax = 32;
 
-class VectorReader : public archiver::IDataReader {
-   public:
-    explicit VectorReader(const std::vector<uint8_t>& d) : data_(d) {}
-
-    auto read(uint64_t offset, std::span<uint8_t> buffer) -> size_t override {
-        if (offset >= data_.size()) return 0;
-        size_t n = std::min(static_cast<size_t>(data_.size() - offset),
-                            buffer.size());
-        std::memcpy(buffer.data(), data_.data() + offset, n);
-        return n;
-    }
-
-    auto size() const -> uint64_t override { return data_.size(); }
-
-   private:
-    const std::vector<uint8_t>& data_;
-};
-
-/// Buffers sitting in ``StreamProcessor``'s ready queue are still checked out of the pool.
-/// A single ``push()`` may run ``process()`` many times (e.g. LZDP / DPFlate emit) before the
-/// caller drains via ``pull()``; ``MemoryPool::acquire()`` blocks when the pool is empty, so
-/// the count must cover worst-case in-flight publishes (not merely pipeline stage count).
-constexpr size_t kStreamingPipelinePoolChunks = 32;
+inline size_t adaptivePoolChunks(size_t data_size, size_t chunk_bytes) {
+    if (data_size == 0) return kStreamingPipelinePoolChunksMin;
+    return std::clamp(
+        (data_size + chunk_bytes - 1) / chunk_bytes + 2,
+        kStreamingPipelinePoolChunksMin,
+        kStreamingPipelinePoolChunksMax);
+}
 /// If the declared WCX payload is no larger than this, read the full payload before decoding
 /// (compressed side is usually small). Decompressed bytes still flow through ``pull()`` in
 /// pool-sized chunks and are written incrementally to the staged output file.
@@ -127,8 +117,6 @@ auto commit_staged_to_final(const fs::path& part_path, const fs::path& final_pat
 }
 #endif
 
-}  // namespace
-
 #ifndef __EMSCRIPTEN__
 struct CancelCallbackRegistrar {
     CancelCallbackRegistrar() {
@@ -170,7 +158,8 @@ auto compress(const std::vector<uint8_t>& data,
         return result;
     }
 
-    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
+    auto pool = std::make_shared<memory::MemoryPool>(
+        adaptivePoolChunks(data.size(), chunk), chunk);
     processor::Pipeline pipeline(std::move(algos), pool);
     pipeline.push(data, true);
     pipeline.finish();
@@ -224,9 +213,9 @@ auto decompress(const std::vector<uint8_t>& data,
         return result;
     }
 
-    // memory::MemoryPool: fixed-size slots for Pipeline / StreamProcessor while draining pulls
-    // into ``result.data``; full input ``data`` is already resident (GUI strategy 1).
-    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
+    // memory::MemoryPool: adaptive slots sized to input
+    auto pool = std::make_shared<memory::MemoryPool>(
+        adaptivePoolChunks(data.size(), chunk), chunk);
     processor::Pipeline pipeline(std::move(algos), pool);
     pipeline.push(data, true);
     pipeline.finish();
@@ -247,65 +236,6 @@ auto decompress(const std::vector<uint8_t>& data,
             ? static_cast<double>(result.compressed_size) / result.original_size
             : 0.0;
     result.success = true;
-    return result;
-}
-
-auto packAndCompress(const std::vector<WebFile>& files,
-                     std::span<const AlgorithmID> chain)
-    -> std::vector<uint8_t> {
-    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, 65536);
-    archiver::PackWriter writer(pool);
-
-    std::vector<uint8_t> result;
-
-    for (const auto& f : files) {
-        writer.beginFile(f.name, chain);
-        writer.pushFileData(f.content);
-        writer.endFile();
-
-        // Drain output before starting next file (beginFile clears buffers)
-        while (true) {
-            auto out = writer.pullOutput();
-            if (out.empty()) break;
-            result.insert(result.end(), out.begin(), out.end());
-            writer.consumeOutput(out.size());
-        }
-    }
-    writer.finish();
-
-    // Drain any remaining output after finish
-    while (true) {
-        auto out = writer.pullOutput();
-        if (out.empty()) break;
-        result.insert(result.end(), out.begin(), out.end());
-        writer.consumeOutput(out.size());
-    }
-    return result;
-}
-
-auto decompressAndUnpack(const std::vector<uint8_t>& data)
-    -> std::vector<WebFile> {
-    auto reader = std::make_unique<VectorReader>(data);
-    archiver::PackReader pack_reader(std::move(reader));
-
-    std::vector<WebFile> result;
-    const auto& entries = pack_reader.getEntries();
-
-    for (size_t i = 0; i < entries.size(); ++i) {
-        auto pipeline = pack_reader.extractStream(i);
-        if (!pipeline) continue;
-
-        WebFile wf;
-        wf.name = entries[i].filepath;
-
-        while (true) {
-            auto chunk = pipeline->pull();
-            if (chunk.empty()) break;
-            auto v = chunk.view();
-            wf.content.insert(wf.content.end(), v.begin(), v.end());
-        }
-        result.push_back(std::move(wf));
-    }
     return result;
 }
 
@@ -402,7 +332,8 @@ auto compressFile(const std::string& input_path,
         return result;
     }
 
-    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
+    auto pool = std::make_shared<memory::MemoryPool>(
+        adaptivePoolChunks(static_cast<size_t>(result.original_size), chunk), chunk);
     processor::Pipeline pipeline(std::move(algos), pool);
 
     std::ifstream input(input_path, std::ios::binary);
@@ -415,27 +346,36 @@ auto compressFile(const std::string& input_path,
     const fs::path path_part = staged_part_path(output_path);
     remove_path_best_effort(path_part);
 
-    std::ofstream output(path_part, std::ios::binary | std::ios::trunc);
-    if (!output) {
-        result.error_message = "Cannot open staged output file";
-        return result;
+    // Step 1 — write WCX header synchronously to .part
+    {
+        std::ofstream output(path_part, std::ios::binary | std::ios::trunc);
+        if (!output) {
+            result.error_message = "Cannot open staged output file";
+            return result;
+        }
+
+        std::string original_filename = fs::path(input_path).filename().string();
+        uint8_t algo_code = chain.empty() ? 0 : wcx::toAlgoCode(chain.front());
+        auto header_orig_u32 =
+            static_cast<uint32_t>(std::min<uint64_t>(result.original_size, UINT32_MAX));
+        if (!wcx::writeHeader(output, algo_code, header_orig_u32, 0, original_filename)) {
+            result.error_message = "Cannot write WCX header";
+            output.close();
+            remove_path_best_effort(path_part);
+            return result;
+        }
+        output.flush();
+        output.close();
     }
 
-    std::string original_filename = fs::path(input_path).filename().string();
-    uint8_t algo_code = chain.empty() ? 0 : wcx::toAlgoCode(chain.front());
-    auto header_orig_u32 =
-        static_cast<uint32_t>(std::min<uint64_t>(result.original_size, UINT32_MAX));
-    if (!wcx::writeHeader(output, algo_code, header_orig_u32, 0, original_filename)) {
-        result.error_message = "Cannot write WCX header";
-        output.close();
-        remove_path_best_effort(path_part);
-        return result;
-    }
+    // Step 2 — open BackgroundWriter to append compressed payload
+    std::unique_ptr<compressor::viz::BackgroundWriter> writer;
+    writer = std::make_unique<compressor::viz::BackgroundWriter>(path_part.string(), true);
 
     auto abort_compress_file = [&](const std::string& msg) -> CompressResult {
         CompressResult r;
+        if (writer) writer->stop();
         input.close();
-        output.close();
         remove_path_best_effort(path_part);
         auto t1 = std::chrono::high_resolution_clock::now();
         r.time_ms =
@@ -448,6 +388,19 @@ auto compressFile(const std::string& input_path,
     std::vector<uint8_t> buf(chunk);
     uint64_t bytes_read = 0;
     uint64_t total_written = 0;
+
+    auto drain_pulls = [&]() {
+        while (true) {
+            if (detail_stream_cancel::is_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            auto out_chunk = pipeline.pull();
+            if (out_chunk.empty()) break;
+            auto v = out_chunk.view();
+            writer->submit(out_chunk.owner(), v.size());
+            total_written += v.size();
+        }
+    };
 
     try {
         while (bytes_read < result.original_size) {
@@ -466,18 +419,7 @@ auto compressFile(const std::string& input_path,
             pipeline.push(std::span<const uint8_t>(buf.data(), actual), is_last);
             bytes_read += actual;
 
-            // Drain output
-            while (true) {
-                if (detail_stream_cancel::is_cancel_requested()) {
-                    return abort_compress_file("cancelled");
-                }
-                auto out_chunk = pipeline.pull();
-                if (out_chunk.empty()) break;
-                auto v = out_chunk.view();
-                output.write(reinterpret_cast<const char*>(v.data()),
-                             static_cast<std::streamsize>(v.size()));
-                total_written += v.size();
-            }
+            drain_pulls();
         }
 
         if (bytes_read == 0 && result.original_size == 0) {
@@ -485,17 +427,7 @@ auto compressFile(const std::string& input_path,
                 return abort_compress_file("cancelled");
             }
             pipeline.push(std::span<const uint8_t>{}, true);
-            while (true) {
-                if (detail_stream_cancel::is_cancel_requested()) {
-                    return abort_compress_file("cancelled");
-                }
-                auto out_chunk = pipeline.pull();
-                if (out_chunk.empty()) break;
-                auto v = out_chunk.view();
-                output.write(reinterpret_cast<const char*>(v.data()),
-                             static_cast<std::streamsize>(v.size()));
-                total_written += v.size();
-            }
+            drain_pulls();
         }
 
         if (detail_stream_cancel::is_cancel_requested()) {
@@ -503,37 +435,31 @@ auto compressFile(const std::string& input_path,
         }
 
         pipeline.finish();
-
-        // Final drain
-        while (true) {
-            if (detail_stream_cancel::is_cancel_requested()) {
-                return abort_compress_file("cancelled");
-            }
-            auto out_chunk = pipeline.pull();
-            if (out_chunk.empty()) break;
-            auto v = out_chunk.view();
-            output.write(reinterpret_cast<const char*>(v.data()),
-                         static_cast<std::streamsize>(v.size()));
-            total_written += v.size();
-        }
+        drain_pulls();
     } catch (const std::exception& e) {
         return abort_compress_file(e.what());
     }
 
-    // Patch compressed_size in WCX header at byte offset 10.
-    auto comp_u32 = static_cast<uint32_t>(std::min<uint64_t>(total_written, UINT32_MAX));
-    wcx::patchCompressedSize(output, comp_u32);
-    output.flush();
-    if (!output.good()) {
-        result.error_message = "Cannot flush staged output file";
-        output.close();
-        remove_path_best_effort(path_part);
-        auto t1 = std::chrono::high_resolution_clock::now();
-        result.time_ms =
-            std::chrono::duration<double, std::milli>(t1 - t0).count();
-        return result;
+    // Step 3 — wait for async writes to complete
+    writer->stop();
+    writer.reset();
+
+    // Step 4 — patch compressed_size in WCX header at byte offset 10
+    {
+        auto comp_u32 = static_cast<uint32_t>(std::min<uint64_t>(total_written, UINT32_MAX));
+        std::fstream fout(path_part, std::ios::binary | std::ios::in | std::ios::out);
+        if (!fout || !wcx::patchCompressedSize(fout, comp_u32)) {
+            result.error_message = "Cannot patch WCX header";
+            remove_path_best_effort(path_part);
+            auto t1 = std::chrono::high_resolution_clock::now();
+            result.time_ms =
+                std::chrono::duration<double, std::milli>(t1 - t0).count();
+            return result;
+        }
+        fout.flush();
+        fout.close();
     }
-    output.close();
+
     std::string commit_err;
     if (!commit_staged_to_final(path_part, path_final, commit_err)) {
         result.error_message = "Cannot commit output: " + commit_err;
@@ -628,7 +554,8 @@ auto decompressFile(const std::string& input_path,
         return result;
     }
 
-    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
+    auto pool = std::make_shared<memory::MemoryPool>(
+        adaptivePoolChunks(static_cast<size_t>(result.original_size), chunk), chunk);
     processor::Pipeline pipeline(std::move(algos), pool);
 
     if (const char* ev = std::getenv("WEBCOMPRESS_DECOMPRESS_DEBUG")) {
@@ -865,7 +792,8 @@ auto compressFileWithViz(const std::string& input_path,
         }
     }
 
-    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
+    auto pool = std::make_shared<memory::MemoryPool>(
+        adaptivePoolChunks(static_cast<size_t>(result.original_size), chunk), chunk);
     processor::Pipeline pipeline(std::move(algos), pool);
 
     std::ifstream input(input_path, std::ios::binary);
@@ -878,22 +806,30 @@ auto compressFileWithViz(const std::string& input_path,
     const fs::path path_part = staged_part_path(output_path);
     remove_path_best_effort(path_part);
 
-    std::ofstream output(path_part, std::ios::binary | std::ios::trunc);
-    if (!output) {
-        result.error_message = "Cannot open staged output file";
-        return result;
+    // Step 1 — write WCX header synchronously to .part
+    {
+        std::ofstream output(path_part, std::ios::binary | std::ios::trunc);
+        if (!output) {
+            result.error_message = "Cannot open staged output file";
+            return result;
+        }
+
+        std::string original_filename = fs::path(input_path).filename().string();
+        uint8_t algo_code = chain.empty() ? 0 : wcx::toAlgoCode(chain.front());
+        auto header_orig_u32 =
+            static_cast<uint32_t>(std::min<uint64_t>(result.original_size, UINT32_MAX));
+        if (!wcx::writeHeader(output, algo_code, header_orig_u32, 0, original_filename)) {
+            result.error_message = "Cannot write WCX header";
+            output.close();
+            remove_path_best_effort(path_part);
+            return result;
+        }
+        output.flush();
+        output.close();
     }
 
-    std::string original_filename = fs::path(input_path).filename().string();
-    uint8_t algo_code = chain.empty() ? 0 : wcx::toAlgoCode(chain.front());
-    auto header_orig_u32 =
-        static_cast<uint32_t>(std::min<uint64_t>(result.original_size, UINT32_MAX));
-    if (!wcx::writeHeader(output, algo_code, header_orig_u32, 0, original_filename)) {
-        result.error_message = "Cannot write WCX header";
-        output.close();
-        remove_path_best_effort(path_part);
-        return result;
-    }
+    // Step 2 — open BackgroundWriter to append compressed payload
+    auto writer = std::make_unique<compressor::viz::BackgroundWriter>(path_part.string(), true);
 
     std::vector<uint8_t> buf(chunk);
     uint64_t bytes_read = 0;
@@ -916,8 +852,7 @@ auto compressFileWithViz(const std::string& input_path,
             auto out_chunk = pipeline.pull();
             if (out_chunk.empty()) break;
             auto v = out_chunk.view();
-            output.write(reinterpret_cast<const char*>(v.data()),
-                         static_cast<std::streamsize>(v.size()));
+            writer->submit(out_chunk.owner(), v.size());
             total_written += v.size();
         }
     }
@@ -928,26 +863,34 @@ auto compressFileWithViz(const std::string& input_path,
         auto out_chunk = pipeline.pull();
         if (out_chunk.empty()) break;
         auto v = out_chunk.view();
-        output.write(reinterpret_cast<const char*>(v.data()),
-                     static_cast<std::streamsize>(v.size()));
+        writer->submit(out_chunk.owner(), v.size());
         total_written += v.size();
     }
 
+    // Step 3 — viz observer MUST be reset before writer->stop(), so viz files
+    // (written by independent BackgroundWriter threads) are flushed first.
     viz_observer.reset();
 
-    auto comp_u32 = static_cast<uint32_t>(std::min<uint64_t>(total_written, UINT32_MAX));
-    wcx::patchCompressedSize(output, comp_u32);
-    output.flush();
-    if (!output.good()) {
-        result.error_message = "Cannot flush staged output file";
-        output.close();
-        remove_path_best_effort(path_part);
-        auto t1 = std::chrono::high_resolution_clock::now();
-        result.time_ms =
-            std::chrono::duration<double, std::milli>(t1 - t0).count();
-        return result;
+    // Step 4 — wait for async writes to complete
+    writer->stop();
+    writer.reset();
+
+    // Step 5 — patch compressed_size in WCX header at byte offset 10
+    {
+        auto comp_u32 = static_cast<uint32_t>(std::min<uint64_t>(total_written, UINT32_MAX));
+        std::fstream fout(path_part, std::ios::binary | std::ios::in | std::ios::out);
+        if (!fout || !wcx::patchCompressedSize(fout, comp_u32)) {
+            result.error_message = "Cannot patch WCX header";
+            remove_path_best_effort(path_part);
+            auto t1 = std::chrono::high_resolution_clock::now();
+            result.time_ms =
+                std::chrono::duration<double, std::milli>(t1 - t0).count();
+            return result;
+        }
+        fout.flush();
+        fout.close();
     }
-    output.close();
+
     std::string commit_err;
     if (!commit_staged_to_final(path_part, path_final, commit_err)) {
         result.error_message = "Cannot commit output: " + commit_err;
@@ -964,313 +907,6 @@ auto compressFileWithViz(const std::string& input_path,
     result.compression_ratio =
         result.original_size > 0
             ? static_cast<double>(total_written) / result.original_size
-            : 0.0;
-    result.success = true;
-    return result;
-}
-
-auto compressDirectory(const std::string& dir_path,
-                       const std::string& output_path,
-                       std::span<const AlgorithmID> chain,
-                       size_t stream_chunk_bytes,
-                       uint32_t file_compress_opts,
-                       const core::LzdpWholeFileParams* lzdp_whole_file,
-                       const core::DpflatePipelineParams* dpflate_pipeline,
-                       const core::DeflatePipelineParams* deflate_pipeline) -> CompressResult {
-    CompressResult result;
-
-    auto t0 = std::chrono::high_resolution_clock::now();
-    const size_t chunk =
-        processor::effective_stream_chunk_bytes(stream_chunk_bytes);
-
-    std::error_code ec;
-    if (!fs::exists(dir_path, ec) || !fs::is_directory(dir_path, ec)) {
-        result.error_message = "Not a directory: " + dir_path;
-        return result;
-    }
-
-    // Collect files with known original sizes so WCX header can record total size.
-    struct SourceFile {
-        fs::path abs_path;
-        fs::path rel_path;
-        uint64_t file_size{0};
-    };
-    std::vector<SourceFile> files;
-    uint64_t total_original = 0;
-    for (auto it = fs::recursive_directory_iterator(dir_path, ec);
-         it != fs::recursive_directory_iterator(); ++it) {
-        if (ec) { ec.clear(); continue; }
-        if (!it->is_regular_file()) continue;
-        fs::path abs = it->path();
-        fs::path rel = fs::relative(abs, dir_path, ec);
-        if (ec) {
-            rel = abs.filename();
-            ec.clear();
-        }
-        std::error_code fec;
-        auto file_size = fs::file_size(abs, fec);
-        if (fec) continue;
-
-        files.push_back(SourceFile{
-            std::move(abs),
-            std::move(rel),
-            static_cast<uint64_t>(file_size),
-        });
-        total_original += static_cast<uint64_t>(file_size);
-    }
-
-    if (files.empty()) {
-        result.error_message = "No files found in directory";
-        return result;
-    }
-
-    const fs::path path_final(output_path);
-    const fs::path path_part = staged_part_path(output_path);
-    remove_path_best_effort(path_part);
-
-    std::ofstream output(path_part, std::ios::binary | std::ios::trunc);
-    if (!output) {
-        result.error_message = "Cannot open staged output file";
-        return result;
-    }
-
-    auto pool = std::make_shared<memory::MemoryPool>(kStreamingPipelinePoolChunks, chunk);
-    archiver::PackWriter writer(pool);
-
-    const std::string original_filename = fs::path(dir_path).filename().string();
-    uint8_t algo_code = chain.empty() ? 0 : wcx::toAlgoCode(chain.front());
-    auto header_orig_u32 =
-        static_cast<uint32_t>(std::min<uint64_t>(total_original, UINT32_MAX));
-    if (!wcx::writeHeader(output, algo_code, header_orig_u32, 0, original_filename)) {
-        result.error_message = "Cannot write WCX header";
-        output.close();
-        remove_path_best_effort(path_part);
-        return result;
-    }
-    output.seekp(14, std::ios::beg);
-    output.put(static_cast<char>(0x01));  // FLAG_FOLDER
-    output.seekp(0, std::ios::end);
-
-    uint64_t total_written = 0;
-    std::vector<uint8_t> buf(chunk);
-
-    auto abort_compress_dir = [&](const std::string& msg) -> CompressResult {
-        CompressResult r;
-        output.close();
-        remove_path_best_effort(path_part);
-        auto t1 = std::chrono::high_resolution_clock::now();
-        r.time_ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
-        r.error_message = msg;
-        r.success = false;
-        return r;
-    };
-
-    try {
-        for (const auto& file : files) {
-            writer.beginFile(file.rel_path.string(), chain, file_compress_opts,
-                             lzdp_whole_file, chunk, dpflate_pipeline,
-                             deflate_pipeline);
-
-            std::ifstream input(file.abs_path, std::ios::binary);
-            if (!input) continue;
-
-            uint64_t bytes_read = 0;
-            while (bytes_read < file.file_size) {
-                if (detail_stream_cancel::is_cancel_requested()) {
-                    return abort_compress_dir("cancelled");
-                }
-                size_t to_read =
-                    std::min(chunk,
-                             static_cast<size_t>(file.file_size - bytes_read));
-                input.read(reinterpret_cast<char*>(buf.data()),
-                           static_cast<std::streamsize>(to_read));
-                size_t actual = static_cast<size_t>(input.gcount());
-                if (actual == 0) break;
-                writer.pushFileData(std::span<const uint8_t>(buf.data(), actual));
-                bytes_read += actual;
-
-                while (true) {
-                    if (detail_stream_cancel::is_cancel_requested()) {
-                        return abort_compress_dir("cancelled");
-                    }
-                    auto out = writer.pullOutput();
-                    if (out.empty()) break;
-                    output.write(reinterpret_cast<const char*>(out.data()),
-                                 static_cast<std::streamsize>(out.size()));
-                    total_written += out.size();
-                    writer.consumeOutput(out.size());
-                }
-            }
-
-            if (file.file_size == 0) {
-                writer.pushFileData(std::span<const uint8_t>{});
-                while (true) {
-                    if (detail_stream_cancel::is_cancel_requested()) {
-                        return abort_compress_dir("cancelled");
-                    }
-                    auto out = writer.pullOutput();
-                    if (out.empty()) break;
-                    output.write(reinterpret_cast<const char*>(out.data()),
-                                 static_cast<std::streamsize>(out.size()));
-                    total_written += out.size();
-                    writer.consumeOutput(out.size());
-                }
-            }
-
-            writer.endFile();
-
-            // Drain writer output
-            while (true) {
-                if (detail_stream_cancel::is_cancel_requested()) {
-                    return abort_compress_dir("cancelled");
-                }
-                auto out = writer.pullOutput();
-                if (out.empty()) break;
-                output.write(reinterpret_cast<const char*>(out.data()),
-                             static_cast<std::streamsize>(out.size()));
-                total_written += out.size();
-                writer.consumeOutput(out.size());
-            }
-        }
-
-        writer.finish();
-
-        // Final drain
-        while (true) {
-            if (detail_stream_cancel::is_cancel_requested()) {
-                return abort_compress_dir("cancelled");
-            }
-            auto out = writer.pullOutput();
-            if (out.empty()) break;
-            output.write(reinterpret_cast<const char*>(out.data()),
-                         static_cast<std::streamsize>(out.size()));
-            total_written += out.size();
-            writer.consumeOutput(out.size());
-        }
-    } catch (const std::exception& e) {
-        return abort_compress_dir(e.what());
-    }
-    auto comp_u32 = static_cast<uint32_t>(std::min<uint64_t>(total_written, UINT32_MAX));
-    wcx::patchCompressedSize(output, comp_u32);
-    output.flush();
-    if (!output.good()) {
-        result.error_message = "Cannot flush staged output file";
-        output.close();
-        remove_path_best_effort(path_part);
-        auto t1 = std::chrono::high_resolution_clock::now();
-        result.time_ms =
-            std::chrono::duration<double, std::milli>(t1 - t0).count();
-        return result;
-    }
-    output.close();
-    std::string commit_err;
-    if (!commit_staged_to_final(path_part, path_final, commit_err)) {
-        result.error_message = "Cannot commit output: " + commit_err;
-        auto t1 = std::chrono::high_resolution_clock::now();
-        result.time_ms =
-            std::chrono::duration<double, std::milli>(t1 - t0).count();
-        return result;
-    }
-
-    auto t1 = std::chrono::high_resolution_clock::now();
-    result.time_ms =
-        std::chrono::duration<double, std::milli>(t1 - t0).count();
-    result.original_size = total_original;
-    result.compressed_size = total_written;
-    result.compression_ratio =
-        total_original > 0
-            ? static_cast<double>(total_written) / total_original
-            : 0.0;
-    result.success = true;
-    return result;
-}
-
-auto decompressAndUnpackToDisk(const std::string& input_path,
-                                const std::string& output_dir) -> CompressResult {
-    CompressResult result;
-
-    auto t0 = std::chrono::high_resolution_clock::now();
-
-    auto file_reader = std::make_unique<archiver::FileReader>(input_path);
-    if (file_reader->size() == 0) {
-        result.error_message = "Cannot open archive: " + input_path;
-        return result;
-    }
-
-    std::vector<uint8_t> archive_data(file_reader->size());
-    if (!archive_data.empty()) {
-        auto read_n =
-            file_reader->read(0, std::span<uint8_t>(archive_data.data(), archive_data.size()));
-        if (read_n != archive_data.size()) {
-            result.error_message = "Failed to read archive payload";
-            return result;
-        }
-    }
-
-    auto pack_payload_opt =
-        resolve_wcx_directory_archive_inner_pack(input_path, archive_data, result);
-    if (!pack_payload_opt) {
-        return result;
-    }
-    std::vector<uint8_t> pack_payload = std::move(*pack_payload_opt);
-
-    auto reader = std::make_unique<VectorReader>(pack_payload);
-    archiver::PackReader pack_reader(std::move(reader));
-    const auto& entries = pack_reader.getEntries();
-
-    if (entries.empty()) {
-        result.error_message = "Empty archive";
-        return result;
-    }
-
-    fs::path out_dir(output_dir);
-    std::error_code ec;
-    fs::create_directories(out_dir, ec);
-
-    uint64_t total_original = 0;
-    uint64_t total_written = 0;
-
-    for (size_t i = 0; i < entries.size(); ++i) {
-        auto pipeline = pack_reader.extractStream(i);
-        if (!pipeline) continue;
-
-        fs::path out_path = out_dir / entries[i].filepath;
-        fs::create_directories(out_path.parent_path(), ec);
-        if (ec) {
-            result.error_message = "Failed to create directory: " +
-                                   out_path.parent_path().string();
-            continue;
-        }
-
-        std::ofstream output(out_path,
-                             std::ios::binary | std::ios::trunc);
-        if (!output) continue;
-
-        total_original += entries[i].original_size;
-        while (true) {
-            if (detail_stream_cancel::is_cancel_requested()) {
-                result.error_message = "cancelled";
-                result.success = false;
-                output.close();
-                return result;
-            }
-            auto chunk = pipeline->pull();
-            if (chunk.empty()) break;
-            auto v = chunk.view();
-            output.write(reinterpret_cast<const char*>(v.data()),
-                         static_cast<std::streamsize>(v.size()));
-            total_written += v.size();
-        }
-    }
-
-    auto t1 = std::chrono::high_resolution_clock::now();
-    result.time_ms =
-        std::chrono::duration<double, std::milli>(t1 - t0).count();
-    result.original_size = total_original;
-    result.compressed_size = total_written;
-    result.compression_ratio =
-        total_original > 0
-            ? static_cast<double>(total_written) / total_original
             : 0.0;
     result.success = true;
     return result;

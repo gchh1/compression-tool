@@ -1,3 +1,0 @@
-D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E rm -f CMakeFiles\test_algorithm_comparison.dir/objects.a
-D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc CMakeFiles\test_algorithm_comparison.dir/objects.a @CMakeFiles\test_algorithm_comparison.dir\objects1.rsp
-D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe -O3 -DNDEBUG -Wl,--whole-archive CMakeFiles\test_algorithm_comparison.dir/objects.a -Wl,--no-whole-archive -o ..\bin\test_algorithm_comparison.exe -Wl,--out-implib,libtest_algorithm_comparison.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\test_algorithm_comparison.dir\linkLibs.rsp

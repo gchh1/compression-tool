@@ -39,6 +39,9 @@ class DataChunk {
     auto size() const -> size_t { return size_; }
     auto empty() const -> bool { return size_ == 0; }
 
+    /// Shared ownership handle for zero-copy async write (e.g. BackgroundWriter).
+    auto owner() const -> std::shared_ptr<const std::vector<uint8_t>> { return owner_; }
+
    private:
     std::shared_ptr<const std::vector<uint8_t>> owner_;
     const uint8_t* data_{nullptr};

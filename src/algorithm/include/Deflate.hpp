@@ -104,6 +104,20 @@ class Deflate : public AlgorithmBase {
     size_t offset_bits_{0};
     size_t length_bits_{0};
     bool nonflag_header_emitted_{false};
+
+    // ============================================================
+    // [VIZ] Visualization tracking fields — restored from 8672f99
+    // ============================================================
+    uint32_t input_pos_{0};
+    uint32_t block_index_{0};
+    uint32_t block_input_start_{0};
+    uint32_t block_literal_count_{0};
+    uint32_t block_match_count_{0};
+    size_t block_output_start_{0};  // writer bytes at block start
+    // ============================================================
+    // [VIZ END]
+    // ============================================================
+
     // ===================================
     // Private methods
     // ===================================

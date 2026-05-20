@@ -1,9 +1,1 @@
-"""Page-level GUI view widgets."""
-
-__all__ = [
-    "analysis_view",
-    "comparison_view",
-    "compression_view",
-    "dashboard_view",
-    "network_view",
-]
+"""Page-level GUI view widgets and visualizer sub-packages."""

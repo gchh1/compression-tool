@@ -126,7 +126,7 @@ auto buildHeaderBytes(uint8_t algo_code, uint32_t original_size,
     return out;
 }
 
-auto patchCompressedSize(std::ofstream& output, uint32_t compressed_size)
+auto patchCompressedSize(std::ostream& output, uint32_t compressed_size)
     -> bool {
     if (!output) return false;
     output.seekp(10, std::ios::beg);  // offset of compressed_size

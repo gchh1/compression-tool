@@ -7,22 +7,13 @@
 #include <pybind11/stl.h>
 #include <pybind11/functional.h>
 
-#include "ICompressor.hpp"
-#include "DeflateCompressor.hpp"
-#include "LZSSCompressor.hpp"
-#include "LZDPCompressor.hpp"
-#include "DPFlateCompressor.hpp"
-#include "GzipCompressor.hpp"
-#include "BrotliCompressor.hpp"
-#include "ZstdCompressor.hpp"
-#include "Archiver.hpp"
 #include "api.hpp"
 #include "AlgorithmFactory.hpp"
+#include "LZDP.hpp"
 #include "DebugLog.hpp"
 
 namespace py = pybind11;
 using namespace compressor::core;
-using namespace compressor::archiver;
 
 namespace {
 
@@ -86,140 +77,6 @@ PYBIND11_MODULE(core_engine, m) {
           "Disable native debug log output.");
     // === DEBUG_BLOCK_END ===
 
-    // ===== 数据结构 =====
-
-    py::class_<CompressorResult>(m, "CompressorResult")
-        .def(py::init<>())
-        .def_property(
-            "data",
-            [](const CompressorResult& r) { return vector_to_pybytes(r.data); },
-            [](CompressorResult& r, const py::object& ob) {
-                assign_byte_vector_from_buffer(r.data, ob);
-            })
-        .def_readwrite("original_size", &CompressorResult::original_size)
-        .def_readwrite("compressed_size", &CompressorResult::compressed_size)
-        .def_readwrite("compression_ratio", &CompressorResult::compression_ratio)
-        .def_readwrite("time_ms", &CompressorResult::time_ms)
-        .def_readwrite("success", &CompressorResult::success)
-        .def_readwrite("error_message", &CompressorResult::error_message);
-
-
-    // ===== 压缩器接口 =====
-
-    py::class_<ICompressor, std::shared_ptr<ICompressor>>(m, "ICompressor")
-        .def(
-            "compress",
-            [](ICompressor& self, py::buffer buf) {
-                return self.compress(buffer_to_u8vec(buf));
-            })
-        .def(
-            "decompress",
-            [](ICompressor& self, py::buffer buf) {
-                return self.decompress(buffer_to_u8vec(buf));
-            })
-        .def("get_algorithm_name", &ICompressor::get_algorithm_name);
-
-    py::class_<DeflateCompressor, ICompressor,
-               std::shared_ptr<DeflateCompressor>>(m, "DeflateCompressor")
-        .def(py::init<>())
-        .def("set_search_size", &DeflateCompressor::set_search_size)
-        .def("get_search_size", &DeflateCompressor::get_search_size)
-        .def("set_min_match", &DeflateCompressor::set_min_match)
-        .def("get_min_match", &DeflateCompressor::get_min_match)
-        .def("set_max_chain_length", &DeflateCompressor::set_max_chain_length)
-        .def("get_max_chain_length", &DeflateCompressor::get_max_chain_length)
-        .def("set_use_3hfmtree", &DeflateCompressor::set_use_3hfmtree)
-        .def("get_use_3hfmtree", &DeflateCompressor::get_use_3hfmtree)
-        .def("set_huffman_chunk_bits", &DeflateCompressor::set_huffman_chunk_bits)
-        .def("get_huffman_chunk_bits", &DeflateCompressor::get_huffman_chunk_bits)
-        .def("set_huffman_offset_chunk_bits", &DeflateCompressor::set_huffman_offset_chunk_bits)
-        .def("set_huffman_length_chunk_bits", &DeflateCompressor::set_huffman_length_chunk_bits)
-        .def("get_huffman_offset_chunk_bits", &DeflateCompressor::get_huffman_offset_chunk_bits)
-        .def("get_huffman_length_chunk_bits", &DeflateCompressor::get_huffman_length_chunk_bits)
-        .def("set_lookahead_size", &DeflateCompressor::set_lookahead_size)
-        .def("get_lookahead_size", &DeflateCompressor::get_lookahead_size)
-        .def("set_dp_sub_match_max", &DeflateCompressor::set_dp_sub_match_max)
-        .def("get_dp_sub_match_max", &DeflateCompressor::get_dp_sub_match_max)
-        .def("set_match_engine", &DeflateCompressor::set_match_engine)
-        .def("get_match_engine", &DeflateCompressor::get_match_engine)
-        .def("set_use_flag_encoding", &DeflateCompressor::set_use_flag_encoding)
-        .def("get_use_flag_encoding", &DeflateCompressor::get_use_flag_encoding)
-        // Override base bindings: derived ``compress``/``decompress`` shadow ICompressor lambdas unless
-        // buffer overloads are registered last (pybind tries overloads in reverse order).
-        .def(
-            "compress",
-            [](DeflateCompressor& self, py::buffer buf) {
-                return self.compress(buffer_to_u8vec(buf));
-            })
-        .def(
-            "decompress",
-            [](DeflateCompressor& self, py::buffer buf) {
-                return self.decompress(buffer_to_u8vec(buf));
-            });
-
-    py::class_<LZSSCompressor, ICompressor,
-               std::shared_ptr<LZSSCompressor>>(m, "LZSSCompressor")
-        .def(py::init<>())
-        .def("set_search_size", &LZSSCompressor::set_search_size)
-        .def("get_search_size", &LZSSCompressor::get_search_size)
-        .def("set_min_match", &LZSSCompressor::set_min_match)
-        .def("get_min_match", &LZSSCompressor::get_min_match)
-        .def("set_lookahead_size", &LZSSCompressor::set_lookahead_size)
-        .def("get_lookahead_size", &LZSSCompressor::get_lookahead_size)
-        .def("set_use_flag_encoding", &LZSSCompressor::set_use_flag_encoding)
-        .def("get_use_flag_encoding", &LZSSCompressor::get_use_flag_encoding)
-        .def(
-            "compress",
-            [](LZSSCompressor& self, py::buffer buf) {
-                return self.compress(buffer_to_u8vec(buf));
-            })
-        .def(
-            "decompress",
-            [](LZSSCompressor& self, py::buffer buf) {
-                return self.decompress(buffer_to_u8vec(buf));
-            });
-
-    py::class_<LZDPCompressor, ICompressor,
-               std::shared_ptr<LZDPCompressor>>(m, "LZDPCompressor")
-        .def(py::init<>())
-        .def("set_search_size", &LZDPCompressor::set_search_size)
-        .def("get_search_size", &LZDPCompressor::get_search_size)
-        .def("set_lookahead_size", &LZDPCompressor::set_lookahead_size)
-        .def("get_lookahead_size", &LZDPCompressor::get_lookahead_size)
-        .def("set_min_match", &LZDPCompressor::set_min_match)
-        .def("get_min_match", &LZDPCompressor::get_min_match)
-        .def("set_dp_top", &LZDPCompressor::set_dp_top)
-        .def("get_dp_top", &LZDPCompressor::get_dp_top)
-        .def("set_dp_depth",
-             [](LZDPCompressor& self, size_t v) { self.set_dp_top(v); })
-        .def("get_dp_depth",
-             [](LZDPCompressor& self) { return self.get_dp_top(); })
-        .def("set_dp_range",
-             [](LZDPCompressor& self, size_t v) { self.set_dp_top(v); })
-        .def("get_dp_range",
-             [](LZDPCompressor& self) { return self.get_dp_top(); })
-        .def("set_use_flag_encoding", &LZDPCompressor::set_use_flag_encoding)
-        .def("get_use_flag_encoding", &LZDPCompressor::get_use_flag_encoding)
-        .def("set_match_engine", &LZDPCompressor::set_match_engine)
-        .def("get_match_engine", &LZDPCompressor::get_match_engine)
-        // range==0 uses compressor's dp_range_ (same knob as GUI「DP优化深度」)
-        .def(
-            "get_dp_visualization",
-            [](LZDPCompressor& self, py::buffer buf, size_t range) {
-                return self.get_dp_visualization(buffer_to_u8vec(buf), range);
-            },
-            py::arg("data"), py::arg("range") = 0)
-        .def(
-            "compress",
-            [](LZDPCompressor& self, py::buffer buf) {
-                return self.compress(buffer_to_u8vec(buf));
-            })
-        .def(
-            "decompress",
-            [](LZDPCompressor& self, py::buffer buf) {
-                return self.decompress(buffer_to_u8vec(buf));
-            });
-
     py::class_<compressor::algorithm::LZDP::Triple>(m, "LZDPTriple")
         .def_readonly("offset", &compressor::algorithm::LZDP::Triple::offset)
         .def_readonly("length", &compressor::algorithm::LZDP::Triple::length)
@@ -250,118 +107,6 @@ PYBIND11_MODULE(core_engine, m) {
         .def_readonly("input_length", &compressor::algorithm::LZDP::DPVisualization::input_length)
         .def_readonly("search_size", &compressor::algorithm::LZDP::DPVisualization::search_size)
         .def_readonly("lookahead_size", &compressor::algorithm::LZDP::DPVisualization::lookahead_size);
-
-    py::class_<DPFlateCompressor, ICompressor,
-               std::shared_ptr<DPFlateCompressor>>(m, "DPFlateCompressor")
-        .def(py::init<>())
-        .def("set_search_size", &DPFlateCompressor::set_search_size)
-        .def("get_search_size", &DPFlateCompressor::get_search_size)
-        .def("set_lookahead_size", &DPFlateCompressor::set_lookahead_size)
-        .def("get_lookahead_size", &DPFlateCompressor::get_lookahead_size)
-        .def("set_min_match", &DPFlateCompressor::set_min_match)
-        .def("get_min_match", &DPFlateCompressor::get_min_match)
-        .def("set_max_chain_length", &DPFlateCompressor::set_max_chain_length)
-        .def("get_max_chain_length", &DPFlateCompressor::get_max_chain_length)
-        .def("set_dp_depth",
-             [](DPFlateCompressor& self, size_t v) { self.set_dp_sub_match_max(v); })
-        .def("get_dp_depth",
-             [](DPFlateCompressor& self) { return self.get_dp_sub_match_max(); })
-        .def("set_dp_sub_match_max", &DPFlateCompressor::set_dp_sub_match_max)
-        .def("get_dp_sub_match_max", &DPFlateCompressor::get_dp_sub_match_max)
-        .def("set_match_engine", &DPFlateCompressor::set_match_engine)
-        .def("get_match_engine", &DPFlateCompressor::get_match_engine)
-        .def("set_use_flag_encoding", &DPFlateCompressor::set_use_flag_encoding)
-        .def("get_use_flag_encoding", &DPFlateCompressor::get_use_flag_encoding)
-        .def("set_use_3hfmtree", &DPFlateCompressor::set_use_3hfmtree)
-        .def("get_use_3hfmtree", &DPFlateCompressor::get_use_3hfmtree)
-        .def("set_huffman_chunk_bits", &DPFlateCompressor::set_huffman_chunk_bits)
-        .def("get_huffman_chunk_bits", &DPFlateCompressor::get_huffman_chunk_bits)
-        .def("set_huffman_offset_chunk_bits", &DPFlateCompressor::set_huffman_offset_chunk_bits)
-        .def("set_huffman_length_chunk_bits", &DPFlateCompressor::set_huffman_length_chunk_bits)
-        .def("get_huffman_offset_chunk_bits", &DPFlateCompressor::get_huffman_offset_chunk_bits)
-        .def("get_huffman_length_chunk_bits", &DPFlateCompressor::get_huffman_length_chunk_bits)
-        .def(
-            "compress",
-            [](DPFlateCompressor& self, py::buffer buf) {
-                return self.compress(buffer_to_u8vec(buf));
-            })
-        .def(
-            "decompress",
-            [](DPFlateCompressor& self, py::buffer buf) {
-                return self.decompress(buffer_to_u8vec(buf));
-            });
-
-    py::class_<GzipCompressor, ICompressor,
-               std::shared_ptr<GzipCompressor>>(m, "GzipCompressor")
-        .def(py::init<>())
-        .def("set_compression_level", &GzipCompressor::set_compression_level)
-        .def("get_compression_level", &GzipCompressor::get_compression_level)
-        .def(
-            "compress",
-            [](GzipCompressor& self, py::buffer buf) {
-                return self.compress(buffer_to_u8vec(buf));
-            })
-        .def(
-            "decompress",
-            [](GzipCompressor& self, py::buffer buf) {
-                return self.decompress(buffer_to_u8vec(buf));
-            });
-
-    py::class_<BrotliCompressor, ICompressor,
-               std::shared_ptr<BrotliCompressor>>(m, "BrotliCompressor")
-        .def(py::init<>())
-        .def("set_window_size", &BrotliCompressor::set_window_size)
-        .def("get_window_size", &BrotliCompressor::get_window_size)
-        .def("set_min_match", &BrotliCompressor::set_min_match)
-        .def("get_min_match", &BrotliCompressor::get_min_match)
-        .def("set_max_chain_length", &BrotliCompressor::set_max_chain_length)
-        .def("get_max_chain_length", &BrotliCompressor::get_max_chain_length)
-        .def(
-            "compress",
-            [](BrotliCompressor& self, py::buffer buf) {
-                return self.compress(buffer_to_u8vec(buf));
-            })
-        .def(
-            "decompress",
-            [](BrotliCompressor& self, py::buffer buf) {
-                return self.decompress(buffer_to_u8vec(buf));
-            });
-
-    py::class_<ZstdCompressor, ICompressor,
-               std::shared_ptr<ZstdCompressor>>(m, "ZstdCompressor")
-        .def(py::init<>())
-        .def("set_compression_level", &ZstdCompressor::set_compression_level)
-        .def("get_compression_level", &ZstdCompressor::get_compression_level)
-        .def(
-            "compress",
-            [](ZstdCompressor& self, py::buffer buf) {
-                return self.compress(buffer_to_u8vec(buf));
-            })
-        .def(
-            "decompress",
-            [](ZstdCompressor& self, py::buffer buf) {
-                return self.decompress(buffer_to_u8vec(buf));
-            });
-
-    // ===== 打包器 File 结构体 =====
-
-    py::class_<File>(m, "File")
-        .def(py::init<>())
-        .def_readwrite("filepath", &File::filepath)
-        .def_property(
-            "context",
-            [](const File& f) { return vector_to_pybytes(f.context); },
-            [](File& f, const py::object& ob) {
-                assign_byte_vector_from_buffer(f.context, ob);
-            });
-
-    // ===== 打包器 =====
-
-    py::class_<Archiver>(m, "Archiver")
-        .def_static("pack", &Archiver::pack)
-        .def_static(
-            "unpack",
-            [](py::buffer buf) { return Archiver::unpack(buffer_to_u8vec(buf)); });
 
     // ===== 流式分块 Pipeline API =====
 
@@ -561,33 +306,26 @@ PYBIND11_MODULE(core_engine, m) {
           "max_chain_length; lookahead caps LZ match length, max 258 for valid DEFLATE). "
           "LZDP: LzdpWholeFileParams. DPFlate: DpflatePipelineParams.");
 
-    m.def("pipeline_compress_directory",
-          [](const std::string& dir_path,
+    // ============================================================
+    // [VIZ] compressFileWithViz — generates .viz file alongside compression
+    // ============================================================
+    m.def("pipeline_compress_file_with_viz",
+          [](const std::string& input_path,
              const std::string& output_path,
+             const std::string& viz_path,
              const std::vector<compressor::core::AlgorithmID>& chain,
-             size_t stream_chunk_bytes,
-             uint32_t file_compress_opts,
-             const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
-             const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p,
-             const std::optional<compressor::core::DeflatePipelineParams>& deflate_p)
+             size_t stream_chunk_bytes)
               -> compressor::api::CompressResult {
-              const compressor::core::LzdpWholeFileParams* p =
-                  lzdp_wf.has_value() ? &lzdp_wf.value() : nullptr;
-              const compressor::core::DpflatePipelineParams* d =
-                  dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
-              const compressor::core::DeflatePipelineParams* df =
-                  deflate_p.has_value() ? &deflate_p.value() : nullptr;
-              return compressor::api::compressDirectory(dir_path, output_path, chain,
-                                                       stream_chunk_bytes,
-                                                       file_compress_opts, p, d, df);
+              return compressor::api::compressFileWithViz(input_path, output_path,
+                                                            viz_path, chain,
+                                                            stream_chunk_bytes);
           },
-          py::arg("dir_path"), py::arg("output_path"), py::arg("chain"),
+          py::arg("input_path"), py::arg("output_path"), py::arg("viz_path"),
+          py::arg("chain"),
           py::arg("stream_chunk_bytes") = size_t{0},
-          py::arg("file_compress_opts") = uint32_t{0},
-          py::arg("lzdp_whole_file") = std::nullopt,
-          py::arg("dpflate_pipeline") = std::nullopt,
-          py::arg("deflate_pipeline") = std::nullopt,          "Streaming compress a directory tree to one WCX (folder flag); same optional params as "
-          "pipeline_compress_file.");
+          "Compress a file and write visualization events to viz_path (.viz v2 format). "
+          "The compress algorithm must inherit from AlgorithmBase (e.g. DPFlate, Deflate, Brotli).");
+    // ============================================================
 
     m.def("pipeline_decompress_file",
           [](const std::string& input_path,

@@ -23,12 +23,6 @@ auto resolve_wcx_file_stream_payload_length(const std::string& input_path,
                                             CompressResult& result)
     -> std::optional<uint64_t>;
 
-/// Directory unpack: require `unpack_wcx` success; return inner Pack bytes or fail.
-auto resolve_wcx_directory_archive_inner_pack(const std::string& input_path,
-                                              const std::vector<uint8_t>& archive_data,
-                                              CompressResult& result)
-    -> std::optional<std::vector<uint8_t>>;
-
 }  // namespace compressor::archiver
 
 #endif  // __EMSCRIPTEN__

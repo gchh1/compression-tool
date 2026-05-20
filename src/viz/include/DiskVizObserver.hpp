@@ -32,7 +32,7 @@ public:
 private:
     static constexpr uint32_t kMagic = 0x305A4956;
     static constexpr uint32_t kVersion = 2;
-    static constexpr uint32_t kNumEventTypes = 4;
+    static constexpr uint32_t kNumEventTypes = 5;
     static constexpr size_t kMaxPayloadSize = 319;
     static constexpr size_t kChunkSize = 65536;  // 64 KB
 

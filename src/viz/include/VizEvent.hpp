@@ -40,10 +40,20 @@ struct DPStateEvent {
     uint16_t match_offset;
     uint16_t match_length;
     uint8_t  is_chosen;       // 1 = on optimal path
+    uint8_t  reachable;       // 1 = this position is reachable
+};
+
+struct DPCandidateEvent {
+    uint32_t position;        // absolute byte position in original data
+    uint16_t offset;          // match distance (0 = literal)
+    uint16_t length;          // match length (offset>0) or 0 (literal)
+    uint8_t  literal;         // literal byte value (offset==0)
+    uint8_t  is_chosen;       // 1 = this candidate is on the optimal path
 };
 
 using VizEvent = std::variant<MatchEvent, BlockBoundary,
-                               HuffmanTreeBuilt, DPStateEvent>;
+                               HuffmanTreeBuilt, DPStateEvent,
+                               DPCandidateEvent>;
 
 // ── Observer interface ────────────────────────────────────
 
@@ -102,7 +112,18 @@ inline size_t serializeEvent(const VizEvent& event, uint8_t* out) {
             memcpy(out + off, &e.match_offset, 2);   off += 2;
             memcpy(out + off, &e.match_length, 2);   off += 2;
             out[off] = e.is_chosen;                   off += 1;
-            return off;  // 18 bytes
+            out[off] = e.reachable;                   off += 1;
+            return off;  // 19 bytes
+        }
+        else if constexpr (std::is_same_v<T, DPCandidateEvent>) {
+            out[0] = 4;
+            size_t off = 1;
+            memcpy(out + off, &e.position, 4);       off += 4;
+            memcpy(out + off, &e.offset, 2);          off += 2;
+            memcpy(out + off, &e.length, 2);          off += 2;
+            out[off] = e.literal;                      off += 1;
+            out[off] = e.is_chosen;                    off += 1;
+            return off;  // 11 bytes
         }
     }, event);
 }
@@ -146,7 +167,17 @@ inline size_t serializeEventPayload(const VizEvent& event, uint8_t* out) {
             memcpy(out + off, &e.match_offset, 2);   off += 2;
             memcpy(out + off, &e.match_length, 2);   off += 2;
             out[off] = e.is_chosen;                   off += 1;
-            return off;  // 17 bytes
+            out[off] = e.reachable;                   off += 1;
+            return off;  // 18 bytes
+        }
+        else if constexpr (std::is_same_v<T, DPCandidateEvent>) {
+            size_t off = 0;
+            memcpy(out + off, &e.position, 4);       off += 4;
+            memcpy(out + off, &e.offset, 2);          off += 2;
+            memcpy(out + off, &e.length, 2);          off += 2;
+            out[off] = e.literal;                      off += 1;
+            out[off] = e.is_chosen;                    off += 1;
+            return off;  // 10 bytes
         }
     }, event);
 }

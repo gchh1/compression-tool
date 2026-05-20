@@ -288,6 +288,30 @@ auto LZSS_OutOfCore::handleCollectInput(AlgorithmStatus& status, bool is_last_ch
     triples_ = std::move(core_result.triples);
     emitted_tokens_ = 0;
 
+    // Emit MatchEvent for every triple + BlockBoundary
+    {
+        uint32_t pos = 0;
+        uint32_t lit_count = 0;
+        uint32_t match_count = 0;
+        for (const auto& t : triples_) {
+            if (t.offset == 0) {
+                notifyObservers(MatchEvent{pos, 0, 0, t.literal});
+                pos += 1;
+                lit_count++;
+            } else {
+                notifyObservers(MatchEvent{pos,
+                                           static_cast<uint16_t>(t.offset),
+                                           static_cast<uint16_t>(t.length), 0});
+                pos += static_cast<uint32_t>(t.length);
+                match_count++;
+            }
+        }
+        notifyObservers(BlockBoundary{0, 0,
+                                      static_cast<uint32_t>(total_in_len_),
+                                      lit_count, match_count, 0});
+    }
+    notifyBlockFinish();
+
     state_ = State::EMIT_TOKENS;
 }
 
@@ -376,6 +400,7 @@ auto LZSS_OutOfCore::handleEmitTokens(AlgorithmStatus& status, bool is_last_chun
     }
 
     writer_.flush();
+    notifyCompressionFinish();
     state_ = State::DONE;
     status.done = true;
 }

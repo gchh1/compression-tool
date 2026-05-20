@@ -58,6 +58,19 @@ auto Deflate::reset(void) -> void {
 
     nonflag_header_emitted_ = false;
 
+    // ============================================================
+    // [VIZ] Reset visualization tracking — restored from 8672f99
+    // ============================================================
+    input_pos_ = 0;
+    block_index_ = 0;
+    block_input_start_ = 0;
+    block_literal_count_ = 0;
+    block_match_count_ = 0;
+    block_output_start_ = 0;
+    // ============================================================
+    // [VIZ END]
+    // ============================================================
+
     deflate_state_ = DeflateState::FIND_MATCHES;
 }
 
@@ -170,7 +183,19 @@ auto Deflate::handleFindMatches(AlgorithmStatus& status, bool is_last_chunk)
         t.match_dist = static_cast<uint16_t>(match_distance);
         token_buffer_.push_back(t);
 
+        // ============================================================
+        // [VIZ] Emit match event — restored from 8672f99
+        // ============================================================
+        notifyObservers(MatchEvent{input_pos_,
+                                   static_cast<uint16_t>(match_distance),
+                                   static_cast<uint16_t>(match_length), 0});
+        // ============================================================
+        // [VIZ END]
+        // ============================================================
+
         for (size_t i = 1; i < match_length; ++i) {
+            // [VIZ] Track input position — restored from 8672f99
+            input_pos_++;
             cursor_++;
             lookahead_--;
             if (lookahead_ >= MIN_MATCH) {
@@ -179,15 +204,31 @@ auto Deflate::handleFindMatches(AlgorithmStatus& status, bool is_last_chunk)
                 head_[hash_val] = static_cast<uint16_t>(cursor_);
             }
         }
+        // [VIZ] Track input position & match count — restored from 8672f99
+        input_pos_++;
         cursor_++;
         lookahead_--;
+        ++block_match_count_;
     } else {
         Token t;
         t.is_literal = true;
         t.code = window_[cursor_];
         token_buffer_.push_back(t);
+
+        // ============================================================
+        // [VIZ] Emit literal event — restored from 8672f99
+        // ============================================================
+        notifyObservers(
+            MatchEvent{input_pos_, 0, 0, window_[cursor_]});
+        // ============================================================
+        // [VIZ END]
+        // ============================================================
+
+        // [VIZ] Track input position & literal count — restored from 8672f99
+        input_pos_++;
         cursor_++;
         lookahead_--;
+        ++block_literal_count_;
     }
 
     if (token_buffer_.size() >= MAX_BLOCK_TOKENS) {
@@ -227,8 +268,35 @@ auto Deflate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk)
     dictionary_ = huffman_tree_->buildDictionary();
     dist_dictionary_ = dist_tree_->buildDictionary();
 
+    // ============================================================
+    // [VIZ] Emit Huffman tree built events — restored from 8672f99
+    // ============================================================
+    {
+        HuffmanTreeBuilt lit_tree_ev;
+        lit_tree_ev.block_index = block_index_;
+        lit_tree_ev.tree_type = 0;
+        lit_tree_ev.alphabet_size = DEFLATE_ALPHABET_SIZE;
+        for (size_t i = 0; i < DEFLATE_ALPHABET_SIZE && i < 286; ++i)
+            lit_tree_ev.code_lengths[i] = dictionary_[i].length;
+        notifyObservers(lit_tree_ev);
+    }
+    {
+        HuffmanTreeBuilt dist_tree_ev;
+        dist_tree_ev.block_index = block_index_;
+        dist_tree_ev.tree_type = 1;
+        dist_tree_ev.alphabet_size = DISTANCE_DICTIONARY_SIZE;
+        for (size_t i = 0; i < DISTANCE_DICTIONARY_SIZE && i < 286; ++i)
+            dist_tree_ev.code_lengths[i] = dist_dictionary_[i].length;
+        notifyObservers(dist_tree_ev);
+    }
+    // ============================================================
+    // [VIZ END]
+    // ============================================================
+
     if (writer_.ensureSpace(huffman_tree_->getTreeSize() +
                             dist_tree_->getTreeSize())) {
+        // [VIZ] Track block output start — restored from 8672f99
+        block_output_start_ = writer_.getBytesWritten();
         huffman_tree_->serializeTree(writer_);
         dist_tree_->serializeTree(writer_);
 
@@ -294,6 +362,24 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
             }
         }
 
+        // ============================================================
+        // [VIZ] Emit block boundary — restored from 8672f99
+        // ============================================================
+        {
+            BlockBoundary bb;
+            bb.block_index = block_index_;
+            bb.input_start = block_input_start_;
+            bb.input_bytes = input_pos_ - block_input_start_;
+            bb.literal_count = block_literal_count_;
+            bb.match_count = block_match_count_;
+            bb.output_bytes = writer_.getBytesWritten() - block_output_start_;
+            notifyObservers(bb);
+            notifyBlockFinish();
+        }
+        // ============================================================
+        // [VIZ END]
+        // ============================================================
+
         token_buffer_.clear();
 
         if (is_last_chunk && lookahead_ == 0) {
@@ -303,10 +389,23 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
             }
             writer_.writeBits(0, static_cast<uint8_t>(offset_bits_));
             writer_.writeBits(0, static_cast<uint8_t>(length_bits_));
+            // [VIZ] Notify compression finish — restored from 8672f99
+            notifyCompressionFinish();
             writer_.flush();
             status.done = true;
             return;
         }
+
+        // ============================================================
+        // [VIZ] Advance block index & reset tracking — restored from 8672f99
+        // ============================================================
+        ++block_index_;
+        block_input_start_ = input_pos_;
+        block_literal_count_ = 0;
+        block_match_count_ = 0;
+        // ============================================================
+        // [VIZ END]
+        // ============================================================
 
         deflate_state_ = DeflateState::FIND_MATCHES;
         return;
@@ -345,15 +444,46 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
     }
     writeHuffmanCode(writer_, dictionary_[256]);
 
+    // ============================================================
+    // [VIZ] Emit block boundary — restored from 8672f99
+    // ============================================================
+    {
+        BlockBoundary bb;
+        bb.block_index = block_index_;
+        bb.input_start = block_input_start_;
+        bb.input_bytes = input_pos_ - block_input_start_;
+        bb.literal_count = block_literal_count_;
+        bb.match_count = block_match_count_;
+        bb.output_bytes = writer_.getBytesWritten() - block_output_start_;
+        notifyObservers(bb);
+        notifyBlockFinish();
+    }
+    // ============================================================
+    // [VIZ END]
+    // ============================================================
+
     token_buffer_.clear();
     token_flush_idx_ = 0;
 
     if (is_last_chunk && lookahead_ == 0) {
+        // [VIZ] Notify compression finish — restored from 8672f99
+        notifyCompressionFinish();
         writer_.flush();
         DEBUG_LOG("[Deflate] handleFlushTokens: EOF written, done");
         status.done = true;
         return;
     }
+
+    // ============================================================
+    // [VIZ] Advance block index & reset tracking — restored from 8672f99
+    // ============================================================
+    ++block_index_;
+    block_input_start_ = input_pos_;
+    block_literal_count_ = 0;
+    block_match_count_ = 0;
+    // ============================================================
+    // [VIZ END]
+    // ============================================================
 
     deflate_state_ = DeflateState::FIND_MATCHES;
 }
@@ -373,6 +503,8 @@ auto Deflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
         if (inner_iter > 100000000) {
             DEBUG_LOG("[Deflate] SAFETY BREAK: inner_iter=%d state=%d",
                       inner_iter, (int)deflate_state_);
+            // [VIZ] Notify compression finish on safety break — restored from 8672f99
+            notifyCompressionFinish();
             status.done = true;
             return;
         }

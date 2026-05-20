@@ -8,8 +8,8 @@
 
 namespace compressor::core {
 
-/// Snapshot for ``LZDPCompressor`` when using whole-file framed file compression
-/// (must match GUI / in-memory ``compress`` defaults when unset).
+/// Snapshot for ``LZDP_OutOfCore`` when using whole-file framed file compression
+/// (must match GUI ``pipeline_compress`` defaults when unset).
 struct LzdpWholeFileParams {
     std::size_t search_size{4096};
     std::size_t lookahead_size{256};
@@ -28,12 +28,12 @@ struct DeflatePipelineParams {
     std::size_t max_chain_length{256};
 };
 
-/// Snapshot for ``DPFlateCompressor`` / file-streaming ``algorithm::DPFlate`` (must match GUI).
+/// Snapshot for file-streaming ``algorithm::DPFlate`` (must match GUI).
 struct DpflatePipelineParams {
     std::size_t search_size{4096};
     std::size_t lookahead_size{256};
     std::size_t min_match{0};
-    /// Passed as ``dp_top`` to ``algorithm::DPFlate`` ctor (same as ``DPFlateCompressor::max_chain_length_``).
+    /// Passed as ``dp_top`` to ``algorithm::DPFlate`` ctor.
     std::size_t max_chain_length{256};
     std::size_t dp_sub_match_max{6};
     int match_engine{1};

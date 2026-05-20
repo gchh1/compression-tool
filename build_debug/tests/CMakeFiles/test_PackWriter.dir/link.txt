@@ -1,3 +1,0 @@
-D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E rm -f CMakeFiles\test_PackWriter.dir/objects.a
-D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc CMakeFiles\test_PackWriter.dir/objects.a @CMakeFiles\test_PackWriter.dir\objects1.rsp
-D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe -g -Wl,--whole-archive CMakeFiles\test_PackWriter.dir/objects.a -Wl,--no-whole-archive -o ..\bin\test_PackWriter.exe -Wl,--out-implib,libtest_PackWriter.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\test_PackWriter.dir\linkLibs.rsp
