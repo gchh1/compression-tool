@@ -7,14 +7,9 @@
 #include <pybind11/stl.h>
 #include <pybind11/functional.h>
 
-#include "ICompressor.hpp"
-#include "DeflateCompressor.hpp"
-#include "LZSSCompressor.hpp"
-#include "LZDPCompressor.hpp"
-#include "DPFlateCompressor.hpp"
+#include "GuiCompressors.hpp"
 #include "GzipCompressor.hpp"
-#include "BrotliCompressor.hpp"
-#include "ZstdCompressor.hpp"
+#include "Visualization.hpp"
 #include "Archiver.hpp"
 #include "api.hpp"
 #include "AlgorithmFactory.hpp"
@@ -220,36 +215,44 @@ PYBIND11_MODULE(core_engine, m) {
                 return self.decompress(buffer_to_u8vec(buf));
             });
 
-    py::class_<compressor::algorithm::LZDP::Triple>(m, "LZDPTriple")
-        .def_readonly("offset", &compressor::algorithm::LZDP::Triple::offset)
-        .def_readonly("length", &compressor::algorithm::LZDP::Triple::length)
-        .def_readonly("literal", &compressor::algorithm::LZDP::Triple::literal);
+    py::class_<compressor::algorithm::Triple>(m, "LZDPTriple")
+        .def_readonly("offset", &compressor::algorithm::Triple::offset)
+        .def_readonly("length", &compressor::algorithm::Triple::length)
+        .def_readonly("literal", &compressor::algorithm::Triple::literal);
 
-    py::class_<compressor::algorithm::LZDP::DPCandidate>(m, "LZDPDPCandidate")
-        .def_readonly("offset", &compressor::algorithm::LZDP::DPCandidate::offset)
-        .def_readonly("length", &compressor::algorithm::LZDP::DPCandidate::length)
-        .def_readonly("literal", &compressor::algorithm::LZDP::DPCandidate::literal)
-        .def_readonly("is_chosen", &compressor::algorithm::LZDP::DPCandidate::is_chosen);
+    py::class_<compressor::algorithm::DPCandidate>(m, "LZDPDPCandidate")
+        .def_property_readonly(
+            "offset",
+            [](const compressor::algorithm::DPCandidate& c) { return c.triple.offset; })
+        .def_property_readonly(
+            "length",
+            [](const compressor::algorithm::DPCandidate& c) { return c.triple.length; })
+        .def_property_readonly(
+            "literal",
+            [](const compressor::algorithm::DPCandidate& c) { return c.triple.literal; })
+        .def_readonly("is_chosen", &compressor::algorithm::DPCandidate::is_chosen);
 
-    py::class_<compressor::algorithm::LZDP::DPState>(m, "LZDPDPState")
-        .def_readonly("position", &compressor::algorithm::LZDP::DPState::position)
-        .def_readonly("reachable", &compressor::algorithm::LZDP::DPState::reachable)
-        .def_readonly("token_count", &compressor::algorithm::LZDP::DPState::token_count)
-        .def_readonly("predecessor", &compressor::algorithm::LZDP::DPState::predecessor)
-        .def_readonly("choice", &compressor::algorithm::LZDP::DPState::choice);
+    py::class_<compressor::algorithm::DPState>(m, "LZDPDPState")
+        .def_readonly("position", &compressor::algorithm::DPState::position)
+        .def_readonly("reachable", &compressor::algorithm::DPState::reachable)
+        .def_readonly("token_count", &compressor::algorithm::DPState::token_count)
+        .def_readonly("cost", &compressor::algorithm::DPState::cost)
+        .def_readonly("predecessor", &compressor::algorithm::DPState::predecessor)
+        .def_readonly("choice", &compressor::algorithm::DPState::choice);
 
-    py::class_<compressor::algorithm::LZDP::DPStep>(m, "LZDPDPStep")
-        .def_readonly("position", &compressor::algorithm::LZDP::DPStep::position)
-        .def_readonly("candidates", &compressor::algorithm::LZDP::DPStep::candidates)
-        .def_readonly("best_token_count", &compressor::algorithm::LZDP::DPStep::best_token_count);
+    py::class_<compressor::algorithm::DPStep>(m, "LZDPDPStep")
+        .def_readonly("position", &compressor::algorithm::DPStep::position)
+        .def_readonly("candidates", &compressor::algorithm::DPStep::candidates)
+        .def_readonly("best_cost", &compressor::algorithm::DPStep::best_cost)
+        .def_readonly("best_token_count", &compressor::algorithm::DPStep::best_token_count);
 
-    py::class_<compressor::algorithm::LZDP::DPVisualization>(m, "LZDPDPVisualization")
-        .def_readonly("steps", &compressor::algorithm::LZDP::DPVisualization::steps)
-        .def_readonly("dp_array", &compressor::algorithm::LZDP::DPVisualization::dp_array)
-        .def_readonly("optimal_path", &compressor::algorithm::LZDP::DPVisualization::optimal_path)
-        .def_readonly("input_length", &compressor::algorithm::LZDP::DPVisualization::input_length)
-        .def_readonly("search_size", &compressor::algorithm::LZDP::DPVisualization::search_size)
-        .def_readonly("lookahead_size", &compressor::algorithm::LZDP::DPVisualization::lookahead_size);
+    py::class_<compressor::algorithm::DPVisualization>(m, "LZDPDPVisualization")
+        .def_readonly("steps", &compressor::algorithm::DPVisualization::steps)
+        .def_readonly("dp_array", &compressor::algorithm::DPVisualization::dp_array)
+        .def_readonly("optimal_path", &compressor::algorithm::DPVisualization::optimal_path)
+        .def_readonly("input_length", &compressor::algorithm::DPVisualization::input_length)
+        .def_readonly("search_size", &compressor::algorithm::DPVisualization::search_size)
+        .def_readonly("lookahead_size", &compressor::algorithm::DPVisualization::lookahead_size);
 
     py::class_<DPFlateCompressor, ICompressor,
                std::shared_ptr<DPFlateCompressor>>(m, "DPFlateCompressor")
@@ -414,6 +417,14 @@ PYBIND11_MODULE(core_engine, m) {
         .def_readwrite("huffman_length_chunk_bits",
                        &compressor::core::DpflatePipelineParams::huffman_length_chunk_bits);
 
+    py::class_<compressor::core::LzssPipelineParams>(m, "LzssPipelineParams")
+        .def(py::init<>())
+        .def_readwrite("search_size", &compressor::core::LzssPipelineParams::search_size)
+        .def_readwrite("lookahead_size", &compressor::core::LzssPipelineParams::lookahead_size)
+        .def_readwrite("min_match", &compressor::core::LzssPipelineParams::min_match)
+        .def_readwrite("use_flag_encoding",
+                       &compressor::core::LzssPipelineParams::use_flag_encoding);
+
     py::class_<compressor::core::DeflatePipelineParams>(m, "DeflatePipelineParams")
         .def(py::init<>())
         .def_readwrite("search_size", &compressor::core::DeflatePipelineParams::search_size)
@@ -421,7 +432,15 @@ PYBIND11_MODULE(core_engine, m) {
                        &compressor::core::DeflatePipelineParams::lookahead_size)
         .def_readwrite("min_match", &compressor::core::DeflatePipelineParams::min_match)
         .def_readwrite("max_chain_length",
-                       &compressor::core::DeflatePipelineParams::max_chain_length);
+                       &compressor::core::DeflatePipelineParams::max_chain_length)
+        .def_readwrite("use_flag_encoding",
+                       &compressor::core::DeflatePipelineParams::use_flag_encoding)
+        .def_readwrite("use_3hfmtree",
+                       &compressor::core::DeflatePipelineParams::use_3hfmtree)
+        .def_readwrite("huffman_offset_chunk_bits",
+                       &compressor::core::DeflatePipelineParams::huffman_offset_chunk_bits)
+        .def_readwrite("huffman_length_chunk_bits",
+                       &compressor::core::DeflatePipelineParams::huffman_length_chunk_bits);
 
     py::class_<compressor::api::CompressResult>(m, "PipelineCompressResult")
         .def(py::init<>())
@@ -498,6 +517,7 @@ PYBIND11_MODULE(core_engine, m) {
              const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
              const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p,
              const std::optional<compressor::core::DeflatePipelineParams>& deflate_p,
+             const std::optional<compressor::core::LzssPipelineParams>& lzss_p,
              size_t stream_chunk_bytes)
               -> compressor::api::CompressResult {
               const compressor::core::LzdpWholeFileParams* p =
@@ -506,13 +526,16 @@ PYBIND11_MODULE(core_engine, m) {
                   dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
               const compressor::core::DeflatePipelineParams* df =
                   deflate_p.has_value() ? &deflate_p.value() : nullptr;
-              return compressor::api::compress(buffer_to_u8vec(buf), chain, p, d, df,
+              const compressor::core::LzssPipelineParams* lz =
+                  lzss_p.has_value() ? &lzss_p.value() : nullptr;
+              return compressor::api::compress(buffer_to_u8vec(buf), chain, p, d, df, lz,
                                                 stream_chunk_bytes);
           },
           py::arg("data"), py::arg("chain"),
           py::arg("lzdp_whole_file") = std::nullopt,
           py::arg("dpflate_pipeline") = std::nullopt,
           py::arg("deflate_pipeline") = std::nullopt,
+          py::arg("lzss_pipeline") = std::nullopt,
           py::arg("stream_chunk_bytes") = size_t{0},
           "Compress data using a pipeline (same optional pipeline structs as compressFile).");
 
@@ -522,6 +545,7 @@ PYBIND11_MODULE(core_engine, m) {
              const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
              const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p,
              const std::optional<compressor::core::DeflatePipelineParams>& deflate_p,
+             const std::optional<compressor::core::LzssPipelineParams>& lzss_p,
              size_t stream_chunk_bytes)
               -> compressor::api::CompressResult {
               const compressor::core::LzdpWholeFileParams* p =
@@ -530,13 +554,16 @@ PYBIND11_MODULE(core_engine, m) {
                   dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
               const compressor::core::DeflatePipelineParams* df =
                   deflate_p.has_value() ? &deflate_p.value() : nullptr;
-              return compressor::api::decompress(buffer_to_u8vec(buf), chain, p, d, df,
+              const compressor::core::LzssPipelineParams* lz =
+                  lzss_p.has_value() ? &lzss_p.value() : nullptr;
+              return compressor::api::decompress(buffer_to_u8vec(buf), chain, p, d, df, lz,
                                                  stream_chunk_bytes);
           },
           py::arg("data"), py::arg("chain"),
           py::arg("lzdp_whole_file") = std::nullopt,
           py::arg("dpflate_pipeline") = std::nullopt,
           py::arg("deflate_pipeline") = std::nullopt,
+          py::arg("lzss_pipeline") = std::nullopt,
           py::arg("stream_chunk_bytes") = size_t{0},
           "Decompress data using a pipeline (optional structs for pool / symmetry).");
 
@@ -548,7 +575,8 @@ PYBIND11_MODULE(core_engine, m) {
              uint32_t file_compress_opts,
              const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
              const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p,
-             const std::optional<compressor::core::DeflatePipelineParams>& deflate_p)
+             const std::optional<compressor::core::DeflatePipelineParams>& deflate_p,
+             const std::optional<compressor::core::LzssPipelineParams>& lzss_p)
               -> compressor::api::CompressResult {
               const compressor::core::LzdpWholeFileParams* p =
                   lzdp_wf.has_value() ? &lzdp_wf.value() : nullptr;
@@ -556,10 +584,12 @@ PYBIND11_MODULE(core_engine, m) {
                   dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
               const compressor::core::DeflatePipelineParams* df =
                   deflate_p.has_value() ? &deflate_p.value() : nullptr;
+              const compressor::core::LzssPipelineParams* lz =
+                  lzss_p.has_value() ? &lzss_p.value() : nullptr;
               return compressor::api::compressFile(input_path, output_path, chain,
                                                     stream_chunk_bytes,
                                                     file_compress_opts,
-                                                    p, d, df);
+                                                    p, d, df, lz);
           },
           py::arg("input_path"), py::arg("output_path"), py::arg("chain"),
           py::arg("stream_chunk_bytes") = size_t{0},
@@ -567,12 +597,14 @@ PYBIND11_MODULE(core_engine, m) {
           py::arg("lzdp_whole_file") = std::nullopt,
           py::arg("dpflate_pipeline") = std::nullopt,
           py::arg("deflate_pipeline") = std::nullopt,
+          py::arg("lzss_pipeline") = std::nullopt,
           "Streaming compress a file in chunks. stream_chunk_bytes is clamped to 64 KiB–128 MiB "
           "(default 1 MiB when 0); same policy as LZDP/DPFlate pipeline chunk size. "
           "Deflate: ``algorithm::Deflate`` streaming core (same interaction as DPFlate/LZDP); "
           "optional DeflatePipelineParams (search_size / lookahead_size / min_match / "
           "max_chain_length; lookahead caps LZ match length, max 258 for valid DEFLATE). "
-          "LZDP: LzdpWholeFileParams. DPFlate: DpflatePipelineParams.");
+          "LZDP: LzdpWholeFileParams. DPFlate: DpflatePipelineParams. "
+          "LZSS: LzssPipelineParams (must match GUI / LZSSCompressor knobs).");
 
     m.def("pipeline_compress_directory",
           [](const std::string& dir_path,
@@ -582,7 +614,8 @@ PYBIND11_MODULE(core_engine, m) {
              uint32_t file_compress_opts,
              const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
              const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p,
-             const std::optional<compressor::core::DeflatePipelineParams>& deflate_p)
+             const std::optional<compressor::core::DeflatePipelineParams>& deflate_p,
+             const std::optional<compressor::core::LzssPipelineParams>& lzss_p)
               -> compressor::api::CompressResult {
               const compressor::core::LzdpWholeFileParams* p =
                   lzdp_wf.has_value() ? &lzdp_wf.value() : nullptr;
@@ -590,9 +623,11 @@ PYBIND11_MODULE(core_engine, m) {
                   dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
               const compressor::core::DeflatePipelineParams* df =
                   deflate_p.has_value() ? &deflate_p.value() : nullptr;
+              const compressor::core::LzssPipelineParams* lz =
+                  lzss_p.has_value() ? &lzss_p.value() : nullptr;
               return compressor::api::compressDirectory(dir_path, output_path, chain,
                                                        stream_chunk_bytes,
-                                                       file_compress_opts, p, d, df);
+                                                       file_compress_opts, p, d, df, lz);
           },
           py::arg("dir_path"), py::arg("output_path"), py::arg("chain"),
           py::arg("stream_chunk_bytes") = size_t{0},
@@ -600,6 +635,7 @@ PYBIND11_MODULE(core_engine, m) {
           py::arg("lzdp_whole_file") = std::nullopt,
           py::arg("dpflate_pipeline") = std::nullopt,
           py::arg("deflate_pipeline") = std::nullopt,
+          py::arg("lzss_pipeline") = std::nullopt,
           "Streaming compress a directory tree to one WCX (folder flag); same optional params as "
           "pipeline_compress_file.");
 
@@ -607,13 +643,25 @@ PYBIND11_MODULE(core_engine, m) {
           [](const std::string& input_path,
              const std::string& output_path,
              const std::vector<compressor::core::AlgorithmID>& chain,
-             size_t stream_chunk_bytes)
+             size_t stream_chunk_bytes,
+             const std::optional<compressor::core::LzssPipelineParams>& lzss_p,
+             const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p,
+             const std::optional<compressor::core::DeflatePipelineParams>& deflate_p)
               -> compressor::api::CompressResult {
+              const compressor::core::LzssPipelineParams* lz =
+                  lzss_p.has_value() ? &lzss_p.value() : nullptr;
+              const compressor::core::DpflatePipelineParams* d =
+                  dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
+              const compressor::core::DeflatePipelineParams* df =
+                  deflate_p.has_value() ? &deflate_p.value() : nullptr;
               return compressor::api::decompressFile(input_path, output_path, chain,
-                                                      stream_chunk_bytes);
+                                                      stream_chunk_bytes, lz, d, df);
           },
           py::arg("input_path"), py::arg("output_path"), py::arg("chain"),
           py::arg("stream_chunk_bytes") = size_t{0},
+          py::arg("lzss_pipeline") = std::nullopt,
+          py::arg("dpflate_pipeline") = std::nullopt,
+          py::arg("deflate_pipeline") = std::nullopt,
           "WCX payload <=256MiB is read fully before decode; larger payloads use chunked reads. "
           "Decompressed output is always written in chunks to disk (stream_chunk_bytes sizes the pool).");
 

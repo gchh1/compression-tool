@@ -1,2 +1,2 @@
-D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc libcore_new.a CMakeFiles/core_new.dir/LZDPcompressor.cpp.obj CMakeFiles/core_new.dir/DPflatecompressor.cpp.obj CMakeFiles/core_new.dir/LZSScompressor.cpp.obj CMakeFiles/core_new.dir/Deflatecompressor.cpp.obj
+D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc libcore_new.a CMakeFiles/core_new.dir/LZDPcompressor.cpp.obj CMakeFiles/core_new.dir/DPflatecompressor.cpp.obj CMakeFiles/core_new.dir/LZSScompressor.cpp.obj CMakeFiles/core_new.dir/Deflatecompressor.cpp.obj CMakeFiles/core_new.dir/GuiCompressors.cpp.obj CMakeFiles/core_new.dir/ExternalCodecs.cpp.obj
 D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe libcore_new.a

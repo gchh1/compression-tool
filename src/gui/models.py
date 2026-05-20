@@ -133,7 +133,7 @@ ALGORITHM_PARAMS: dict[AlgorithmType, list[AlgorithmParamDef]] = {
         # 与 DPFlate 同款范围/步进；经典 Deflate 距离码上限 32768（与 Inflate 兼容）
         AlgorithmParamDef("search_size", "搜索窗口大小", 4096, 256, 32768, 256, " B"),
         AlgorithmParamDef("lookahead_size", "前瞻窗口大小", 256, 16, 8192, 16, " B"),
-        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 127, 1, " 0 表示使用实现默认（3）"),
+        AlgorithmParamDef("min_match", "最小匹配长度", 0, 0, 127, 1, " 0=按 offset/length 位宽自动计算 (Ob+Lb)/8+1"),
         AlgorithmParamDef("max_chain_length", "哈希链搜索深度", 256, 4, 8192, 4, ""),
         AlgorithmParamDef(
             "use_flag_encoding",

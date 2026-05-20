@@ -5,6 +5,7 @@ add_library(
     Deflate.cpp
     LZSS.cpp
     Dpflate.cpp
+    Visualization.cpp
 )
 
 target_include_directories(

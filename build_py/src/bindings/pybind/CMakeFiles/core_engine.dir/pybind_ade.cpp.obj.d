@@ -644,10 +644,6 @@ src/bindings/pybind/CMakeFiles/core_engine.dir/pybind_ade.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/winsvc.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/mcx.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/imm.h \
- D:/AAA_C/compression-tool/src/core/include/AlgorithmFactory.hpp \
- D:/AAA_C/compression-tool/src/algorithm/include/IAlgorithm.hpp \
- D:/AAA_C/compression-tool/src/utils/include/BitReader.hpp \
- D:/AAA_C/compression-tool/src/utils/include/BitWriter.hpp \
- D:/AAA_C/compression-tool/src/algorithm/include/BlockProfile.hpp \
+ D:/AAA_C/compression-tool/src/core_new/include/AlgorithmFactory.hpp \
  D:/AAA_C/compression-tool/src/ade/include/EvolutionaryAlgorithms.hpp \
  D:/AAA_C/compression-tool/src/ade/include/ParamRegressorNet.hpp

@@ -24,9 +24,14 @@ inline T calcBitWidth(T windowSize) {
     return static_cast<T>(bitwidth);
 }
 
-/// 匹配编码总位宽 Ob+Lb 对 8 严格上取整（字节数）
+/// ``min_match_len == 0`` 时按旧 ``algorithm/LZDP.hpp::get_min_match`` 规则自动计算：
+/// ``(offset_bits + length_bits) / 8 + 1``（匹配编码至少占一字节且需有实际匹配长度）。
 inline uint32_t getMinMatch(uint32_t offsetBits, uint32_t lengthBits) {
-    return ceilDiv(offsetBits + lengthBits, 8);
+    return (offsetBits + lengthBits) / 8 + 1;
+}
+
+inline size_t effectiveMinMatchLen(size_t configured, uint32_t offsetBits, uint32_t lengthBits) {
+    return configured != 0 ? configured : static_cast<size_t>(getMinMatch(offsetBits, lengthBits));
 }
 
 }  // namespace compressor::algorithm::utils

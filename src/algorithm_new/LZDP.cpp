@@ -145,6 +145,25 @@ template void LZDP::dpforward<VbByteInput, std::vector<models::DPNode>>(
 template std::vector<Triple> LZDP::dpbacktrack<std::vector<models::DPNode>>(
     std::vector<models::DPNode>&, int&, size_t);
 
+namespace {
+
+/// ``dpforward`` / ``dpbacktrack`` view with absolute indices ``[dp_base, dp_base+store.size())``.
+struct RelativeDpStore {
+    std::vector<models::DPNode>& store;
+    size_t base{0};
+
+    size_t size() const { return base + store.size(); }
+
+    models::DPNode& operator[](size_t abs) { return store.at(abs - base); }
+
+    const models::DPNode& operator[](size_t abs) const { return store.at(abs - base); }
+};
+
+}  // namespace
+
+template void LZDP::dpforward<VbByteInput, RelativeDpStore>(
+    const VbByteInput&, RelativeDpStore&, size_t, size_t);
+
 }  // namespace compressor::algorithm
 
 // ──── Pipeline ────
@@ -220,24 +239,51 @@ std::vector<uint8_t> decompress_bytes(
 
 namespace {
 
-void ensure_dp_size(std::vector<models::DPNode>& dp, size_t abs_end) {
-    if (dp.size() < abs_end + 1) {
-        dp.resize(abs_end + 1, models::DPNode{});
+void ensure_dp_abs(std::vector<models::DPNode>& dp, size_t dp_base, size_t abs_end) {
+    if (abs_end < dp_base) {
+        return;
     }
+    const size_t need = abs_end - dp_base + 1;
+    if (dp.size() < need) {
+        dp.resize(need, models::DPNode{});
+    }
+}
+
+/// After flush, keep only the frontier node at ``keep_abs`` (§1.18: release flushed DP slots).
+void shrink_dp_after_flush(std::vector<models::DPNode>& dp,
+                           size_t& dp_base,
+                           size_t keep_abs) {
+    if (keep_abs < dp_base) {
+        throw std::runtime_error("LZDP phase1: shrink keep_abs < dp_base");
+    }
+    const size_t rel = keep_abs - dp_base;
+    if (rel >= dp.size()) {
+        throw std::runtime_error("LZDP phase1: shrink keep_abs out of range");
+    }
+    models::DPNode frontier = dp[rel];
+    dp_base = keep_abs;
+    dp.clear();
+    dp.push_back(std::move(frontier));
 }
 
 void flush_dp_range(
     streaming::File_Chunk_Writer& writer,
     const std::vector<models::DPNode>& dp,
+    size_t dp_base,
     size_t abs_begin,
     size_t abs_end,
     compressor::utils::_buffer& pending) {
-    if (abs_begin >= abs_end || abs_end > dp.size()) {
+    if (abs_begin >= abs_end || abs_end <= dp_base) {
         return;
     }
+    const size_t rel_begin = abs_begin - dp_base;
+    const size_t rel_end = abs_end - dp_base;
+    if (rel_end > dp.size()) {
+        throw std::runtime_error("LZDP phase1: flush range exceeds dp_store");
+    }
     std::vector<models::DPNode> slice(
-        dp.begin() + static_cast<std::ptrdiff_t>(abs_begin),
-        dp.begin() + static_cast<std::ptrdiff_t>(abs_end));
+        dp.begin() + static_cast<std::ptrdiff_t>(rel_begin),
+        dp.begin() + static_cast<std::ptrdiff_t>(rel_end));
     writer.write_chunk(record_io::dp_nodes_to_u8(slice, pending));
 }
 
@@ -290,8 +336,8 @@ Phase1Result run_phase1_dpforward(
     }
 
     std::vector<models::DPNode> dp_store;
-    ensure_dp_size(dp_store, data_vb.size());
-    dp_store[0] = models::DPNode(0, 0, -1, Triple(0, 0, 0));
+    size_t dp_base = 0;
+    dp_store.push_back(models::DPNode(0, 0, -1, Triple(0, 0, 0)));
 
     size_t next_abs = 0;
     size_t flushed_dp_end = 0;
@@ -299,40 +345,44 @@ Phase1Result run_phase1_dpforward(
     compressor::utils::_buffer write_pending;
 
     VbByteInput input_view{data_vb, vb_base};
+    RelativeDpStore dp_view{dp_store, dp_base};
 
     auto run_forward = [&](size_t abs_begin, size_t abs_end) {
-        ensure_dp_size(dp_store, abs_end);
+        ensure_dp_abs(dp_store, dp_base, abs_end);
+        dp_view.base = dp_base;
         input_view.base = vb_base;
-        lzdp.dpforward(input_view, dp_store, abs_begin, abs_end);
+        lzdp.dpforward(input_view, dp_view, abs_begin, abs_end);
     };
 
     size_t proc_end = process_end_exclusive(vb_base, data_vb);
     run_forward(next_abs, proc_end);
-    flush_dp_range(writer, dp_store, flushed_dp_end, proc_end, write_pending);
+    flush_dp_range(writer, dp_store, dp_base, flushed_dp_end, proc_end, write_pending);
     flushed_dp_end = proc_end;
     next_abs = proc_end;
+    shrink_dp_after_flush(dp_store, dp_base, proc_end);
     try_release_front_u8(vb_base, data_vb, proc_end, config.window.search_size);
 
     while (!reader.is_end()) {
         std::vector<uint8_t> fresh = reader.read_chunk();
         data_vb.append(std::move(fresh));
-        ensure_dp_size(dp_store, vb_base + data_vb.size());
+        ensure_dp_abs(dp_store, dp_base, vb_base + data_vb.size());
 
         proc_end = process_end_exclusive(vb_base, data_vb);
         run_forward(next_abs, proc_end);
-        flush_dp_range(writer, dp_store, flushed_dp_end, proc_end, write_pending);
+        flush_dp_range(writer, dp_store, dp_base, flushed_dp_end, proc_end, write_pending);
         flushed_dp_end = proc_end;
         next_abs = proc_end;
+        shrink_dp_after_flush(dp_store, dp_base, proc_end);
         try_release_front_u8(vb_base, data_vb, proc_end, config.window.search_size);
     }
 
     proc_end = vb_base + data_vb.size();
     run_forward(next_abs, proc_end);
-    flush_dp_range(writer, dp_store, flushed_dp_end, proc_end, write_pending);
+    flush_dp_range(writer, dp_store, dp_base, flushed_dp_end, proc_end, write_pending);
 
     result.total_input_bytes = proc_end;
-    if (proc_end > 0 && dp_store.size() > proc_end) {
-        result.terminal_node = dp_store[proc_end];
+    if (proc_end >= dp_base && proc_end - dp_base < dp_store.size()) {
+        result.terminal_node = dp_store[proc_end - dp_base];
     }
     return result;
 }
@@ -349,26 +399,103 @@ void write_temp_b_reverse(
     writer.preallocate(nbytes);
 
     compressor::utils::_buffer pending;
-    std::vector<uint8_t> chunk;
-    chunk.reserve(record_io::kTripleRecordBytes * 64);
+    std::vector<uint8_t> batch;
+    batch.reserve(record_io::kTripleRecordBytes * 256);
 
     for (auto it = triples.rbegin(); it != triples.rend(); ++it) {
         auto rec = record_io::triple_to_record_bytes(*it, pending);
         if (rec.size() != record_io::kTripleRecordBytes) {
             throw std::runtime_error("Phase2: triple record size mismatch");
         }
-        chunk.insert(chunk.end(), rec.begin(), rec.end());
+        batch.insert(batch.end(), rec.begin(), rec.end());
+        if (batch.size() >= record_io::kTripleRecordBytes * 256) {
+            writer.write_chunk_reverse(batch);
+            batch.clear();
+        }
     }
 
-    if (!chunk.empty()) {
-        writer.write_chunk_reverse(chunk);
+    if (!batch.empty()) {
+        writer.write_chunk_reverse(batch);
     }
+}
+
+/// §1.19 TempA: fixed-width DP records; indexed read avoids O(n) ``dp_store`` in memory.
+class DpNodeIndexedStore {
+public:
+    void open(const std::string& temp_a_path, size_t n, models::DPNode terminal) {
+        file_.open(temp_a_path, std::ios::binary);
+        if (!file_) {
+            throw std::runtime_error("DpNodeIndexedStore: cannot open " + temp_a_path);
+        }
+        n_ = n;
+        terminal_ = std::move(terminal);
+    }
+
+    const models::DPNode& at(size_t abs_pos) {
+        if (abs_pos == n_) {
+            return terminal_;
+        }
+        if (abs_pos >= n_) {
+            throw std::runtime_error("DpNodeIndexedStore: abs_pos out of range");
+        }
+        const auto off = static_cast<std::streamoff>(
+            abs_pos * static_cast<std::streamoff>(record_io::kDPNodeRecordBytes));
+        file_.clear();
+        file_.seekg(off, std::ios::beg);
+        std::vector<uint8_t> rec(record_io::kDPNodeRecordBytes);
+        file_.read(reinterpret_cast<char*>(rec.data()),
+                   static_cast<std::streamsize>(rec.size()));
+        if (!file_ || file_.gcount() != static_cast<std::streamsize>(rec.size())) {
+            throw std::runtime_error("DpNodeIndexedStore: short read at index " +
+                                   std::to_string(abs_pos));
+        }
+        bit_pending_ = {};
+        auto nodes = record_io::parse_dp_nodes_bytes(rec, bit_pending_);
+        if (nodes.size() != 1) {
+            throw std::runtime_error("DpNodeIndexedStore: expected one DP record");
+        }
+        scratch_ = std::move(nodes[0]);
+        return scratch_;
+    }
+
+private:
+    std::ifstream file_;
+    size_t n_{0};
+    models::DPNode terminal_{};
+    models::DPNode scratch_{};
+    compressor::utils::_buffer bit_pending_{};
+};
+
+std::vector<Triple> backtrack_with_indexed_store(DpNodeIndexedStore& store, size_t n) {
+    std::vector<Triple> triples;
+    if (n == 0) {
+        return triples;
+    }
+
+    int cur_pos = static_cast<int>(n);
+    models::DPNode cur = store.at(static_cast<size_t>(cur_pos));
+
+    while (cur.pre_pos != -2) {
+        triples.push_back(cur.triple);
+        if (cur.pre_pos < 0) {
+            break;
+        }
+        cur_pos = cur.pre_pos;
+        cur = store.at(static_cast<size_t>(cur_pos));
+    }
+
+    std::reverse(triples.begin(), triples.end());
+    if (!triples.empty() && triples[0].offset == 0 && triples[0].length == 0 &&
+        triples[0].literal == 0) {
+        triples.erase(triples.begin());
+    }
+    return triples;
 }
 
 }  // namespace
 
 Phase2Result run_phase2_dpbacktrack(
-    LZDP& lzdp,
+    LZDP&,
     const Phase1Result& phase1,
     const std::string& temp_a_path,
     const std::string& temp_b_path,
@@ -385,49 +512,10 @@ Phase2Result run_phase2_dpbacktrack(
         return result;
     }
 
-    streaming::Reverse_File_Chunk_Reader ta_reader(temp_a_path, chunk_size);
-
-    std::vector<models::DPNode> dp_store(n + 1);
-    size_t filled_end = n;
-    std::vector<uint8_t> byte_carry;
-    compressor::utils::_buffer bit_pending;
-
-    while (filled_end > 0 && !ta_reader.is_end()) {
-        std::vector<uint8_t> raw = ta_reader.read_chunk();
-        if (raw.empty()) {
-            break;
-        }
-
-        auto [nodes, new_carry] =
-            record_io::u8_to_dp_nodes(raw, byte_carry, bit_pending);
-        byte_carry = std::move(new_carry);
-
-        if (nodes.empty()) {
-            continue;
-        }
-
-        const size_t begin = filled_end - nodes.size();
-        for (size_t i = 0; i < nodes.size(); ++i) {
-            dp_store[begin + i] = std::move(nodes[i]);
-        }
-        filled_end = begin;
-    }
-
-    if (!byte_carry.empty()) {
-        std::vector<uint8_t> pad;
-        auto [nodes, _] = record_io::u8_to_dp_nodes(pad, byte_carry, bit_pending);
-        if (!nodes.empty()) {
-            const size_t begin = filled_end - nodes.size();
-            for (size_t i = 0; i < nodes.size(); ++i) {
-                dp_store[begin + i] = std::move(nodes[i]);
-            }
-        }
-    }
-
-    dp_store[n] = phase1.terminal_node;
-
-    int cur_pos = 0;
-    result.triples = lzdp.dpbacktrack(dp_store, cur_pos, 0);
+    (void)chunk_size;
+    DpNodeIndexedStore dp_index;
+    dp_index.open(temp_a_path, n, phase1.terminal_node);
+    result.triples = backtrack_with_indexed_store(dp_index, n);
 
     if (result.triples.size() != result.total_tokens) {
         throw std::runtime_error("Phase2: token count mismatch");

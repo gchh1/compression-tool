@@ -222,6 +222,54 @@ Deflatecompressor.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/Deflatecompressor.cpp.s
 .PHONY : Deflatecompressor.cpp.s
 
+ExternalCodecs.obj: ExternalCodecs.cpp.obj
+.PHONY : ExternalCodecs.obj
+
+# target to build an object file
+ExternalCodecs.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/ExternalCodecs.cpp.obj
+.PHONY : ExternalCodecs.cpp.obj
+
+ExternalCodecs.i: ExternalCodecs.cpp.i
+.PHONY : ExternalCodecs.i
+
+# target to preprocess a source file
+ExternalCodecs.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/ExternalCodecs.cpp.i
+.PHONY : ExternalCodecs.cpp.i
+
+ExternalCodecs.s: ExternalCodecs.cpp.s
+.PHONY : ExternalCodecs.s
+
+# target to generate assembly for a file
+ExternalCodecs.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/ExternalCodecs.cpp.s
+.PHONY : ExternalCodecs.cpp.s
+
+GuiCompressors.obj: GuiCompressors.cpp.obj
+.PHONY : GuiCompressors.obj
+
+# target to build an object file
+GuiCompressors.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.obj
+.PHONY : GuiCompressors.cpp.obj
+
+GuiCompressors.i: GuiCompressors.cpp.i
+.PHONY : GuiCompressors.i
+
+# target to preprocess a source file
+GuiCompressors.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.i
+.PHONY : GuiCompressors.cpp.i
+
+GuiCompressors.s: GuiCompressors.cpp.s
+.PHONY : GuiCompressors.s
+
+# target to generate assembly for a file
+GuiCompressors.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.s
+.PHONY : GuiCompressors.cpp.s
+
 LZDPcompressor.obj: LZDPcompressor.cpp.obj
 .PHONY : LZDPcompressor.obj
 
@@ -289,6 +337,12 @@ help:
 	@echo ... Deflatecompressor.obj
 	@echo ... Deflatecompressor.i
 	@echo ... Deflatecompressor.s
+	@echo ... ExternalCodecs.obj
+	@echo ... ExternalCodecs.i
+	@echo ... ExternalCodecs.s
+	@echo ... GuiCompressors.obj
+	@echo ... GuiCompressors.i
+	@echo ... GuiCompressors.s
 	@echo ... LZDPcompressor.obj
 	@echo ... LZDPcompressor.i
 	@echo ... LZDPcompressor.s

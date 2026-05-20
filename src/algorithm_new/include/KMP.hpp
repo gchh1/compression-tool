@@ -31,8 +31,8 @@ std::vector<Triple> kmpSearch(
     size_t search_len,
     Iter lookahead_begin,
     size_t lookahead_len,
-    size_t dp_top,
-    size_t min_match_len)
+    uint8_t dp_top,
+    uint32_t min_match_len)
 {   
     models::TopMatch matches(dp_top);
     std::vector<size_t> next = Next(lookahead_begin, lookahead_len);//支持重叠匹配
@@ -58,12 +58,7 @@ std::vector<Triple> kmpSearch(
         return {Triple(0, 1, lookahead_begin[0])};
     }
     return matches.getTriples();
-
 }
 
-
-
-
-}
-
+}  // namespace compressor::algorithm::LZMatcher
 

@@ -10,6 +10,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "D:/AAA_C/compression-tool/src/core_new/DPflatecompressor.cpp" "src/core_new/CMakeFiles/core_new.dir/DPflatecompressor.cpp.obj" "gcc" "src/core_new/CMakeFiles/core_new.dir/DPflatecompressor.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/core_new/Deflatecompressor.cpp" "src/core_new/CMakeFiles/core_new.dir/Deflatecompressor.cpp.obj" "gcc" "src/core_new/CMakeFiles/core_new.dir/Deflatecompressor.cpp.obj.d"
+  "D:/AAA_C/compression-tool/src/core_new/ExternalCodecs.cpp" "src/core_new/CMakeFiles/core_new.dir/ExternalCodecs.cpp.obj" "gcc" "src/core_new/CMakeFiles/core_new.dir/ExternalCodecs.cpp.obj.d"
+  "D:/AAA_C/compression-tool/src/core_new/GuiCompressors.cpp" "src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.obj" "gcc" "src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/core_new/LZDPcompressor.cpp" "src/core_new/CMakeFiles/core_new.dir/LZDPcompressor.cpp.obj" "gcc" "src/core_new/CMakeFiles/core_new.dir/LZDPcompressor.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/core_new/LZSScompressor.cpp" "src/core_new/CMakeFiles/core_new.dir/LZSScompressor.cpp.obj" "gcc" "src/core_new/CMakeFiles/core_new.dir/LZSScompressor.cpp.obj.d"
   )

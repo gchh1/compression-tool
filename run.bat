@@ -6,9 +6,9 @@ if "%PROJECT_DIR:~-1%"=="\" set "PROJECT_DIR=%PROJECT_DIR:~0,-1%"
 cd /d "%PROJECT_DIR%"
 set "PYTHONPATH=src"
 set "PKG_DIR=%PROJECT_DIR%\Package\bin"
-rem Prefer ``build`` (often has vendored brotli already); ``build_py`` needs network on first configure.
-set "CMAKE_BUILD_DIR=%PROJECT_DIR%\build"
-if not exist "%CMAKE_BUILD_DIR%\CMakeCache.txt" set "CMAKE_BUILD_DIR=%PROJECT_DIR%\build_py"
+rem Prefer ``build_py`` (algorithm_new / GUI stack); fall back to ``build`` then ``build_debug``.
+set "CMAKE_BUILD_DIR=%PROJECT_DIR%\build_py"
+if not exist "%CMAKE_BUILD_DIR%\CMakeCache.txt" set "CMAKE_BUILD_DIR=%PROJECT_DIR%\build"
 if not exist "%CMAKE_BUILD_DIR%\CMakeCache.txt" set "CMAKE_BUILD_DIR=%PROJECT_DIR%\build_debug"
 set "CORE_ENGINE_DIR=%CMAKE_BUILD_DIR%\src\bindings\pybind"
 set "CORE_ENGINE_PYD=%CORE_ENGINE_DIR%\core_engine.cp312-win_amd64.pyd"

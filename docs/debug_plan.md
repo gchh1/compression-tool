@@ -216,12 +216,23 @@ target_compile_definitions(algorithm PRIVATE DEBUG_LOG_ENABLED=1)
 
 | #  | 算法   | 树选择 | 比较内容      | Flag 编码 | 有效性 | 完成与否 | 备注        |
 | -- | ---- | --- | --------- | ------- | --- | ---- | --------- |
-| L1 | LZSS | N/A | 流式压缩内容校验  | 启用      | ✅   | ✅    | 全部语料 PASS |
-| L2 | LZSS | N/A | 流式压缩内容校验  | 禁用      | ✅   | ✅    | `test_lzss_noflag` 64KB-2MB PASS |
-| L3 | LZSS | N/A | 非流式压缩内容校验 | 启用      | ✅   | ✅    | 全部语料 PASS |
-| L4 | LZSS | N/A | 非流式压缩内容校验 | 禁用      | ✅   | ✅    | `test_lzss_noflag` 64KB-2MB PASS |
-| L5 | LZSS | N/A | 解压后与原文件校验 | 启用      | ✅   | ✅    | 同 L3      |
-| L6 | LZSS | N/A | 解压后与原文件校验 | 禁用      | ✅   | ✅    | `test_lzss_noflag` 64KB-2MB PASS |
+| L1 | LZSS | N/A | 流式压缩内容校验  | 启用      | ✅   | ✅    | `test_lzss_algorithm_new_matrix`：64KB–2MB `compressFile` PASS |
+| L2 | LZSS | N/A | 流式压缩内容校验  | 禁用      | ✅   | ✅    | 同上（`LZSS_NoFlag`） |
+| L3 | LZSS | N/A | 非流式压缩内容校验 | 启用      | ✅   | ✅    | `LZSSCompressor` + `api::compress` 与内存 payload 一致 |
+| L4 | LZSS | N/A | 非流式压缩内容校验 | 禁用      | ✅   | ✅    | 同上 |
+| L5 | LZSS | N/A | 解压后与原文件校验 | 启用      | ✅   | ✅    | `decompressFile` 往返逐字节 |
+| L6 | LZSS | N/A | 解压后与原文件校验 | 禁用      | ✅   | ✅    | 同上 |
+
+**LZSS algorithm_new 一致性复测（2026-05-19）**：`build_py/bin/test_lzss_algorithm_new_matrix` → **64/64 PASS**。
+
+| 检查项 | 语料 | 结果 |
+|--------|------|------|
+| **条件 A**（mem payload == stream payload） | 64KB / 256KB / 512KB / 2MB，flag on/off | 全部 **字节完全一致**（非仅解压后相等） |
+| **L3≡api::compress** | 同上 | PASS |
+| **跨路径解压** | stream payload → `LZSSCompressor::decompress`；mem payload → `api::decompress` | PASS |
+| **流式阈值** | `compressFile`：≤256KiB 走 `compress_bytes_lzss`；>256KiB 走 `LZSSStreamingPipeline` | 两路径输出仍一致 |
+
+运行：`cmake --build build_py --target test_lzss_algorithm_new_matrix && build_py/bin/test_lzss_algorithm_new_matrix`
 
 ##### LZDP（无树选择，flag 编码适用）
 

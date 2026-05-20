@@ -6,6 +6,7 @@
 #include "Dpflate.hpp"
 #include "EncodingTriple.hpp"
 #include "HashChain.hpp"
+#include "MatchEngine.hpp"
 #include "Huffman.hpp"
 #include "Huffman_3HfMTree.hpp"
 #include "Huffman_Inflate.hpp"

@@ -149,32 +149,18 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cerrno \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/charconv.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_string.tcc \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstring \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/string.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/filesystem \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_fwd.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/system_error \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/error_constants.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stdexcept \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/MatchEngine.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/ByteView.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/Streaming.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/fstream \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/istream \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ios \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/exception \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_ptr.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/cxxabi_init_exception.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/typeinfo \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/nested_exception.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/chrono.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ratio \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/limits \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ctime \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/time.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sys/timeb.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_timeval.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_time.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/parse_numbers.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_path.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/locale \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_classes.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ios_base.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/atomicity.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/gthr.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/gthr-default.h \
@@ -184,36 +170,58 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_startup.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/signal.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_signal.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/time.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sys/timeb.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_timeval.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_time.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_compat.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_unistd.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/atomic_word.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_classes.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_classes.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/system_error \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/error_constants.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stdexcept \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/streambuf \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/streambuf.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_ios.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_facets.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cwctype \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wctype.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/ctype_base.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ios_base.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/streambuf \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/streambuf.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/streambuf_iterator.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/ctype_inline.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_facets.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_ios.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ostream \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ostream.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/istream.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/codecvt.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/basic_file.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++io.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fstream.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/span \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/filesystem \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_fwd.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/chrono.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ratio \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/limits \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ctime \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/parse_numbers.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_path.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/locale \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_facets_nonio.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/time_members.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/messages_members.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/codecvt.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_facets_nonio.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_conv.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/iomanip \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/quoted_string.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/sstream \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/istream \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ios \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_ios.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_ios.tcc \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ostream \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ostream.tcc \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/istream.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/sstream.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/codecvt \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/concurrence.h \
@@ -224,12 +232,5 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/align.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_dir.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_ops.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/fstream \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/basic_file.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++io.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fstream.tcc \
  D:/AAA_C/compression-tool/src/algorithm_new/include/EncodingTriple.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/RecordIO.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/Streaming.hpp \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/span \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array
+ D:/AAA_C/compression-tool/src/algorithm_new/include/RecordIO.hpp

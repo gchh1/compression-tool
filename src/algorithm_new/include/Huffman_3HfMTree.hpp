@@ -56,10 +56,10 @@ class Huffman_3HfMT{
 public:
     explicit Huffman_3HfMT(Huffman_3HfMTConfig config,EncodingConfig encoding_config)
         : config(config), encoding_config(encoding_config){
-            size_t dividend = (config.huffman_offset_bitwidth ) / encoding_config.offset_bits;
-            offset_remainder = encoding_config.offset_bits - dividend * encoding_config.offset_bits;
-            dividend = (config.huffman_length_bitwidth ) / encoding_config.length_bits;
-            length_remainder = encoding_config.length_bits - dividend * encoding_config.length_bits;
+            offset_remainder =
+                encoding_config.offset_bits % config.huffman_offset_bitwidth;
+            length_remainder =
+                encoding_config.length_bits % config.huffman_length_bitwidth;
         }
     ~Huffman_3HfMT() = default;
     
@@ -72,24 +72,24 @@ public:
                 uint32_t offset = t.offset;
 
                 tmp -= offset_remainder;
-                offset_tree.addSymbol(static_cast<uint32_t>(offset>>(tmp)));
-                offset &= (1<<tmp) -1;
-                while(tmp>=config.huffman_offset_bitwidth){//直到为0
+                offset_tree.addSymbol(static_cast<uint32_t>(offset >> tmp));
+                offset &= (1u << tmp) - 1u;
+                while (tmp >= config.huffman_offset_bitwidth) {
                     tmp -= config.huffman_offset_bitwidth;
-                    offset_tree.addSymbol(static_cast<uint32_t>(offset>>(tmp)));
-                    offset &= (1<<tmp) -1;
+                    offset_tree.addSymbol(static_cast<uint32_t>(offset >> tmp));
+                    offset &= (1u << tmp) - 1u;
                 }
 
                 tmp = encoding_config.length_bits;
                 uint32_t length = t.length;
-  
+
                 tmp -= length_remainder;
-                length_tree.addSymbol(static_cast<uint32_t>(length>>(tmp)));
-                length &= (1<<tmp) -1;
-                while(tmp>=config.huffman_length_bitwidth){//直到为0
+                length_tree.addSymbol(static_cast<uint32_t>(length >> tmp));
+                length &= (1u << tmp) - 1u;
+                while (tmp >= config.huffman_length_bitwidth) {
                     tmp -= config.huffman_length_bitwidth;
-                    length_tree.addSymbol(static_cast<uint32_t>(length>>(tmp)));
-                    length &= (1<<tmp) -1;
+                    length_tree.addSymbol(static_cast<uint32_t>(length >> tmp));
+                    length &= (1u << tmp) - 1u;
                 }
             }
         }

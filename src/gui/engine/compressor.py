@@ -442,12 +442,21 @@ class CompressionEngine:
             ms = (time.perf_counter() - t0) * 1000.0
             return self._make_pipeline_result(False, comp_sz, 0, ms, str(e), None)
 
-    def smart_compress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE):
+    def smart_compress(
+        self,
+        data: bytes,
+        algorithm: AlgorithmType = AlgorithmType.DEFLATE,
+        *,
+        force_memory_codec: bool = False,
+    ):
         if algorithm == AlgorithmType.TRANSFORMER:
             return self.compress(data, algorithm)
 
         if not self.available:
             raise RuntimeError("C++ core_engine not available")
+
+        if force_memory_codec:
+            return self.compress(data, algorithm)
 
         if self.should_use_streaming(len(data), algorithm):
             from gui.config.settings import get_effective_streaming_threshold_mb
@@ -614,6 +623,7 @@ class CompressionEngine:
             lzdp_wf = None
             dpflate_p = None
             deflate_p = None
+            lzss_p = None
             if algorithm == AlgorithmType.LZDP:
                 file_opts |= _FILE_COMPRESS_LZDP_WHOLE_FILE
                 lzdp_wf = self._lzdp_whole_file_params_from_cfg(
@@ -627,6 +637,10 @@ class CompressionEngine:
                 deflate_p = self._deflate_pipeline_params_from_cfg(
                     cfg_snap.get(AlgorithmType.DEFLATE, {})
                 )
+            elif algorithm == AlgorithmType.LZSS:
+                lzss_p = self._lzss_pipeline_params_from_cfg(
+                    cfg_snap.get(AlgorithmType.LZSS, {})
+                )
         logger.info(
             "[smart_compress_file] %s -> %s via %s (chunk_bytes=%d, file_opts=%d)",
             input_path,
@@ -636,7 +650,15 @@ class CompressionEngine:
             file_opts,
         )
         return self._engine.pipeline_compress_file(
-            input_path, output_path, [algo_id], chunk_bytes, file_opts, lzdp_wf, dpflate_p, deflate_p
+            input_path,
+            output_path,
+            [algo_id],
+            chunk_bytes,
+            file_opts,
+            lzdp_wf,
+            dpflate_p,
+            deflate_p,
+            lzss_p,
         )
 
     def _python_decompress_wcx_file_to_disk(
@@ -899,11 +921,26 @@ class CompressionEngine:
             AlgorithmType.DEFLATE: self._engine.AlgorithmID.INFLATE,
             AlgorithmType.LZSS: self._engine.AlgorithmID.LZSS_DECOMPRESS,
             AlgorithmType.LZDP: self._engine.AlgorithmID.LZMINE_DECOMPRESS,
-            AlgorithmType.DPFLATE: self._engine.AlgorithmID.INFLATE,
+            AlgorithmType.DPFLATE: self._engine.AlgorithmID.DPFLATE,
             AlgorithmType.BROTLI: self._engine.AlgorithmID.BROTLI_DECOMPRESS,
             AlgorithmType.ZSTD: self._engine.AlgorithmID.ZSTD_DECOMPRESS,
         }
         return mapping.get(algorithm)
+
+    def _lzss_pipeline_params_from_cfg(self, c: dict) -> object:
+        """``LzssPipelineParams`` for C++ pipeline LZSS; mirrors ``_create_compressor`` LZSS knobs."""
+        eng = self._engine
+        p = eng.LzssPipelineParams()
+        p.search_size = int(c.get("search_size", 4095))
+        p.lookahead_size = int(c.get("lookahead_size", 255))
+        p.min_match = int(c.get("min_match", 0))
+        p.use_flag_encoding = bool(int(c.get("use_flag_encoding", 1)))
+        return p
+
+    def _lzss_pipeline_params_for_file_pipeline(self):
+        with CompressionEngine._engine_op_lock:
+            c = CompressionEngine._get_config_unlocked().get(AlgorithmType.LZSS, {})
+        return self._lzss_pipeline_params_from_cfg(c)
 
     def _lzdp_whole_file_params_from_cfg(self, c: dict) -> object:
         """``LzdpWholeFileParams`` for C++ whole-file LZDP; mirrors ``_create_compressor`` LZDP knobs."""
@@ -930,6 +967,11 @@ class CompressionEngine:
         p.lookahead_size = int(c.get("lookahead_size", 256))
         p.min_match = int(c.get("min_match", 0))
         p.max_chain_length = int(c.get("max_chain_length", 256))
+        p.use_flag_encoding = bool(int(c.get("use_flag_encoding", 1)))
+        p.use_3hfmtree = bool(int(c.get("use_3hfmtree", 0)))
+        base = int(c["huffman_chunk_bits"]) if "huffman_chunk_bits" in c else 8
+        p.huffman_offset_chunk_bits = int(c.get("huffman_offset_chunk_bits", base))
+        p.huffman_length_chunk_bits = int(c.get("huffman_length_chunk_bits", base))
         return p
 
     def _deflate_pipeline_params_for_file_pipeline(self):
@@ -976,6 +1018,7 @@ class CompressionEngine:
             lzdp_wf = None
             dpflate_p = None
             deflate_p = None
+            lzss_p = None
             if algorithm == AlgorithmType.LZDP:
                 lzdp_wf = self._lzdp_whole_file_params_from_cfg(
                     cfg_snap.get(AlgorithmType.LZDP, {})
@@ -988,6 +1031,10 @@ class CompressionEngine:
                 deflate_p = self._deflate_pipeline_params_from_cfg(
                     cfg_snap.get(AlgorithmType.DEFLATE, {})
                 )
+            elif algorithm == AlgorithmType.LZSS:
+                lzss_p = self._lzss_pipeline_params_from_cfg(
+                    cfg_snap.get(AlgorithmType.LZSS, {})
+                )
 
         return self._engine.pipeline_compress(
             data,
@@ -995,6 +1042,7 @@ class CompressionEngine:
             lzdp_wf,
             dpflate_p,
             deflate_p,
+            lzss_p,
             chunk_bytes,
         )
 
@@ -1015,6 +1063,7 @@ class CompressionEngine:
         lzdp_wf = None
         dpflate_p = None
         deflate_p = None
+        lzss_p = None
         if algorithm == AlgorithmType.LZDP:
             lzdp_wf = self._lzdp_whole_file_params_from_cfg(cfg_snap.get(AlgorithmType.LZDP, {}))
         elif algorithm == AlgorithmType.DPFLATE:
@@ -1025,6 +1074,8 @@ class CompressionEngine:
             deflate_p = self._deflate_pipeline_params_from_cfg(
                 cfg_snap.get(AlgorithmType.DEFLATE, {})
             )
+        elif algorithm == AlgorithmType.LZSS:
+            lzss_p = self._lzss_pipeline_params_from_cfg(cfg_snap.get(AlgorithmType.LZSS, {}))
 
         from gui.engine.decompress_log import log_decompress, summarize_result
 
@@ -1040,6 +1091,7 @@ class CompressionEngine:
             lzdp_wf,
             dpflate_p,
             deflate_p,
+            lzss_p,
             chunk_bytes,
         )
         log_decompress("pipeline_decompress_end", **summarize_result(result))
@@ -1055,6 +1107,7 @@ class CompressionEngine:
         lzdp_whole_file=None,
         dpflate_pipeline=None,
         deflate_pipeline=None,
+        lzss_pipeline=None,
     ):
         if not self.available:
             raise RuntimeError("C++ core_engine not available")
@@ -1081,6 +1134,7 @@ class CompressionEngine:
             lzdp_wf = None
             dpflate_p = None
             deflate_p = None
+            lzss_p = None
             if algorithm == AlgorithmType.LZDP:
                 opts |= _FILE_COMPRESS_LZDP_WHOLE_FILE
                 lzdp_wf = (
@@ -1106,9 +1160,25 @@ class CompressionEngine:
                         cfg_snap.get(AlgorithmType.DEFLATE, {})
                     )
                 )
+            elif algorithm == AlgorithmType.LZSS:
+                lzss_p = (
+                    lzss_pipeline
+                    if lzss_pipeline is not None
+                    else self._lzss_pipeline_params_from_cfg(
+                        cfg_snap.get(AlgorithmType.LZSS, {})
+                    )
+                )
 
         return self._engine.pipeline_compress_file(
-            input_path, output_path, [algo_id], chunk, int(opts), lzdp_wf, dpflate_p, deflate_p
+            input_path,
+            output_path,
+            [algo_id],
+            chunk,
+            int(opts),
+            lzdp_wf,
+            dpflate_p,
+            deflate_p,
+            lzss_p,
         )
 
     def pipeline_decompress_file(
@@ -1128,6 +1198,15 @@ class CompressionEngine:
             raise ValueError(f"Algorithm {algorithm.value} not supported in pipeline decompress mode")
 
         chunk = int(_get_effective_chunk_kb(algorithm, _load_app_config())) * 1024
+        lzss_p = None
+        dpflate_p = None
+        deflate_p = None
+        if algorithm == AlgorithmType.LZSS:
+            lzss_p = self._lzss_pipeline_params_for_file_pipeline()
+        elif algorithm == AlgorithmType.DPFLATE:
+            dpflate_p = self._dpflate_pipeline_params_for_file_pipeline()
+        elif algorithm == AlgorithmType.DEFLATE:
+            deflate_p = self._deflate_pipeline_params_for_file_pipeline()
 
         from gui.engine.decompress_log import log_decompress, summarize_result
 
@@ -1148,7 +1227,13 @@ class CompressionEngine:
                 input_file_bytes=in_sz,
             )
             result = self._engine.pipeline_decompress_file(
-                input_path, output_path, [decomp_id], chunk
+                input_path,
+                output_path,
+                [decomp_id],
+                chunk,
+                lzss_p,
+                dpflate_p,
+                deflate_p,
             )
             out_sz = os.path.getsize(output_path) if os.path.isfile(output_path) else -1
             fields = summarize_result(result)

@@ -31,7 +31,8 @@ struct DeflateConfig {
                    static_cast<uint8_t>(utils::calcBitWidth(lw)),
                    use_flag} {
         if (window.min_match_len == 0) {
-            window.min_match_len = 3;
+            window.min_match_len =
+                utils::getMinMatch(encoding.offset_bits, encoding.length_bits);
         }
     }
 };
@@ -42,8 +43,7 @@ public:
 
     const DeflateConfig& getConfig() const { return config_; }
 
-    std::vector<Triple> hashChainMatch(const std::vector<uint8_t>& input) const;
-
+    /// §1.6 熵编码层 only；LZ 匹配见 ``LZMatcher::greedyWholeInput`` / ``matchAtPosition``（§1.14）。
     std::vector<uint8_t> huffmanEncode(const std::vector<Triple>& triples) const {
         if (config_.huffman.use_3hfmtree) {
             Huffman_3HfMTConfig hmcfg{

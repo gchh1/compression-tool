@@ -442,7 +442,11 @@ class CompressionWorker(QThread):
 
                 try:
                     with SilentExplorer.user_compression_priority():
-                        result = engine.smart_compress(record.raw_data, record.algorithm)
+                        result = engine.smart_compress(
+                            record.raw_data,
+                            record.algorithm,
+                            force_memory_codec=web_dict_active,
+                        )
                     logger.info(
                         "[compress] memory smart_compress returned success=%s compressed_size=%s",
                         getattr(result, "success", None),

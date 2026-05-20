@@ -5,6 +5,8 @@ add_library(
     DPflatecompressor.cpp
     LZSScompressor.cpp
     Deflatecompressor.cpp
+    GuiCompressors.cpp
+    ExternalCodecs.cpp
 )
 
 target_include_directories(
@@ -17,6 +19,7 @@ target_link_libraries(
     core_new
     PUBLIC
     algorithm_new
+    z
 )
 
 target_compile_features(core_new PUBLIC cxx_std_20)

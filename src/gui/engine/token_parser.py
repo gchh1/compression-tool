@@ -190,9 +190,10 @@ class LZDPTokenParser(TokenParser):
         raw_data: bytes,
         compression_params: dict[str, int] | None = None,
     ) -> ParseResult | None:
-        try:
-            import core_engine
-        except ImportError:
+        from gui.engine.bridge import get_core_engine
+
+        core_engine = get_core_engine()
+        if core_engine is None:
             return None
 
         if len(raw_data) > LZDP_DP_VIZ_MAX_SIZE:

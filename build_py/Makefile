@@ -616,6 +616,19 @@ core_new/fast:
 .PHONY : core_new/fast
 
 #=============================================================================
+# Target rules for targets named api_new
+
+# Build rule for target.
+api_new: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 api_new
+.PHONY : api_new
+
+# fast build rule for target.
+api_new/fast:
+	$(MAKE) $(MAKESILENT) -f src\api_new\CMakeFiles\api_new.dir\build.make src/api_new/CMakeFiles/api_new.dir/build
+.PHONY : api_new/fast
+
+#=============================================================================
 # Target rules for targets named api
 
 # Build rule for target.
@@ -874,6 +887,19 @@ test_lzss_noflag: cmake_check_build_system
 test_lzss_noflag/fast:
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag.dir\build.make tests/CMakeFiles/test_lzss_noflag.dir/build
 .PHONY : test_lzss_noflag/fast
+
+#=============================================================================
+# Target rules for targets named test_lzss_algorithm_new_matrix
+
+# Build rule for target.
+test_lzss_algorithm_new_matrix: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_lzss_algorithm_new_matrix
+.PHONY : test_lzss_algorithm_new_matrix
+
+# fast build rule for target.
+test_lzss_algorithm_new_matrix/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_algorithm_new_matrix.dir\build.make tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/build
+.PHONY : test_lzss_algorithm_new_matrix/fast
 
 #=============================================================================
 # Target rules for targets named test_deflate
@@ -1266,6 +1292,19 @@ test_deflate_huffman_minimal/fast:
 .PHONY : test_deflate_huffman_minimal/fast
 
 #=============================================================================
+# Target rules for targets named test_deflate_3hm_large
+
+# Build rule for target.
+test_deflate_3hm_large: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_deflate_3hm_large
+.PHONY : test_deflate_3hm_large
+
+# fast build rule for target.
+test_deflate_3hm_large/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_3hm_large.dir\build.make tests/CMakeFiles/test_deflate_3hm_large.dir/build
+.PHONY : test_deflate_3hm_large/fast
+
+#=============================================================================
 # Target rules for targets named test_lzdp_debug
 
 # Build rule for target.
@@ -1290,6 +1329,19 @@ core_engine: cmake_check_build_system
 core_engine/fast:
 	$(MAKE) $(MAKESILENT) -f src\bindings\pybind\CMakeFiles\core_engine.dir\build.make src/bindings/pybind/CMakeFiles/core_engine.dir/build
 .PHONY : core_engine/fast
+
+#=============================================================================
+# Target rules for targets named core_engine_new
+
+# Build rule for target.
+core_engine_new: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 core_engine_new
+.PHONY : core_engine_new
+
+# fast build rule for target.
+core_engine_new/fast:
+	$(MAKE) $(MAKESILENT) -f src\bindings\pybind_new\CMakeFiles\core_engine_new.dir\build.make src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/build
+.PHONY : core_engine_new/fast
 
 # Help Target
 help:
@@ -1335,6 +1387,7 @@ help:
 	@echo ... algorithm
 	@echo ... algorithm_new
 	@echo ... api
+	@echo ... api_new
 	@echo ... archiver
 	@echo ... bench_ade_extractor
 	@echo ... brotli
@@ -1343,6 +1396,7 @@ help:
 	@echo ... brotlienc
 	@echo ... core
 	@echo ... core_engine
+	@echo ... core_engine_new
 	@echo ... core_new
 	@echo ... debug_dpflate
 	@echo ... debug_token_trace
@@ -1364,6 +1418,7 @@ help:
 	@echo ... test_algorithm_new_phase2
 	@echo ... test_cartesian_stream_matrix
 	@echo ... test_deflate
+	@echo ... test_deflate_3hm_large
 	@echo ... test_deflate_huffman_minimal
 	@echo ... test_dpflate_3hm_stream
 	@echo ... test_dpflate_bin64k_3k_stream
@@ -1375,6 +1430,7 @@ help:
 	@echo ... test_lzdp_dpflate_stream
 	@echo ... test_lzdp_memory_flag
 	@echo ... test_lzdp_memory_streaming_parity
+	@echo ... test_lzss_algorithm_new_matrix
 	@echo ... test_lzss_noflag
 	@echo ... test_lzss_noflag_debug
 	@echo ... test_lzss_noflag_minimal

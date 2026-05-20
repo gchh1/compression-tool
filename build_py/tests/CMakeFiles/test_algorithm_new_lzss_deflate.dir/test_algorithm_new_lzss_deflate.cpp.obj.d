@@ -233,12 +233,19 @@ tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/test_algorithm_new_lzss_def
  D:/AAA_C/compression-tool/src/algorithm_new/include/LZSS.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/utility \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_relops.h \
- D:/AAA_C/compression-tool/src/algorithm_new/include/LZencoding.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/MatchEngine.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/ByteView.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/Streaming.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/span \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array \
  D:/AAA_C/compression-tool/src/algorithm_new/include/BitProcessor.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/LZencoding.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Models.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/climits \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp \
  D:/AAA_C/compression-tool/src/core_new/include/Deflatecompressor.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Deflate.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman_3HfMTree.hpp \
@@ -258,12 +265,6 @@ tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/test_algorithm_new_lzss_def
  D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman_Inflate.hpp \
  D:/AAA_C/compression-tool/src/core_new/include/LZDPcompressor.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/LZDP.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/ByteView.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/Streaming.hpp \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/span \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array \
- D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/EncodingTriple.hpp \
  D:/AAA_C/compression-tool/src/core_new/include/DPflatecompressor.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Dpflate.hpp \

@@ -1,0 +1,48 @@
+[LZSSCompressor::compress] ENTER data_size=672 dict=4095 min_match=3 flag=1
+[LZSSCompressor::compress] EXIT orig=672 comp=107 ratio=0.1592 time_ms=0.04 success=1
+[LZSSCompressor::decompress] ENTER data_size=107 min_match=3 flag=1
+[LZSSCompressor::decompress] EXIT orig=107 decomp=672 time_ms=0.00 success=1
+[LZSSCompressor::compress] ENTER data_size=672 dict=4095 min_match=3 flag=0
+[LZSSCompressor::compress] EXIT orig=672 comp=103 ratio=0.1533 time_ms=0.03 success=1
+[LZSSCompressor::decompress] ENTER data_size=103 min_match=3 flag=0
+[LZSSCompressor::decompress] EXIT orig=103 decomp=672 time_ms=0.00 success=1
+[LZSSCompressor::compress] ENTER data_size=672 dict=4095 min_match=3 flag=0
+[LZSSCompressor::compress] EXIT orig=672 comp=103 ratio=0.1533 time_ms=0.06 success=1
+[LZSSCompressor::compress] ENTER data_size=384 dict=4095 min_match=3 flag=1
+[LZSSCompressor::compress] EXIT orig=384 comp=436 ratio=1.1354 time_ms=0.10 success=1
+[LZSSCompressor::decompress] ENTER data_size=436 min_match=3 flag=1
+[LZSSCompressor::decompress] EXIT orig=436 decomp=384 time_ms=0.00 success=1
+[LZSSCompressor::compress] ENTER data_size=384 dict=4095 min_match=3 flag=0
+[LZSSCompressor::compress] EXIT orig=384 comp=440 ratio=1.1458 time_ms=0.10 success=1
+[LZSSCompressor::decompress] ENTER data_size=440 min_match=3 flag=0
+[LZSSCompressor::decompress] EXIT orig=440 decomp=384 time_ms=0.00 success=1
+[LZSSCompressor::compress] ENTER data_size=384 dict=4095 min_match=3 flag=0
+[LZSSCompressor::compress] EXIT orig=384 comp=440 ratio=1.1458 time_ms=0.10 success=1
+[LZSSCompressor::compress] ENTER data_size=22300 dict=4095 min_match=3 flag=1
+[LZSSCompressor::compress] EXIT orig=22300 comp=2997 ratio=0.1344 time_ms=8.95 success=1
+[LZSSCompressor::decompress] ENTER data_size=2997 min_match=3 flag=1
+[LZSSCompressor::decompress] EXIT orig=2997 decomp=22300 time_ms=0.02 success=1
+[LZSSCompressor::compress] ENTER data_size=22300 dict=4095 min_match=3 flag=0
+[LZSSCompressor::compress] EXIT orig=22300 comp=2888 ratio=0.1295 time_ms=8.84 success=1
+[LZSSCompressor::decompress] ENTER data_size=2888 min_match=3 flag=0
+[LZSSCompressor::decompress] EXIT orig=2888 decomp=22300 time_ms=0.01 success=1
+[LZSSCompressor::compress] ENTER data_size=22300 dict=4095 min_match=3 flag=0
+[LZSSCompressor::compress] EXIT orig=22300 comp=2888 ratio=0.1295 time_ms=9.14 success=1
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=1
+[LZSSCompressor::compress] EXIT orig=65536 comp=73710 ratio=1.1247 time_ms=359.21 success=1
+[LZSSCompressor::decompress] ENTER data_size=73710 min_match=3 flag=1
+[LZSSCompressor::decompress] EXIT orig=73710 decomp=65536 time_ms=0.09 success=1
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=0
+[LZSSCompressor::compress] EXIT orig=65536 comp=74270 ratio=1.1333 time_ms=341.44 success=1
+[LZSSCompressor::decompress] ENTER data_size=74270 min_match=3 flag=0
+[LZSSCompressor::decompress] EXIT orig=74270 decomp=65536 time_ms=0.09 success=1
+[LZSSCompressor::compress] ENTER data_size=65536 dict=4095 min_match=3 flag=0
+[LZSSCompressor::compress] EXIT orig=65536 comp=74270 ratio=1.1333 time_ms=354.21 success=1
+[LZSSCompressor::compress] ENTER data_size=2097152 dict=4095 min_match=3 flag=1
+[LZSSCompressor::compress] EXIT orig=2097152 comp=951442 ratio=0.4537 time_ms=4244.97 success=1
+[LZSSCompressor::decompress] ENTER data_size=951442 min_match=3 flag=1
+[LZSSCompressor::decompress] EXIT orig=951442 decomp=2097152 time_ms=2.62 success=1
+[LZSSCompressor::compress] ENTER data_size=2097152 dict=4095 min_match=3 flag=0
+[LZSSCompressor::compress] EXIT orig=2097152 comp=947700 ratio=0.4519 time_ms=4380.16 success=1
+[LZSSCompressor::decompress] ENTER data_size=947700 min_match=3 flag=0
+[LZSSCompressor::decompress] EXIT orig=947700 decomp=2097152 time_ms=2.25 success=1

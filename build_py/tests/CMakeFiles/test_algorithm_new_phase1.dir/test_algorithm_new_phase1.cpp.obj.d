@@ -205,7 +205,6 @@ tests/CMakeFiles/test_algorithm_new_phase1.dir/test_algorithm_new_phase1.cpp.obj
  D:/AAA_C/compression-tool/src/algorithm_new/include/Models.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h \
@@ -216,7 +215,9 @@ tests/CMakeFiles/test_algorithm_new_phase1.dir/test_algorithm_new_phase1.cpp.obj
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algobase.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_algorithm_defs.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/execution_defs.h \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/EncodingTriple.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/RecordIO.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/utility \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_relops.h \
- D:/AAA_C/compression-tool/src/algorithm_new/include/pipeline/Phase1Dpforward.hpp
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_relops.h

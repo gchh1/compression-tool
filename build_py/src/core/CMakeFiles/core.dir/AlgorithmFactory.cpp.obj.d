@@ -197,8 +197,8 @@ src/core/CMakeFiles/core.dir/AlgorithmFactory.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/vector.tcc \
  D:/AAA_C/compression-tool/src/algorithm/include/Brotli.hpp \
- D:/AAA_C/compression-tool/src/algorithm/include/HuffmanTree.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/Deflate.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/HuffmanTree.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/Delta.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/Inflate.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/LZDP.hpp \

@@ -34,4 +34,5 @@ add_subdirectory("${TESTS_DIR}")
 
 if(BUILD_PYTHON)
     add_subdirectory("${BINDINGS_DIR}/pybind")
+    add_subdirectory("${BINDINGS_DIR}/pybind_new")
 endif()

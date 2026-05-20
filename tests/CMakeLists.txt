@@ -98,6 +98,18 @@ target_link_libraries(
 )
 
 add_executable(
+    test_lzss_algorithm_new_matrix
+    test_lzss_algorithm_new_matrix.cpp
+)
+
+target_link_libraries(
+    test_lzss_algorithm_new_matrix
+    PRIVATE
+    api_new
+    core_new
+)
+
+add_executable(
     test_deflate
     test_deflate.cpp
 )
@@ -495,6 +507,17 @@ add_executable(
 
 target_link_libraries(
     test_deflate_huffman_minimal
+    PRIVATE
+    algorithm_new
+)
+
+add_executable(
+    test_deflate_3hm_large
+    test_deflate_3hm_large.cpp
+)
+
+target_link_libraries(
+    test_deflate_3hm_large
     PRIVATE
     algorithm_new
 )

@@ -60,9 +60,7 @@ int main() {
     const std::string in_path = ws + "/in.bin";
     write_bytes(in_path, input);
 
-    LZDPConfig cfg(2048, 64, 3);
-    cfg.search_size = 512;
-    cfg.look_size = 64;
+    LZDPConfig cfg(512, 64, 3);
     LZDP lzdp(cfg);
 
     std::vector<compressor::algorithm::models::DPNode> dp_ref(input.size());

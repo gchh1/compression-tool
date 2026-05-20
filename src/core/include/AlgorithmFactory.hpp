@@ -26,6 +26,10 @@ struct DeflatePipelineParams {
     std::size_t lookahead_size{256};
     std::size_t min_match{0};
     std::size_t max_chain_length{256};
+    bool use_flag_encoding{true};
+    bool use_3hfmtree{false};
+    std::size_t huffman_offset_chunk_bits{8};
+    std::size_t huffman_length_chunk_bits{8};
 };
 
 /// Snapshot for ``DPFlateCompressor`` / file-streaming ``algorithm::DPFlate`` (must match GUI).

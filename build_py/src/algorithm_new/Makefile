@@ -270,6 +270,30 @@ LZSS.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.s
 .PHONY : LZSS.cpp.s
 
+Visualization.obj: Visualization.cpp.obj
+.PHONY : Visualization.obj
+
+# target to build an object file
+Visualization.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj
+.PHONY : Visualization.cpp.obj
+
+Visualization.i: Visualization.cpp.i
+.PHONY : Visualization.i
+
+# target to preprocess a source file
+Visualization.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.i
+.PHONY : Visualization.cpp.i
+
+Visualization.s: Visualization.cpp.s
+.PHONY : Visualization.s
+
+# target to generate assembly for a file
+Visualization.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.s
+.PHONY : Visualization.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -295,6 +319,9 @@ help:
 	@echo ... LZSS.obj
 	@echo ... LZSS.i
 	@echo ... LZSS.s
+	@echo ... Visualization.obj
+	@echo ... Visualization.i
+	@echo ... Visualization.s
 .PHONY : help
 
 

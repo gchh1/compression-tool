@@ -2474,16 +2474,26 @@ class MainWindow(QMainWindow):
         out = bytes(result.data)
         from gui.engine.web_dict import postprocess_after_codec
 
-        out = postprocess_after_codec(
-            out, web_dict_preprocess=bool(getattr(header, "web_dict_preprocess", False))
-        )
+        web_dict_flag = bool(getattr(header, "web_dict_preprocess", False))
+        if web_dict_flag and header.original_size and len(out) != int(header.original_size):
+            raise RuntimeError(
+                f"LZ/codec output size {len(out)} != WCX original_size {header.original_size}; "
+                "refusing web-dict decode on corrupt codec output"
+            )
+        out = postprocess_after_codec(out, web_dict_preprocess=web_dict_flag)
         if header.original_size and len(out) != int(header.original_size):
+            expected = int(header.original_size)
             log_decompress(
                 "gui_payload_size_mismatch",
-                level=logging.WARNING,
-                expected=int(header.original_size),
+                level=logging.ERROR,
+                expected=expected,
                 actual=len(out),
                 algo=header.algorithm.value,
+            )
+            raise RuntimeError(
+                f"解压结果大小 {len(out)} 与 WCX 记录的原始大小 {expected} 不一致 "
+                f"({header.algorithm.value})；请关闭 GUI 后重新编译 core_engine，"
+                "并用当前版本重新压缩后再解压"
             )
         return out
 

@@ -119,6 +119,9 @@ def decode(data: bytes) -> bytes:
     return bytes(out)
 
 
+_WEB_DICT_EXTENSIONS = frozenset({".html", ".htm", ".css", ".js", ".json"})
+
+
 def prepare_file_record_for_compression(record) -> bool:
     """Load plaintext, apply dictionary encode into ``record.raw_data``. Returns True if applied."""
     from gui.config.settings import get_use_web_resource_dict
@@ -126,6 +129,15 @@ def prepare_file_record_for_compression(record) -> bool:
     if not get_use_web_resource_dict():
         return False
     if not getattr(record, "path", None):
+        return False
+    name = (getattr(record, "name", None) or Path(record.path).name).lower()
+    ext = Path(name).suffix
+    if ext not in _WEB_DICT_EXTENSIONS:
+        logger.debug(
+            "[web_dict] skip %s: extension not in %s",
+            name,
+            ", ".join(sorted(_WEB_DICT_EXTENSIONS)),
+        )
         return False
     record.load_raw_data()
     record.plaintext_snapshot = bytes(record.raw_data)

@@ -1593,3 +1593,27 @@
 [Python::CompressionEngine.compress] LZSS data_size=60975
 [LZSSCompressor::compress] ENTER data_size=60975 dict=4095 min_match=0 flag=1
 [LZSSCompressor::compress] EXIT orig=60975 comp=22189 ratio=0.3639 time_ms=445.68 success=1
+[Python::single_compress] LZSS raw_data=60975 use_streaming=False path=D:/AAA_C/compression-tool/resources/wow.html
+[Python::CompressionEngine.compress] LZSS data_size=60975
+[LZSSCompressor::compress] ENTER data_size=60975 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=60975 comp=22189 ratio=0.3639 time_ms=431.92 success=1
+[Python::streaming] LZSS file=D:/AAA_C/compression-tool/Package/decompressed/imdb-movie-reviews-word2vec-tfidf-bow.ipynb size=2996683
+[Python::single_compress] LZSS raw_data=2996683 use_streaming=False path=D:/AAA_C/compression-tool/Package/decompressed/imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+[Python::CompressionEngine.compress] LZSS data_size=2996683
+[LZSSCompressor::compress] ENTER data_size=2996683 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=2996683 comp=664010 ratio=0.2216 time_ms=17370.51 success=1
+[Python::single_compress] LZSS raw_data=60975 use_streaming=False path=D:/AAA_C/compression-tool/resources/wow.html
+[Python::CompressionEngine.compress] LZSS data_size=60975
+[LZSSCompressor::compress] ENTER data_size=60975 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=60975 comp=22189 ratio=0.3639 time_ms=442.23 success=1
+[Python::single_compress] LZSS raw_data=2996683 use_streaming=False path=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+[Python::CompressionEngine.compress] LZSS data_size=2996683
+[LZSSCompressor::compress] ENTER data_size=2996683 dict=4095 min_match=0 flag=1
+[LZSSCompressor::compress] EXIT orig=2996683 comp=664010 ratio=0.2216 time_ms=17951.61 success=1
+[Python::streaming] LZSS file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb size=2996683
+[Python::single_compress] LZSS raw_data=2996683 use_streaming=False path=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+[Python::CompressionEngine.compress] LZSS data_size=2996683
+[Python::streaming] LZSS file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb size=2996683
+[Python::streaming] LZSS file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb size=2996683
+[Python::single_compress] LZSS raw_data=2996683 use_streaming=False path=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+[Python::CompressionEngine.compress] LZSS data_size=2996683

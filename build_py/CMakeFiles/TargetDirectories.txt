@@ -75,6 +75,13 @@ D:/AAA_C/compression-tool/build_py/src/core_new/CMakeFiles/list_install_componen
 D:/AAA_C/compression-tool/build_py/src/core_new/CMakeFiles/install.dir
 D:/AAA_C/compression-tool/build_py/src/core_new/CMakeFiles/install/local.dir
 D:/AAA_C/compression-tool/build_py/src/core_new/CMakeFiles/install/strip.dir
+D:/AAA_C/compression-tool/build_py/src/api_new/CMakeFiles/api_new.dir
+D:/AAA_C/compression-tool/build_py/src/api_new/CMakeFiles/edit_cache.dir
+D:/AAA_C/compression-tool/build_py/src/api_new/CMakeFiles/rebuild_cache.dir
+D:/AAA_C/compression-tool/build_py/src/api_new/CMakeFiles/list_install_components.dir
+D:/AAA_C/compression-tool/build_py/src/api_new/CMakeFiles/install.dir
+D:/AAA_C/compression-tool/build_py/src/api_new/CMakeFiles/install/local.dir
+D:/AAA_C/compression-tool/build_py/src/api_new/CMakeFiles/install/strip.dir
 D:/AAA_C/compression-tool/build_py/src/api/CMakeFiles/api.dir
 D:/AAA_C/compression-tool/build_py/src/api/CMakeFiles/edit_cache.dir
 D:/AAA_C/compression-tool/build_py/src/api/CMakeFiles/rebuild_cache.dir
@@ -125,6 +132,7 @@ D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_wcx_file_strict.dir
 D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_wcx_strict_no_compat.dir
 D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_wcx_corrupt.dir
 D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_lzss_noflag.dir
+D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir
 D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_deflate.dir
 D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir
 D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_lzdp_dpflate_regression.dir
@@ -155,6 +163,7 @@ D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_lzss_noflag_text10k.dir
 D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_lzss_noflag_minimal.dir
 D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_lzss_noflag_sizes.dir
 D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_deflate_huffman_minimal.dir
+D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_deflate_3hm_large.dir
 D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_lzdp_debug.dir
 D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/edit_cache.dir
 D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/rebuild_cache.dir
@@ -169,3 +178,10 @@ D:/AAA_C/compression-tool/build_py/src/bindings/pybind/CMakeFiles/list_install_c
 D:/AAA_C/compression-tool/build_py/src/bindings/pybind/CMakeFiles/install.dir
 D:/AAA_C/compression-tool/build_py/src/bindings/pybind/CMakeFiles/install/local.dir
 D:/AAA_C/compression-tool/build_py/src/bindings/pybind/CMakeFiles/install/strip.dir
+D:/AAA_C/compression-tool/build_py/src/bindings/pybind_new/CMakeFiles/core_engine_new.dir
+D:/AAA_C/compression-tool/build_py/src/bindings/pybind_new/CMakeFiles/edit_cache.dir
+D:/AAA_C/compression-tool/build_py/src/bindings/pybind_new/CMakeFiles/rebuild_cache.dir
+D:/AAA_C/compression-tool/build_py/src/bindings/pybind_new/CMakeFiles/list_install_components.dir
+D:/AAA_C/compression-tool/build_py/src/bindings/pybind_new/CMakeFiles/install.dir
+D:/AAA_C/compression-tool/build_py/src/bindings/pybind_new/CMakeFiles/install/local.dir
+D:/AAA_C/compression-tool/build_py/src/bindings/pybind_new/CMakeFiles/install/strip.dir

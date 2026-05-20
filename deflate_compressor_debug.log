@@ -835,3 +835,6 @@
 [DeflateCompressor] decompress start: compressed_size=472308 use_3hfmtree=0
 [DeflateCompressor] decompress standard Deflate path
 [DeflateCompressor] decompress standard done: dec_size=2996683 success=1 done=1 bytes_consumed=472307 bytes_produced=2996683
+[DeflateCompressor] decompress start: compressed_size=14727 use_3hfmtree=0
+[DeflateCompressor] decompress standard Deflate path
+[DeflateCompressor] decompress standard done: dec_size=60975 success=1 done=1 bytes_consumed=14726 bytes_produced=60975

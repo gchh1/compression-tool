@@ -1,0 +1,15 @@
+[DeflateCompressor] decompress start: compressed_size=38 use_3hfmtree=0
+[DeflateCompressor] decompress standard Deflate path
+[DeflateCompressor] decompress standard done: dec_size=672 success=1 done=1 bytes_consumed=37 bytes_produced=672
+[DeflateCompressor] decompress start: compressed_size=643 use_3hfmtree=0
+[DeflateCompressor] decompress standard Deflate path
+[DeflateCompressor] decompress standard done: dec_size=384 success=1 done=1 bytes_consumed=642 bytes_produced=384
+[DeflateCompressor] decompress start: compressed_size=476 use_3hfmtree=0
+[DeflateCompressor] decompress standard Deflate path
+[DeflateCompressor] decompress standard done: dec_size=22300 success=1 done=1 bytes_consumed=475 bytes_produced=22300
+[DeflateCompressor] decompress start: compressed_size=66982 use_3hfmtree=0
+[DeflateCompressor] decompress standard Deflate path
+[DeflateCompressor] decompress standard done: dec_size=65536 success=1 done=1 bytes_consumed=66981 bytes_produced=65536
+[DeflateCompressor] decompress start: compressed_size=724243 use_3hfmtree=0
+[DeflateCompressor] decompress standard Deflate path
+[DeflateCompressor] decompress standard done: dec_size=2097152 success=1 done=1 bytes_consumed=724242 bytes_produced=2097152

@@ -287,6 +287,20 @@ test_lzss_noflag/fast:
 .PHONY : test_lzss_noflag/fast
 
 # Convenience name for target.
+tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/rule
+.PHONY : tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/rule
+
+# Convenience name for target.
+test_lzss_algorithm_new_matrix: tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/rule
+.PHONY : test_lzss_algorithm_new_matrix
+
+# fast build rule for target.
+test_lzss_algorithm_new_matrix/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_algorithm_new_matrix.dir\build.make tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/build
+.PHONY : test_lzss_algorithm_new_matrix/fast
+
+# Convenience name for target.
 tests/CMakeFiles/test_deflate.dir/rule:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_deflate.dir/rule
 .PHONY : tests/CMakeFiles/test_deflate.dir/rule
@@ -707,6 +721,20 @@ test_deflate_huffman_minimal/fast:
 .PHONY : test_deflate_huffman_minimal/fast
 
 # Convenience name for target.
+tests/CMakeFiles/test_deflate_3hm_large.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_deflate_3hm_large.dir/rule
+.PHONY : tests/CMakeFiles/test_deflate_3hm_large.dir/rule
+
+# Convenience name for target.
+test_deflate_3hm_large: tests/CMakeFiles/test_deflate_3hm_large.dir/rule
+.PHONY : test_deflate_3hm_large
+
+# fast build rule for target.
+test_deflate_3hm_large/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_3hm_large.dir\build.make tests/CMakeFiles/test_deflate_3hm_large.dir/build
+.PHONY : test_deflate_3hm_large/fast
+
+# Convenience name for target.
 tests/CMakeFiles/test_lzdp_debug.dir/rule:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzdp_debug.dir/rule
 .PHONY : tests/CMakeFiles/test_lzdp_debug.dir/rule
@@ -1059,6 +1087,30 @@ test_cartesian_stream_matrix.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_cartesian_stream_matrix.dir/test_cartesian_stream_matrix.cpp.s
 .PHONY : test_cartesian_stream_matrix.cpp.s
 
+test_deflate_3hm_large.obj: test_deflate_3hm_large.cpp.obj
+.PHONY : test_deflate_3hm_large.obj
+
+# target to build an object file
+test_deflate_3hm_large.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_3hm_large.dir\build.make tests/CMakeFiles/test_deflate_3hm_large.dir/test_deflate_3hm_large.cpp.obj
+.PHONY : test_deflate_3hm_large.cpp.obj
+
+test_deflate_3hm_large.i: test_deflate_3hm_large.cpp.i
+.PHONY : test_deflate_3hm_large.i
+
+# target to preprocess a source file
+test_deflate_3hm_large.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_3hm_large.dir\build.make tests/CMakeFiles/test_deflate_3hm_large.dir/test_deflate_3hm_large.cpp.i
+.PHONY : test_deflate_3hm_large.cpp.i
+
+test_deflate_3hm_large.s: test_deflate_3hm_large.cpp.s
+.PHONY : test_deflate_3hm_large.s
+
+# target to generate assembly for a file
+test_deflate_3hm_large.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_3hm_large.dir\build.make tests/CMakeFiles/test_deflate_3hm_large.dir/test_deflate_3hm_large.cpp.s
+.PHONY : test_deflate_3hm_large.cpp.s
+
 test_deflate_huffman_minimal.obj: test_deflate_huffman_minimal.cpp.obj
 .PHONY : test_deflate_huffman_minimal.obj
 
@@ -1322,6 +1374,30 @@ test_lzdp_memory_streaming_parity.s: test_lzdp_memory_streaming_parity.cpp.s
 test_lzdp_memory_streaming_parity.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_memory_streaming_parity.dir\build.make tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/test_lzdp_memory_streaming_parity.cpp.s
 .PHONY : test_lzdp_memory_streaming_parity.cpp.s
+
+test_lzss_algorithm_new_matrix.obj: test_lzss_algorithm_new_matrix.cpp.obj
+.PHONY : test_lzss_algorithm_new_matrix.obj
+
+# target to build an object file
+test_lzss_algorithm_new_matrix.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_algorithm_new_matrix.dir\build.make tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/test_lzss_algorithm_new_matrix.cpp.obj
+.PHONY : test_lzss_algorithm_new_matrix.cpp.obj
+
+test_lzss_algorithm_new_matrix.i: test_lzss_algorithm_new_matrix.cpp.i
+.PHONY : test_lzss_algorithm_new_matrix.i
+
+# target to preprocess a source file
+test_lzss_algorithm_new_matrix.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_algorithm_new_matrix.dir\build.make tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/test_lzss_algorithm_new_matrix.cpp.i
+.PHONY : test_lzss_algorithm_new_matrix.cpp.i
+
+test_lzss_algorithm_new_matrix.s: test_lzss_algorithm_new_matrix.cpp.s
+.PHONY : test_lzss_algorithm_new_matrix.s
+
+# target to generate assembly for a file
+test_lzss_algorithm_new_matrix.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_algorithm_new_matrix.dir\build.make tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/test_lzss_algorithm_new_matrix.cpp.s
+.PHONY : test_lzss_algorithm_new_matrix.cpp.s
 
 test_lzss_noflag.obj: test_lzss_noflag.cpp.obj
 .PHONY : test_lzss_noflag.obj
@@ -1686,6 +1762,7 @@ help:
 	@echo ... test_algorithm_new_phase2
 	@echo ... test_cartesian_stream_matrix
 	@echo ... test_deflate
+	@echo ... test_deflate_3hm_large
 	@echo ... test_deflate_huffman_minimal
 	@echo ... test_dpflate_3hm_stream
 	@echo ... test_dpflate_bin64k_3k_stream
@@ -1697,6 +1774,7 @@ help:
 	@echo ... test_lzdp_dpflate_stream
 	@echo ... test_lzdp_memory_flag
 	@echo ... test_lzdp_memory_streaming_parity
+	@echo ... test_lzss_algorithm_new_matrix
 	@echo ... test_lzss_noflag
 	@echo ... test_lzss_noflag_debug
 	@echo ... test_lzss_noflag_minimal
@@ -1753,6 +1831,9 @@ help:
 	@echo ... test_cartesian_stream_matrix.obj
 	@echo ... test_cartesian_stream_matrix.i
 	@echo ... test_cartesian_stream_matrix.s
+	@echo ... test_deflate_3hm_large.obj
+	@echo ... test_deflate_3hm_large.i
+	@echo ... test_deflate_3hm_large.s
 	@echo ... test_deflate_huffman_minimal.obj
 	@echo ... test_deflate_huffman_minimal.i
 	@echo ... test_deflate_huffman_minimal.s
@@ -1786,6 +1867,9 @@ help:
 	@echo ... test_lzdp_memory_streaming_parity.obj
 	@echo ... test_lzdp_memory_streaming_parity.i
 	@echo ... test_lzdp_memory_streaming_parity.s
+	@echo ... test_lzss_algorithm_new_matrix.obj
+	@echo ... test_lzss_algorithm_new_matrix.i
+	@echo ... test_lzss_algorithm_new_matrix.s
 	@echo ... test_lzss_noflag.obj
 	@echo ... test_lzss_noflag.i
 	@echo ... test_lzss_noflag.s
