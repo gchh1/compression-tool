@@ -18,6 +18,10 @@
 namespace py = pybind11;
 using namespace compressor::core;
 
+/// Long-running native compress/decompress must release the GIL so the UI thread can
+/// call ``set_streaming_compress_cancel_requested`` while a worker is in C++.
+constexpr auto kNativeJobNoGil = py::call_guard<py::gil_scoped_release>();
+
 namespace {
 
 void assign_byte_vector_from_buffer(std::vector<uint8_t>& out, const py::object& ob) {
@@ -106,12 +110,14 @@ PYBIND11_MODULE(core_engine, m) {
             "compress",
             [](ICompressor& self, py::buffer buf) {
                 return self.compress(buffer_to_u8vec(buf));
-            })
+            },
+            kNativeJobNoGil)
         .def(
             "decompress",
             [](ICompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
-            })
+            },
+            kNativeJobNoGil)
         .def("get_algorithm_name", &ICompressor::get_algorithm_name);
 
     py::class_<DeflateCompressor, ICompressor,
@@ -145,12 +151,14 @@ PYBIND11_MODULE(core_engine, m) {
             "compress",
             [](DeflateCompressor& self, py::buffer buf) {
                 return self.compress(buffer_to_u8vec(buf));
-            })
+            },
+            kNativeJobNoGil)
         .def(
             "decompress",
             [](DeflateCompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
-            });
+            },
+            kNativeJobNoGil);
 
     py::class_<LZSSCompressor, ICompressor,
                std::shared_ptr<LZSSCompressor>>(m, "LZSSCompressor")
@@ -167,12 +175,14 @@ PYBIND11_MODULE(core_engine, m) {
             "compress",
             [](LZSSCompressor& self, py::buffer buf) {
                 return self.compress(buffer_to_u8vec(buf));
-            })
+            },
+            kNativeJobNoGil)
         .def(
             "decompress",
             [](LZSSCompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
-            });
+            },
+            kNativeJobNoGil);
 
     py::class_<LZDPCompressor, ICompressor,
                std::shared_ptr<LZDPCompressor>>(m, "LZDPCompressor")
@@ -203,17 +213,20 @@ PYBIND11_MODULE(core_engine, m) {
             [](LZDPCompressor& self, py::buffer buf, size_t range) {
                 return self.get_dp_visualization(buffer_to_u8vec(buf), range);
             },
-            py::arg("data"), py::arg("range") = 0)
+            py::arg("data"), py::arg("range") = 0,
+            kNativeJobNoGil)
         .def(
             "compress",
             [](LZDPCompressor& self, py::buffer buf) {
                 return self.compress(buffer_to_u8vec(buf));
-            })
+            },
+            kNativeJobNoGil)
         .def(
             "decompress",
             [](LZDPCompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
-            });
+            },
+            kNativeJobNoGil);
 
     py::class_<compressor::algorithm::Triple>(m, "LZDPTriple")
         .def_readonly("offset", &compressor::algorithm::Triple::offset)
@@ -287,12 +300,14 @@ PYBIND11_MODULE(core_engine, m) {
             "compress",
             [](DPFlateCompressor& self, py::buffer buf) {
                 return self.compress(buffer_to_u8vec(buf));
-            })
+            },
+            kNativeJobNoGil)
         .def(
             "decompress",
             [](DPFlateCompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
-            });
+            },
+            kNativeJobNoGil);
 
     py::class_<GzipCompressor, ICompressor,
                std::shared_ptr<GzipCompressor>>(m, "GzipCompressor")
@@ -303,12 +318,14 @@ PYBIND11_MODULE(core_engine, m) {
             "compress",
             [](GzipCompressor& self, py::buffer buf) {
                 return self.compress(buffer_to_u8vec(buf));
-            })
+            },
+            kNativeJobNoGil)
         .def(
             "decompress",
             [](GzipCompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
-            });
+            },
+            kNativeJobNoGil);
 
     py::class_<BrotliCompressor, ICompressor,
                std::shared_ptr<BrotliCompressor>>(m, "BrotliCompressor")
@@ -323,12 +340,14 @@ PYBIND11_MODULE(core_engine, m) {
             "compress",
             [](BrotliCompressor& self, py::buffer buf) {
                 return self.compress(buffer_to_u8vec(buf));
-            })
+            },
+            kNativeJobNoGil)
         .def(
             "decompress",
             [](BrotliCompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
-            });
+            },
+            kNativeJobNoGil);
 
     py::class_<ZstdCompressor, ICompressor,
                std::shared_ptr<ZstdCompressor>>(m, "ZstdCompressor")
@@ -339,12 +358,14 @@ PYBIND11_MODULE(core_engine, m) {
             "compress",
             [](ZstdCompressor& self, py::buffer buf) {
                 return self.compress(buffer_to_u8vec(buf));
-            })
+            },
+            kNativeJobNoGil)
         .def(
             "decompress",
             [](ZstdCompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
-            });
+            },
+            kNativeJobNoGil);
 
     // ===== 打包器 File 结构体 =====
 
@@ -531,6 +552,7 @@ PYBIND11_MODULE(core_engine, m) {
               return compressor::api::compress(buffer_to_u8vec(buf), chain, p, d, df, lz,
                                                 stream_chunk_bytes);
           },
+          py::call_guard<py::gil_scoped_release>(),
           py::arg("data"), py::arg("chain"),
           py::arg("lzdp_whole_file") = std::nullopt,
           py::arg("dpflate_pipeline") = std::nullopt,
@@ -559,6 +581,7 @@ PYBIND11_MODULE(core_engine, m) {
               return compressor::api::decompress(buffer_to_u8vec(buf), chain, p, d, df, lz,
                                                  stream_chunk_bytes);
           },
+          py::call_guard<py::gil_scoped_release>(),
           py::arg("data"), py::arg("chain"),
           py::arg("lzdp_whole_file") = std::nullopt,
           py::arg("dpflate_pipeline") = std::nullopt,
@@ -591,6 +614,7 @@ PYBIND11_MODULE(core_engine, m) {
                                                     file_compress_opts,
                                                     p, d, df, lz);
           },
+          py::call_guard<py::gil_scoped_release>(),
           py::arg("input_path"), py::arg("output_path"), py::arg("chain"),
           py::arg("stream_chunk_bytes") = size_t{0},
           py::arg("file_compress_opts") = uint32_t{0},
@@ -629,6 +653,7 @@ PYBIND11_MODULE(core_engine, m) {
                                                        stream_chunk_bytes,
                                                        file_compress_opts, p, d, df, lz);
           },
+          py::call_guard<py::gil_scoped_release>(),
           py::arg("dir_path"), py::arg("output_path"), py::arg("chain"),
           py::arg("stream_chunk_bytes") = size_t{0},
           py::arg("file_compress_opts") = uint32_t{0},
@@ -644,10 +669,13 @@ PYBIND11_MODULE(core_engine, m) {
              const std::string& output_path,
              const std::vector<compressor::core::AlgorithmID>& chain,
              size_t stream_chunk_bytes,
+             const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
              const std::optional<compressor::core::LzssPipelineParams>& lzss_p,
              const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p,
              const std::optional<compressor::core::DeflatePipelineParams>& deflate_p)
               -> compressor::api::CompressResult {
+              const compressor::core::LzdpWholeFileParams* lzdp =
+                  lzdp_wf.has_value() ? &lzdp_wf.value() : nullptr;
               const compressor::core::LzssPipelineParams* lz =
                   lzss_p.has_value() ? &lzss_p.value() : nullptr;
               const compressor::core::DpflatePipelineParams* d =
@@ -655,10 +683,11 @@ PYBIND11_MODULE(core_engine, m) {
               const compressor::core::DeflatePipelineParams* df =
                   deflate_p.has_value() ? &deflate_p.value() : nullptr;
               return compressor::api::decompressFile(input_path, output_path, chain,
-                                                      stream_chunk_bytes, lz, d, df);
+                                                      stream_chunk_bytes, lzdp, lz, d, df);
           },
           py::arg("input_path"), py::arg("output_path"), py::arg("chain"),
           py::arg("stream_chunk_bytes") = size_t{0},
+          py::arg("lzdp_whole_file") = std::nullopt,
           py::arg("lzss_pipeline") = std::nullopt,
           py::arg("dpflate_pipeline") = std::nullopt,
           py::arg("deflate_pipeline") = std::nullopt,
@@ -670,7 +699,8 @@ PYBIND11_MODULE(core_engine, m) {
               compressor::api::set_streaming_compress_cancel_requested(requested);
           },
           py::arg("requested"),
-          "Request cooperative cancel for pipeline_compress_file (checked between input chunks).");
+          kNativeJobNoGil,
+          "Request cooperative cancel for compress jobs (memory or file pipeline; checked in algorithm_new hot loops).");
 
     // ===== ADE (Algorithm Decision Engine) =====
     init_ade(m);

@@ -97,6 +97,9 @@ bin/test_wcx_file_strict.exe: src/archiver/libarchiver.a
 bin/test_wcx_file_strict.exe: src/processor/libprocessor.a
 bin/test_wcx_file_strict.exe: src/core/libcore.a
 bin/test_wcx_file_strict.exe: src/algorithm/libalgorithm.a
+bin/test_wcx_file_strict.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_wcx_file_strict.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_wcx_file_strict.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_wcx_file_strict.exe: tests/CMakeFiles/test_wcx_file_strict.dir/linkLibs.rsp
 bin/test_wcx_file_strict.exe: tests/CMakeFiles/test_wcx_file_strict.dir/objects1.rsp
 bin/test_wcx_file_strict.exe: tests/CMakeFiles/test_wcx_file_strict.dir/link.txt

@@ -234,13 +234,17 @@ src/core/CMakeFiles/core.dir/DPFlateCompressor.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/backward/auto_ptr.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_uninitialized.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_memory_defs.h \
+ D:/AAA_C/compression-tool/src/utils/include/BitUtils.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/Deflate.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/HuffmanTree.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/IAlgorithm.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/BlockProfile.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/HuffmanTree3HM.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/Inflate.hpp \
- D:/AAA_C/compression-tool/src/algorithm/include/SpillBitStream.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/StreamingDpChunk.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/DPFlateBin64kDebug.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/LZDPStreamDebug.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/TempTokenIO.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/TempFile.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/filesystem \
@@ -498,9 +502,8 @@ src/core/CMakeFiles/core.dir/DPFlateCompressor.cpp.obj: \
  D:/AAA_C/compression-tool/src/algorithm/include/Inflate3HM.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/LZDP.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/KMPMatcher.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/SpillBitStream.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/VirtualBuffer.hpp \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/iterator \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stream_iterator.h \
  D:/AAA_C/compression-tool/src/processor/include/StreamProcessor.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/deque \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_deque.h \

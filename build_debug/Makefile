@@ -174,6 +174,461 @@ algorithm/fast:
 .PHONY : algorithm/fast
 
 #=============================================================================
+# Target rules for targets named brotlicommon
+
+# Build rule for target.
+brotlicommon: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 brotlicommon
+.PHONY : brotlicommon
+
+# fast build rule for target.
+brotlicommon/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\brotlicommon.dir\build.make _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/build
+.PHONY : brotlicommon/fast
+
+#=============================================================================
+# Target rules for targets named brotlidec
+
+# Build rule for target.
+brotlidec: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 brotlidec
+.PHONY : brotlidec
+
+# fast build rule for target.
+brotlidec/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\brotlidec.dir\build.make _deps/google_brotli-build/CMakeFiles/brotlidec.dir/build
+.PHONY : brotlidec/fast
+
+#=============================================================================
+# Target rules for targets named brotlienc
+
+# Build rule for target.
+brotlienc: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 brotlienc
+.PHONY : brotlienc
+
+# fast build rule for target.
+brotlienc/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\brotlienc.dir\build.make _deps/google_brotli-build/CMakeFiles/brotlienc.dir/build
+.PHONY : brotlienc/fast
+
+#=============================================================================
+# Target rules for targets named brotli
+
+# Build rule for target.
+brotli: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 brotli
+.PHONY : brotli
+
+# fast build rule for target.
+brotli/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\brotli.dir\build.make _deps/google_brotli-build/CMakeFiles/brotli.dir/build
+.PHONY : brotli/fast
+
+#=============================================================================
+# Target rules for targets named Experimental
+
+# Build rule for target.
+Experimental: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 Experimental
+.PHONY : Experimental
+
+# fast build rule for target.
+Experimental/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\Experimental.dir\build.make _deps/google_brotli-build/CMakeFiles/Experimental.dir/build
+.PHONY : Experimental/fast
+
+#=============================================================================
+# Target rules for targets named Nightly
+
+# Build rule for target.
+Nightly: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 Nightly
+.PHONY : Nightly
+
+# fast build rule for target.
+Nightly/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\Nightly.dir\build.make _deps/google_brotli-build/CMakeFiles/Nightly.dir/build
+.PHONY : Nightly/fast
+
+#=============================================================================
+# Target rules for targets named Continuous
+
+# Build rule for target.
+Continuous: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 Continuous
+.PHONY : Continuous
+
+# fast build rule for target.
+Continuous/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\Continuous.dir\build.make _deps/google_brotli-build/CMakeFiles/Continuous.dir/build
+.PHONY : Continuous/fast
+
+#=============================================================================
+# Target rules for targets named NightlyMemoryCheck
+
+# Build rule for target.
+NightlyMemoryCheck: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 NightlyMemoryCheck
+.PHONY : NightlyMemoryCheck
+
+# fast build rule for target.
+NightlyMemoryCheck/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\NightlyMemoryCheck.dir\build.make _deps/google_brotli-build/CMakeFiles/NightlyMemoryCheck.dir/build
+.PHONY : NightlyMemoryCheck/fast
+
+#=============================================================================
+# Target rules for targets named NightlyStart
+
+# Build rule for target.
+NightlyStart: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 NightlyStart
+.PHONY : NightlyStart
+
+# fast build rule for target.
+NightlyStart/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\NightlyStart.dir\build.make _deps/google_brotli-build/CMakeFiles/NightlyStart.dir/build
+.PHONY : NightlyStart/fast
+
+#=============================================================================
+# Target rules for targets named NightlyUpdate
+
+# Build rule for target.
+NightlyUpdate: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 NightlyUpdate
+.PHONY : NightlyUpdate
+
+# fast build rule for target.
+NightlyUpdate/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\NightlyUpdate.dir\build.make _deps/google_brotli-build/CMakeFiles/NightlyUpdate.dir/build
+.PHONY : NightlyUpdate/fast
+
+#=============================================================================
+# Target rules for targets named NightlyConfigure
+
+# Build rule for target.
+NightlyConfigure: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 NightlyConfigure
+.PHONY : NightlyConfigure
+
+# fast build rule for target.
+NightlyConfigure/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\NightlyConfigure.dir\build.make _deps/google_brotli-build/CMakeFiles/NightlyConfigure.dir/build
+.PHONY : NightlyConfigure/fast
+
+#=============================================================================
+# Target rules for targets named NightlyBuild
+
+# Build rule for target.
+NightlyBuild: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 NightlyBuild
+.PHONY : NightlyBuild
+
+# fast build rule for target.
+NightlyBuild/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\NightlyBuild.dir\build.make _deps/google_brotli-build/CMakeFiles/NightlyBuild.dir/build
+.PHONY : NightlyBuild/fast
+
+#=============================================================================
+# Target rules for targets named NightlyTest
+
+# Build rule for target.
+NightlyTest: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 NightlyTest
+.PHONY : NightlyTest
+
+# fast build rule for target.
+NightlyTest/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\NightlyTest.dir\build.make _deps/google_brotli-build/CMakeFiles/NightlyTest.dir/build
+.PHONY : NightlyTest/fast
+
+#=============================================================================
+# Target rules for targets named NightlyCoverage
+
+# Build rule for target.
+NightlyCoverage: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 NightlyCoverage
+.PHONY : NightlyCoverage
+
+# fast build rule for target.
+NightlyCoverage/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\NightlyCoverage.dir\build.make _deps/google_brotli-build/CMakeFiles/NightlyCoverage.dir/build
+.PHONY : NightlyCoverage/fast
+
+#=============================================================================
+# Target rules for targets named NightlyMemCheck
+
+# Build rule for target.
+NightlyMemCheck: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 NightlyMemCheck
+.PHONY : NightlyMemCheck
+
+# fast build rule for target.
+NightlyMemCheck/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\NightlyMemCheck.dir\build.make _deps/google_brotli-build/CMakeFiles/NightlyMemCheck.dir/build
+.PHONY : NightlyMemCheck/fast
+
+#=============================================================================
+# Target rules for targets named NightlySubmit
+
+# Build rule for target.
+NightlySubmit: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 NightlySubmit
+.PHONY : NightlySubmit
+
+# fast build rule for target.
+NightlySubmit/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\NightlySubmit.dir\build.make _deps/google_brotli-build/CMakeFiles/NightlySubmit.dir/build
+.PHONY : NightlySubmit/fast
+
+#=============================================================================
+# Target rules for targets named ExperimentalStart
+
+# Build rule for target.
+ExperimentalStart: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ExperimentalStart
+.PHONY : ExperimentalStart
+
+# fast build rule for target.
+ExperimentalStart/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\ExperimentalStart.dir\build.make _deps/google_brotli-build/CMakeFiles/ExperimentalStart.dir/build
+.PHONY : ExperimentalStart/fast
+
+#=============================================================================
+# Target rules for targets named ExperimentalUpdate
+
+# Build rule for target.
+ExperimentalUpdate: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ExperimentalUpdate
+.PHONY : ExperimentalUpdate
+
+# fast build rule for target.
+ExperimentalUpdate/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\ExperimentalUpdate.dir\build.make _deps/google_brotli-build/CMakeFiles/ExperimentalUpdate.dir/build
+.PHONY : ExperimentalUpdate/fast
+
+#=============================================================================
+# Target rules for targets named ExperimentalConfigure
+
+# Build rule for target.
+ExperimentalConfigure: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ExperimentalConfigure
+.PHONY : ExperimentalConfigure
+
+# fast build rule for target.
+ExperimentalConfigure/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\ExperimentalConfigure.dir\build.make _deps/google_brotli-build/CMakeFiles/ExperimentalConfigure.dir/build
+.PHONY : ExperimentalConfigure/fast
+
+#=============================================================================
+# Target rules for targets named ExperimentalBuild
+
+# Build rule for target.
+ExperimentalBuild: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ExperimentalBuild
+.PHONY : ExperimentalBuild
+
+# fast build rule for target.
+ExperimentalBuild/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\ExperimentalBuild.dir\build.make _deps/google_brotli-build/CMakeFiles/ExperimentalBuild.dir/build
+.PHONY : ExperimentalBuild/fast
+
+#=============================================================================
+# Target rules for targets named ExperimentalTest
+
+# Build rule for target.
+ExperimentalTest: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ExperimentalTest
+.PHONY : ExperimentalTest
+
+# fast build rule for target.
+ExperimentalTest/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\ExperimentalTest.dir\build.make _deps/google_brotli-build/CMakeFiles/ExperimentalTest.dir/build
+.PHONY : ExperimentalTest/fast
+
+#=============================================================================
+# Target rules for targets named ExperimentalCoverage
+
+# Build rule for target.
+ExperimentalCoverage: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ExperimentalCoverage
+.PHONY : ExperimentalCoverage
+
+# fast build rule for target.
+ExperimentalCoverage/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\ExperimentalCoverage.dir\build.make _deps/google_brotli-build/CMakeFiles/ExperimentalCoverage.dir/build
+.PHONY : ExperimentalCoverage/fast
+
+#=============================================================================
+# Target rules for targets named ExperimentalMemCheck
+
+# Build rule for target.
+ExperimentalMemCheck: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ExperimentalMemCheck
+.PHONY : ExperimentalMemCheck
+
+# fast build rule for target.
+ExperimentalMemCheck/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\ExperimentalMemCheck.dir\build.make _deps/google_brotli-build/CMakeFiles/ExperimentalMemCheck.dir/build
+.PHONY : ExperimentalMemCheck/fast
+
+#=============================================================================
+# Target rules for targets named ExperimentalSubmit
+
+# Build rule for target.
+ExperimentalSubmit: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ExperimentalSubmit
+.PHONY : ExperimentalSubmit
+
+# fast build rule for target.
+ExperimentalSubmit/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\ExperimentalSubmit.dir\build.make _deps/google_brotli-build/CMakeFiles/ExperimentalSubmit.dir/build
+.PHONY : ExperimentalSubmit/fast
+
+#=============================================================================
+# Target rules for targets named ContinuousStart
+
+# Build rule for target.
+ContinuousStart: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ContinuousStart
+.PHONY : ContinuousStart
+
+# fast build rule for target.
+ContinuousStart/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\ContinuousStart.dir\build.make _deps/google_brotli-build/CMakeFiles/ContinuousStart.dir/build
+.PHONY : ContinuousStart/fast
+
+#=============================================================================
+# Target rules for targets named ContinuousUpdate
+
+# Build rule for target.
+ContinuousUpdate: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ContinuousUpdate
+.PHONY : ContinuousUpdate
+
+# fast build rule for target.
+ContinuousUpdate/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\ContinuousUpdate.dir\build.make _deps/google_brotli-build/CMakeFiles/ContinuousUpdate.dir/build
+.PHONY : ContinuousUpdate/fast
+
+#=============================================================================
+# Target rules for targets named ContinuousConfigure
+
+# Build rule for target.
+ContinuousConfigure: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ContinuousConfigure
+.PHONY : ContinuousConfigure
+
+# fast build rule for target.
+ContinuousConfigure/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\ContinuousConfigure.dir\build.make _deps/google_brotli-build/CMakeFiles/ContinuousConfigure.dir/build
+.PHONY : ContinuousConfigure/fast
+
+#=============================================================================
+# Target rules for targets named ContinuousBuild
+
+# Build rule for target.
+ContinuousBuild: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ContinuousBuild
+.PHONY : ContinuousBuild
+
+# fast build rule for target.
+ContinuousBuild/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\ContinuousBuild.dir\build.make _deps/google_brotli-build/CMakeFiles/ContinuousBuild.dir/build
+.PHONY : ContinuousBuild/fast
+
+#=============================================================================
+# Target rules for targets named ContinuousTest
+
+# Build rule for target.
+ContinuousTest: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ContinuousTest
+.PHONY : ContinuousTest
+
+# fast build rule for target.
+ContinuousTest/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\ContinuousTest.dir\build.make _deps/google_brotli-build/CMakeFiles/ContinuousTest.dir/build
+.PHONY : ContinuousTest/fast
+
+#=============================================================================
+# Target rules for targets named ContinuousCoverage
+
+# Build rule for target.
+ContinuousCoverage: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ContinuousCoverage
+.PHONY : ContinuousCoverage
+
+# fast build rule for target.
+ContinuousCoverage/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\ContinuousCoverage.dir\build.make _deps/google_brotli-build/CMakeFiles/ContinuousCoverage.dir/build
+.PHONY : ContinuousCoverage/fast
+
+#=============================================================================
+# Target rules for targets named ContinuousMemCheck
+
+# Build rule for target.
+ContinuousMemCheck: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ContinuousMemCheck
+.PHONY : ContinuousMemCheck
+
+# fast build rule for target.
+ContinuousMemCheck/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\ContinuousMemCheck.dir\build.make _deps/google_brotli-build/CMakeFiles/ContinuousMemCheck.dir/build
+.PHONY : ContinuousMemCheck/fast
+
+#=============================================================================
+# Target rules for targets named ContinuousSubmit
+
+# Build rule for target.
+ContinuousSubmit: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ContinuousSubmit
+.PHONY : ContinuousSubmit
+
+# fast build rule for target.
+ContinuousSubmit/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\ContinuousSubmit.dir\build.make _deps/google_brotli-build/CMakeFiles/ContinuousSubmit.dir/build
+.PHONY : ContinuousSubmit/fast
+
+#=============================================================================
+# Target rules for targets named algorithm_new
+
+# Build rule for target.
+algorithm_new: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 algorithm_new
+.PHONY : algorithm_new
+
+# fast build rule for target.
+algorithm_new/fast:
+	$(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/build
+.PHONY : algorithm_new/fast
+
+#=============================================================================
+# Target rules for targets named core_new
+
+# Build rule for target.
+core_new: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 core_new
+.PHONY : core_new
+
+# fast build rule for target.
+core_new/fast:
+	$(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/build
+.PHONY : core_new/fast
+
+#=============================================================================
+# Target rules for targets named api_new
+
+# Build rule for target.
+api_new: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 api_new
+.PHONY : api_new
+
+# fast build rule for target.
+api_new/fast:
+	$(MAKE) $(MAKESILENT) -f src\api_new\CMakeFiles\api_new.dir\build.make src/api_new/CMakeFiles/api_new.dir/build
+.PHONY : api_new/fast
+
+#=============================================================================
 # Target rules for targets named api
 
 # Build rule for target.
@@ -434,6 +889,32 @@ test_lzss_noflag/fast:
 .PHONY : test_lzss_noflag/fast
 
 #=============================================================================
+# Target rules for targets named test_lzss_algorithm_new_matrix
+
+# Build rule for target.
+test_lzss_algorithm_new_matrix: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_lzss_algorithm_new_matrix
+.PHONY : test_lzss_algorithm_new_matrix
+
+# fast build rule for target.
+test_lzss_algorithm_new_matrix/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_algorithm_new_matrix.dir\build.make tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/build
+.PHONY : test_lzss_algorithm_new_matrix/fast
+
+#=============================================================================
+# Target rules for targets named test_deflate
+
+# Build rule for target.
+test_deflate: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_deflate
+.PHONY : test_deflate
+
+# fast build rule for target.
+test_deflate/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate.dir\build.make tests/CMakeFiles/test_deflate.dir/build
+.PHONY : test_deflate/fast
+
+#=============================================================================
 # Target rules for targets named test_lzdp_memory_streaming_parity
 
 # Build rule for target.
@@ -538,6 +1019,71 @@ test_dpflate_3hm_stream/fast:
 .PHONY : test_dpflate_3hm_stream/fast
 
 #=============================================================================
+# Target rules for targets named test_dpflate_bin64k_3k_stream
+
+# Build rule for target.
+test_dpflate_bin64k_3k_stream: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_dpflate_bin64k_3k_stream
+.PHONY : test_dpflate_bin64k_3k_stream
+
+# fast build rule for target.
+test_dpflate_bin64k_3k_stream/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_bin64k_3k_stream.dir\build.make tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/build
+.PHONY : test_dpflate_bin64k_3k_stream/fast
+
+#=============================================================================
+# Target rules for targets named test_dpflate_stream_trace
+
+# Build rule for target.
+test_dpflate_stream_trace: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_dpflate_stream_trace
+.PHONY : test_dpflate_stream_trace
+
+# fast build rule for target.
+test_dpflate_stream_trace/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_stream_trace.dir\build.make tests/CMakeFiles/test_dpflate_stream_trace.dir/build
+.PHONY : test_dpflate_stream_trace/fast
+
+#=============================================================================
+# Target rules for targets named test_cartesian_stream_matrix
+
+# Build rule for target.
+test_cartesian_stream_matrix: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_cartesian_stream_matrix
+.PHONY : test_cartesian_stream_matrix
+
+# fast build rule for target.
+test_cartesian_stream_matrix/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_cartesian_stream_matrix.dir/build
+.PHONY : test_cartesian_stream_matrix/fast
+
+#=============================================================================
+# Target rules for targets named test_small_stream_7k_67k
+
+# Build rule for target.
+test_small_stream_7k_67k: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_small_stream_7k_67k
+.PHONY : test_small_stream_7k_67k
+
+# fast build rule for target.
+test_small_stream_7k_67k/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_small_stream_7k_67k.dir\build.make tests/CMakeFiles/test_small_stream_7k_67k.dir/build
+.PHONY : test_small_stream_7k_67k/fast
+
+#=============================================================================
+# Target rules for targets named test_lzdp_cartesian_stream_matrix
+
+# Build rule for target.
+test_lzdp_cartesian_stream_matrix: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_lzdp_cartesian_stream_matrix
+.PHONY : test_lzdp_cartesian_stream_matrix
+
+# fast build rule for target.
+test_lzdp_cartesian_stream_matrix/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/build
+.PHONY : test_lzdp_cartesian_stream_matrix/fast
+
+#=============================================================================
 # Target rules for targets named test_3hm_binary
 
 # Build rule for target.
@@ -615,6 +1161,162 @@ debug_token_trace/fast:
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_token_trace.dir\build.make tests/CMakeFiles/debug_token_trace.dir/build
 .PHONY : debug_token_trace/fast
 
+#=============================================================================
+# Target rules for targets named test_algorithm_new_lzdp
+
+# Build rule for target.
+test_algorithm_new_lzdp: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_algorithm_new_lzdp
+.PHONY : test_algorithm_new_lzdp
+
+# fast build rule for target.
+test_algorithm_new_lzdp/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzdp.dir\build.make tests/CMakeFiles/test_algorithm_new_lzdp.dir/build
+.PHONY : test_algorithm_new_lzdp/fast
+
+#=============================================================================
+# Target rules for targets named test_algorithm_new_phase1
+
+# Build rule for target.
+test_algorithm_new_phase1: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_algorithm_new_phase1
+.PHONY : test_algorithm_new_phase1
+
+# fast build rule for target.
+test_algorithm_new_phase1/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase1.dir\build.make tests/CMakeFiles/test_algorithm_new_phase1.dir/build
+.PHONY : test_algorithm_new_phase1/fast
+
+#=============================================================================
+# Target rules for targets named test_algorithm_new_phase2
+
+# Build rule for target.
+test_algorithm_new_phase2: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_algorithm_new_phase2
+.PHONY : test_algorithm_new_phase2
+
+# fast build rule for target.
+test_algorithm_new_phase2/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase2.dir\build.make tests/CMakeFiles/test_algorithm_new_phase2.dir/build
+.PHONY : test_algorithm_new_phase2/fast
+
+#=============================================================================
+# Target rules for targets named test_algorithm_new_lzss_deflate
+
+# Build rule for target.
+test_algorithm_new_lzss_deflate: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_algorithm_new_lzss_deflate
+.PHONY : test_algorithm_new_lzss_deflate
+
+# fast build rule for target.
+test_algorithm_new_lzss_deflate/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzss_deflate.dir\build.make tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/build
+.PHONY : test_algorithm_new_lzss_deflate/fast
+
+#=============================================================================
+# Target rules for targets named test_lzss_roundtrip_debug
+
+# Build rule for target.
+test_lzss_roundtrip_debug: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_lzss_roundtrip_debug
+.PHONY : test_lzss_roundtrip_debug
+
+# fast build rule for target.
+test_lzss_roundtrip_debug/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_roundtrip_debug.dir\build.make tests/CMakeFiles/test_lzss_roundtrip_debug.dir/build
+.PHONY : test_lzss_roundtrip_debug/fast
+
+#=============================================================================
+# Target rules for targets named test_lzss_noflag_debug
+
+# Build rule for target.
+test_lzss_noflag_debug: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_lzss_noflag_debug
+.PHONY : test_lzss_noflag_debug
+
+# fast build rule for target.
+test_lzss_noflag_debug/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_debug.dir\build.make tests/CMakeFiles/test_lzss_noflag_debug.dir/build
+.PHONY : test_lzss_noflag_debug/fast
+
+#=============================================================================
+# Target rules for targets named test_lzss_noflag_text10k
+
+# Build rule for target.
+test_lzss_noflag_text10k: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_lzss_noflag_text10k
+.PHONY : test_lzss_noflag_text10k
+
+# fast build rule for target.
+test_lzss_noflag_text10k/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_text10k.dir\build.make tests/CMakeFiles/test_lzss_noflag_text10k.dir/build
+.PHONY : test_lzss_noflag_text10k/fast
+
+#=============================================================================
+# Target rules for targets named test_lzss_noflag_minimal
+
+# Build rule for target.
+test_lzss_noflag_minimal: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_lzss_noflag_minimal
+.PHONY : test_lzss_noflag_minimal
+
+# fast build rule for target.
+test_lzss_noflag_minimal/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_minimal.dir\build.make tests/CMakeFiles/test_lzss_noflag_minimal.dir/build
+.PHONY : test_lzss_noflag_minimal/fast
+
+#=============================================================================
+# Target rules for targets named test_lzss_noflag_sizes
+
+# Build rule for target.
+test_lzss_noflag_sizes: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_lzss_noflag_sizes
+.PHONY : test_lzss_noflag_sizes
+
+# fast build rule for target.
+test_lzss_noflag_sizes/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_sizes.dir\build.make tests/CMakeFiles/test_lzss_noflag_sizes.dir/build
+.PHONY : test_lzss_noflag_sizes/fast
+
+#=============================================================================
+# Target rules for targets named test_deflate_huffman_minimal
+
+# Build rule for target.
+test_deflate_huffman_minimal: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_deflate_huffman_minimal
+.PHONY : test_deflate_huffman_minimal
+
+# fast build rule for target.
+test_deflate_huffman_minimal/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_huffman_minimal.dir\build.make tests/CMakeFiles/test_deflate_huffman_minimal.dir/build
+.PHONY : test_deflate_huffman_minimal/fast
+
+#=============================================================================
+# Target rules for targets named test_deflate_3hm_large
+
+# Build rule for target.
+test_deflate_3hm_large: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_deflate_3hm_large
+.PHONY : test_deflate_3hm_large
+
+# fast build rule for target.
+test_deflate_3hm_large/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_3hm_large.dir\build.make tests/CMakeFiles/test_deflate_3hm_large.dir/build
+.PHONY : test_deflate_3hm_large/fast
+
+#=============================================================================
+# Target rules for targets named test_lzdp_debug
+
+# Build rule for target.
+test_lzdp_debug: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_lzdp_debug
+.PHONY : test_lzdp_debug
+
+# fast build rule for target.
+test_lzdp_debug/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_debug.dir\build.make tests/CMakeFiles/test_lzdp_debug.dir/build
+.PHONY : test_lzdp_debug/fast
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -627,12 +1329,47 @@ help:
 	@echo ... install/strip
 	@echo ... list_install_components
 	@echo ... rebuild_cache
+	@echo ... Continuous
+	@echo ... ContinuousBuild
+	@echo ... ContinuousConfigure
+	@echo ... ContinuousCoverage
+	@echo ... ContinuousMemCheck
+	@echo ... ContinuousStart
+	@echo ... ContinuousSubmit
+	@echo ... ContinuousTest
+	@echo ... ContinuousUpdate
+	@echo ... Experimental
+	@echo ... ExperimentalBuild
+	@echo ... ExperimentalConfigure
+	@echo ... ExperimentalCoverage
+	@echo ... ExperimentalMemCheck
+	@echo ... ExperimentalStart
+	@echo ... ExperimentalSubmit
+	@echo ... ExperimentalTest
+	@echo ... ExperimentalUpdate
+	@echo ... Nightly
+	@echo ... NightlyBuild
+	@echo ... NightlyConfigure
+	@echo ... NightlyCoverage
+	@echo ... NightlyMemCheck
+	@echo ... NightlyMemoryCheck
+	@echo ... NightlyStart
+	@echo ... NightlySubmit
+	@echo ... NightlyTest
+	@echo ... NightlyUpdate
 	@echo ... ade
 	@echo ... algorithm
+	@echo ... algorithm_new
 	@echo ... api
+	@echo ... api_new
 	@echo ... archiver
 	@echo ... bench_ade_extractor
+	@echo ... brotli
+	@echo ... brotlicommon
+	@echo ... brotlidec
+	@echo ... brotlienc
 	@echo ... core
+	@echo ... core_new
 	@echo ... debug_dpflate
 	@echo ... debug_token_trace
 	@echo ... generate_ade_dataset
@@ -647,16 +1384,35 @@ help:
 	@echo ... test_ade_evolutionary
 	@echo ... test_ade_feature_extractor
 	@echo ... test_algorithm_comparison
+	@echo ... test_algorithm_new_lzdp
+	@echo ... test_algorithm_new_lzss_deflate
+	@echo ... test_algorithm_new_phase1
+	@echo ... test_algorithm_new_phase2
+	@echo ... test_cartesian_stream_matrix
+	@echo ... test_deflate
+	@echo ... test_deflate_3hm_large
+	@echo ... test_deflate_huffman_minimal
 	@echo ... test_dpflate_3hm_stream
+	@echo ... test_dpflate_bin64k_3k_stream
+	@echo ... test_dpflate_stream_trace
 	@echo ... test_lzdp_binary
+	@echo ... test_lzdp_cartesian_stream_matrix
+	@echo ... test_lzdp_debug
 	@echo ... test_lzdp_dpflate_regression
 	@echo ... test_lzdp_dpflate_stream
 	@echo ... test_lzdp_memory_flag
 	@echo ... test_lzdp_memory_streaming_parity
+	@echo ... test_lzss_algorithm_new_matrix
 	@echo ... test_lzss_noflag
+	@echo ... test_lzss_noflag_debug
+	@echo ... test_lzss_noflag_minimal
+	@echo ... test_lzss_noflag_sizes
+	@echo ... test_lzss_noflag_text10k
+	@echo ... test_lzss_roundtrip_debug
 	@echo ... test_mixed_dpflate_only
 	@echo ... test_regression_baseline
 	@echo ... test_roundtrip
+	@echo ... test_small_stream_7k_67k
 	@echo ... test_wcx_corrupt
 	@echo ... test_wcx_directory_archive
 	@echo ... test_wcx_file_strict

@@ -450,6 +450,30 @@ models/EvolutionaryAlgorithms.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/models/EvolutionaryAlgorithms.cpp.s
 .PHONY : models/EvolutionaryAlgorithms.cpp.s
 
+models/ParamRegressorNet.obj: models/ParamRegressorNet.cpp.obj
+.PHONY : models/ParamRegressorNet.obj
+
+# target to build an object file
+models/ParamRegressorNet.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.obj
+.PHONY : models/ParamRegressorNet.cpp.obj
+
+models/ParamRegressorNet.i: models/ParamRegressorNet.cpp.i
+.PHONY : models/ParamRegressorNet.i
+
+# target to preprocess a source file
+models/ParamRegressorNet.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.i
+.PHONY : models/ParamRegressorNet.cpp.i
+
+models/ParamRegressorNet.s: models/ParamRegressorNet.cpp.s
+.PHONY : models/ParamRegressorNet.s
+
+# target to generate assembly for a file
+models/ParamRegressorNet.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.s
+.PHONY : models/ParamRegressorNet.cpp.s
+
 models/RandomForest.obj: models/RandomForest.cpp.obj
 .PHONY : models/RandomForest.obj
 
@@ -613,6 +637,9 @@ help:
 	@echo ... models/EvolutionaryAlgorithms.obj
 	@echo ... models/EvolutionaryAlgorithms.i
 	@echo ... models/EvolutionaryAlgorithms.s
+	@echo ... models/ParamRegressorNet.obj
+	@echo ... models/ParamRegressorNet.i
+	@echo ... models/ParamRegressorNet.s
 	@echo ... models/RandomForest.obj
 	@echo ... models/RandomForest.i
 	@echo ... models/RandomForest.s

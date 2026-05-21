@@ -16,3 +16,972 @@
 19:16:58 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\config\webcompress_settings.json
 19:16:58 [INFO] gui.ui: [ui] main_window.ready geometry=900x700
 19:16:58 [INFO] gui.main: [ui] MainWindow shown, entering event loop
+20:32:28 [INFO] root: ==== gui session start 2026-05-21 20:32:28 ====
+20:32:28 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\logs\gui.log (append mode, per-line flush)
+20:32:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:28 [INFO] gui.config.theme: [theme] theme applied
+20:32:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:28 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+20:32:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:28 [INFO] gui.engine.bridge: C++ core_engine loaded from D:\AAA_C\compression-tool\build_py\src\bindings\pybind\core_engine.cp312-win_amd64.pyd
+20:32:28 [INFO] gui.ade.engine: [decision] loaded model from D:\AAA_C\compression-tool\assets\ade\default_model.bin
+20:32:28 [INFO] gui.ade.engine: [decision] ADE loaded default model, using ML_HYBRID mode
+20:32:28 [INFO] gui.ade.engine: [decision] ADE initialized successfully
+20:32:28 [INFO] gui.ade.params: [param_regressor] C++ ParamRegressorNet available
+20:32:28 [DEBUG] gui.ade.training: [TrainingDataStore] loaded stats: 1 total samples
+20:32:28 [INFO] gui.ade.params: [param_regressor] loaded default C++ model
+20:32:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:28 [INFO] gui.explore: [explore] silent exploration enabled (see ade.silent_explore_enabled)
+20:32:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:28 [INFO] gui.ui: [ui] main_window.ready geometry=900x700
+20:32:28 [INFO] gui.main: [ui] MainWindow shown, entering event loop
+20:32:56 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+20:32:58 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+20:32:58 [INFO] gui.main_window: [add] adding 1 files
+20:32:58 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb rows_before=0 source=file_dialog
+20:32:58 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+20:32:58 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=1.0 files_added=1 path_count=1 rows_after=1 source=file_dialog
+20:32:58 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+20:32:59 [INFO] gui.ui: [ui] compress.enter
+20:32:59 [INFO] gui.main_window: [compress] _on_compress called
+20:32:59 [INFO] gui.main_window: [compress] selected_rows=[0]
+20:32:59 [INFO] gui.main_window: [compress] algorithm=lzdp, records=1
+20:32:59 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.PENDING
+20:32:59 [INFO] gui.ui: [ui] compress.dispatch algo=lzdp rows=[0] task_count=1
+20:32:59 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+20:32:59 [INFO] gui.worker: [compress] START record=1690054493008 file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb algo=lzdp
+20:32:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:59 [DEBUG] gui.engine.web_dict: [web_dict] skip imdb-movie-reviews-word2vec-tfidf-bow.ipynb: extension not in .css, .htm, .html, .js, .json
+20:32:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:59 [INFO] gui.worker: [compress] STREAMING mode for 2996683 bytes (file-to-file)
+20:32:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:32:59 [INFO] gui.engine.compressor: [smart_compress_file] D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb -> D:\AAA_C\compression-tool\Package\workspace\compressed\89c2a3b72661_imdb-movie-reviews-word2vec-tfidf-bow.wcx via lzdp (chunk_bytes=512000, file_opts=1)
+20:33:36 [INFO] gui.ui: [ui] compress.cancel_requested
+20:33:36 [INFO] gui.main_window: [compress] cancelling worker
+20:33:36 [INFO] gui.worker: [compress] streaming compress returned success=True compressed_size=681369
+20:33:36 [INFO] gui.explore: [explore] skip thread=Dummy-1 file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb reason=user_ops_active
+20:33:36 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+20:33:36 [INFO] gui.main_window: [compress] row 0 finished: name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.DONE, ratio=0.2274
+20:33:36 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+20:33:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:33:36 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=2 threshold=50 total=2
+20:33:36 [INFO] gui.ui: [ui] compress.finished_ui cancelled=True
+20:33:42 [INFO] gui.ui: [ui] main_window.closeEvent
+20:33:42 [INFO] gui.main: [ui] aboutToQuit
+20:33:42 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+20:33:42 [INFO] gui.main: [ui] event loop exited code=0
+21:08:25 [INFO] root: ==== gui session start 2026-05-21 21:08:25 ====
+21:08:25 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\logs\gui.log (append mode, per-line flush)
+21:08:25 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:25 [INFO] gui.config.theme: [theme] theme applied
+21:08:25 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:25 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:25 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:25 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:25 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:25 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:25 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:25 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:25 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+21:08:26 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:26 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:26 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:26 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:26 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:26 [INFO] gui.engine.bridge: C++ core_engine loaded from D:\AAA_C\compression-tool\build_py\src\bindings\pybind\core_engine.cp312-win_amd64.pyd
+21:08:26 [INFO] gui.ade.engine: [decision] loaded model from D:\AAA_C\compression-tool\assets\ade\default_model.bin
+21:08:26 [INFO] gui.ade.engine: [decision] ADE loaded default model, using ML_HYBRID mode
+21:08:26 [INFO] gui.ade.engine: [decision] ADE initialized successfully
+21:08:26 [INFO] gui.ade.params: [param_regressor] C++ ParamRegressorNet available
+21:08:26 [DEBUG] gui.ade.training: [TrainingDataStore] loaded stats: 2 total samples
+21:08:26 [INFO] gui.ade.params: [param_regressor] loaded default C++ model
+21:08:26 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:26 [INFO] gui.explore: [explore] silent exploration enabled (see ade.silent_explore_enabled)
+21:08:26 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:26 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:26 [INFO] gui.ui: [ui] main_window.ready geometry=900x700
+21:08:26 [INFO] gui.main: [ui] MainWindow shown, entering event loop
+21:08:29 [INFO] gui.ui: [ui] file_dialog.open kind=open_directory
+21:08:30 [INFO] gui.ui: [ui] file_dialog.closed accepted=False kind=open_directory path=
+21:08:31 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+21:08:34 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+21:08:34 [INFO] gui.main_window: [add] adding 1 files
+21:08:34 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb rows_before=0 source=file_dialog
+21:08:34 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+21:08:34 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=0.8 files_added=1 path_count=1 rows_after=1 source=file_dialog
+21:08:34 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+21:08:35 [INFO] gui.ui: [ui] compress.enter
+21:08:35 [INFO] gui.main_window: [compress] _on_compress called
+21:08:35 [INFO] gui.main_window: [compress] selected_rows=[0]
+21:08:35 [INFO] gui.main_window: [compress] algorithm=lzdp, records=1
+21:08:35 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.PENDING
+21:08:35 [INFO] gui.ui: [ui] compress.dispatch algo=lzdp rows=[0] task_count=1
+21:08:35 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+21:08:35 [INFO] gui.worker: [compress] START record=1954183725024 file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb algo=lzdp
+21:08:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:35 [DEBUG] gui.engine.web_dict: [web_dict] skip imdb-movie-reviews-word2vec-tfidf-bow.ipynb: extension not in .css, .htm, .html, .js, .json
+21:08:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:35 [INFO] gui.worker: [compress] STREAMING mode for 2996683 bytes (file-to-file)
+21:08:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:35 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+21:08:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:08:35 [INFO] gui.engine.compressor: [smart_compress_file] D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb -> D:\AAA_C\compression-tool\Package\workspace\compressed\71ffed1459e9_imdb-movie-reviews-word2vec-tfidf-bow.wcx via lzdp (chunk_bytes=512000, file_opts=1)
+21:12:15 [INFO] root: ==== gui session start 2026-05-21 21:12:15 ====
+21:12:15 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\logs\gui.log (append mode, per-line flush)
+21:12:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:12:15 [INFO] gui.config.theme: [theme] theme applied
+21:12:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:12:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:12:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:12:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:12:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:12:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:12:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:12:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:12:15 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+21:12:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:12:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:12:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:12:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:12:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:12:15 [INFO] gui.engine.bridge: C++ core_engine loaded from D:\AAA_C\compression-tool\build_py\src\bindings\pybind\core_engine.cp312-win_amd64.pyd
+21:12:15 [INFO] gui.ade.engine: [decision] loaded model from D:\AAA_C\compression-tool\assets\ade\default_model.bin
+21:12:15 [INFO] gui.ade.engine: [decision] ADE loaded default model, using ML_HYBRID mode
+21:12:15 [INFO] gui.ade.engine: [decision] ADE initialized successfully
+21:12:15 [INFO] gui.ade.params: [param_regressor] C++ ParamRegressorNet available
+21:12:15 [DEBUG] gui.ade.training: [TrainingDataStore] loaded stats: 2 total samples
+21:12:15 [INFO] gui.ade.params: [param_regressor] loaded default C++ model
+21:12:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:12:15 [INFO] gui.explore: [explore] silent exploration enabled (see ade.silent_explore_enabled)
+21:12:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:12:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:12:15 [INFO] gui.ui: [ui] main_window.ready geometry=900x700
+21:12:15 [INFO] gui.main: [ui] MainWindow shown, entering event loop
+21:21:32 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+21:21:35 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+21:21:35 [INFO] gui.main_window: [add] adding 1 files
+21:21:35 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb rows_before=0 source=file_dialog
+21:21:35 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+21:21:35 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=1.3 files_added=1 path_count=1 rows_after=1 source=file_dialog
+21:21:35 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+21:21:37 [INFO] gui.ui: [ui] compress.enter
+21:21:37 [INFO] gui.main_window: [compress] _on_compress called
+21:21:37 [INFO] gui.main_window: [compress] selected_rows=[0]
+21:21:37 [INFO] gui.main_window: [compress] algorithm=lzdp, records=1
+21:21:37 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.PENDING
+21:21:37 [INFO] gui.ui: [ui] compress.dispatch algo=lzdp rows=[0] task_count=1
+21:21:37 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+21:21:37 [INFO] gui.worker: [compress] START record=3213350175040 file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb algo=lzdp
+21:21:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:21:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:21:37 [DEBUG] gui.engine.web_dict: [web_dict] skip imdb-movie-reviews-word2vec-tfidf-bow.ipynb: extension not in .css, .htm, .html, .js, .json
+21:21:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:21:37 [INFO] gui.worker: [compress] STREAMING mode for 2996683 bytes (file-to-file)
+21:21:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:21:37 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+21:21:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:21:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:21:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:21:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:21:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:21:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:21:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:21:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:21:37 [INFO] gui.engine.compressor: [smart_compress_file] D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb -> D:\AAA_C\compression-tool\Package\workspace\compressed\1c3bbb9148ac_imdb-movie-reviews-word2vec-tfidf-bow.wcx via lzdp (chunk_bytes=512000, file_opts=1)
+21:22:14 [INFO] gui.ui: [ui] compress.cancel_requested
+21:22:14 [INFO] gui.main_window: [compress] cancelling worker
+21:22:14 [INFO] gui.worker: [compress] streaming compress returned success=True compressed_size=681369
+21:22:14 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(True)
+21:22:14 [INFO] gui.explore: [explore] skip thread=Dummy-1 file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb reason=user_ops_active
+21:22:14 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+21:22:14 [INFO] gui.main_window: [compress] row 0 finished: name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.DONE, ratio=0.2274
+21:22:14 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+21:22:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:22:14 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=3 threshold=50 total=3
+21:22:14 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+21:22:14 [INFO] gui.ui: [ui] compress.finished_ui cancelled=True
+21:22:19 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:22:19 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+21:22:19 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:22:22 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+21:22:24 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+21:22:24 [INFO] gui.main_window: [add] adding 1 files
+21:22:24 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb rows_before=1 source=file_dialog
+21:22:24 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+21:22:24 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=2.9 files_added=1 path_count=1 rows_after=2 source=file_dialog
+21:22:24 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+21:22:26 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:22:26 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+21:22:26 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:22:31 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:22:31 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:22:31 [INFO] gui.engine.compressor: [engine] config saved to file
+21:22:31 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:22:31 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:22:31 [INFO] gui.engine.compressor: [engine] config saved to file
+21:22:31 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:22:31 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:22:32 [INFO] gui.ui: [ui] compress.enter
+21:22:32 [INFO] gui.main_window: [compress] _on_compress called
+21:22:32 [INFO] gui.main_window: [compress] selected_rows=[1]
+21:22:32 [INFO] gui.main_window: [compress] algorithm=lzdp, records=1
+21:22:32 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.PENDING
+21:22:32 [INFO] gui.ui: [ui] compress.dispatch algo=lzdp rows=[1] task_count=1
+21:22:32 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+21:22:32 [INFO] gui.worker: [compress] START record=3213350355360 file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb algo=lzdp
+21:22:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:22:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:22:32 [DEBUG] gui.engine.web_dict: [web_dict] skip imdb-movie-reviews-word2vec-tfidf-bow.ipynb: extension not in .css, .htm, .html, .js, .json
+21:22:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:22:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:22:32 [INFO] gui.worker: [compress] loaded raw data: 2996683 bytes
+21:22:32 [INFO] gui.worker: [compress] compressing with lzdp (web_dict_cfg=True web_dict_active=False bytes=2996683) ...
+21:22:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:22:44 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=610601
+21:22:44 [INFO] gui.worker: [compress] compress done: 2996683 -> 610601 bytes
+21:22:44 [INFO] gui.explore: [explore] skip thread=Dummy-2 file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb reason=user_ops_active
+21:22:44 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+21:22:44 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+21:22:44 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:22:44 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=4 threshold=50 total=4
+21:22:44 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+21:22:44 [INFO] gui.main_window: [compress] row 1 finished: name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.DONE, ratio=0.2038
+21:22:44 [INFO] gui.main_window: [compress] training data saved: 4 total samples
+21:22:44 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+21:24:02 [INFO] gui.ui: [ui] main_window.closeEvent
+21:24:02 [INFO] gui.main: [ui] aboutToQuit
+21:24:02 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:24:02 [INFO] gui.main: [ui] event loop exited code=0
+21:25:57 [INFO] root: ==== gui session start 2026-05-21 21:25:57 ====
+21:25:57 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\logs\gui.log (append mode, per-line flush)
+21:25:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:25:57 [INFO] gui.config.theme: [theme] theme applied
+21:25:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:25:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:25:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:25:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:25:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:25:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:25:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:25:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:25:57 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=10.0000MB
+21:25:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:25:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:25:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:25:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:25:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:25:57 [INFO] gui.engine.bridge: C++ core_engine loaded from D:\AAA_C\compression-tool\build_py\src\bindings\pybind\core_engine.cp312-win_amd64.pyd
+21:25:57 [INFO] gui.ade.engine: [decision] loaded model from D:\AAA_C\compression-tool\assets\ade\default_model.bin
+21:25:57 [INFO] gui.ade.engine: [decision] ADE loaded default model, using ML_HYBRID mode
+21:25:57 [INFO] gui.ade.engine: [decision] ADE initialized successfully
+21:25:57 [INFO] gui.ade.params: [param_regressor] C++ ParamRegressorNet available
+21:25:57 [DEBUG] gui.ade.training: [TrainingDataStore] loaded stats: 4 total samples
+21:25:57 [INFO] gui.ade.params: [param_regressor] loaded default C++ model
+21:25:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:25:57 [INFO] gui.explore: [explore] silent exploration enabled (see ade.silent_explore_enabled)
+21:25:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:25:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:25:57 [INFO] gui.ui: [ui] main_window.ready geometry=900x700
+21:25:58 [INFO] gui.main: [ui] MainWindow shown, entering event loop
+21:26:39 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+21:26:42 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+21:26:42 [INFO] gui.main_window: [add] adding 1 files
+21:26:42 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb rows_before=0 source=file_dialog
+21:26:42 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+21:26:42 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=1.3 files_added=1 path_count=1 rows_after=1 source=file_dialog
+21:26:42 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+21:26:44 [INFO] gui.ui: [ui] compress.enter
+21:26:44 [INFO] gui.main_window: [compress] _on_compress called
+21:26:44 [INFO] gui.main_window: [compress] selected_rows=[0]
+21:26:44 [INFO] gui.main_window: [compress] algorithm=dpflate, records=1
+21:26:44 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.PENDING
+21:26:44 [INFO] gui.ui: [ui] compress.dispatch algo=dpflate rows=[0] task_count=1
+21:26:44 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+21:26:44 [INFO] gui.worker: [compress] START record=1982174037104 file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb algo=dpflate
+21:26:44 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:26:44 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:26:44 [DEBUG] gui.engine.web_dict: [web_dict] skip imdb-movie-reviews-word2vec-tfidf-bow.ipynb: extension not in .css, .htm, .html, .js, .json
+21:26:44 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:26:44 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:26:44 [INFO] gui.worker: [compress] loaded raw data: 2996683 bytes
+21:26:44 [INFO] gui.worker: [compress] compressing with dpflate (web_dict_cfg=True web_dict_active=False bytes=2996683) ...
+21:26:44 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:28:13 [INFO] gui.ui: [ui] compress.cancel_requested
+21:28:13 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=540969
+21:28:13 [INFO] gui.worker: [compress] compress done: 2996683 -> 540969 bytes
+21:28:13 [INFO] gui.main_window: [compress] cancelling worker
+21:28:13 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(True)
+21:28:13 [INFO] gui.explore: [explore] skip thread=Dummy-1 file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb reason=user_ops_active
+21:28:13 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+21:28:13 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+21:28:13 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:28:13 [INFO] gui.main_window: [compress] row 0 finished: name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.DONE, ratio=0.1805
+21:28:13 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=5 threshold=50 total=5
+21:28:13 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+21:28:13 [INFO] gui.ui: [ui] compress.finished_ui cancelled=True
+21:32:38 [INFO] root: ==== gui session start 2026-05-21 21:32:38 ====
+21:32:38 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\logs\gui.log (append mode, per-line flush)
+21:32:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:32:38 [INFO] gui.config.theme: [theme] theme applied
+21:32:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:32:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:32:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:32:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:32:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:32:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:32:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:32:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:32:38 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=10.0000MB
+21:32:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:32:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:32:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:32:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:32:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:32:38 [INFO] gui.engine.bridge: C++ core_engine loaded from D:\AAA_C\compression-tool\build_py\src\bindings\pybind\core_engine.cp312-win_amd64.pyd
+21:32:38 [INFO] gui.ade.engine: [decision] loaded model from D:\AAA_C\compression-tool\assets\ade\default_model.bin
+21:32:38 [INFO] gui.ade.engine: [decision] ADE loaded default model, using ML_HYBRID mode
+21:32:38 [INFO] gui.ade.engine: [decision] ADE initialized successfully
+21:32:38 [INFO] gui.ade.params: [param_regressor] C++ ParamRegressorNet available
+21:32:38 [DEBUG] gui.ade.training: [TrainingDataStore] loaded stats: 5 total samples
+21:32:38 [INFO] gui.ade.params: [param_regressor] loaded default C++ model
+21:32:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:32:38 [INFO] gui.explore: [explore] silent exploration enabled (see ade.silent_explore_enabled)
+21:32:39 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:32:39 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:32:39 [INFO] gui.ui: [ui] main_window.ready geometry=900x700
+21:32:39 [INFO] gui.main: [ui] MainWindow shown, entering event loop
+21:33:14 [INFO] gui.ui: [ui] main_window.closeEvent
+21:33:14 [INFO] gui.main: [ui] aboutToQuit
+21:33:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:33:14 [INFO] gui.main: [ui] event loop exited code=0
+21:38:32 [INFO] root: ==== gui session start 2026-05-21 21:38:32 ====
+21:38:32 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\logs\gui.log (append mode, per-line flush)
+21:38:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:38:32 [INFO] gui.config.theme: [theme] theme applied
+21:38:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:38:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:38:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:38:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:38:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:38:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:38:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:38:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:38:32 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=10.0000MB
+21:38:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:38:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:38:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:38:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:38:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:38:32 [INFO] gui.engine.bridge: C++ core_engine loaded from D:\AAA_C\compression-tool\build_py\src\bindings\pybind\core_engine.cp312-win_amd64.pyd
+21:38:32 [INFO] gui.ade.engine: [decision] loaded model from D:\AAA_C\compression-tool\assets\ade\default_model.bin
+21:38:32 [INFO] gui.ade.engine: [decision] ADE loaded default model, using ML_HYBRID mode
+21:38:32 [INFO] gui.ade.engine: [decision] ADE initialized successfully
+21:38:32 [INFO] gui.ade.params: [param_regressor] C++ ParamRegressorNet available
+21:38:32 [DEBUG] gui.ade.training: [TrainingDataStore] loaded stats: 5 total samples
+21:38:32 [INFO] gui.ade.params: [param_regressor] loaded default C++ model
+21:38:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:38:32 [INFO] gui.explore: [explore] silent exploration enabled (see ade.silent_explore_enabled)
+21:38:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:38:32 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:38:32 [INFO] gui.ui: [ui] main_window.ready geometry=900x700
+21:38:33 [INFO] gui.main: [ui] MainWindow shown, entering event loop
+21:39:04 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+21:39:05 [INFO] gui.ui: [ui] file_dialog.closed accepted=False count=0 kind=open_files
+21:39:06 [INFO] gui.ui: [ui] main_window.closeEvent
+21:39:06 [INFO] gui.main: [ui] aboutToQuit
+21:39:06 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:39:06 [INFO] gui.main: [ui] event loop exited code=0
+21:50:50 [INFO] root: ==== gui session start 2026-05-21 21:50:50 ====
+21:50:50 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\logs\gui.log (append mode, per-line flush)
+21:50:50 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:50:50 [INFO] gui.config.theme: [theme] theme applied
+21:50:50 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:50:50 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:50:50 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:50:50 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:50:50 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:50:50 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:50:50 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:50:50 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:50:50 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=10.0000MB
+21:50:50 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:50:50 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:50:50 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:50:50 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:50:50 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:50:50 [INFO] gui.engine.bridge: C++ core_engine loaded from D:\AAA_C\compression-tool\build_py\src\bindings\pybind\core_engine.cp312-win_amd64.pyd
+21:50:50 [INFO] gui.ade.engine: [decision] loaded model from D:\AAA_C\compression-tool\assets\ade\default_model.bin
+21:50:50 [INFO] gui.ade.engine: [decision] ADE loaded default model, using ML_HYBRID mode
+21:50:50 [INFO] gui.ade.engine: [decision] ADE initialized successfully
+21:50:50 [INFO] gui.ade.params: [param_regressor] C++ ParamRegressorNet available
+21:50:50 [DEBUG] gui.ade.training: [TrainingDataStore] loaded stats: 5 total samples
+21:50:50 [INFO] gui.ade.params: [param_regressor] loaded default C++ model
+21:50:50 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:50:50 [INFO] gui.explore: [explore] silent exploration enabled (see ade.silent_explore_enabled)
+21:50:51 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:50:51 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:50:51 [INFO] gui.ui: [ui] main_window.ready geometry=900x700
+21:50:51 [INFO] gui.main: [ui] MainWindow shown, entering event loop
+21:51:00 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+21:51:03 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+21:51:03 [INFO] gui.main_window: [add] adding 1 files
+21:51:03 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb rows_before=0 source=file_dialog
+21:51:03 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+21:51:03 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=0.9 files_added=1 path_count=1 rows_after=1 source=file_dialog
+21:51:03 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+21:51:04 [INFO] gui.ui: [ui] compress.enter
+21:51:04 [INFO] gui.main_window: [compress] _on_compress called
+21:51:04 [INFO] gui.main_window: [compress] selected_rows=[0]
+21:51:04 [INFO] gui.main_window: [compress] algorithm=lzdp, records=1
+21:51:04 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.PENDING
+21:51:04 [INFO] gui.ui: [ui] compress.dispatch algo=lzdp rows=[0] task_count=1
+21:51:04 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+21:51:04 [INFO] gui.worker: [compress] START record=2355783106880 file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb algo=lzdp
+21:51:04 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:51:04 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:51:04 [DEBUG] gui.engine.web_dict: [web_dict] skip imdb-movie-reviews-word2vec-tfidf-bow.ipynb: extension not in .css, .htm, .html, .js, .json
+21:51:04 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:51:04 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:51:04 [INFO] gui.worker: [compress] loaded raw data: 2996683 bytes
+21:51:04 [INFO] gui.worker: [compress] compressing with lzdp (web_dict_cfg=True web_dict_active=False bytes=2996683) ...
+21:51:04 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:51:16 [INFO] gui.ui: [ui] compress.cancel_requested
+21:51:16 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=610601
+21:51:16 [INFO] gui.worker: [compress] compress done: 2996683 -> 610601 bytes
+21:51:16 [INFO] gui.main_window: [compress] cancelling worker
+21:51:16 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(True)
+21:51:16 [INFO] gui.explore: [explore] skip thread=Dummy-1 file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb reason=user_ops_active
+21:51:16 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+21:51:16 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+21:51:16 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:51:16 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=6 threshold=50 total=6
+21:51:16 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+21:51:16 [INFO] gui.main_window: [compress] row 0 finished: name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.DONE, ratio=0.2038
+21:51:16 [INFO] gui.ui: [ui] compress.finished_ui cancelled=True
+21:51:16 [INFO] gui.ui: [ui] main_window.closeEvent
+21:51:16 [INFO] gui.main: [ui] aboutToQuit
+21:51:16 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+21:51:16 [INFO] gui.main: [ui] event loop exited code=0
+22:17:54 [INFO] root: ==== gui session start 2026-05-21 22:17:54 ====
+22:17:54 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\logs\gui.log (append mode, per-line flush)
+22:17:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:17:54 [INFO] gui.config.theme: [theme] theme applied
+22:17:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:17:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:17:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:17:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:17:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:17:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:17:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:17:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:17:54 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=10.0000MB
+22:17:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:17:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:17:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:17:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:17:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:17:54 [INFO] gui.engine.bridge: C++ core_engine loaded from D:\AAA_C\compression-tool\build_py\src\bindings\pybind\core_engine.cp312-win_amd64.pyd
+22:17:54 [INFO] gui.ade.engine: [decision] loaded model from D:\AAA_C\compression-tool\assets\ade\default_model.bin
+22:17:54 [INFO] gui.ade.engine: [decision] ADE loaded default model, using ML_HYBRID mode
+22:17:54 [INFO] gui.ade.engine: [decision] ADE initialized successfully
+22:17:54 [INFO] gui.ade.params: [param_regressor] C++ ParamRegressorNet available
+22:17:54 [DEBUG] gui.ade.training: [TrainingDataStore] loaded stats: 6 total samples
+22:17:54 [INFO] gui.ade.params: [param_regressor] loaded default C++ model
+22:17:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:17:54 [INFO] gui.explore: [explore] silent exploration enabled (see ade.silent_explore_enabled)
+22:17:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:17:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:17:54 [INFO] gui.ui: [ui] main_window.ready geometry=900x700
+22:17:55 [INFO] gui.main: [ui] MainWindow shown, entering event loop
+22:18:00 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+22:18:10 [INFO] root: ==== gui session start 2026-05-21 22:18:10 ====
+22:18:10 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\logs\gui.log (append mode, per-line flush)
+22:18:10 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:18:10 [INFO] gui.config.theme: [theme] theme applied
+22:18:10 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:18:10 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:18:10 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:18:10 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:18:10 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:18:10 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:18:10 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:18:10 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:18:10 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=10.0000MB
+22:18:10 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:18:10 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:18:10 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:18:10 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:18:10 [INFO] gui.explore: [explore] silent exploration enabled (see ade.silent_explore_enabled)
+22:18:10 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:18:10 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:18:10 [INFO] gui.ui: [ui] main_window.ready geometry=900x700
+22:18:10 [INFO] gui.main: [ui] MainWindow shown, entering event loop
+22:18:21 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+22:18:21 [INFO] gui.main_window: [add] adding 1 files
+22:18:21 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb rows_before=0 source=file_dialog
+22:18:21 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+22:18:21 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=1.0 files_added=1 path_count=1 rows_after=1 source=file_dialog
+22:18:21 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+22:18:27 [INFO] gui.ui: [ui] main_window.closeEvent
+22:18:45 [INFO] gui.ui: [ui] main_window.closeEvent
+22:18:45 [INFO] gui.main: [ui] aboutToQuit
+22:18:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:18:45 [INFO] gui.main: [ui] event loop exited code=0
+22:47:34 [INFO] root: ==== gui session start 2026-05-21 22:47:34 ====
+22:47:34 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\logs\gui.log (append mode, per-line flush)
+22:47:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:34 [INFO] gui.config.theme: [theme] theme applied
+22:47:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:34 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+22:47:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:34 [INFO] gui.engine.bridge: C++ core_engine loaded from D:\AAA_C\compression-tool\build_py\src\bindings\pybind\core_engine.cp312-win_amd64.pyd
+22:47:34 [INFO] gui.ade.engine: [decision] loaded model from D:\AAA_C\compression-tool\assets\ade\default_model.bin
+22:47:34 [INFO] gui.ade.engine: [decision] ADE loaded default model, using ML_HYBRID mode
+22:47:34 [INFO] gui.ade.engine: [decision] ADE initialized successfully
+22:47:34 [INFO] gui.ade.params: [param_regressor] C++ ParamRegressorNet available
+22:47:34 [DEBUG] gui.ade.training: [TrainingDataStore] loaded stats: 6 total samples
+22:47:34 [INFO] gui.ade.params: [param_regressor] loaded default C++ model
+22:47:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:34 [INFO] gui.explore: [explore] silent exploration enabled (see ade.silent_explore_enabled)
+22:47:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:35 [INFO] gui.ui: [ui] main_window.ready geometry=900x700
+22:47:35 [INFO] gui.main: [ui] MainWindow shown, entering event loop
+22:47:53 [INFO] root: ==== gui session start 2026-05-21 22:47:53 ====
+22:47:53 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\logs\gui.log (append mode, per-line flush)
+22:47:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:53 [INFO] gui.config.theme: [theme] theme applied
+22:47:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:53 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+22:47:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:53 [INFO] gui.explore: [explore] silent exploration enabled (see ade.silent_explore_enabled)
+22:47:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:47:53 [INFO] gui.ui: [ui] main_window.ready geometry=900x700
+22:47:53 [INFO] gui.main: [ui] MainWindow shown, entering event loop
+22:48:42 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+22:48:45 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+22:48:45 [INFO] gui.main_window: [add] adding 1 files
+22:48:45 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb rows_before=0 source=file_dialog
+22:48:45 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+22:48:45 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=0.9 files_added=1 path_count=1 rows_after=1 source=file_dialog
+22:48:45 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+22:48:47 [INFO] gui.ui: [ui] compress.enter
+22:48:47 [INFO] gui.main_window: [compress] _on_compress called
+22:48:47 [INFO] gui.main_window: [compress] selected_rows=[0]
+22:48:47 [INFO] gui.main_window: [compress] algorithm=lzdp, records=1
+22:48:47 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.PENDING
+22:48:47 [INFO] gui.ui: [ui] compress.dispatch algo=lzdp rows=[0] task_count=1
+22:48:47 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+22:48:47 [INFO] gui.worker: [compress] START record=1967803431824 file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb algo=lzdp
+22:48:47 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:47 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:47 [DEBUG] gui.engine.web_dict: [web_dict] skip imdb-movie-reviews-word2vec-tfidf-bow.ipynb: extension not in .css, .htm, .html, .js, .json
+22:48:47 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:47 [INFO] gui.worker: [compress] STREAMING mode for 2996683 bytes (file-to-file)
+22:48:47 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:47 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+22:48:47 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:47 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:47 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:47 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:47 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:47 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:47 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:47 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:47 [INFO] gui.engine.compressor: [smart_compress_file] D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb -> D:\AAA_C\compression-tool\Package\workspace\compressed\3e2261450053_imdb-movie-reviews-word2vec-tfidf-bow.wcx via lzdp (chunk_bytes=512000, file_opts=1)
+22:48:49 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+22:48:51 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+22:48:51 [INFO] gui.main_window: [add] adding 1 files
+22:48:51 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb rows_before=1 source=file_dialog
+22:48:51 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+22:48:51 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=0.5 files_added=1 path_count=1 rows_after=2 source=file_dialog
+22:48:51 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+22:48:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:53 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+22:48:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:57 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:57 [INFO] gui.engine.compressor: [engine] config saved to file
+22:48:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:57 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:57 [INFO] gui.engine.compressor: [engine] config saved to file
+22:48:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:48:57 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:49:33 [INFO] gui.worker: [compress] streaming compress returned success=True compressed_size=681384
+22:49:33 [INFO] gui.explore: [explore] skip thread=Dummy-3 file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb reason=user_ops_active
+22:49:33 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+22:49:33 [INFO] gui.main_window: [compress] row 0 finished: name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.DONE, ratio=0.2274
+22:49:33 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+22:49:33 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:49:33 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=7 threshold=50 total=7
+22:49:33 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+22:49:33 [INFO] gui.main_window: [compress] training data saved: 7 total samples
+22:49:33 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+22:49:42 [INFO] gui.ui: [ui] compress.enter
+22:49:42 [INFO] gui.main_window: [compress] _on_compress called
+22:49:42 [INFO] gui.main_window: [compress] selected_rows=[1]
+22:49:42 [INFO] gui.main_window: [compress] algorithm=lzdp, records=1
+22:49:42 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.PENDING
+22:49:42 [INFO] gui.ui: [ui] compress.dispatch algo=lzdp rows=[1] task_count=1
+22:49:42 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+22:49:42 [INFO] gui.worker: [compress] START record=1968448505664 file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb algo=lzdp
+22:49:42 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:49:42 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:49:42 [DEBUG] gui.engine.web_dict: [web_dict] skip imdb-movie-reviews-word2vec-tfidf-bow.ipynb: extension not in .css, .htm, .html, .js, .json
+22:49:42 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:49:42 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:49:42 [INFO] gui.worker: [compress] loaded raw data: 2996683 bytes
+22:49:42 [INFO] gui.worker: [compress] compressing with lzdp (web_dict_cfg=True web_dict_active=False bytes=2996683) ...
+22:49:42 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:49:48 [INFO] gui.ui: [ui] export.begin export_dir=D:/AAA_C/compression-tool/Package/compressed rows=[0]
+22:49:48 [INFO] gui.main_window: [export] rows=[0]
+22:49:48 [INFO] gui.main_window: [export] row=0 record=imdb-movie-reviews-word2vec-tfidf-bow.ipynb status=CompressionStatus.DONE type=FileRecord
+22:49:48 [INFO] gui.main_window: [export] done: exported=1
+22:49:48 [INFO] gui.ui: [ui] export.done export_dir=D:/AAA_C/compression-tool/Package/compressed exported=1
+22:49:50 [INFO] gui.ui: [ui] file_dialog.open kind=open_directory
+22:49:52 [INFO] gui.ui: [ui] file_dialog.closed accepted=False kind=open_directory path=
+22:49:53 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+22:49:54 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=610601
+22:49:54 [INFO] gui.worker: [compress] compress done: 2996683 -> 610601 bytes
+22:49:54 [INFO] gui.explore: [explore] skip thread=Dummy-4 file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb reason=user_ops_active
+22:49:54 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+22:49:54 [INFO] gui.main_window: [compress] row 1 finished: name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.DONE, ratio=0.2038
+22:49:54 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+22:49:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:49:54 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=8 threshold=50 total=8
+22:49:54 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+22:49:54 [INFO] gui.main_window: [compress] training data saved: 8 total samples
+22:49:54 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+22:49:55 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+22:49:55 [INFO] gui.main_window: [add] adding 1 files
+22:49:55 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/Package/compressed/imdb-movie-reviews-word2vec-tfidf-bow.ipynb.wcx rows_before=2 source=file_dialog
+22:49:55 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+22:49:55 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=0.4 files_added=1 path_count=1 rows_after=3 source=file_dialog
+22:49:55 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+22:49:57 [INFO] gui.ui: [ui] decompress.selection rows=[2]
+22:49:59 [INFO] gui.ui: [ui] decompress.batch_start export_dir=D:/AAA_C/compression-tool/Package/decompressed task_count=1
+22:49:59 [INFO] gui.decompress: [decompress] gui_batch_begin export_dir=D:/AAA_C/compression-tool/Package/decompressed task_count=1
+22:49:59 [INFO] gui.decompress: [decompress] gui_item_begin name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb.wcx row=2 task_type=disk
+22:49:59 [INFO] gui.decompress: [decompress] gui_payload_begin algo=lzdp header_compressed=681366 header_original=2996683 payload_bytes=681366
+22:49:59 [INFO] gui.decompress: [decompress] smart_decompress_begin algo=lzdp payload_bytes=681366
+22:49:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:49:59 [INFO] gui.decompress: [decompress] smart_decompress_branch mode=compressor_one_shot
+22:49:59 [INFO] gui.decompress: [decompress] decompress_native_begin algo=lzdp compressed_bytes=681366
+22:49:59 [INFO] gui.decompress: [decompress] decompress_native_end compressed_size=2491713 compression_ratio=0.0 error_message= original_size=681366 out_bytes_len=2491713 success=True time_ms=8.732
+22:49:59 [INFO] gui.decompress: [decompress] smart_decompress_end branch=compressor_one_shot compressed_size=2491713 compression_ratio=0.0 error_message= original_size=681366 out_bytes_len=2491713 success=True time_ms=8.732
+22:49:59 [INFO] gui.decompress: [decompress] gui_payload_engine compressed_size=2491713 compression_ratio=0.0 error_message= original_size=681366 out_bytes_len=2491713 success=True time_ms=8.732
+22:49:59 [ERROR] gui.decompress: [decompress] gui_payload_size_mismatch actual=2491713 algo=lzdp expected=2996683
+22:49:59 [ERROR] gui.decompress: [decompress] gui_item_error err=解压结果大小 2491713 与 WCX 记录的原始大小 2996683 不一致 (lzdp)；请关闭 GUI 后重新编译 core_engine，并用当前版本重新压缩后再解压 name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb.wcx
+22:49:59 [ERROR] gui.main_window: 解压失败 imdb-movie-reviews-word2vec-tfidf-bow.ipynb.wcx: 解压结果大小 2491713 与 WCX 记录的原始大小 2996683 不一致 (lzdp)；请关闭 GUI 后重新编译 core_engine，并用当前版本重新压缩后再解压
+Traceback (most recent call last):
+  File "D:\AAA_C\compression-tool\src\gui\ui\main_window.py", line 2787, in _on_decompress
+    output_data = self._decompress_payload(engine, header, payload)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AAA_C\compression-tool\src\gui\ui\main_window.py", line 2493, in _decompress_payload
+    raise RuntimeError(
+RuntimeError: 解压结果大小 2491713 与 WCX 记录的原始大小 2996683 不一致 (lzdp)；请关闭 GUI 后重新编译 core_engine，并用当前版本重新压缩后再解压
+22:51:06 [INFO] gui.ui: [ui] decompress.batch_done export_dir=D:/AAA_C/compression-tool/Package/decompressed success_count=0
+22:51:50 [INFO] gui.ui: [ui] main_window.closeEvent
+22:51:52 [INFO] gui.ui: [ui] main_window.closeEvent
+22:51:52 [INFO] gui.main: [ui] aboutToQuit
+22:51:52 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:51:52 [INFO] gui.main: [ui] event loop exited code=0
+22:53:36 [INFO] root: ==== gui session start 2026-05-21 22:53:36 ====
+22:53:36 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\logs\gui.log (append mode, per-line flush)
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [INFO] gui.config.theme: [theme] theme applied
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=10.0000MB
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [INFO] gui.engine.bridge: C++ core_engine loaded from D:\AAA_C\compression-tool\build_py\src\bindings\pybind\core_engine.cp312-win_amd64.pyd
+22:53:36 [INFO] gui.ade.engine: [decision] loaded model from D:\AAA_C\compression-tool\assets\ade\default_model.bin
+22:53:36 [INFO] gui.ade.engine: [decision] ADE loaded default model, using ML_HYBRID mode
+22:53:36 [INFO] gui.ade.engine: [decision] ADE initialized successfully
+22:53:36 [INFO] gui.ade.params: [param_regressor] C++ ParamRegressorNet available
+22:53:36 [DEBUG] gui.ade.training: [TrainingDataStore] loaded stats: 8 total samples
+22:53:36 [INFO] gui.ade.params: [param_regressor] loaded default C++ model
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [INFO] gui.explore: [explore] silent exploration enabled (see ade.silent_explore_enabled)
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [INFO] gui.ui: [ui] main_window.ready geometry=900x700
+22:53:36 [INFO] gui.main: [ui] MainWindow shown, entering event loop
+22:53:36 [INFO] root: ==== gui session start 2026-05-21 22:53:36 ====
+22:53:36 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\logs\gui.log (append mode, per-line flush)
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [INFO] gui.config.theme: [theme] theme applied
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=10.0000MB
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [INFO] gui.explore: [explore] silent exploration enabled (see ade.silent_explore_enabled)
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:36 [INFO] gui.ui: [ui] main_window.ready geometry=900x700
+22:53:36 [INFO] gui.main: [ui] MainWindow shown, entering event loop
+22:53:37 [INFO] root: ==== gui session start 2026-05-21 22:53:37 ====
+22:53:37 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\logs\gui.log (append mode, per-line flush)
+22:53:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:37 [INFO] gui.config.theme: [theme] theme applied
+22:53:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:37 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=10.0000MB
+22:53:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:37 [INFO] gui.explore: [explore] silent exploration enabled (see ade.silent_explore_enabled)
+22:53:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:53:37 [INFO] gui.ui: [ui] main_window.ready geometry=900x700
+22:53:37 [INFO] gui.main: [ui] MainWindow shown, entering event loop
+22:53:40 [INFO] gui.ui: [ui] main_window.closeEvent
+22:53:47 [INFO] gui.ui: [ui] main_window.closeEvent
+22:53:58 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+22:54:03 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+22:54:03 [INFO] gui.main_window: [add] adding 1 files
+22:54:03 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb rows_before=0 source=file_dialog
+22:54:03 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+22:54:03 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=0.8 files_added=1 path_count=1 rows_after=1 source=file_dialog
+22:54:03 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+22:54:04 [INFO] gui.ui: [ui] compress.enter
+22:54:04 [INFO] gui.main_window: [compress] _on_compress called
+22:54:04 [INFO] gui.main_window: [compress] selected_rows=[0]
+22:54:04 [INFO] gui.main_window: [compress] algorithm=lzdp, records=1
+22:54:04 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.PENDING
+22:54:04 [INFO] gui.ui: [ui] compress.dispatch algo=lzdp rows=[0] task_count=1
+22:54:04 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+22:54:04 [INFO] gui.worker: [compress] START record=2219354533344 file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb algo=lzdp
+22:54:04 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:04 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:04 [DEBUG] gui.engine.web_dict: [web_dict] skip imdb-movie-reviews-word2vec-tfidf-bow.ipynb: extension not in .css, .htm, .html, .js, .json
+22:54:04 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:04 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:04 [INFO] gui.worker: [compress] loaded raw data: 2996683 bytes
+22:54:04 [INFO] gui.worker: [compress] compressing with lzdp (web_dict_cfg=True web_dict_active=False bytes=2996683) ...
+22:54:04 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:04 [INFO] gui.ui: [ui] compress.cancel_requested
+22:54:04 [INFO] gui.main_window: [compress] cancelling worker
+22:54:04 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(True)
+22:54:04 [INFO] gui.worker: [compress] memory smart_compress returned success=False compressed_size=0
+22:54:04 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:04 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=8 threshold=50 total=8
+22:54:04 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+22:54:04 [INFO] gui.ui: [ui] compress.finished_ui cancelled=True
+22:54:06 [INFO] gui.ui: [ui] compress.enter
+22:54:06 [INFO] gui.main_window: [compress] _on_compress called
+22:54:06 [INFO] gui.main_window: [compress] selected_rows=[0]
+22:54:06 [INFO] gui.main_window: [compress] algorithm=lzdp, records=1
+22:54:06 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.FAILED
+22:54:06 [INFO] gui.ui: [ui] compress.dispatch algo=lzdp rows=[0] task_count=1
+22:54:06 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+22:54:06 [INFO] gui.worker: [compress] START record=2219354533344 file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb algo=lzdp
+22:54:06 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:06 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:06 [DEBUG] gui.engine.web_dict: [web_dict] skip imdb-movie-reviews-word2vec-tfidf-bow.ipynb: extension not in .css, .htm, .html, .js, .json
+22:54:06 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:06 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:06 [INFO] gui.worker: [compress] loaded raw data: 2996683 bytes
+22:54:06 [INFO] gui.worker: [compress] compressing with lzdp (web_dict_cfg=True web_dict_active=False bytes=2996683) ...
+22:54:06 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:14 [INFO] root: ==== gui session start 2026-05-21 22:54:14 ====
+22:54:14 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\logs\gui.log (append mode, per-line flush)
+22:54:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:14 [INFO] gui.config.theme: [theme] theme applied
+22:54:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:14 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=10.0000MB
+22:54:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:14 [INFO] gui.explore: [explore] silent exploration enabled (see ade.silent_explore_enabled)
+22:54:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:14 [INFO] gui.ui: [ui] main_window.ready geometry=900x700
+22:54:14 [INFO] gui.main: [ui] MainWindow shown, entering event loop
+22:54:18 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=610601
+22:54:18 [INFO] gui.worker: [compress] compress done: 2996683 -> 610601 bytes
+22:54:18 [INFO] gui.explore: [explore] skip thread=Dummy-4 file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb reason=user_ops_active
+22:54:18 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+22:54:18 [INFO] gui.main_window: [compress] row 0 finished: name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.DONE, ratio=0.2038
+22:54:18 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+22:54:18 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:54:18 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=9 threshold=50 total=9
+22:54:18 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+22:54:18 [INFO] gui.main_window: [compress] training data saved: 9 total samples
+22:54:18 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+22:56:26 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+22:56:34 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+22:56:34 [INFO] gui.main_window: [add] adding 1 files
+22:56:34 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb rows_before=0 source=file_dialog
+22:56:34 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+22:56:34 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=0.5 files_added=1 path_count=1 rows_after=1 source=file_dialog
+22:56:34 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+22:56:35 [INFO] gui.ui: [ui] compress.enter
+22:56:35 [INFO] gui.main_window: [compress] _on_compress called
+22:56:35 [INFO] gui.main_window: [compress] selected_rows=[0]
+22:56:35 [INFO] gui.main_window: [compress] algorithm=lzdp, records=1
+22:56:35 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.PENDING
+22:56:35 [INFO] gui.ui: [ui] compress.dispatch algo=lzdp rows=[0] task_count=1
+22:56:35 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+22:56:35 [INFO] gui.worker: [compress] START record=2219999267776 file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb algo=lzdp
+22:56:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:35 [DEBUG] gui.engine.web_dict: [web_dict] skip imdb-movie-reviews-word2vec-tfidf-bow.ipynb: extension not in .css, .htm, .html, .js, .json
+22:56:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:36 [INFO] gui.worker: [compress] loaded raw data: 2996683 bytes
+22:56:36 [INFO] gui.worker: [compress] compressing with lzdp (web_dict_cfg=True web_dict_active=False bytes=2996683) ...
+22:56:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:37 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+22:56:40 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+22:56:40 [INFO] gui.main_window: [add] adding 1 files
+22:56:40 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb rows_before=1 source=file_dialog
+22:56:40 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+22:56:40 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=0.5 files_added=1 path_count=1 rows_after=2 source=file_dialog
+22:56:40 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+22:56:42 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:42 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=10.0000MB
+22:56:42 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:45 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:45 [INFO] gui.engine.compressor: [engine] config saved to file
+22:56:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:45 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:45 [INFO] gui.engine.compressor: [engine] config saved to file
+22:56:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:45 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:48 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=610601
+22:56:48 [INFO] gui.worker: [compress] compress done: 2996683 -> 610601 bytes
+22:56:48 [INFO] gui.explore: [explore] skip thread=Dummy-6 file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb reason=user_ops_active
+22:56:48 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+22:56:48 [INFO] gui.main_window: [compress] row 0 finished: name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.DONE, ratio=0.2038
+22:56:48 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+22:56:48 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:48 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=10 threshold=50 total=10
+22:56:48 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+22:56:48 [INFO] gui.main_window: [compress] training data saved: 10 total samples
+22:56:48 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+22:56:49 [INFO] gui.ui: [ui] compress.enter
+22:56:49 [INFO] gui.main_window: [compress] _on_compress called
+22:56:49 [INFO] gui.main_window: [compress] selected_rows=[1]
+22:56:49 [INFO] gui.main_window: [compress] algorithm=lzdp, records=1
+22:56:49 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.PENDING
+22:56:49 [INFO] gui.ui: [ui] compress.dispatch algo=lzdp rows=[1] task_count=1
+22:56:49 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+22:56:49 [INFO] gui.worker: [compress] START record=2219999266912 file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb algo=lzdp
+22:56:49 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:49 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:49 [DEBUG] gui.engine.web_dict: [web_dict] skip imdb-movie-reviews-word2vec-tfidf-bow.ipynb: extension not in .css, .htm, .html, .js, .json
+22:56:49 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:49 [INFO] gui.worker: [compress] STREAMING mode for 2996683 bytes (file-to-file)
+22:56:49 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:49 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+22:56:49 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:49 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:49 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:49 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:49 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:49 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:49 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:49 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:56:49 [INFO] gui.engine.compressor: [smart_compress_file] D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb -> D:\AAA_C\compression-tool\Package\workspace\compressed\428394f0f74f_imdb-movie-reviews-word2vec-tfidf-bow.wcx via lzdp (chunk_bytes=512000, file_opts=1)
+22:57:35 [INFO] gui.worker: [compress] streaming compress returned success=True compressed_size=681384
+22:57:35 [INFO] gui.explore: [explore] skip thread=Dummy-7 file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb reason=user_ops_active
+22:57:35 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+22:57:35 [INFO] gui.main_window: [compress] row 1 finished: name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.DONE, ratio=0.2274
+22:57:35 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+22:57:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:57:35 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=11 threshold=50 total=11
+22:57:35 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+22:57:35 [INFO] gui.main_window: [compress] training data saved: 11 total samples
+22:57:35 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+22:57:43 [INFO] gui.ui: [ui] main_window.closeEvent
+22:57:43 [INFO] gui.ui: [ui] main_window.closeEvent
+22:57:43 [INFO] gui.main: [ui] aboutToQuit
+22:57:43 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+22:57:43 [INFO] gui.main: [ui] event loop exited code=0

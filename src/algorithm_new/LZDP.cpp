@@ -9,6 +9,7 @@
 
 #include "ByteView.hpp"
 #include "Streaming.hpp"
+#include "StreamingCancel.hpp"
 
 
 
@@ -20,13 +21,20 @@ void LZDP::dpforward(
     const Input& input,
     DPNodes& dp,
     size_t begin,
-    size_t end) 
+    size_t end,
+    size_t match_end)
 {
     if (end == 0) {
         end = begin + input.window_size();
     }
+    if (match_end == 0) {
+        match_end = end;
+    }
 
     for (size_t pos = begin; pos < end; ++pos) {
+        if (core_new::is_streaming_cancel_requested()) {
+            throw std::runtime_error("cancelled");
+        }
         if (dp[pos].pre_pos == -2) continue;
 
         const size_t lit_lit = dp[pos].literal_count + 1;
@@ -49,7 +57,7 @@ void LZDP::dpforward(
 
         const size_t search_len = (pos > config_.window.search_size) ? config_.window.search_size : pos;
         const size_t search_start = pos - search_len;
-        const size_t remain = end - pos;
+        const size_t remain = match_end - pos;
         const size_t look_len = (remain > config_.window.look_size) ? config_.window.look_size : remain;
 
         RelativeByteSlice<Input> search_view{input, search_start};
@@ -69,7 +77,7 @@ void LZDP::dpforward(
         for (const Triple& kr : match_results) {
             if (kr.offset == 0) continue;
             const size_t target = pos + kr.length;
-            if (target > end || target >= dp.size()) continue;
+            if (target > match_end || target >= dp.size()) continue;
 
             const size_t mat_lit = dp[pos].literal_count;
             const size_t mat_mat = dp[pos].match_count + 1;
@@ -104,6 +112,9 @@ std::vector<Triple> LZDP::dpbacktrack(
     models::DPNode cur = dp[cur_pos];
 
     while(cur.pre_pos != -2){
+        if (core_new::is_streaming_cancel_requested()) {
+            throw std::runtime_error("cancelled");
+        }
         triples.push_back(cur.triple);
         if (cur.pre_pos < 0) break;
         cur = dp[cur.pre_pos];
@@ -137,10 +148,10 @@ std::vector<Triple> LZDP::dpbacktrack(
 
 
 template void LZDP::dpforward<VectorByteInput, std::vector<models::DPNode>>(
-    const VectorByteInput&, std::vector<models::DPNode>&, size_t, size_t);
+    const VectorByteInput&, std::vector<models::DPNode>&, size_t, size_t, size_t);
 
 template void LZDP::dpforward<VbByteInput, std::vector<models::DPNode>>(
-    const VbByteInput&, std::vector<models::DPNode>&, size_t, size_t);
+    const VbByteInput&, std::vector<models::DPNode>&, size_t, size_t, size_t);
 
 template std::vector<Triple> LZDP::dpbacktrack<std::vector<models::DPNode>>(
     std::vector<models::DPNode>&, int&, size_t);
@@ -162,7 +173,7 @@ struct RelativeDpStore {
 }  // namespace
 
 template void LZDP::dpforward<VbByteInput, RelativeDpStore>(
-    const VbByteInput&, RelativeDpStore&, size_t, size_t);
+    const VbByteInput&, RelativeDpStore&, size_t, size_t, size_t);
 
 }  // namespace compressor::algorithm
 
@@ -204,6 +215,10 @@ LZDPNonStreamingResult compress_bytes(
     LZDPNonStreamingResult result;
     if (input.empty()) {
         return result;
+    }
+
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
     }
 
     LZDP lzdp(config);
@@ -327,12 +342,24 @@ Phase1Result run_phase1_dpforward(
     streaming::File_Chunk_Reader reader(input_path, chunk_size);
     streaming::File_Chunk_Writer writer(temp_a_path);
 
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
+    }
+
     std::vector<uint8_t> cur = reader.read_chunk();
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
+    }
+
     std::vector<uint8_t> next = reader.read_chunk();
     streaming::VirtualBuffer<std::vector<uint8_t>> data_vb(std::move(cur), std::move(next));
 
     if (data_vb.empty()) {
         return result;
+    }
+
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
     }
 
     std::vector<models::DPNode> dp_store;
@@ -348,10 +375,12 @@ Phase1Result run_phase1_dpforward(
     RelativeDpStore dp_view{dp_store, dp_base};
 
     auto run_forward = [&](size_t abs_begin, size_t abs_end) {
-        ensure_dp_abs(dp_store, dp_base, abs_end);
+        const size_t avail_end = vb_base + data_vb.size();
+        const size_t ext_end = std::min(abs_end + config.window.look_size, avail_end);
+        ensure_dp_abs(dp_store, dp_base, ext_end);
         dp_view.base = dp_base;
         input_view.base = vb_base;
-        lzdp.dpforward(input_view, dp_view, abs_begin, abs_end);
+        lzdp.dpforward(input_view, dp_view, abs_begin, abs_end, ext_end);
     };
 
     size_t proc_end = process_end_exclusive(vb_base, data_vb);
@@ -363,6 +392,9 @@ Phase1Result run_phase1_dpforward(
     try_release_front_u8(vb_base, data_vb, proc_end, config.window.search_size);
 
     while (!reader.is_end()) {
+        if (core_new::is_streaming_cancel_requested()) {
+            throw std::runtime_error("cancelled");
+        }
         std::vector<uint8_t> fresh = reader.read_chunk();
         data_vb.append(std::move(fresh));
         ensure_dp_abs(dp_store, dp_base, vb_base + data_vb.size());
@@ -476,6 +508,9 @@ std::vector<Triple> backtrack_with_indexed_store(DpNodeIndexedStore& store, size
     models::DPNode cur = store.at(static_cast<size_t>(cur_pos));
 
     while (cur.pre_pos != -2) {
+        if (core_new::is_streaming_cancel_requested()) {
+            throw std::runtime_error("cancelled");
+        }
         triples.push_back(cur.triple);
         if (cur.pre_pos < 0) {
             break;
@@ -513,6 +548,9 @@ Phase2Result run_phase2_dpbacktrack(
     }
 
     (void)chunk_size;
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
+    }
     DpNodeIndexedStore dp_index;
     dp_index.open(temp_a_path, n, phase1.terminal_node);
     result.triples = backtrack_with_indexed_store(dp_index, n);
@@ -542,12 +580,24 @@ void LZDPStreamingPipeline::compress_file(const std::string& input_path,
                                           const std::string& output_path) {
     fs::create_directories(options_.workspace_dir);
 
+    std::error_code ec;
+    fs::remove(temp_a_path(), ec);
+    fs::remove(temp_b_path(), ec);
+
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
+    }
+
     const Phase1Result phase1 = run_phase1_dpforward(
         lzdp_,
         config_,
         input_path,
         temp_a_path(),
         options_.chunk_size);
+
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
+    }
 
     const Phase2Result phase2 = run_phase2_dpbacktrack(
         lzdp_,
@@ -556,10 +606,17 @@ void LZDPStreamingPipeline::compress_file(const std::string& input_path,
         temp_b_path(),
         options_.chunk_size);
 
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
+    }
+
     compressor::utils::_buffer emit_pending;
     auto tr = phase2.triples;
     if (!config_.encoding.use_flag_encoding) {
         tr = literalrun(tr, config_.window.look_size);
+    }
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
     }
     std::vector<uint8_t> compressed = encoding_triple_lz(tr, config_.encoding, emit_pending, true);
 

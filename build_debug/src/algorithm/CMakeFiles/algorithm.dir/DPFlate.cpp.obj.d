@@ -177,6 +177,7 @@ src/algorithm/CMakeFiles/algorithm.dir/DPFlate.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_vector.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/vector.tcc \
+ D:/AAA_C/compression-tool/src/utils/include/BitUtils.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/Deflate.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/HuffmanTree.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array \
@@ -194,7 +195,7 @@ src/algorithm/CMakeFiles/algorithm.dir/DPFlate.cpp.obj: \
  D:/AAA_C/compression-tool/src/algorithm/include/BlockProfile.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/HuffmanTree3HM.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/Inflate.hpp \
- D:/AAA_C/compression-tool/src/algorithm/include/SpillBitStream.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/StreamingDpChunk.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h \
@@ -202,6 +203,9 @@ src/algorithm/CMakeFiles/algorithm.dir/DPFlate.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uniform_int_dist.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algo.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_algorithm_defs.h \
+ D:/AAA_C/compression-tool/src/algorithm/include/DPFlateBin64kDebug.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/LZDPStreamDebug.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/TempTokenIO.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/TempFile.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/filesystem \
@@ -485,4 +489,12 @@ src/algorithm/CMakeFiles/algorithm.dir/DPFlate.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fstream.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/mutex \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unique_lock.h \
+ D:/AAA_C/compression-tool/src/algorithm/include/DPFlateTrace.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/unordered_map \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unordered_map.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hashtable.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hashtable_policy.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/node_handle.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/erase_if.h \
+ D:/AAA_C/compression-tool/src/algorithm/include/TopMatch.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/KMPMatcher.hpp

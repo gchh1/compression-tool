@@ -318,6 +318,30 @@ LZSScompressor.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/LZSScompressor.cpp.s
 .PHONY : LZSScompressor.cpp.s
 
+StreamingCancel.obj: StreamingCancel.cpp.obj
+.PHONY : StreamingCancel.obj
+
+# target to build an object file
+StreamingCancel.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/StreamingCancel.cpp.obj
+.PHONY : StreamingCancel.cpp.obj
+
+StreamingCancel.i: StreamingCancel.cpp.i
+.PHONY : StreamingCancel.i
+
+# target to preprocess a source file
+StreamingCancel.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/StreamingCancel.cpp.i
+.PHONY : StreamingCancel.cpp.i
+
+StreamingCancel.s: StreamingCancel.cpp.s
+.PHONY : StreamingCancel.s
+
+# target to generate assembly for a file
+StreamingCancel.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/StreamingCancel.cpp.s
+.PHONY : StreamingCancel.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -349,6 +373,9 @@ help:
 	@echo ... LZSScompressor.obj
 	@echo ... LZSScompressor.i
 	@echo ... LZSScompressor.s
+	@echo ... StreamingCancel.obj
+	@echo ... StreamingCancel.i
+	@echo ... StreamingCancel.s
 .PHONY : help
 
 

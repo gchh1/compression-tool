@@ -1175,6 +1175,19 @@ test_algorithm_new_lzdp/fast:
 .PHONY : test_algorithm_new_lzdp/fast
 
 #=============================================================================
+# Target rules for targets named test_lzdp_imdb_gui_cfg
+
+# Build rule for target.
+test_lzdp_imdb_gui_cfg: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_lzdp_imdb_gui_cfg
+.PHONY : test_lzdp_imdb_gui_cfg
+
+# fast build rule for target.
+test_lzdp_imdb_gui_cfg/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_imdb_gui_cfg.dir\build.make tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/build
+.PHONY : test_lzdp_imdb_gui_cfg/fast
+
+#=============================================================================
 # Target rules for targets named test_algorithm_new_phase1
 
 # Build rule for target.
@@ -1428,6 +1441,7 @@ help:
 	@echo ... test_lzdp_debug
 	@echo ... test_lzdp_dpflate_regression
 	@echo ... test_lzdp_dpflate_stream
+	@echo ... test_lzdp_imdb_gui_cfg
 	@echo ... test_lzdp_memory_flag
 	@echo ... test_lzdp_memory_streaming_parity
 	@echo ... test_lzss_algorithm_new_matrix

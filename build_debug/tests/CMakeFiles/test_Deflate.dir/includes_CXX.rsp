@@ -1,1 +1,1 @@
--I"D:/AAA_C/compression-tool/src/algorithm/include" -I"D:/AAA_C/compression-tool/src/utils/include"
+-I"D:/AAA_C/compression-tool/src/api/include" -I"D:/AAA_C/compression-tool/src/archiver/include" -I"D:/AAA_C/compression-tool/src/core/include" -I"D:/AAA_C/compression-tool/src/core/../processor/include" -I"D:/AAA_C/compression-tool/src/algorithm/include" -I"D:/AAA_C/compression-tool/src/utils/include" -I"D:/AAA_C/compression-tool/third_party/brotli/c/include" -I"D:/AAA_C/compression-tool/src/processor/include"

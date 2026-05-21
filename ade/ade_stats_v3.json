@@ -1,13 +1,17 @@
 {
-  "total_samples": 1,
-  "valid_samples": 1,
+  "total_samples": 11,
+  "valid_samples": 11,
   "invalid_samples": 0,
-  "last_save_time": 1778338505.0066106,
+  "last_save_time": 1779375455.499005,
+  "last_retrain_total_samples": 0,
+  "last_retrain_time": 0.0,
   "data_version": "3.0",
   "algorithm_distribution": {
-    "brotli": 1
+    "brotli": 1,
+    "lzdp": 9,
+    "dpflate": 1
   },
   "type_distribution": {
-    "UNKNOWN": 1
+    "UNKNOWN": 11
   }
 }

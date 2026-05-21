@@ -184,6 +184,7 @@ set(CMAKE_DEPEND_INFO_FILES
   "tests/CMakeFiles/debug_dpflate.dir/DependInfo.cmake"
   "tests/CMakeFiles/debug_token_trace.dir/DependInfo.cmake"
   "tests/CMakeFiles/test_algorithm_new_lzdp.dir/DependInfo.cmake"
+  "tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/DependInfo.cmake"
   "tests/CMakeFiles/test_algorithm_new_phase1.dir/DependInfo.cmake"
   "tests/CMakeFiles/test_algorithm_new_phase2.dir/DependInfo.cmake"
   "tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/DependInfo.cmake"

@@ -154,6 +154,7 @@ D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_regression_baseline.dir
 D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/debug_dpflate.dir
 D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/debug_token_trace.dir
 D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_algorithm_new_lzdp.dir
+D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir
 D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_algorithm_new_phase1.dir
 D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_algorithm_new_phase2.dir
 D:/AAA_C/compression-tool/build_py/tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir

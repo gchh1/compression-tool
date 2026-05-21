@@ -196,14 +196,15 @@ tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/test_lzdp_memory_streamin
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/vector.tcc \
  D:/AAA_C/compression-tool/src/algorithm/include/LZDP.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/utility \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_relops.h \
+ D:/AAA_C/compression-tool/src/utils/include/BitUtils.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/IAlgorithm.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/optional \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/enable_special_members.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/span \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array \
  D:/AAA_C/compression-tool/src/utils/include/BitReader.hpp \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/utility \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_relops.h \
  D:/AAA_C/compression-tool/src/utils/include/BitWriter.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/BlockProfile.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/KMPMatcher.hpp \
@@ -473,9 +474,10 @@ tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/test_lzdp_memory_streamin
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/winsvc.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/mcx.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/imm.h \
+ D:/AAA_C/compression-tool/src/algorithm/include/StreamingDpChunk.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/DPFlateBin64kDebug.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/LZDPStreamDebug.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/VirtualBuffer.hpp \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/iterator \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stream_iterator.h \
  D:/AAA_C/compression-tool/src/api/include/api.hpp \
  D:/AAA_C/compression-tool/src/core/include/AlgorithmFactory.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/memory \

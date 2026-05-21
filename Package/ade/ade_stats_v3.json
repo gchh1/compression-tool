@@ -1,25 +1,25 @@
 {
-  "total_samples": 1351,
-  "valid_samples": 1351,
+  "total_samples": 1385,
+  "valid_samples": 1385,
   "invalid_samples": 22,
-  "last_save_time": 1779292888.7682717,
+  "last_save_time": 1779381504.5101428,
   "last_retrain_total_samples": 1337,
   "last_retrain_time": 1779283283.8725314,
   "data_version": "3.0",
   "algorithm_distribution": {
     "myflate": 6,
     "lzmine": 5,
-    "lzss": 49,
-    "lzdp": 358,
-    "dpflate": 162,
-    "deflate": 569,
+    "lzss": 51,
+    "lzdp": 381,
+    "dpflate": 165,
+    "deflate": 575,
     "gzip": 8,
     "none": 162,
     "zstd": 11,
     "brotli": 22
   },
   "type_distribution": {
-    "UNKNOWN": 1121,
+    "UNKNOWN": 1155,
     "AUDIO_WAV": 23,
     "IMAGE_PNG": 151,
     "IMAGE_BMP": 8,
@@ -27,11 +27,11 @@
     "VIDEO_MKV": 3,
     "AUDIO_MP3": 2
   },
-  "last_rf_train_time": 1779170425.461791,
-  "last_rf_train_samples": 835,
+  "last_rf_train_time": 1779371356.0170877,
+  "last_rf_train_samples": 1239,
   "last_rf_train_backend": "ade.train",
   "last_rf_model_path": "D:\\AAA_C\\compression-tool\\Package\\ade\\default_model.bin",
   "exploration_samples": 31,
-  "last_nn_train_time": 1779170486.0762613,
-  "last_nn_train_samples": 216
+  "last_nn_train_time": 1779371362.2442162,
+  "last_nn_train_samples": 218
 }

@@ -10,6 +10,7 @@
 #include "EncodingTriple.hpp"
 #include "RecordIO.hpp"
 #include "Streaming.hpp"
+#include "StreamingCancel.hpp"
 
 namespace compressor::algorithm::pipeline {
 
@@ -20,6 +21,10 @@ DeflateNonStreamingResult compress_bytes_deflate(
     const DeflateConfig& config) {
     DeflateNonStreamingResult result;
     if (input.empty()) return result;
+
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
+    }
 
     Deflate deflate(config);
     auto triples = LZMatcher::greedyWholeInput(
@@ -35,6 +40,10 @@ DeflateNonStreamingResult compress_bytes_deflate(
 std::vector<uint8_t> decompress_bytes_deflate(
     const std::vector<uint8_t>& compressed,
     const DeflateConfig& config) {
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
+    }
+
     Deflate deflate(config);
     auto triples = deflate.huffmanDecode(compressed);
 
@@ -53,15 +62,26 @@ void DeflateStreamingPipeline::compress_file(const std::string& input_path,
                                                const std::string& output_path) {
     fs::create_directories(options_.workspace_dir);
 
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
+    }
+
     std::vector<uint8_t> full_input;
     {
         streaming::File_Chunk_Reader reader(input_path, options_.chunk_size);
         while (!reader.is_end()) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
             auto chunk = reader.read_chunk();
             if (!chunk.empty()) {
                 full_input.insert(full_input.end(), chunk.begin(), chunk.end());
             }
         }
+    }
+
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
     }
 
     auto triples = LZMatcher::greedyWholeInput(
@@ -71,12 +91,19 @@ void DeflateStreamingPipeline::compress_file(const std::string& input_path,
         config_.encoding.length_bits);
     full_input.clear();
 
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
+    }
+
     {
         streaming::File_Chunk_Writer temp_writer(temp_a_path());
         compressor::utils::_buffer pending;
         size_t cursor = 0;
         const size_t chunk_estimate = options_.chunk_size / record_io::kTripleRecordBytes;
         while (cursor < triples.size()) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
             size_t batch = std::min(chunk_estimate, triples.size() - cursor);
             std::vector<Triple> slice(triples.begin() + static_cast<std::ptrdiff_t>(cursor),
                                       triples.begin() + static_cast<std::ptrdiff_t>(cursor + batch));
@@ -92,6 +119,10 @@ void DeflateStreamingPipeline::compress_file(const std::string& input_path,
             std::vector<uint8_t> last{static_cast<uint8_t>(pending.buf & 0xFFu)};
             temp_writer.write_chunk(last);
         }
+    }
+
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
     }
 
     {
@@ -115,6 +146,10 @@ void DeflateStreamingPipeline::compress_file(const std::string& input_path,
             if (!tr.empty()) {
                 all_triples.insert(all_triples.end(), tr.begin(), tr.end());
             }
+        }
+
+        if (core_new::is_streaming_cancel_requested()) {
+            throw std::runtime_error("cancelled");
         }
 
         Deflate deflate(config_);

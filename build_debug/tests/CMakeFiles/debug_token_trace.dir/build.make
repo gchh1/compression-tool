@@ -93,6 +93,9 @@ debug_token_trace_EXTERNAL_OBJECTS =
 bin/debug_token_trace.exe: tests/CMakeFiles/debug_token_trace.dir/debug_token_trace.cpp.obj
 bin/debug_token_trace.exe: tests/CMakeFiles/debug_token_trace.dir/build.make
 bin/debug_token_trace.exe: src/algorithm/libalgorithm.a
+bin/debug_token_trace.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/debug_token_trace.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/debug_token_trace.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/debug_token_trace.exe: tests/CMakeFiles/debug_token_trace.dir/linkLibs.rsp
 bin/debug_token_trace.exe: tests/CMakeFiles/debug_token_trace.dir/objects1.rsp
 bin/debug_token_trace.exe: tests/CMakeFiles/debug_token_trace.dir/link.txt

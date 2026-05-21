@@ -62,7 +62,7 @@ def _try_load_engine(candidates: list[Path], module_name: str) -> bool:
     seen: set[str] = set()
     ordered: list[Path] = []
 
-    for p in _frozen_candidates(module_name) + candidates:
+    for p in candidates + _frozen_candidates(module_name):
         key = str(p.resolve()) if p.exists() else str(p)
         if key in seen:
             continue

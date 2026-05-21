@@ -1,6 +1,8 @@
 #include "GuiCompressors.hpp"
 
 #include <chrono>
+#include <stdexcept>
+#include <string>
 
 #include "Deflate.hpp"
 #include "Dpflate.hpp"
@@ -22,23 +24,65 @@ CompressorResult make_result(std::vector<uint8_t> in, std::vector<uint8_t> out, 
     return r;
 }
 
+CompressorResult make_cancelled_result(const std::vector<uint8_t>& in, double ms) {
+    CompressorResult r;
+    r.original_size = in.size();
+    r.compressed_size = 0;
+    r.compression_ratio = 0.0;
+    r.time_ms = ms;
+    r.success = false;
+    r.error_message = "cancelled";
+    return r;
+}
+
+template <typename Fn>
+CompressorResult run_compress_job(std::vector<uint8_t> data, Fn&& fn) {
+    const auto t0 = std::chrono::high_resolution_clock::now();
+    try {
+        auto out = fn(data);
+        const auto t1 = std::chrono::high_resolution_clock::now();
+        const double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
+        return make_result(std::move(data), std::move(out), ms);
+    } catch (const std::runtime_error& e) {
+        const auto t1 = std::chrono::high_resolution_clock::now();
+        const double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
+        if (std::string(e.what()) == "cancelled") {
+            return make_cancelled_result(data, ms);
+        }
+        throw;
+    }
+}
+
 }  // namespace
 
 // ── LZDP ──
 
+namespace {
+
+algorithm::LZDPConfig lzdp_effective_config(const algorithm::LZDPConfig& cfg) {
+    auto out = cfg;
+    if (out.window.min_match_len == 0) {
+        out.window.min_match_len = algorithm::utils::getMinMatch(
+            out.encoding.offset_bits, out.encoding.length_bits);
+    }
+    return out;
+}
+
+}  // namespace
+
 LZDPCompressor::LZDPCompressor() : dp_range_(3) {}
 
 CompressorResult LZDPCompressor::compress(std::vector<uint8_t> data) {
-    auto t0 = std::chrono::high_resolution_clock::now();
-    auto r = algorithm::pipeline::compress_bytes(data, lzdp_);
-    auto t1 = std::chrono::high_resolution_clock::now();
-    const double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
-    return make_result(std::move(data), std::move(r.compressed), ms);
+    const auto cfg = lzdp_effective_config(lzdp_);
+    return run_compress_job(std::move(data), [&](const std::vector<uint8_t>& in) {
+        return algorithm::pipeline::compress_bytes(in, cfg).compressed;
+    });
 }
 
 CompressorResult LZDPCompressor::decompress(std::vector<uint8_t> data) {
+    const auto cfg = lzdp_effective_config(lzdp_);
     auto t0 = std::chrono::high_resolution_clock::now();
-    auto out = algorithm::pipeline::decompress_bytes(data, lzdp_);
+    auto out = algorithm::pipeline::decompress_bytes(data, cfg);
     auto t1 = std::chrono::high_resolution_clock::now();
     const double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
     return make_result(std::move(data), std::move(out), ms);
@@ -91,11 +135,9 @@ int LZDPCompressor::get_match_engine() const {
 LZSSCompressor::LZSSCompressor() = default;
 
 CompressorResult LZSSCompressor::compress(std::vector<uint8_t> data) {
-    auto t0 = std::chrono::high_resolution_clock::now();
-    auto r = algorithm::pipeline::compress_bytes_lzss(data, lzss_);
-    auto t1 = std::chrono::high_resolution_clock::now();
-    return make_result(std::move(data), std::move(r.compressed),
-                       std::chrono::duration<double, std::milli>(t1 - t0).count());
+    return run_compress_job(std::move(data), [&](const std::vector<uint8_t>& in) {
+        return algorithm::pipeline::compress_bytes_lzss(in, lzss_).compressed;
+    });
 }
 
 CompressorResult LZSSCompressor::decompress(std::vector<uint8_t> data) {
@@ -133,11 +175,9 @@ bool LZSSCompressor::get_use_flag_encoding() const { return lzss_.encoding.use_f
 DeflateCompressor::DeflateCompressor() = default;
 
 CompressorResult DeflateCompressor::compress(std::vector<uint8_t> data) {
-    auto t0 = std::chrono::high_resolution_clock::now();
-    auto r = algorithm::pipeline::compress_bytes_deflate(data, deflate_);
-    auto t1 = std::chrono::high_resolution_clock::now();
-    return make_result(std::move(data), std::move(r.compressed),
-                       std::chrono::duration<double, std::milli>(t1 - t0).count());
+    return run_compress_job(std::move(data), [&](const std::vector<uint8_t>& in) {
+        return algorithm::pipeline::compress_bytes_deflate(in, deflate_).compressed;
+    });
 }
 
 CompressorResult DeflateCompressor::decompress(std::vector<uint8_t> data) {
@@ -202,11 +242,9 @@ bool DeflateCompressor::get_use_flag_encoding() const { return deflate_.encoding
 DPFlateCompressor::DPFlateCompressor() = default;
 
 CompressorResult DPFlateCompressor::compress(std::vector<uint8_t> data) {
-    auto t0 = std::chrono::high_resolution_clock::now();
-    auto r = algorithm::pipeline::compress_bytes_dpflate(data, dpflate_);
-    auto t1 = std::chrono::high_resolution_clock::now();
-    return make_result(std::move(data), std::move(r.compressed),
-                       std::chrono::duration<double, std::milli>(t1 - t0).count());
+    return run_compress_job(std::move(data), [&](const std::vector<uint8_t>& in) {
+        return algorithm::pipeline::compress_bytes_dpflate(in, dpflate_).compressed;
+    });
 }
 
 CompressorResult DPFlateCompressor::decompress(std::vector<uint8_t> data) {

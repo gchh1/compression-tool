@@ -94,6 +94,9 @@ bin/test_mixed_dpflate_only.exe: tests/CMakeFiles/test_mixed_dpflate_only.dir/te
 bin/test_mixed_dpflate_only.exe: tests/CMakeFiles/test_mixed_dpflate_only.dir/build.make
 bin/test_mixed_dpflate_only.exe: src/core/libcore.a
 bin/test_mixed_dpflate_only.exe: src/algorithm/libalgorithm.a
+bin/test_mixed_dpflate_only.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_mixed_dpflate_only.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_mixed_dpflate_only.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_mixed_dpflate_only.exe: tests/CMakeFiles/test_mixed_dpflate_only.dir/linkLibs.rsp
 bin/test_mixed_dpflate_only.exe: tests/CMakeFiles/test_mixed_dpflate_only.dir/objects1.rsp
 bin/test_mixed_dpflate_only.exe: tests/CMakeFiles/test_mixed_dpflate_only.dir/link.txt

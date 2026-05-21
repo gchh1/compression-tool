@@ -36,7 +36,7 @@ BROTLI_BUILD_TOOLS:BOOL=OFF
 //Build Pybind11 bindings for PyQt desktop app
 BUILD_PYTHON:BOOL=ON
 
-BUILD_SHARED_LIBS:BOOL=OFF
+BUILD_SHARED_LIBS:BOOL=
 
 //Build the testing tree.
 BUILD_TESTING:BOOL=ON
@@ -368,9 +368,6 @@ FETCHCONTENT_UPDATES_DISCONNECTED_GOOGLE_BROTLI:BOOL=OFF
 //Path to a program.
 GITCOMMAND:FILEPATH=D:/Git/cmd/git.exe
 
-//Git command line client
-GIT_EXECUTABLE:FILEPATH=D:/Git/cmd/git.exe
-
 //Command to build the project
 MAKECOMMAND:STRING=D:/AAA_C/AAA_MinGW/mingw64/bin/cmake.exe --build . --config "${CTEST_CONFIGURATION_TYPE}"
 
@@ -612,8 +609,6 @@ DART_TESTING_TIMEOUT-ADVANCED:INTERNAL=1
 FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[D:/Python/python.exe][D:/Python/libs/python312.lib][D:/Python/include][cfound components: Interpreter Development Development.Module Development.Embed ][v3.12.4()]
 //ADVANCED property for variable: GITCOMMAND
 GITCOMMAND-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: GIT_EXECUTABLE
-GIT_EXECUTABLE-ADVANCED:INTERNAL=1
 //Have function log2
 LOG2_RES:INTERNAL=1
 //ADVANCED property for variable: MAKECOMMAND

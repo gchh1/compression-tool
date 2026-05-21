@@ -79,7 +79,7 @@
     "use_web_resource_dict": true
   },
   "streaming": {
-    "threshold_mb": 1.0,
+    "threshold_mb": 10.0,
     "chunk_size_kb": 500,
     "workspace_root": "",
     "per_algorithm": {

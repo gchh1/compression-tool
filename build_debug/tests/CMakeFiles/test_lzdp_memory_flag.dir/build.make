@@ -94,6 +94,9 @@ bin/test_lzdp_memory_flag.exe: tests/CMakeFiles/test_lzdp_memory_flag.dir/test_l
 bin/test_lzdp_memory_flag.exe: tests/CMakeFiles/test_lzdp_memory_flag.dir/build.make
 bin/test_lzdp_memory_flag.exe: src/core/libcore.a
 bin/test_lzdp_memory_flag.exe: src/algorithm/libalgorithm.a
+bin/test_lzdp_memory_flag.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_lzdp_memory_flag.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_lzdp_memory_flag.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_lzdp_memory_flag.exe: tests/CMakeFiles/test_lzdp_memory_flag.dir/linkLibs.rsp
 bin/test_lzdp_memory_flag.exe: tests/CMakeFiles/test_lzdp_memory_flag.dir/objects1.rsp
 bin/test_lzdp_memory_flag.exe: tests/CMakeFiles/test_lzdp_memory_flag.dir/link.txt

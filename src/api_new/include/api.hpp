@@ -79,6 +79,7 @@ auto decompressFile(const std::string& input_path,
                     const std::string& output_path,
                     std::span<const AlgorithmID> chain,
                     size_t stream_chunk_bytes = 0,
+                    const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
                     const core::LzssPipelineParams* lzss_pipeline = nullptr,
                     const core::DpflatePipelineParams* dpflate_pipeline = nullptr,
                     const core::DeflatePipelineParams* deflate_pipeline = nullptr)

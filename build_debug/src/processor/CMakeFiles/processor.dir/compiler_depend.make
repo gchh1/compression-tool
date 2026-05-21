@@ -654,6 +654,7 @@ src/processor/CMakeFiles/processor.dir/StreamProcessor.cpp.obj: D:/AAA_C/compres
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wchar.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wctype.h \
   D:/AAA_C/compression-tool/src/algorithm/include/BlockProfile.hpp \
+  D:/AAA_C/compression-tool/src/algorithm/include/DPFlateBin64kDebug.hpp \
   D:/AAA_C/compression-tool/src/algorithm/include/IAlgorithm.hpp \
   D:/AAA_C/compression-tool/src/processor/include/StreamProcessor.hpp \
   D:/AAA_C/compression-tool/src/utils/include/BitReader.hpp \
@@ -664,6 +665,8 @@ src/processor/CMakeFiles/processor.dir/StreamProcessor.cpp.obj: D:/AAA_C/compres
 
 
 D:/AAA_C/compression-tool/src/utils/include/DebugLog.hpp:
+
+D:/AAA_C/compression-tool/src/algorithm/include/DPFlateBin64kDebug.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/fstream:
 

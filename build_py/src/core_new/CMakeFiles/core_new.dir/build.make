@@ -158,6 +158,21 @@ src/core_new/CMakeFiles/core_new.dir/ExternalCodecs.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/core_new.dir/ExternalCodecs.cpp.s"
 	cd /d D:\AAA_C\compression-tool\build_py\src\core_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\core_new\ExternalCodecs.cpp -o CMakeFiles\core_new.dir\ExternalCodecs.cpp.s
 
+src/core_new/CMakeFiles/core_new.dir/StreamingCancel.cpp.obj: src/core_new/CMakeFiles/core_new.dir/flags.make
+src/core_new/CMakeFiles/core_new.dir/StreamingCancel.cpp.obj: src/core_new/CMakeFiles/core_new.dir/includes_CXX.rsp
+src/core_new/CMakeFiles/core_new.dir/StreamingCancel.cpp.obj: D:/AAA_C/compression-tool/src/core_new/StreamingCancel.cpp
+src/core_new/CMakeFiles/core_new.dir/StreamingCancel.cpp.obj: src/core_new/CMakeFiles/core_new.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object src/core_new/CMakeFiles/core_new.dir/StreamingCancel.cpp.obj"
+	cd /d D:\AAA_C\compression-tool\build_py\src\core_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/core_new/CMakeFiles/core_new.dir/StreamingCancel.cpp.obj -MF CMakeFiles\core_new.dir\StreamingCancel.cpp.obj.d -o CMakeFiles\core_new.dir\StreamingCancel.cpp.obj -c D:\AAA_C\compression-tool\src\core_new\StreamingCancel.cpp
+
+src/core_new/CMakeFiles/core_new.dir/StreamingCancel.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/core_new.dir/StreamingCancel.cpp.i"
+	cd /d D:\AAA_C\compression-tool\build_py\src\core_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\AAA_C\compression-tool\src\core_new\StreamingCancel.cpp > CMakeFiles\core_new.dir\StreamingCancel.cpp.i
+
+src/core_new/CMakeFiles/core_new.dir/StreamingCancel.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/core_new.dir/StreamingCancel.cpp.s"
+	cd /d D:\AAA_C\compression-tool\build_py\src\core_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\core_new\StreamingCancel.cpp -o CMakeFiles\core_new.dir\StreamingCancel.cpp.s
+
 # Object files for target core_new
 core_new_OBJECTS = \
 "CMakeFiles/core_new.dir/LZDPcompressor.cpp.obj" \
@@ -165,7 +180,8 @@ core_new_OBJECTS = \
 "CMakeFiles/core_new.dir/LZSScompressor.cpp.obj" \
 "CMakeFiles/core_new.dir/Deflatecompressor.cpp.obj" \
 "CMakeFiles/core_new.dir/GuiCompressors.cpp.obj" \
-"CMakeFiles/core_new.dir/ExternalCodecs.cpp.obj"
+"CMakeFiles/core_new.dir/ExternalCodecs.cpp.obj" \
+"CMakeFiles/core_new.dir/StreamingCancel.cpp.obj"
 
 # External object files for target core_new
 core_new_EXTERNAL_OBJECTS =
@@ -176,9 +192,10 @@ src/core_new/libcore_new.a: src/core_new/CMakeFiles/core_new.dir/LZSScompressor.
 src/core_new/libcore_new.a: src/core_new/CMakeFiles/core_new.dir/Deflatecompressor.cpp.obj
 src/core_new/libcore_new.a: src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.obj
 src/core_new/libcore_new.a: src/core_new/CMakeFiles/core_new.dir/ExternalCodecs.cpp.obj
+src/core_new/libcore_new.a: src/core_new/CMakeFiles/core_new.dir/StreamingCancel.cpp.obj
 src/core_new/libcore_new.a: src/core_new/CMakeFiles/core_new.dir/build.make
 src/core_new/libcore_new.a: src/core_new/CMakeFiles/core_new.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX static library libcore_new.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX static library libcore_new.a"
 	cd /d D:\AAA_C\compression-tool\build_py\src\core_new && $(CMAKE_COMMAND) -P CMakeFiles\core_new.dir\cmake_clean_target.cmake
 	cd /d D:\AAA_C\compression-tool\build_py\src\core_new && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\core_new.dir\link.txt --verbose=$(VERBOSE)
 

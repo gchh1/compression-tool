@@ -5,6 +5,7 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj
  D:/AAA_C/compression-tool/src/algorithm_new/Deflate.cpp
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/backward/binders.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bit
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h
@@ -12,6 +13,9 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/alloc_traits.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocated_ptr.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocator.h
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_base.h
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_wait.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_ios.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_ios.tcc
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_string.h
@@ -78,6 +82,7 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/shared_ptr_base.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/sstream.tcc
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_abs.h
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_mutex.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algobase.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h
@@ -237,11 +242,13 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj
  D:/AAA_C/compression-tool/src/algorithm_new/include/Streaming.hpp
  D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp
  D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp
+ D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp
 
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj
  D:/AAA_C/compression-tool/src/algorithm_new/Dpflate.cpp
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/backward/binders.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bit
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h
@@ -249,6 +256,9 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/alloc_traits.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocated_ptr.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocator.h
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_base.h
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_wait.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_ios.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_ios.tcc
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_string.h
@@ -315,6 +325,7 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/shared_ptr_base.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/sstream.tcc
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_abs.h
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_mutex.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algobase.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h
@@ -474,11 +485,13 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj
  D:/AAA_C/compression-tool/src/algorithm_new/include/Streaming.hpp
  D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp
  D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp
+ D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp
 
 src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj
  D:/AAA_C/compression-tool/src/algorithm_new/LZDP.cpp
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/backward/binders.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bit
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h
@@ -486,6 +499,9 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/alloc_traits.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocated_ptr.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocator.h
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_base.h
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_wait.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_ios.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_ios.tcc
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_string.h
@@ -548,6 +564,7 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/shared_ptr_base.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/sstream.tcc
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_abs.h
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_mutex.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algobase.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h
@@ -701,11 +718,13 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj
  D:/AAA_C/compression-tool/src/algorithm_new/include/Streaming.hpp
  D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp
  D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp
+ D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp
 
 src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj
  D:/AAA_C/compression-tool/src/algorithm_new/LZSS.cpp
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/backward/binders.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bit
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h
@@ -713,6 +732,9 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/alloc_traits.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocated_ptr.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocator.h
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_base.h
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_wait.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_ios.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_ios.tcc
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_string.h
@@ -773,6 +795,7 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/shared_ptr_base.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/sstream.tcc
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_abs.h
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_mutex.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algobase.h
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h
@@ -923,6 +946,7 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj
  D:/AAA_C/compression-tool/src/algorithm_new/include/Streaming.hpp
  D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp
  D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp
+ D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp
 
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj
  D:/AAA_C/compression-tool/src/algorithm_new/Visualization.cpp

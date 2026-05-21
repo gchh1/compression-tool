@@ -10,6 +10,7 @@
 #include "RecordIO.hpp"
 #include "Streaming.hpp"
 #include "LZDP.hpp"
+#include "StreamingCancel.hpp"
 
 namespace compressor::algorithm::pipeline {
 
@@ -20,6 +21,10 @@ DPFlateNonStreamingResult compress_bytes_dpflate(
     const DPflateConfig& config) {
     DPFlateNonStreamingResult result;
     if (input.empty()) return result;
+
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
+    }
 
     auto lzdp_cfg = config.to_lzdp_config();
     LZDP lzdp(lzdp_cfg);
@@ -63,6 +68,10 @@ DPFlateNonStreamingResult compress_bytes_dpflate(
 std::vector<uint8_t> decompress_bytes_dpflate(
     const std::vector<uint8_t>& compressed,
     const DPflateConfig& config) {
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
+    }
+
     std::vector<Triple> triples;
     if (config.huffman.use_3hfmtree) {
         Huffman_3HfMTConfig hmcfg{
@@ -100,13 +109,25 @@ void DPFlateStreamingPipeline::compress_file(const std::string& input_path,
                                               const std::string& output_path) {
     fs::create_directories(opts_.workspace_dir);
 
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
+    }
+
     auto lzdp_cfg = config_.to_lzdp_config();
 
     const Phase1Result phase1 = run_phase1_dpforward(
         dpflate_.lzdp(), lzdp_cfg, input_path, temp_a_path(), opts_.chunk_size);
 
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
+    }
+
     const Phase2Result phase2 = run_phase2_dpbacktrack(
         dpflate_.lzdp(), phase1, temp_a_path(), temp_b_path(), opts_.chunk_size);
+
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
+    }
 
     std::vector<uint8_t> encoded;
 

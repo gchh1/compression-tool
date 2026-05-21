@@ -1014,6 +1014,7 @@ src/bindings/pybind/CMakeFiles/core_engine.dir/pybind_module.cpp.obj: D:/AAA_C/c
   D:/AAA_C/compression-tool/src/core_new/include/GuiCompressors.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/GzipCompressor.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/ICompressor.hpp \
+  D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp \
   D:/AAA_C/compression-tool/src/utils/include/DebugLog.hpp \
   D:/Python/Lib/site-packages/pybind11/include/pybind11/attr.h \
   D:/Python/Lib/site-packages/pybind11/include/pybind11/buffer_info.h \
@@ -1158,6 +1159,8 @@ src/bindings/pybind/CMakeFiles/core_engine.dir/pybind_module.cpp.obj: D:/AAA_C/c
   D:/Python/include/warnings.h \
   D:/Python/include/weakrefobject.h
 
+
+D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp:
 
 D:/AAA_C/compression-tool/src/core_new/include/ICompressor.hpp:
 

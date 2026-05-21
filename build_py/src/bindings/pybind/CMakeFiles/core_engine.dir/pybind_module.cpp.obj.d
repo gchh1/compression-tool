@@ -409,6 +409,7 @@ src/bindings/pybind/CMakeFiles/core_engine.dir/pybind_module.cpp.obj: \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Dpflate.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/LZSS.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/MatchEngine.hpp \
+ D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp \
  D:/AAA_C/compression-tool/src/core_new/include/GzipCompressor.hpp \
  D:/AAA_C/compression-tool/src/archiver/include/Archiver.hpp \
  D:/AAA_C/compression-tool/src/archiver/include/EntryHeader.hpp \

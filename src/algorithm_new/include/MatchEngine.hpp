@@ -3,6 +3,8 @@
 /// §1.14 匹配引擎砖块：HashChain / KMP 共用「按位置返回 Triple 容器」接口；
 /// ``dp_top == 1`` 时容器语义为贪心（取最长一条），``dp_top >= 1`` 时供 LZDP/DPFlate DP relax。
 
+#pragma once
+
 #include <algorithm>
 #include <cstdint>
 #include <vector>
@@ -14,6 +16,7 @@
 #include "Models.hpp"
 #include "Utils.hpp"
 #include "config/Config.hpp"
+#include "StreamingCancel.hpp"
 
 namespace compressor::algorithm::LZMatcher {
 
@@ -64,6 +67,9 @@ inline std::vector<Triple> greedyWholeInput(
 
     size_t cursor = 0;
     while (cursor < n) {
+        if (core_new::is_streaming_cancel_requested()) {
+            throw std::runtime_error("cancelled");
+        }
         const size_t search_len = std::min(cursor, search_size);
         const size_t search_start = cursor - search_len;
         const size_t look_len = std::min(n - cursor, max_match);

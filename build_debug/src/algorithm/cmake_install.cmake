@@ -37,3 +37,8 @@ if(NOT DEFINED CMAKE_OBJDUMP)
   set(CMAKE_OBJDUMP "D:/AAA_C/AAA_MinGW/mingw64/bin/objdump.exe")
 endif()
 
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-build/cmake_install.cmake")
+endif()
+

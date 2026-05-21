@@ -19,20 +19,23 @@ src/algorithm/CMakeFiles/algorithm.dir/LZDP.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdint \
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdint.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdint.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/vector \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/requires_hosted.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algobase.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functexcept.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_defines.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/cpp_type_traits.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/type_traits.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/numeric_traits.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/utility \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_relops.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_pair.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/type_traits \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/move.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/utility.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/compare \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/concepts \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/initializer_list \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/numeric_traits.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/cpp_type_traits.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/type_traits.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/vector \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/requires_hosted.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algobase.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functexcept.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_defines.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_types.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/iterator_concepts.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ptr_traits.h \
@@ -55,7 +58,6 @@ src/algorithm/CMakeFiles/algorithm.dir/LZDP.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/alloc_traits.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/alloc_traits.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_vector.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/initializer_list \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functional_hash.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hash_bytes.h \
@@ -73,6 +75,7 @@ src/algorithm/CMakeFiles/algorithm.dir/LZDP.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_base.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/max_size_type.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/numbers \
+ D:/AAA_C/compression-tool/src/utils/include/BitUtils.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/IAlgorithm.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/optional \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/exception \
@@ -87,8 +90,6 @@ src/algorithm/CMakeFiles/algorithm.dir/LZDP.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstring \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/string.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/utility \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_relops.h \
  D:/AAA_C/compression-tool/src/utils/include/BitWriter.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/BlockProfile.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/KMPMatcher.hpp \
@@ -468,9 +469,11 @@ src/algorithm/CMakeFiles/algorithm.dir/LZDP.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/winsvc.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/mcx.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/imm.h \
+ D:/AAA_C/compression-tool/src/algorithm/include/StreamingDpChunk.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/DPFlateBin64kDebug.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/LZDPStreamDebug.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/VirtualBuffer.hpp \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/iterator \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stream_iterator.h \
+ D:/AAA_C/compression-tool/src/algorithm/include/TopMatch.hpp \
  D:/AAA_C/compression-tool/src/utils/include/DebugLog.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdarg \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/fstream \

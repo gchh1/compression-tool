@@ -1198,15 +1198,30 @@ class CompressionEngine:
             raise ValueError(f"Algorithm {algorithm.value} not supported in pipeline decompress mode")
 
         chunk = int(_get_effective_chunk_kb(algorithm, _load_app_config())) * 1024
+        lzdp_wf = None
         lzss_p = None
         dpflate_p = None
         deflate_p = None
-        if algorithm == AlgorithmType.LZSS:
-            lzss_p = self._lzss_pipeline_params_for_file_pipeline()
+        with CompressionEngine._engine_op_lock:
+            cfg_snap = CompressionEngine._deep_copy_config(
+                CompressionEngine._get_config_unlocked()
+            )
+        if algorithm == AlgorithmType.LZDP:
+            lzdp_wf = self._lzdp_whole_file_params_from_cfg(
+                cfg_snap.get(AlgorithmType.LZDP, {})
+            )
+        elif algorithm == AlgorithmType.LZSS:
+            lzss_p = self._lzss_pipeline_params_from_cfg(
+                cfg_snap.get(AlgorithmType.LZSS, {})
+            )
         elif algorithm == AlgorithmType.DPFLATE:
-            dpflate_p = self._dpflate_pipeline_params_for_file_pipeline()
+            dpflate_p = self._dpflate_pipeline_params_from_cfg(
+                cfg_snap.get(AlgorithmType.DPFLATE, {})
+            )
         elif algorithm == AlgorithmType.DEFLATE:
-            deflate_p = self._deflate_pipeline_params_for_file_pipeline()
+            deflate_p = self._deflate_pipeline_params_from_cfg(
+                cfg_snap.get(AlgorithmType.DEFLATE, {})
+            )
 
         from gui.engine.decompress_log import log_decompress, summarize_result
 
@@ -1231,6 +1246,7 @@ class CompressionEngine:
                 output_path,
                 [decomp_id],
                 chunk,
+                lzdp_wf,
                 lzss_p,
                 dpflate_p,
                 deflate_p,

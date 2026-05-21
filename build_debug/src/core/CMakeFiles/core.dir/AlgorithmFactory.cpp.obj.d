@@ -197,11 +197,12 @@ src/core/CMakeFiles/core.dir/AlgorithmFactory.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/vector.tcc \
  D:/AAA_C/compression-tool/src/algorithm/include/Brotli.hpp \
- D:/AAA_C/compression-tool/src/algorithm/include/HuffmanTree.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/Deflate.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/HuffmanTree.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/Delta.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/Inflate.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/LZDP.hpp \
+ D:/AAA_C/compression-tool/src/utils/include/BitUtils.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/KMPMatcher.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h \
@@ -486,12 +487,14 @@ src/core/CMakeFiles/core.dir/AlgorithmFactory.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/winsvc.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/mcx.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/imm.h \
+ D:/AAA_C/compression-tool/src/algorithm/include/StreamingDpChunk.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/DPFlateBin64kDebug.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/LZDPStreamDebug.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/VirtualBuffer.hpp \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/iterator \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stream_iterator.h \
  D:/AAA_C/compression-tool/src/algorithm/include/LZSS.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/DPFlate.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/HuffmanTree3HM.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/TempTokenIO.hpp \
  D:/AAA_C/compression-tool/src/processor/include/ChunkedStreamAdapter.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/functional \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_function.h \

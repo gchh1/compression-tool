@@ -55,6 +55,14 @@ LZDPConfig lzdp_from_params(const core::LzdpWholeFileParams* p) {
     cfg.encoding.use_flag_encoding = p->use_flag_encoding;
     cfg.dp.match_engine =
         p->match_engine == 0 ? models::MatchEngine::KMP : models::MatchEngine::HashChain;
+    cfg.encoding.offset_bits = static_cast<uint8_t>(
+        algorithm::utils::calcBitWidth(cfg.window.search_size));
+    cfg.encoding.length_bits = static_cast<uint8_t>(
+        algorithm::utils::calcBitWidth(cfg.window.look_size));
+    if (cfg.window.min_match_len == 0) {
+        cfg.window.min_match_len = algorithm::utils::getMinMatch(
+            cfg.encoding.offset_bits, cfg.encoding.length_bits);
+    }
     return cfg;
 }
 
@@ -204,27 +212,60 @@ auto compress(const std::vector<uint8_t>& data,
         return fail("multi-stage chain not supported yet");
     }
 
+    if (core_new::is_streaming_cancel_requested()) {
+        result.cancelled = true;
+        return fail("cancelled");
+    }
+
     auto t0 = std::chrono::high_resolution_clock::now();
     const auto id = chain.front();
 
     try {
         if (is_lzdp(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
             auto r = compress_bytes(data, lzdp_from_params(lzdp_whole_file));
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
             result.data = std::move(r.compressed);
         } else if (is_lzss(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
             auto r = compress_bytes_lzss(data, lzss_from_params(lzss_pipeline, id));
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
             result.data = std::move(r.compressed);
         } else if (is_deflate(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
             auto r = compress_bytes_deflate(data, deflate_from_params(deflate_pipeline));
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
             result.data = std::move(r.compressed);
         } else if (is_dpflate(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
             auto r = compress_bytes_dpflate(data, dpflate_from_params(dpflate_pipeline));
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
             result.data = std::move(r.compressed);
         } else {
             return fail("unsupported algorithm in chain");
         }
     } catch (const std::exception& e) {
-        return fail(e.what());
+        CompressResult r = fail(e.what());
+        if (std::string(e.what()) == "cancelled") {
+            r.cancelled = true;
+        }
+        return r;
     }
 
     auto t1 = std::chrono::high_resolution_clock::now();
@@ -254,6 +295,11 @@ auto decompress(const std::vector<uint8_t>& data,
         return fail("multi-stage chain not supported yet");
     }
 
+    if (core_new::is_streaming_cancel_requested()) {
+        result.cancelled = true;
+        return fail("cancelled");
+    }
+
     auto t0 = std::chrono::high_resolution_clock::now();
     const auto id = chain.front();
 
@@ -270,7 +316,11 @@ auto decompress(const std::vector<uint8_t>& data,
             return fail("unsupported decompress algorithm");
         }
     } catch (const std::exception& e) {
-        return fail(e.what());
+        CompressResult r = fail(e.what());
+        if (std::string(e.what()) == "cancelled") {
+            r.cancelled = true;
+        }
+        return r;
     }
 
     auto t1 = std::chrono::high_resolution_clock::now();
@@ -343,7 +393,7 @@ auto compressFile(const std::string& input_path,
                   const std::string& output_path,
                   std::span<const AlgorithmID> chain,
                   size_t stream_chunk_bytes,
-                  uint32_t,
+                  uint32_t file_compress_opts,
                   const core::LzdpWholeFileParams* lzdp_whole_file,
                   const core::DpflatePipelineParams* dpflate_pipeline,
                   const core::DeflatePipelineParams* deflate_pipeline,
@@ -378,20 +428,33 @@ auto compressFile(const std::string& input_path,
     const std::string payload_tmp = (part.string() + ".payload");
     remove_best_effort(payload_tmp);
 
+    std::string active_workspace;
     try {
         const bool use_streaming = file_size > 256 * 1024;
+        // GUI sets kFileCompressLzdpWholeFileFramed for LZDP file jobs: same ``compress_bytes`` as
+        // ``LZDPCompressor`` (algorithm_new), not chunked ``LZDPStreamingPipeline``.
+        const bool lzdp_use_chunked_stream =
+            use_streaming &&
+            ((file_compress_opts & core::kFileCompressLzdpWholeFileFramed) == 0);
 
         if (is_lzdp(id)) {
             const auto cfg = lzdp_from_params(lzdp_whole_file);
-            if (use_streaming) {
+            if (lzdp_use_chunked_stream) {
                 LZDPStreamingOptions opts;
                 opts.chunk_size = chunk;
                 opts.workspace_dir = spill_workspace_dir(part);
+                active_workspace = opts.workspace_dir;
                 LZDPStreamingPipeline pipe(cfg, opts);
                 pipe.compress_file(input_path, payload_tmp);
             } else {
                 const auto input = core_new::io::read_file_bytes(input_path);
+                if (core_new::is_streaming_cancel_requested()) {
+                    throw std::runtime_error("cancelled");
+                }
                 auto r = compress_bytes(input, cfg);
+                if (core_new::is_streaming_cancel_requested()) {
+                    throw std::runtime_error("cancelled");
+                }
                 core_new::io::write_file_bytes(payload_tmp, r.compressed);
             }
         } else if (is_lzss(id)) {
@@ -400,11 +463,18 @@ auto compressFile(const std::string& input_path,
                 LZSSStreamingOptions opts;
                 opts.chunk_size = chunk;
                 opts.workspace_dir = spill_workspace_dir(part);
+                active_workspace = opts.workspace_dir;
                 LZSSStreamingPipeline pipe(cfg, opts);
                 pipe.compress_file(input_path, payload_tmp);
             } else {
                 const auto input = core_new::io::read_file_bytes(input_path);
+                if (core_new::is_streaming_cancel_requested()) {
+                    throw std::runtime_error("cancelled");
+                }
                 auto r = compress_bytes_lzss(input, cfg);
+                if (core_new::is_streaming_cancel_requested()) {
+                    throw std::runtime_error("cancelled");
+                }
                 core_new::io::write_file_bytes(payload_tmp, r.compressed);
             }
         } else if (is_deflate(id)) {
@@ -413,11 +483,18 @@ auto compressFile(const std::string& input_path,
                 DeflateStreamingOptions opts;
                 opts.chunk_size = chunk;
                 opts.workspace_dir = spill_workspace_dir(part);
+                active_workspace = opts.workspace_dir;
                 DeflateStreamingPipeline pipe(cfg, opts);
                 pipe.compress_file(input_path, payload_tmp);
             } else {
                 const auto input = core_new::io::read_file_bytes(input_path);
+                if (core_new::is_streaming_cancel_requested()) {
+                    throw std::runtime_error("cancelled");
+                }
                 auto r = compress_bytes_deflate(input, cfg);
+                if (core_new::is_streaming_cancel_requested()) {
+                    throw std::runtime_error("cancelled");
+                }
                 core_new::io::write_file_bytes(payload_tmp, r.compressed);
             }
         } else if (is_dpflate(id)) {
@@ -426,11 +503,18 @@ auto compressFile(const std::string& input_path,
                 DPFlateStreamingOptions opts;
                 opts.chunk_size = chunk;
                 opts.workspace_dir = spill_workspace_dir(part);
+                active_workspace = opts.workspace_dir;
                 DPFlateStreamingPipeline pipe(cfg, opts);
                 pipe.compress_file(input_path, payload_tmp);
             } else {
                 const auto input = core_new::io::read_file_bytes(input_path);
+                if (core_new::is_streaming_cancel_requested()) {
+                    throw std::runtime_error("cancelled");
+                }
                 auto r = compress_bytes_dpflate(input, cfg);
+                if (core_new::is_streaming_cancel_requested()) {
+                    throw std::runtime_error("cancelled");
+                }
                 core_new::io::write_file_bytes(payload_tmp, r.compressed);
             }
         } else {
@@ -481,7 +565,20 @@ auto compressFile(const std::string& input_path,
     } catch (const std::exception& e) {
         remove_best_effort(part);
         remove_best_effort(payload_tmp);
-        return fail(e.what());
+        if (!active_workspace.empty()) {
+            try {
+                for (const auto& entry : fs::directory_iterator(active_workspace)) {
+                    if (entry.is_regular_file()) {
+                        remove_best_effort(entry.path().string());
+                    }
+                }
+            } catch (...) {}
+        }
+        CompressResult r = fail(e.what());
+        if (std::string(e.what()) == "cancelled") {
+            r.cancelled = true;
+        }
+        return r;
     }
 
     auto t1 = std::chrono::high_resolution_clock::now();
@@ -497,6 +594,7 @@ auto decompressFile(const std::string& input_path,
                     const std::string& output_path,
                     std::span<const AlgorithmID> chain,
                     size_t,
+                    const core::LzdpWholeFileParams* lzdp_whole_file,
                     const core::LzssPipelineParams* lzss_pipeline,
                     const core::DpflatePipelineParams* dpflate_pipeline,
                     const core::DeflatePipelineParams* deflate_pipeline) -> CompressResult {
@@ -505,12 +603,21 @@ auto decompressFile(const std::string& input_path,
         return fail("Empty algorithm chain");
     }
 
+    if (core_new::is_streaming_cancel_requested()) {
+        result.cancelled = true;
+        return fail("cancelled");
+    }
+
     auto t0 = std::chrono::high_resolution_clock::now();
     try {
         const auto wcx_bytes = core_new::io::read_file_bytes(input_path);
         auto unpacked = unpack_wcx(wcx_bytes);
         if (!unpacked.success) {
             return fail(unpacked.error_message);
+        }
+
+        if (core_new::is_streaming_cancel_requested()) {
+            throw std::runtime_error("cancelled");
         }
 
         AlgorithmID id = chain.front();
@@ -536,16 +643,40 @@ auto decompressFile(const std::string& input_path,
         }
 
         std::vector<uint8_t> plain;
-        if (is_lzdp_decompress(id)) {
-            plain = decompress_bytes(unpacked.payload, lzdp_from_params(nullptr));
+        if (is_lzdp_decompress(id) || is_lzdp(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            plain = decompress_bytes(unpacked.payload, lzdp_from_params(lzdp_whole_file));
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
         } else if (is_lzss_decompress(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
             plain = decompress_bytes_lzss(unpacked.payload, lzss_from_params(lzss_pipeline, id));
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
         } else if (id == AlgorithmID::Inflate || is_deflate(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
             plain = decompress_bytes_deflate(unpacked.payload,
                                                deflate_from_params(deflate_pipeline));
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
         } else if (is_dpflate(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
             plain = decompress_bytes_dpflate(unpacked.payload,
                                              dpflate_from_params(dpflate_pipeline));
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
         } else {
             auto dec = decompress(unpacked.payload, std::span<const AlgorithmID>(&id, 1),
                                   nullptr, dpflate_pipeline, deflate_pipeline, lzss_pipeline);

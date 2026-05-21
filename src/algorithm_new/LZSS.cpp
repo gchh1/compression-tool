@@ -6,6 +6,7 @@
 #include "EncodingTriple.hpp"
 #include "RecordIO.hpp"
 #include "Streaming.hpp"
+#include "StreamingCancel.hpp"
 
 namespace compressor::algorithm::pipeline {
 
@@ -18,6 +19,10 @@ LZSSNonStreamingResult compress_bytes_lzss(
     const LZSSConfig& config) {
     LZSSNonStreamingResult result;
     if (input.empty()) return result;
+
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
+    }
 
     LZSS lzss(config);
     auto triples = lzss.greedyMatch(input);
@@ -54,15 +59,26 @@ void LZSSStreamingPipeline::compress_file(const std::string& input_path,
                                            const std::string& output_path) {
     fs::create_directories(options_.workspace_dir);
 
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
+    }
+
     std::vector<uint8_t> full_input;
     {
         streaming::File_Chunk_Reader reader(input_path, options_.chunk_size);
         while (!reader.is_end()) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
             auto chunk = reader.read_chunk();
             if (!chunk.empty()) {
                 full_input.insert(full_input.end(), chunk.begin(), chunk.end());
             }
         }
+    }
+
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
     }
 
     auto triples = lzss_.greedyMatch(full_input);
@@ -72,7 +88,10 @@ void LZSSStreamingPipeline::compress_file(const std::string& input_path,
 
     full_input.clear();
 
-    // Single bitstream with one final flush — must match compress_bytes_lzss (L1/L3 条件 A).
+    if (core_new::is_streaming_cancel_requested()) {
+        throw std::runtime_error("cancelled");
+    }
+
     compressor::utils::_buffer pending;
     const auto compressed =
         encoding_triple_lz(triples, config_.encoding, pending, true);

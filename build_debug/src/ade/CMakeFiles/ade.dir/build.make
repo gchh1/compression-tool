@@ -128,11 +128,26 @@ src/ade/CMakeFiles/ade.dir/models/EvolutionaryAlgorithms.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ade.dir/models/EvolutionaryAlgorithms.cpp.s"
 	cd /d D:\AAA_C\compression-tool\build_debug\src\ade && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\ade\models\EvolutionaryAlgorithms.cpp -o CMakeFiles\ade.dir\models\EvolutionaryAlgorithms.cpp.s
 
+src/ade/CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.obj: src/ade/CMakeFiles/ade.dir/flags.make
+src/ade/CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.obj: src/ade/CMakeFiles/ade.dir/includes_CXX.rsp
+src/ade/CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.obj: D:/AAA_C/compression-tool/src/ade/models/ParamRegressorNet.cpp
+src/ade/CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.obj: src/ade/CMakeFiles/ade.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object src/ade/CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.obj"
+	cd /d D:\AAA_C\compression-tool\build_debug\src\ade && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/ade/CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.obj -MF CMakeFiles\ade.dir\models\ParamRegressorNet.cpp.obj.d -o CMakeFiles\ade.dir\models\ParamRegressorNet.cpp.obj -c D:\AAA_C\compression-tool\src\ade\models\ParamRegressorNet.cpp
+
+src/ade/CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.i"
+	cd /d D:\AAA_C\compression-tool\build_debug\src\ade && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\AAA_C\compression-tool\src\ade\models\ParamRegressorNet.cpp > CMakeFiles\ade.dir\models\ParamRegressorNet.cpp.i
+
+src/ade/CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.s"
+	cd /d D:\AAA_C\compression-tool\build_debug\src\ade && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\ade\models\ParamRegressorNet.cpp -o CMakeFiles\ade.dir\models\ParamRegressorNet.cpp.s
+
 src/ade/CMakeFiles/ade.dir/models/RandomForest.cpp.obj: src/ade/CMakeFiles/ade.dir/flags.make
 src/ade/CMakeFiles/ade.dir/models/RandomForest.cpp.obj: src/ade/CMakeFiles/ade.dir/includes_CXX.rsp
 src/ade/CMakeFiles/ade.dir/models/RandomForest.cpp.obj: D:/AAA_C/compression-tool/src/ade/models/RandomForest.cpp
 src/ade/CMakeFiles/ade.dir/models/RandomForest.cpp.obj: src/ade/CMakeFiles/ade.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object src/ade/CMakeFiles/ade.dir/models/RandomForest.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object src/ade/CMakeFiles/ade.dir/models/RandomForest.cpp.obj"
 	cd /d D:\AAA_C\compression-tool\build_debug\src\ade && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/ade/CMakeFiles/ade.dir/models/RandomForest.cpp.obj -MF CMakeFiles\ade.dir\models\RandomForest.cpp.obj.d -o CMakeFiles\ade.dir\models\RandomForest.cpp.obj -c D:\AAA_C\compression-tool\src\ade\models\RandomForest.cpp
 
 src/ade/CMakeFiles/ade.dir/models/RandomForest.cpp.i: cmake_force
@@ -147,7 +162,7 @@ src/ade/CMakeFiles/ade.dir/runtime/ADEBridge.cpp.obj: src/ade/CMakeFiles/ade.dir
 src/ade/CMakeFiles/ade.dir/runtime/ADEBridge.cpp.obj: src/ade/CMakeFiles/ade.dir/includes_CXX.rsp
 src/ade/CMakeFiles/ade.dir/runtime/ADEBridge.cpp.obj: D:/AAA_C/compression-tool/src/ade/runtime/ADEBridge.cpp
 src/ade/CMakeFiles/ade.dir/runtime/ADEBridge.cpp.obj: src/ade/CMakeFiles/ade.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object src/ade/CMakeFiles/ade.dir/runtime/ADEBridge.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object src/ade/CMakeFiles/ade.dir/runtime/ADEBridge.cpp.obj"
 	cd /d D:\AAA_C\compression-tool\build_debug\src\ade && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/ade/CMakeFiles/ade.dir/runtime/ADEBridge.cpp.obj -MF CMakeFiles\ade.dir\runtime\ADEBridge.cpp.obj.d -o CMakeFiles\ade.dir\runtime\ADEBridge.cpp.obj -c D:\AAA_C\compression-tool\src\ade\runtime\ADEBridge.cpp
 
 src/ade/CMakeFiles/ade.dir/runtime/ADEBridge.cpp.i: cmake_force
@@ -162,7 +177,7 @@ src/ade/CMakeFiles/ade.dir/runtime/DecisionEngine.cpp.obj: src/ade/CMakeFiles/ad
 src/ade/CMakeFiles/ade.dir/runtime/DecisionEngine.cpp.obj: src/ade/CMakeFiles/ade.dir/includes_CXX.rsp
 src/ade/CMakeFiles/ade.dir/runtime/DecisionEngine.cpp.obj: D:/AAA_C/compression-tool/src/ade/runtime/DecisionEngine.cpp
 src/ade/CMakeFiles/ade.dir/runtime/DecisionEngine.cpp.obj: src/ade/CMakeFiles/ade.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object src/ade/CMakeFiles/ade.dir/runtime/DecisionEngine.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object src/ade/CMakeFiles/ade.dir/runtime/DecisionEngine.cpp.obj"
 	cd /d D:\AAA_C\compression-tool\build_debug\src\ade && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/ade/CMakeFiles/ade.dir/runtime/DecisionEngine.cpp.obj -MF CMakeFiles\ade.dir\runtime\DecisionEngine.cpp.obj.d -o CMakeFiles\ade.dir\runtime\DecisionEngine.cpp.obj -c D:\AAA_C\compression-tool\src\ade\runtime\DecisionEngine.cpp
 
 src/ade/CMakeFiles/ade.dir/runtime/DecisionEngine.cpp.i: cmake_force
@@ -179,6 +194,7 @@ ade_OBJECTS = \
 "CMakeFiles/ade.dir/features/FeatureVector.cpp.obj" \
 "CMakeFiles/ade.dir/features/MagicBytesDetector.cpp.obj" \
 "CMakeFiles/ade.dir/models/EvolutionaryAlgorithms.cpp.obj" \
+"CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.obj" \
 "CMakeFiles/ade.dir/models/RandomForest.cpp.obj" \
 "CMakeFiles/ade.dir/runtime/ADEBridge.cpp.obj" \
 "CMakeFiles/ade.dir/runtime/DecisionEngine.cpp.obj"
@@ -190,12 +206,13 @@ src/ade/libade.a: src/ade/CMakeFiles/ade.dir/features/FeatureExtractorV3.cpp.obj
 src/ade/libade.a: src/ade/CMakeFiles/ade.dir/features/FeatureVector.cpp.obj
 src/ade/libade.a: src/ade/CMakeFiles/ade.dir/features/MagicBytesDetector.cpp.obj
 src/ade/libade.a: src/ade/CMakeFiles/ade.dir/models/EvolutionaryAlgorithms.cpp.obj
+src/ade/libade.a: src/ade/CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.obj
 src/ade/libade.a: src/ade/CMakeFiles/ade.dir/models/RandomForest.cpp.obj
 src/ade/libade.a: src/ade/CMakeFiles/ade.dir/runtime/ADEBridge.cpp.obj
 src/ade/libade.a: src/ade/CMakeFiles/ade.dir/runtime/DecisionEngine.cpp.obj
 src/ade/libade.a: src/ade/CMakeFiles/ade.dir/build.make
 src/ade/libade.a: src/ade/CMakeFiles/ade.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX static library libade.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX static library libade.a"
 	cd /d D:\AAA_C\compression-tool\build_debug\src\ade && $(CMAKE_COMMAND) -P CMakeFiles\ade.dir\cmake_clean_target.cmake
 	cd /d D:\AAA_C\compression-tool\build_debug\src\ade && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\ade.dir\link.txt --verbose=$(VERBOSE)
 

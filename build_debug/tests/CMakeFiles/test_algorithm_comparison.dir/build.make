@@ -97,6 +97,9 @@ bin/test_algorithm_comparison.exe: src/archiver/libarchiver.a
 bin/test_algorithm_comparison.exe: src/processor/libprocessor.a
 bin/test_algorithm_comparison.exe: src/core/libcore.a
 bin/test_algorithm_comparison.exe: src/algorithm/libalgorithm.a
+bin/test_algorithm_comparison.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_algorithm_comparison.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_algorithm_comparison.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_algorithm_comparison.exe: tests/CMakeFiles/test_algorithm_comparison.dir/linkLibs.rsp
 bin/test_algorithm_comparison.exe: tests/CMakeFiles/test_algorithm_comparison.dir/objects1.rsp
 bin/test_algorithm_comparison.exe: tests/CMakeFiles/test_algorithm_comparison.dir/link.txt

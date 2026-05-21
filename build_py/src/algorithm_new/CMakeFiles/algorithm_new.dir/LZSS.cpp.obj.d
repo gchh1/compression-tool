@@ -189,6 +189,12 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj: \
  D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp \
+ D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_base.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_wait.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_mutex.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/filesystem \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_fwd.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/chrono.h \

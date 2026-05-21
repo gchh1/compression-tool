@@ -69,7 +69,8 @@ public:
         const Input& input,
         DPNodes& dp,
         size_t begin = 0,
-        size_t end = 0
+        size_t end = 0,
+        size_t match_end = 0
     );
 
     template <typename DPNodes>

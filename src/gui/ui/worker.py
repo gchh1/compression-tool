@@ -97,12 +97,16 @@ def _core_set_streaming_compress_cancel(requested: bool) -> None:
 
         eng = get_core_engine()
         if eng is None:
+            logger.warning("[cancel] get_core_engine() returned None")
             return
         fn = getattr(eng, "set_streaming_compress_cancel_requested", None)
         if callable(fn):
+            logger.info("[cancel] calling C++ set_streaming_compress_cancel_requested(%s)", requested)
             fn(bool(requested))
-    except Exception:
-        pass
+        else:
+            logger.warning("[cancel] set_streaming_compress_cancel_requested not found on engine")
+    except Exception as e:
+        logger.exception("[cancel] set_streaming_compress_cancel_requested failed: %s", e)
 
 
 class CompressionWorker(QThread):
@@ -454,8 +458,22 @@ class CompressionWorker(QThread):
                     )
                 except Exception as e:
                     logger.exception("[compress] smart_compress raised: %s", e)
+                    em_ex = str(e).lower()
+                    if self._is_cancelled or "cancel" in em_ex:
+                        record.status = CompressionStatus.FAILED
+                        record.error_message = "已取消"
+                        record.compression_config_snapshot = None
+                        self.error.emit(record)
+                        return
 
                 if result is None or getattr(result, "success", True) is False:
+                    em_fail = (getattr(result, "error_message", None) or "").strip() if result else ""
+                    if self._is_cancelled or "cancel" in em_fail.lower() or "取消" in em_fail:
+                        record.status = CompressionStatus.FAILED
+                        record.error_message = em_fail or "已取消"
+                        record.compression_config_snapshot = None
+                        self.error.emit(record)
+                        return
                     if can_stream_fallback:
                         logger.warning("[compress] memory path failed; falling back to file-to-file")
                         self._run_streaming_compress_branch(engine, record, folder_ref, snap)

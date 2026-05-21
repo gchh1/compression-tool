@@ -7,6 +7,7 @@ add_library(
     Deflatecompressor.cpp
     GuiCompressors.cpp
     ExternalCodecs.cpp
+    StreamingCancel.cpp
 )
 
 target_include_directories(

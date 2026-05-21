@@ -363,6 +363,27 @@ target_link_libraries(
 )
 
 add_executable(
+    test_lzdp_imdb_gui_cfg
+    test_lzdp_imdb_gui_cfg.cpp
+)
+
+target_include_directories(
+    test_lzdp_imdb_gui_cfg
+    PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/core_new/include
+    ${CMAKE_SOURCE_DIR}/src/algorithm_new/include
+    ${CMAKE_SOURCE_DIR}/src/api_new/include
+)
+
+target_link_libraries(
+    test_lzdp_imdb_gui_cfg
+    PRIVATE
+    api_new
+    core_new
+    algorithm_new
+)
+
+add_executable(
     test_algorithm_new_phase1
     test_algorithm_new_phase1.cpp
 )

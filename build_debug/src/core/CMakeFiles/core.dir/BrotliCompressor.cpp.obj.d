@@ -116,16 +116,6 @@ src/core/CMakeFiles/core.dir/BrotliCompressor.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cerrno \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/charconv.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_string.tcc \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_heap.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uniform_int_dist.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_tempbuf.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algo.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algobase.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_algorithm_defs.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/execution_defs.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/chrono \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/chrono.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ratio \
@@ -178,6 +168,11 @@ src/core/CMakeFiles/core.dir/BrotliCompressor.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ostream.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/istream.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/sstream.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_heap.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uniform_int_dist.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_tempbuf.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/shared_ptr.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/shared_ptr_base.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocated_ptr.h \
@@ -202,20 +197,11 @@ src/core/CMakeFiles/core.dir/BrotliCompressor.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/enable_special_members.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/span \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/variant \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algobase.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unicode.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unicode-data.h \
  D:/AAA_C/compression-tool/src/algorithm/include/Brotli.hpp \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/memory \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_raw_storage_iter.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/shared_ptr_atomic.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_base.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_wait.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_mutex.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/backward/auto_ptr.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_uninitialized.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_memory_defs.h \
- D:/AAA_C/compression-tool/src/algorithm/include/HuffmanTree.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/IAlgorithm.hpp \
  D:/AAA_C/compression-tool/src/utils/include/BitReader.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstring \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/string.h \
@@ -223,5 +209,4 @@ src/core/CMakeFiles/core.dir/BrotliCompressor.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/utility \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_relops.h \
  D:/AAA_C/compression-tool/src/utils/include/BitWriter.hpp \
- D:/AAA_C/compression-tool/src/algorithm/include/IAlgorithm.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/BlockProfile.hpp

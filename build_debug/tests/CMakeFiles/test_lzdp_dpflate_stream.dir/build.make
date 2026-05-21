@@ -93,10 +93,15 @@ test_lzdp_dpflate_stream_EXTERNAL_OBJECTS =
 bin/test_lzdp_dpflate_stream.exe: tests/CMakeFiles/test_lzdp_dpflate_stream.dir/test_lzdp_dpflate_stream.cpp.obj
 bin/test_lzdp_dpflate_stream.exe: tests/CMakeFiles/test_lzdp_dpflate_stream.dir/build.make
 bin/test_lzdp_dpflate_stream.exe: src/api/libapi.a
+bin/test_lzdp_dpflate_stream.exe: src/algorithm/libalgorithm.a
+bin/test_lzdp_dpflate_stream.exe: src/processor/libprocessor.a
 bin/test_lzdp_dpflate_stream.exe: src/archiver/libarchiver.a
 bin/test_lzdp_dpflate_stream.exe: src/processor/libprocessor.a
 bin/test_lzdp_dpflate_stream.exe: src/core/libcore.a
 bin/test_lzdp_dpflate_stream.exe: src/algorithm/libalgorithm.a
+bin/test_lzdp_dpflate_stream.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_lzdp_dpflate_stream.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_lzdp_dpflate_stream.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_lzdp_dpflate_stream.exe: tests/CMakeFiles/test_lzdp_dpflate_stream.dir/linkLibs.rsp
 bin/test_lzdp_dpflate_stream.exe: tests/CMakeFiles/test_lzdp_dpflate_stream.dir/objects1.rsp
 bin/test_lzdp_dpflate_stream.exe: tests/CMakeFiles/test_lzdp_dpflate_stream.dir/link.txt

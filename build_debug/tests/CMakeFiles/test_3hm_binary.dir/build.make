@@ -97,6 +97,9 @@ bin/test_3hm_binary.exe: src/archiver/libarchiver.a
 bin/test_3hm_binary.exe: src/processor/libprocessor.a
 bin/test_3hm_binary.exe: src/core/libcore.a
 bin/test_3hm_binary.exe: src/algorithm/libalgorithm.a
+bin/test_3hm_binary.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_3hm_binary.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_3hm_binary.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_3hm_binary.exe: tests/CMakeFiles/test_3hm_binary.dir/linkLibs.rsp
 bin/test_3hm_binary.exe: tests/CMakeFiles/test_3hm_binary.dir/objects1.rsp
 bin/test_3hm_binary.exe: tests/CMakeFiles/test_3hm_binary.dir/link.txt
