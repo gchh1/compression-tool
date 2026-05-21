@@ -51,6 +51,7 @@ auto compress(const std::vector<uint8_t>& data,
               const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
               const core::DpflatePipelineParams* dpflate_pipeline = nullptr,
               const core::DeflatePipelineParams* deflate_pipeline = nullptr,
+              const core::ImageCompressParams* image_compress = nullptr,
               std::size_t streaming_compress_chunk_bytes = 0) -> CompressResult;
 
 /// Decompress a single buffer with the given algorithm chain (same optional pipeline pointers /
@@ -66,6 +67,7 @@ auto decompress(const std::vector<uint8_t>& data,
                   const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
                   const core::DpflatePipelineParams* dpflate_pipeline = nullptr,
                   const core::DeflatePipelineParams* deflate_pipeline = nullptr,
+                  const core::ImageCompressParams* image_compress = nullptr,
                   std::size_t streaming_compress_chunk_bytes = 0) -> CompressResult;
 
 auto pack_wcx(const std::vector<uint8_t>& compressed_data,

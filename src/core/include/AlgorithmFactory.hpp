@@ -49,6 +49,12 @@ inline constexpr uint32_t kFileCompressOptsNone = 0;
 /// LZDP: legacy name — file pipeline uses ``LZDP_OutOfCore`` + ``LzdpWholeFileParams``. Bit kept for ABI / logs.
 inline constexpr uint32_t kFileCompressLzdpWholeFileFramed = 1u << 0;
 
+struct ImageCompressParams {
+    int quality{85};        // 1-100
+    int max_width{0};       // 0 = no resize
+    int max_height{0};
+};
+
 enum class AlgorithmID {
     None,
     Deflate,
@@ -66,6 +72,10 @@ enum class AlgorithmID {
     BrotliDecompress,
     Zstd,
     ZstdDecompress,
+    JPEG_Compress,
+    JPEG_Decompress,
+    WebP_Compress,
+    WebP_Decompress,
 };
 
 /// @param streaming_compress_chunk_bytes  Raw requested plaintext chunk size (bytes). Always
@@ -82,7 +92,8 @@ auto createAlgorithm(AlgorithmID id,
                        const LzdpWholeFileParams* lzdp_whole_file = nullptr,
                        std::size_t streaming_compress_chunk_bytes = 0,
                        const DpflatePipelineParams* dpflate_pipeline = nullptr,
-                       const DeflatePipelineParams* deflate_pipeline = nullptr)
+                       const DeflatePipelineParams* deflate_pipeline = nullptr,
+                       const ImageCompressParams* image_compress = nullptr)
     -> std::unique_ptr<algorithm::IAlgorithm>;
 
 extern bool (*g_cancel_callback)();

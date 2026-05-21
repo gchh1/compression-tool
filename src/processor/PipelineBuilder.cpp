@@ -9,7 +9,8 @@ auto buildCompressionPipeline(
     const core::LzdpWholeFileParams* lzdp_whole_file,
     std::size_t streaming_compress_chunk_bytes,
     const core::DpflatePipelineParams* dpflate_pipeline,
-    const core::DeflatePipelineParams* deflate_pipeline)
+    const core::DeflatePipelineParams* deflate_pipeline,
+    const core::ImageCompressParams* image_compress)
     -> std::unique_ptr<Pipeline> {
     std::vector<std::unique_ptr<algorithm::IAlgorithm>> algos;
     for (auto id : chain) {
@@ -21,7 +22,7 @@ auto buildCompressionPipeline(
             (id == core::AlgorithmID::Deflate) ? deflate_pipeline : nullptr;
         if (auto a = core::createAlgorithm(id, file_compress_opts, lz,
                                            streaming_compress_chunk_bytes, df,
-                                           dfl)) {
+                                           dfl, image_compress)) {
             algos.push_back(std::move(a));
         }
     }

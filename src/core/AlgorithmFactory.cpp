@@ -5,6 +5,7 @@
 #include "Brotli.hpp"
 #include "Deflate.hpp"
 #include "Delta.hpp"
+#include "ImageCompressor.hpp"
 #include "Inflate.hpp"
 #include "LZDP.hpp"
 #include "LZSS.hpp"
@@ -22,7 +23,8 @@ auto createAlgorithm(AlgorithmID id,
                      const LzdpWholeFileParams* lzdp_whole_file,
                      std::size_t streaming_compress_chunk_bytes,
                      const DpflatePipelineParams* dpflate_pipeline,
-                     const DeflatePipelineParams* deflate_pipeline)
+                     const DeflatePipelineParams* deflate_pipeline,
+                     const ImageCompressParams* image_compress)
     -> std::unique_ptr<algorithm::IAlgorithm> {
     using SDA = processor::StreamingDecompressAdapter;        // SDA: framed chunk decompress
     const size_t sca_chunk =
@@ -116,6 +118,24 @@ auto createAlgorithm(AlgorithmID id,
                     algorithm::ZstdDecompress decomp;
                     return decomp.decompress(data);
                 });
+        case AlgorithmID::JPEG_Compress: {
+            auto q = image_compress ? image_compress->quality : 85;
+            auto mw = image_compress ? image_compress->max_width : 0;
+            auto mh = image_compress ? image_compress->max_height : 0;
+            return std::make_unique<algorithm::ImageCompressor>(
+                algorithm::ImageFormat::JPEG, q, mw, mh);
+        }
+        case AlgorithmID::JPEG_Decompress:
+            return nullptr;   // passthrough
+        case AlgorithmID::WebP_Compress: {
+            auto q = image_compress ? image_compress->quality : 80;
+            auto mw = image_compress ? image_compress->max_width : 0;
+            auto mh = image_compress ? image_compress->max_height : 0;
+            return std::make_unique<algorithm::ImageCompressor>(
+                algorithm::ImageFormat::JPEG, q, mw, mh);  // fallback JPEG until libwebp
+        }
+        case AlgorithmID::WebP_Decompress:
+            return nullptr;   // passthrough
     }
     return nullptr;
 }

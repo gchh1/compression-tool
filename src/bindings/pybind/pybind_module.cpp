@@ -129,6 +129,10 @@ PYBIND11_MODULE(core_engine, m) {
         .value("BROTLI_DECOMPRESS", compressor::core::AlgorithmID::BrotliDecompress)
         .value("ZSTD", compressor::core::AlgorithmID::Zstd)
         .value("ZSTD_DECOMPRESS", compressor::core::AlgorithmID::ZstdDecompress)
+        .value("JPEG_COMPRESS", compressor::core::AlgorithmID::JPEG_Compress)
+        .value("JPEG_DECOMPRESS", compressor::core::AlgorithmID::JPEG_Decompress)
+        .value("WEBP_COMPRESS", compressor::core::AlgorithmID::WebP_Compress)
+        .value("WEBP_DECOMPRESS", compressor::core::AlgorithmID::WebP_Decompress)
         .export_values();
 
     py::class_<compressor::core::LzdpWholeFileParams>(m, "LzdpWholeFileParams")
@@ -167,6 +171,12 @@ PYBIND11_MODULE(core_engine, m) {
         .def_readwrite("min_match", &compressor::core::DeflatePipelineParams::min_match)
         .def_readwrite("max_chain_length",
                        &compressor::core::DeflatePipelineParams::max_chain_length);
+
+    py::class_<compressor::core::ImageCompressParams>(m, "ImageCompressParams")
+        .def(py::init<>())
+        .def_readwrite("quality", &compressor::core::ImageCompressParams::quality)
+        .def_readwrite("max_width", &compressor::core::ImageCompressParams::max_width)
+        .def_readwrite("max_height", &compressor::core::ImageCompressParams::max_height);
 
     py::class_<compressor::api::CompressResult>(m, "PipelineCompressResult")
         .def(py::init<>())
@@ -233,6 +243,7 @@ PYBIND11_MODULE(core_engine, m) {
              const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
              const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p,
              const std::optional<compressor::core::DeflatePipelineParams>& deflate_p,
+             const std::optional<compressor::core::ImageCompressParams>& image_p,
              size_t stream_chunk_bytes)
               -> compressor::api::CompressResult {
               const compressor::core::LzdpWholeFileParams* p =
@@ -241,14 +252,18 @@ PYBIND11_MODULE(core_engine, m) {
                   dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
               const compressor::core::DeflatePipelineParams* df =
                   deflate_p.has_value() ? &deflate_p.value() : nullptr;
-              return compressor::api::compress(buffer_to_u8vec(buf), chain, p, d, df,
+              const compressor::core::ImageCompressParams* im =
+                  image_p.has_value() ? &image_p.value() : nullptr;
+              return compressor::api::compress(buffer_to_u8vec(buf), chain, p, d, df, im,
                                                 stream_chunk_bytes);
           },
           py::arg("data"), py::arg("chain"),
           py::arg("lzdp_whole_file") = std::nullopt,
           py::arg("dpflate_pipeline") = std::nullopt,
           py::arg("deflate_pipeline") = std::nullopt,
-          py::arg("stream_chunk_bytes") = size_t{0},          "Compress data using a pipeline (same optional pipeline structs as compressFile).");
+          py::arg("image_compress") = std::nullopt,
+          py::arg("stream_chunk_bytes") = size_t{0},
+          "Compress data using a pipeline.");
 
     m.def("pipeline_decompress",
           [](py::buffer buf,
@@ -256,6 +271,7 @@ PYBIND11_MODULE(core_engine, m) {
              const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
              const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p,
              const std::optional<compressor::core::DeflatePipelineParams>& deflate_p,
+             const std::optional<compressor::core::ImageCompressParams>& image_p,
              size_t stream_chunk_bytes)
               -> compressor::api::CompressResult {
               const compressor::core::LzdpWholeFileParams* p =
@@ -264,14 +280,18 @@ PYBIND11_MODULE(core_engine, m) {
                   dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
               const compressor::core::DeflatePipelineParams* df =
                   deflate_p.has_value() ? &deflate_p.value() : nullptr;
-              return compressor::api::decompress(buffer_to_u8vec(buf), chain, p, d, df,
+              const compressor::core::ImageCompressParams* im =
+                  image_p.has_value() ? &image_p.value() : nullptr;
+              return compressor::api::decompress(buffer_to_u8vec(buf), chain, p, d, df, im,
                                                  stream_chunk_bytes);
           },
           py::arg("data"), py::arg("chain"),
           py::arg("lzdp_whole_file") = std::nullopt,
           py::arg("dpflate_pipeline") = std::nullopt,
           py::arg("deflate_pipeline") = std::nullopt,
-          py::arg("stream_chunk_bytes") = size_t{0},          "Decompress data using a pipeline (optional structs for pool / symmetry).");
+          py::arg("image_compress") = std::nullopt,
+          py::arg("stream_chunk_bytes") = size_t{0},
+          "Decompress data using a pipeline.");
 
     m.def("pipeline_compress_file",
           [](const std::string& input_path,

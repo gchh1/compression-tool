@@ -26,6 +26,8 @@ ALGO_CODE_MAP: dict[AlgorithmType, int] = {
     AlgorithmType.GZIP: 6,
     AlgorithmType.BROTLI: 7,
     AlgorithmType.ZSTD: 8,
+    AlgorithmType.JPEG: 10,
+    AlgorithmType.WEBP: 11,
 }
 
 CODE_TO_ALGO: dict[int, AlgorithmType] = {v: k for k, v in ALGO_CODE_MAP.items()}
@@ -135,6 +137,8 @@ def pack_compressed_file(
         AlgorithmType.DPFLATE: engine.AlgorithmID.DPFLATE,
         AlgorithmType.BROTLI: engine.AlgorithmID.BROTLI,
         AlgorithmType.ZSTD: engine.AlgorithmID.ZSTD,
+        AlgorithmType.JPEG: engine.AlgorithmID.JPEG_COMPRESS,
+        AlgorithmType.WEBP: engine.AlgorithmID.WEBP_COMPRESS,
     }
     algo_id = algo_map.get(algorithm)
     if algo_id is None:

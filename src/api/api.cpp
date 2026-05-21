@@ -134,6 +134,7 @@ auto compress(const std::vector<uint8_t>& data,
               const core::LzdpWholeFileParams* lzdp_whole_file,
               const core::DpflatePipelineParams* dpflate_pipeline,
               const core::DeflatePipelineParams* deflate_pipeline,
+              const core::ImageCompressParams* image_compress,
               std::size_t streaming_compress_chunk_bytes) -> CompressResult {
     CompressResult result;
     result.original_size = data.size();
@@ -151,7 +152,7 @@ auto compress(const std::vector<uint8_t>& data,
             (id == core::AlgorithmID::DPFlate) ? dpflate_pipeline : nullptr;
         const core::DeflatePipelineParams* dfl =
             (id == core::AlgorithmID::Deflate) ? deflate_pipeline : nullptr;
-        if (auto a = core::createAlgorithm(id, core::kFileCompressOptsNone, lz, chunk, df, dfl))
+        if (auto a = core::createAlgorithm(id, core::kFileCompressOptsNone, lz, chunk, df, dfl, image_compress))
             algos.push_back(std::move(a));
     }
     if (algos.empty()) {
@@ -189,6 +190,7 @@ auto decompress(const std::vector<uint8_t>& data,
                 const core::LzdpWholeFileParams* lzdp_whole_file,
                 const core::DpflatePipelineParams* dpflate_pipeline,
                 const core::DeflatePipelineParams* deflate_pipeline,
+                const core::ImageCompressParams* image_compress,
                 std::size_t streaming_compress_chunk_bytes) -> CompressResult {
     CompressResult result;
     result.original_size = data.size();
@@ -206,7 +208,7 @@ auto decompress(const std::vector<uint8_t>& data,
             (id == core::AlgorithmID::DPFlate) ? dpflate_pipeline : nullptr;
         const core::DeflatePipelineParams* dfl =
             (id == core::AlgorithmID::Deflate) ? deflate_pipeline : nullptr;
-        if (auto a = core::createAlgorithm(id, core::kFileCompressOptsNone, lz, chunk, df, dfl))
+        if (auto a = core::createAlgorithm(id, core::kFileCompressOptsNone, lz, chunk, df, dfl, image_compress))
             algos.push_back(std::move(a));
     }
     if (algos.empty()) {

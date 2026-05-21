@@ -21,6 +21,31 @@ from gui.models import (
 
 logger = logging.getLogger('gui.worker')
 
+# Lossless / general-purpose algorithms: when the user selects one of these,
+# image files (PNG, JPG, etc.) are auto-routed to JPEG compression.
+_LOSSLESS_ALGORITHMS = frozenset({
+    AlgorithmType.DEFLATE,
+    AlgorithmType.LZSS,
+    AlgorithmType.LZDP,
+    AlgorithmType.DPFLATE,
+    AlgorithmType.BROTLI,
+    AlgorithmType.ZSTD,
+    AlgorithmType.GZIP,
+})
+
+# Algorithms eligible for image auto-routing (lossless + AUTO).
+_IMAGE_ROUTEABLE = _LOSSLESS_ALGORITHMS | {AlgorithmType.AUTO}
+
+
+def _is_image_file(record) -> bool:
+    """Return True if ``record`` looks like an image based on its file extension."""
+    from gui.models import IMAGE_EXTENSIONS
+    path = getattr(record, 'path', None)
+    if not path:
+        return False
+    ext = Path(path).suffix.lower()
+    return ext in IMAGE_EXTENSIONS and ext not in ('.svg',)
+
 
 COMPARISON_ALGORITHMS = (
     AlgorithmType.LZSS,
@@ -285,7 +310,14 @@ class CompressionWorker(QThread):
         record.algorithm = self.algorithm
         _auto_params = None
 
-        if self.algorithm == AlgorithmType.AUTO:
+        # Auto-route image files to JPEG when a lossless general algorithm
+        # (or AUTO) is selected.  Explicit JPEG / WebP / NONE are left as-is.
+        if record.algorithm in _IMAGE_ROUTEABLE and _is_image_file(record):
+            logger.info("[compress] auto-route image %s → jpeg (was %s)",
+                        getattr(record, 'name', '?'), record.algorithm.value)
+            record.algorithm = AlgorithmType.JPEG
+
+        if self.algorithm == AlgorithmType.AUTO and record.algorithm == AlgorithmType.AUTO:
             try:
                 if not record.raw_data:
                     record.load_raw_data()

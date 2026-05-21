@@ -133,6 +133,64 @@ class CompressionEngine:
             cls._streaming_threshold_mb = STREAMING_THRESHOLD_MB
             cls._save_to_file()
 
+    def _image_compress_file(
+        self,
+        input_path: str,
+        output_path: str,
+        algorithm: AlgorithmType,
+        algo_config: dict | None = None,
+    ):
+        """Compress an image file: read → memory → ImageCompressor → WCX write."""
+        t0 = time.perf_counter()
+        p = Path(input_path)
+        orig = p.stat().st_size if p.is_file() else 0
+        data = p.read_bytes()
+
+        result = self.pipeline_compress(data, algorithm, algo_config=algo_config)
+        if not result.success:
+            return result
+
+        # Wrap in WCX and write to output
+        wcx = self._engine.pack_wcx(
+            result.data,
+            self._get_pipeline_id(algorithm),
+            orig,
+            p.name,
+            False,
+        )
+        part_path = f"{output_path}.part"
+        try:
+            Path(part_path).write_bytes(wcx)
+            os.replace(part_path, output_path)
+        except OSError as e:
+            try:
+                Path(part_path).unlink(missing_ok=True)
+            except OSError:
+                pass
+            ms = (time.perf_counter() - t0) * 1000.0
+            return self._make_pipeline_result(False, orig, 0, ms, str(e), None)
+
+        comp = Path(output_path).stat().st_size
+        ms = (time.perf_counter() - t0) * 1000.0
+        return self._make_pipeline_result(True, orig, comp, ms, "", None)
+
+    @staticmethod
+    def _auto_detect_algorithm(input_path: str) -> AlgorithmType:
+        """Detect the best algorithm for a file based on its content type.
+
+        Uses ADE MagicBytes detection for images, falls back to extension-based
+        detection, and defaults to Deflate for everything else.
+        """
+        ext = Path(input_path).suffix.lower()
+        from gui.models import IMAGE_EXTENSIONS
+
+        # Fast path: extension-based image detection
+        if ext in IMAGE_EXTENSIONS and ext not in (".svg",):
+            return AlgorithmType.JPEG
+
+        # For other files, use Deflate (best all-around)
+        return AlgorithmType.DEFLATE
+
     def compress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE):
         return self.smart_compress(data, algorithm)
 
@@ -294,6 +352,23 @@ class CompressionEngine:
 
         ensure_workspace_layout()
 
+        # Auto-dispatch: detect file type and route to the right algorithm.
+        # When AUTO is selected, use extension-based detection for images and
+        # fall back to Deflate for everything else.
+        # When a lossless general algorithm (Deflate, LZDP, etc.) is selected,
+        # image files are auto-routed to JPEG compression.
+        _lossless = {
+            AlgorithmType.DEFLATE, AlgorithmType.LZSS, AlgorithmType.LZDP,
+            AlgorithmType.DPFLATE, AlgorithmType.BROTLI, AlgorithmType.ZSTD,
+            AlgorithmType.GZIP,
+        }
+        if algorithm == AlgorithmType.AUTO:
+            algorithm = self._auto_detect_algorithm(input_path)
+            logger.info("[auto-dispatch] %s → %s", input_path, algorithm.value)
+        elif algorithm in _lossless and self._auto_detect_algorithm(input_path) == AlgorithmType.JPEG:
+            logger.info("[auto-dispatch] image %s → jpeg (was %s)", input_path, algorithm.value)
+            algorithm = AlgorithmType.JPEG
+
         # Snapshot config under lock; release before native call for parallelism
         with CompressionEngine._engine_op_lock:
             if algorithm == AlgorithmType.GZIP:
@@ -319,6 +394,9 @@ class CompressionEngine:
                 dpflate_p = self._dpflate_pipeline_params_for_file_pipeline(algo_config)
             elif algorithm == AlgorithmType.DEFLATE:
                 deflate_p = self._deflate_pipeline_params_for_file_pipeline(algo_config)
+            elif algorithm in (AlgorithmType.JPEG, AlgorithmType.WEBP):
+                # Image compressor accumulates all chunks anyway; route to memory path
+                return self._image_compress_file(input_path, output_path, algorithm, algo_config)
             do_viz = viz_path is not None
             do_heat = heat_path is not None
 
@@ -349,6 +427,60 @@ class CompressionEngine:
         return self._engine.pipeline_compress_file(
             input_path, output_path, [algo_id], chunk_bytes, file_opts, lzdp_wf, dpflate_p, deflate_p
         )
+
+    def _passthrough_decompress_file(
+        self,
+        input_path: str,
+        output_path: str,
+        algorithm: AlgorithmType,
+    ):
+        """Decompress a WCX file whose payload is already the final format (JPEG/WebP).
+
+        Just unpack the WCX container and write the payload directly.
+        """
+        from gui.engine.decompress_log import log_decompress, summarize_result
+        from gui.engine.file_protocol import unpack_compressed_file
+
+        t0 = time.perf_counter()
+        in_sz = os.path.getsize(input_path) if os.path.isfile(input_path) else -1
+        log_decompress(
+            "passthrough_decompress_begin",
+            algo=algorithm.value,
+            input=input_path,
+            output=output_path,
+            input_file_bytes=in_sz,
+        )
+        try:
+            blob = Path(input_path).read_bytes()
+            hdr, payload = unpack_compressed_file(blob)
+        except Exception as e:
+            ms = (time.perf_counter() - t0) * 1000.0
+            log_decompress("passthrough_decompress_fail", err=f"unpack WCX: {e}")
+            return self._make_pipeline_result(False, 0, 0, ms, f"unpack WCX: {e}", None)
+
+        part_path = f"{output_path}.part"
+        try:
+            outp = Path(output_path)
+            outp.parent.mkdir(parents=True, exist_ok=True)
+            with open(part_path, "wb") as fout:
+                if payload:
+                    fout.write(payload)
+            os.replace(part_path, output_path)
+        except OSError as e:
+            try:
+                Path(part_path).unlink(missing_ok=True)
+            except OSError:
+                pass
+            ms = (time.perf_counter() - t0) * 1000.0
+            return self._make_pipeline_result(False, 0, 0, ms, str(e), None)
+
+        ms = (time.perf_counter() - t0) * 1000.0
+        out_sz = os.path.getsize(output_path) if os.path.isfile(output_path) else -1
+        result = self._make_pipeline_result(True, int(hdr.original_size), out_sz, ms, "", None)
+        fields = summarize_result(result)
+        fields["output_file_bytes"] = out_sz
+        log_decompress("passthrough_decompress_end", **fields)
+        return result
 
     def _python_decompress_wcx_file_to_disk(
         self,
@@ -506,6 +638,9 @@ class CompressionEngine:
             return r
         with CompressionEngine._engine_op_lock:
             decomp_id = self._get_decompress_pipeline_id(algorithm)
+            if decomp_id is None and algorithm in (AlgorithmType.JPEG, AlgorithmType.WEBP, AlgorithmType.NONE):
+                # Passthrough: payload is already final format (image / stored)
+                return self._passthrough_decompress_file(input_path, output_path, algorithm)
             if decomp_id is None:
                 raise ValueError(f"Algorithm {algorithm.value} not supported in pipeline decompress mode")
             cfg = _load_app_config()
@@ -567,6 +702,8 @@ class CompressionEngine:
                 AlgorithmType.DPFLATE: eng.AlgorithmID.DPFLATE,
                 AlgorithmType.BROTLI: eng.AlgorithmID.BROTLI,
                 AlgorithmType.ZSTD: eng.AlgorithmID.ZSTD,
+                AlgorithmType.JPEG: eng.AlgorithmID.JPEG_COMPRESS,
+                AlgorithmType.WEBP: eng.AlgorithmID.WEBP_COMPRESS,
             }
         return CompressionEngine._ALGO_TO_PIPELINE_ID.get(algorithm)
 
@@ -578,6 +715,9 @@ class CompressionEngine:
             AlgorithmType.DPFLATE: self._engine.AlgorithmID.INFLATE,
             AlgorithmType.BROTLI: self._engine.AlgorithmID.BROTLI_DECOMPRESS,
             AlgorithmType.ZSTD: self._engine.AlgorithmID.ZSTD_DECOMPRESS,
+            AlgorithmType.JPEG: None,   # passthrough
+            AlgorithmType.WEBP: None,   # passthrough
+            AlgorithmType.NONE: None,   # passthrough (stored as-is)
         }
         return mapping.get(algorithm)
 
@@ -605,6 +745,16 @@ class CompressionEngine:
         p.max_chain_length = int(c.get("max_chain_length", 256))
         return p
 
+    def _image_params_for_pipeline(self, algorithm: AlgorithmType, algo_cfg: dict | None = None):
+        """``ImageCompressParams`` for C++ ImageCompressor."""
+        eng = self._engine
+        p = eng.ImageCompressParams()
+        c = algo_cfg if algo_cfg is not None else self.get_config().get(algorithm, {})
+        p.quality = int(c.get("quality", 85))
+        p.max_width = int(c.get("max_width", 0))
+        p.max_height = int(c.get("max_height", 0))
+        return p
+
     def _dpflate_pipeline_params_for_file_pipeline(self, algo_cfg: dict | None = None):
         """``DpflatePipelineParams`` for C++ streaming DPFlate; mirrors ``_create_compressor`` knobs."""
         eng = self._engine
@@ -623,7 +773,8 @@ class CompressionEngine:
         p.huffman_length_chunk_bits = int(c.get("huffman_length_chunk_bits", base))
         return p
 
-    def pipeline_compress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE):
+    def pipeline_compress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE,
+                          algo_config: dict | None = None):
         if not self.available:
             raise RuntimeError("C++ core_engine not available")
 
@@ -637,12 +788,15 @@ class CompressionEngine:
             lzdp_wf = None
             dpflate_p = None
             deflate_p = None
+            image_p = None
             if algorithm == AlgorithmType.LZDP:
-                lzdp_wf = self._lzdp_whole_file_params_for_file_pipeline()
+                lzdp_wf = self._lzdp_whole_file_params_for_file_pipeline(algo_config)
             elif algorithm == AlgorithmType.DPFLATE:
-                dpflate_p = self._dpflate_pipeline_params_for_file_pipeline()
+                dpflate_p = self._dpflate_pipeline_params_for_file_pipeline(algo_config)
             elif algorithm == AlgorithmType.DEFLATE:
-                deflate_p = self._deflate_pipeline_params_for_file_pipeline()
+                deflate_p = self._deflate_pipeline_params_for_file_pipeline(algo_config)
+            elif algorithm in (AlgorithmType.JPEG, AlgorithmType.WEBP):
+                image_p = self._image_params_for_pipeline(algorithm, algo_config)
 
             return self._engine.pipeline_compress(
                 data,
@@ -650,12 +804,22 @@ class CompressionEngine:
                 lzdp_wf,
                 dpflate_p,
                 deflate_p,
+                image_p,
                 chunk_bytes,
             )
 
     def pipeline_decompress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE):
         if not self.available:
             raise RuntimeError("C++ core_engine not available")
+
+        if algorithm in (AlgorithmType.JPEG, AlgorithmType.WEBP, AlgorithmType.NONE):
+            # Passthrough: payload is already final format
+            from gui.engine.decompress_log import log_decompress, summarize_result
+            log_decompress("pipeline_decompress_begin", algo=algorithm.value,
+                           payload_bytes=len(data), mode="passthrough")
+            r = self._make_pipeline_result(True, len(data), len(data), 0.0, "", data)
+            log_decompress("pipeline_decompress_end", **summarize_result(r))
+            return r
 
         decomp_id = self._get_decompress_pipeline_id(algorithm)
         if decomp_id is None:
@@ -688,7 +852,8 @@ class CompressionEngine:
                 lzdp_wf,
                 dpflate_p,
                 deflate_p,
-                chunk_bytes,
+                None,           # image_compress (not used for decompression)
+                chunk_bytes,    # stream_chunk_bytes
             )
         log_decompress("pipeline_decompress_end", **summarize_result(result))
         return result

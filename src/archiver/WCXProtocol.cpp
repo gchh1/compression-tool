@@ -67,6 +67,12 @@ auto toAlgoCode(core::AlgorithmID id) -> uint8_t {
         case core::AlgorithmID::Zstd:
         case core::AlgorithmID::ZstdDecompress:
             return 8;
+        case core::AlgorithmID::JPEG_Compress:
+        case core::AlgorithmID::JPEG_Decompress:
+            return 10;
+        case core::AlgorithmID::WebP_Compress:
+        case core::AlgorithmID::WebP_Decompress:
+            return 11;
         case core::AlgorithmID::DeltaEncode:
         case core::AlgorithmID::DeltaDecode:
         default:

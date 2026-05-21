@@ -73,6 +73,8 @@ class AlgorithmType(Enum):
     BROTLI = "brotli"
     ZSTD = "zstd"
     TRANSFORMER = "transformer (beta)"
+    JPEG = "jpeg"
+    WEBP = "webp"
     NONE = "none"
 
     @classmethod
@@ -87,6 +89,8 @@ class AlgorithmType(Enum):
                 7: cls.BROTLI,
                 8: cls.ZSTD,
                 9: cls.LZSS,
+                10: cls.JPEG,
+                11: cls.WEBP,
             })
         return _ALGO_CODE_MAP.get(code)
 
@@ -191,6 +195,16 @@ ALGORITHM_PARAMS: dict[AlgorithmType, list[AlgorithmParamDef]] = {
     ],
     AlgorithmType.ZSTD: [
         AlgorithmParamDef("compression_level", "压缩级别", 3, 1, 22, 1, ""),
+    ],
+    AlgorithmType.JPEG: [
+        AlgorithmParamDef("quality", "JPEG 质量", 85, 1, 100, 1, ""),
+        AlgorithmParamDef("max_width", "最大宽度 (0=不缩放)", 0, 0, 8192, 64, " px"),
+        AlgorithmParamDef("max_height", "最大高度 (0=不缩放)", 0, 0, 8192, 64, " px"),
+    ],
+    AlgorithmType.WEBP: [
+        AlgorithmParamDef("quality", "WebP 质量", 80, 1, 100, 1, ""),
+        AlgorithmParamDef("max_width", "最大宽度 (0=不缩放)", 0, 0, 8192, 64, " px"),
+        AlgorithmParamDef("max_height", "最大高度 (0=不缩放)", 0, 0, 8192, 64, " px"),
     ],
 }
 

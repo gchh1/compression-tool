@@ -28,8 +28,8 @@
       "huffman_length_chunk_bits": 8
     },
     "deflate": {
-      "search_size": 32768,
-      "lookahead_size": 258,
+      "search_size": 4096,
+      "lookahead_size": 256,
       "min_match": 0,
       "max_chain_length": 256,
       "use_flag_encoding": 1,
@@ -47,6 +47,16 @@
     },
     "zstd": {
       "compression_level": 3
+    },
+    "jpeg": {
+      "quality": 20,
+      "max_width": 0,
+      "max_height": 0
+    },
+    "webp": {
+      "quality": 80,
+      "max_width": 0,
+      "max_height": 0
     }
   },
   "ade": {
@@ -94,6 +104,18 @@
         "threshold_mb": 10.0
       },
       "zstd": {
+        "follow_global_chunk": true,
+        "chunk_size_kb": 1024,
+        "follow_global_threshold": true,
+        "threshold_mb": 10.0
+      },
+      "jpeg": {
+        "follow_global_chunk": true,
+        "chunk_size_kb": 1024,
+        "follow_global_threshold": true,
+        "threshold_mb": 10.0
+      },
+      "webp": {
         "follow_global_chunk": true,
         "chunk_size_kb": 1024,
         "follow_global_threshold": true,

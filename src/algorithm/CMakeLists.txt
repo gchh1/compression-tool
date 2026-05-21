@@ -9,6 +9,7 @@ add_library(
     HuffmanTree.cpp
     HuffmanTree3HM.cpp
 
+    ImageCompressor.cpp
     LZDP.cpp
     LZSS.cpp
     DPFlate.cpp
@@ -23,4 +24,5 @@ target_include_directories(
     include
     ${UTILS_DIR}/include
     ${VIZ_DIR}/include
+    ${CMAKE_SOURCE_DIR}/third_party
 )

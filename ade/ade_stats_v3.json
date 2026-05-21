@@ -1,25 +1,26 @@
 {
-  "total_samples": 548,
-  "valid_samples": 548,
+  "total_samples": 669,
+  "valid_samples": 669,
   "invalid_samples": 1,
-  "last_save_time": 1779340174.868049,
+  "last_save_time": 1779375565.010893,
   "data_version": "3.0",
   "algorithm_distribution": {
-    "brotli": 8,
-    "lzdp": 11,
-    "deflate": 381,
-    "none": 58,
+    "brotli": 14,
+    "lzdp": 21,
+    "deflate": 440,
+    "none": 87,
     "gzip": 70,
     "dpflate": 13,
     "zstd": 4,
-    "lzss": 3
+    "lzss": 3,
+    "jpeg": 17
   },
   "type_distribution": {
-    "UNKNOWN": 454,
-    "IMAGE_PNG": 17,
+    "UNKNOWN": 555,
+    "IMAGE_PNG": 29,
     "IMAGE_JPEG": 68,
-    "IMAGE_BMP": 2,
-    "AUDIO_WAV": 6,
+    "IMAGE_BMP": 4,
+    "AUDIO_WAV": 12,
     "DOC_PDF": 1
   }
 }

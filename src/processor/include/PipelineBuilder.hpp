@@ -16,7 +16,8 @@ auto buildCompressionPipeline(
     const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
     std::size_t streaming_compress_chunk_bytes = 0,
     const core::DpflatePipelineParams* dpflate_pipeline = nullptr,
-    const core::DeflatePipelineParams* deflate_pipeline = nullptr)
+    const core::DeflatePipelineParams* deflate_pipeline = nullptr,
+    const core::ImageCompressParams* image_compress = nullptr)
     -> std::unique_ptr<Pipeline>;
 
 auto buildDecompressionPipeline(

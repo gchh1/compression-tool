@@ -17,7 +17,7 @@ Pipeline::Pipeline(std::vector<std::unique_ptr<IAlgorithm>> algorithms,
     }
 }
 
-auto Pipeline::push(memory::DataChunk chunk, bool is_last) -> void {
+auto Pipeline::psh(memory::DataChunk chunk, bool is_last) -> void {
     if (finished_ || stages_.empty()) return;
     stages_.front()->push(std::move(chunk), is_last);
     drainAll();

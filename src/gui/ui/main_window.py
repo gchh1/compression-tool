@@ -126,6 +126,8 @@ class AlgorithmSelector(QComboBox):
         ("Gzip (zlib标准)", AlgorithmType.GZIP),
         ("Brotli", AlgorithmType.BROTLI),
         ("Zstd", AlgorithmType.ZSTD),
+        ("JPEG (图片有损)", AlgorithmType.JPEG),
+        ("WebP (图片有损)", AlgorithmType.WEBP),
         ("Transformer (beta) 🧠", AlgorithmType.TRANSFORMER),
         ("Auto", AlgorithmType.AUTO),
     ]
@@ -879,9 +881,11 @@ class AlgorithmConfigDialog(QDialog):
                 AlgorithmType.GZIP: "Gzip",
                 AlgorithmType.BROTLI: "Brotli",
                 AlgorithmType.ZSTD: "Zstd",
+                AlgorithmType.JPEG: "JPEG (图片)",
+                AlgorithmType.WEBP: "WebP (图片)",
             }
 
-            for algo in [AlgorithmType.DEFLATE, AlgorithmType.LZDP, AlgorithmType.LZSS, AlgorithmType.DPFLATE, AlgorithmType.GZIP, AlgorithmType.BROTLI, AlgorithmType.ZSTD]:
+            for algo in [AlgorithmType.DEFLATE, AlgorithmType.LZDP, AlgorithmType.LZSS, AlgorithmType.DPFLATE, AlgorithmType.GZIP, AlgorithmType.BROTLI, AlgorithmType.ZSTD, AlgorithmType.JPEG, AlgorithmType.WEBP]:
                 params = ALGORITHM_PARAMS.get(algo, [])
                 if not params:
                     continue
@@ -1899,6 +1903,7 @@ class MainWindow(QMainWindow):
         """
         from gui.engine.file_protocol import (
             pack_compressed_file, make_export_filename, pack_folder_archive,
+            strip_wcx_if_present,
             CompressedFileHeader as CFH,
         )
         from pathlib import Path as P
@@ -1951,11 +1956,14 @@ class MainWindow(QMainWindow):
                     blob = file_record_compression_blob(f)
                     if not blob:
                         continue
+                    # blob is a full WCX container; strip to raw payload so
+                    # pack_folder_archive doesn't double-wrap.
+                    raw_payload = strip_wcx_if_present(blob)
                     try:
                         rel = str(P(f.path).relative_to(folder_root))
                     except ValueError:
                         rel = f.name
-                    file_list.append((rel, blob, f.algorithm, f.size))
+                    file_list.append((rel, raw_payload, f.algorithm, f.size))
                 if not file_list:
                     continue
                 archive_data = pack_folder_archive(record.name, file_list)
@@ -2182,15 +2190,15 @@ class MainWindow(QMainWindow):
                     QMessageBox.warning(self, "解压失败", f"文件夹 {rec.name}:\n{e}")
 
             # ── 3. Browse-mode entries ──
-            from gui.engine.file_protocol import CompressedFileHeader as CFH
+            from gui.engine.file_protocol import CompressedFileHeader as CFH, strip_wcx_if_present
             browse_entries_data = getattr(self, '_browse_entries', None) or []
-            # Build lookup: filename → (header, payload) from stored browse data.
-            # Payload is ALREADY a complete WCX container (inner entry blob).
+            # Build lookup: filename → (header, raw_payload) from stored browse data.
+            # raw_payload is the compressed bitstream WITHOUT a WCX header (it was
+            # already unpacked by _open_archive / unpack_folder_archive).
             browse_lookup: dict[str, tuple[CFH, bytes]] = {}
             for bh, bp in browse_entries_data:
                 browse_lookup[bh.original_filename] = (bh, bp)
 
-            import tempfile
             for it in items:
                 rec = self._table.get_record(it)
                 if not isinstance(rec, CFH):
@@ -2204,28 +2212,31 @@ class MainWindow(QMainWindow):
                     if target is None:
                         logger.warning("[decompress] browse entry not found in stored data: %s", name)
                         continue
-                    _hdr, wcx_blob = target
+                    _hdr, raw_payload = target
 
-                    # wcx_blob is already a full WCX file — write directly,
-                    # do NOT re-pack (avoids double-wrapping).
-                    with tempfile.NamedTemporaryFile(suffix='.wcx', delete=False) as tmp:
-                        tmp.write(wcx_blob)
-                        tmp_path = tmp.name
-                    try:
-                        output_path = os.path.join(export_dir, name)
-                        os.makedirs(os.path.dirname(output_path) or export_dir, exist_ok=True)
-                        result = engine.smart_decompress_file(
-                            tmp_path, output_path, _hdr.algorithm,
+                    output_path = os.path.join(export_dir, name)
+                    os.makedirs(os.path.dirname(output_path) or export_dir, exist_ok=True)
+                    # raw_payload may be double-wrapped (old folder archives) or
+                    # raw compressed data.  strip_wcx_if_present handles both.
+                    raw_payload = strip_wcx_if_present(raw_payload)
+                    # Decompress in memory (avoids temp WCX file roundtrip).
+                    result = engine.smart_decompress(raw_payload, _hdr.algorithm)
+                    if not getattr(result, 'success', True):
+                        raise RuntimeError(
+                            getattr(result, 'error_message', '') or '解压失败'
                         )
-                        if not getattr(result, 'success', True):
-                            raise RuntimeError(
-                                getattr(result, 'error_message', '') or '解压失败'
-                            )
-                    finally:
+                    part_path = output_path + '.part'
+                    try:
+                        with open(part_path, 'wb') as f:
+                            if result.data:
+                                f.write(result.data)
+                        os.replace(part_path, output_path)
+                    except OSError as e:
                         try:
-                            os.unlink(tmp_path)
+                            os.unlink(part_path) if os.path.exists(part_path) else None
                         except OSError:
                             pass
+                        raise RuntimeError(str(e))
                     success += 1
                     logger.info("浏览模式解压成功: %s -> %s", name, output_path)
                 except Exception as e:

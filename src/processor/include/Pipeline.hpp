@@ -21,7 +21,7 @@ class Pipeline {
              std::shared_ptr<memory::MemoryPool> pool = nullptr);
 
     /// Zero-copy push into the first stage.
-    auto push(memory::DataChunk chunk, bool is_last = false) -> void;
+    auto psh(memory::DataChunk chunk, bool is_last = false) -> void;
 
     /// Convenience: wraps span in an owned DataChunk.
     auto push(std::span<const uint8_t> data, bool is_last = false) -> void;
