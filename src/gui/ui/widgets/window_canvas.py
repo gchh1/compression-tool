@@ -117,6 +117,8 @@ class WindowCanvas(QWidget):
         self._match_events = events
         self._event_offset = offset
         self._total_event_count = total_event_count
+        if total_bytes != self._total_bytes and self._scroll_offset > total_bytes:
+            self._scroll_offset = max(0, total_bytes - self._visible_bytes())
         self._total_bytes = total_bytes
         if source_path:
             self._source_path = source_path
@@ -180,6 +182,8 @@ class WindowCanvas(QWidget):
     def _read_source_range(self, start: int, count: int) -> bytes:
         """Read a contiguous byte range from the source file (lazy)."""
         if not self._source_path:
+            return b""
+        if count <= 0:
             return b""
         try:
             with open(self._source_path, "rb") as fh:
@@ -290,9 +294,11 @@ class WindowCanvas(QWidget):
         # Draw header bar with position info
         self._draw_header(painter, w, curr_ev)
 
-        # Calculate visible range
-        vis_start = (self._scroll_offset // cols) * cols
+        # Calculate visible range (clamped to total_bytes)
+        vis_start = min((self._scroll_offset // cols) * cols, max(0, self._total_bytes - 1))
         vis_end = min(self._total_bytes, vis_start + self._visible_bytes())
+        if vis_end <= vis_start:
+            vis_end = min(self._total_bytes, vis_start + max(1, self._visible_bytes()))
 
         # Build a set of match-covered positions from events
         match_positions: set[int] = set()

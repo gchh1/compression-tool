@@ -314,17 +314,41 @@ PYBIND11_MODULE(core_engine, m) {
              const std::string& output_path,
              const std::string& viz_path,
              const std::vector<compressor::core::AlgorithmID>& chain,
-             size_t stream_chunk_bytes)
+             size_t stream_chunk_bytes,
+             const std::string& heat_path)
               -> compressor::api::CompressResult {
               return compressor::api::compressFileWithViz(input_path, output_path,
                                                             viz_path, chain,
-                                                            stream_chunk_bytes);
+                                                            stream_chunk_bytes,
+                                                            heat_path);
           },
           py::arg("input_path"), py::arg("output_path"), py::arg("viz_path"),
           py::arg("chain"),
           py::arg("stream_chunk_bytes") = size_t{0},
+          py::arg("heat_path") = std::string{},
           "Compress a file and write visualization events to viz_path (.viz v2 format). "
+          "When heat_path is non-empty, also writes per-chunk Shannon entropy to a .heat v1 file. "
           "The compress algorithm must inherit from AlgorithmBase (e.g. DPFlate, Deflate, Brotli).");
+    // ============================================================
+
+    // [HEAT] compressFileWithHeat — .heat v1 entropy file alongside compression
+    // ============================================================
+    m.def("pipeline_compress_file_with_heat",
+          [](const std::string& input_path,
+             const std::string& output_path,
+             const std::string& heat_path,
+             const std::vector<compressor::core::AlgorithmID>& chain,
+             size_t stream_chunk_bytes)
+              -> compressor::api::CompressResult {
+              return compressor::api::compressFileWithHeat(input_path, output_path,
+                                                           heat_path, chain,
+                                                           stream_chunk_bytes);
+          },
+          py::arg("input_path"), py::arg("output_path"), py::arg("heat_path"),
+          py::arg("chain"),
+          py::arg("stream_chunk_bytes") = size_t{0},
+          "Compress a file and write per-chunk Shannon entropy to heat_path (.heat v1 format). "
+          "Works with any algorithm — entropy is computed on raw input chunks before compression.");
     // ============================================================
 
     m.def("pipeline_decompress_file",
@@ -346,6 +370,21 @@ PYBIND11_MODULE(core_engine, m) {
           },
           py::arg("requested"),
           "Request cooperative cancel for pipeline_compress_file (checked between input chunks).");
+
+    py::class_<compressor::api::WcxEntrySummary>(m, "WcxEntrySummary")
+        .def(py::init<>())
+        .def_readwrite("filename", &compressor::api::WcxEntrySummary::filename)
+        .def_readwrite("original_size", &compressor::api::WcxEntrySummary::original_size)
+        .def_readwrite("compressed_size", &compressor::api::WcxEntrySummary::compressed_size)
+        .def_readwrite("algo_code", &compressor::api::WcxEntrySummary::algo_code);
+
+    m.def("scan_wcx",
+          [](const std::string& input_path) -> std::vector<compressor::api::WcxEntrySummary> {
+              return compressor::api::scanWcx(input_path);
+          },
+          py::arg("input_path"),
+          "Scan a WCX archive: read all entry headers sequentially without decompressing payloads. "
+          "Returns a list of WcxEntrySummary for browse-mode display.");
 
     // ===== ADE (Algorithm Decision Engine) =====
     init_ade(m);

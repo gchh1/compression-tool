@@ -273,12 +273,17 @@ class CompressionEngine:
         output_path: str,
         algorithm: AlgorithmType = AlgorithmType.DEFLATE,
         viz_path: str | None = None,
+        heat_path: str | None = None,
         algo_config: dict | None = None,
     ):
         """Streaming compress file-to-file without loading into Python memory.
 
         When ``viz_path`` is provided, visualization events are written to a ``.viz``
         v2 file in the same pass (uses ``compressFileWithViz`` internally).
+
+        When ``heat_path`` is provided, per-chunk Shannon entropy is computed and
+        written to a ``.heat`` v1 file (uses ``compressFileWithHeat`` internally).
+        Works alongside ``viz_path`` — a second compression pass is NOT needed.
 
         When ``algo_config`` is provided it overrides the global engine config for
         this call only — safe for parallel per-record compression.
@@ -315,11 +320,26 @@ class CompressionEngine:
             elif algorithm == AlgorithmType.DEFLATE:
                 deflate_p = self._deflate_pipeline_params_for_file_pipeline(algo_config)
             do_viz = viz_path is not None
+            do_heat = heat_path is not None
 
         # Native call WITHOUT lock — allows parallel file compression
         if do_viz:
+            logger.info(
+                "[smart_compress_file] %s -> %s via %s (viz=%s, heat=%s, chunk=%d)",
+                input_path, output_path, algorithm.value, viz_path, heat_path or "-", chunk_bytes,
+            )
             return self._engine.pipeline_compress_file_with_viz(
-                input_path, output_path, viz_path, [algo_id], chunk_bytes
+                input_path, output_path, viz_path, [algo_id], chunk_bytes,
+                heat_path if heat_path else "",
+            )
+
+        if do_heat:
+            logger.info(
+                "[smart_compress_file] %s -> %s via %s (heat=%s, chunk=%d)",
+                input_path, output_path, algorithm.value, heat_path, chunk_bytes,
+            )
+            return self._engine.pipeline_compress_file_with_heat(
+                input_path, output_path, heat_path, [algo_id], chunk_bytes
             )
 
         logger.info(

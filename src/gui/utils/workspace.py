@@ -124,6 +124,20 @@ def allocate_viz_path(source_path: str) -> Path:
     return viz_dir() / name
 
 
+def heat_dir() -> Path:
+    """``workspace/heat/`` (entropy heatmap files)."""
+    p = workspace_root() / "heat"
+    p.mkdir(parents=True, exist_ok=True)
+    return p
+
+
+def allocate_heat_path(source_path: str) -> Path:
+    """Return a unique ``.heat`` path under ``workspace/heat/``."""
+    uid = uuid.uuid4().hex[:12]
+    name = f"{uid}_{_safe_stem(source_path)}.heat"
+    return heat_dir() / name
+
+
 def sweep_viz_artifacts() -> None:
     """Delete all ``.viz`` files under ``workspace/viz/``."""
     vd = viz_dir()

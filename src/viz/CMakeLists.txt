@@ -3,6 +3,7 @@ add_library(
     STATIC
     BackgroundWriter.cpp
     DiskVizObserver.cpp
+    EntropyCollector.cpp
 )
 
 target_include_directories(

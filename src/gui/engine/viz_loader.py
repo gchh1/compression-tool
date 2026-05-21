@@ -221,6 +221,32 @@ class VizLoader:
 
     # ── v2 O(1) random access (mmap) ───────────────────────────────
 
+    def find_event_index_at_offset(self, byte_offset: int) -> int:
+        """Binary-search MatchEvents by input_pos to find the event nearest *byte_offset*.
+
+        Returns the index of the first MatchEvent whose input_pos >= byte_offset,
+        or the last event if byte_offset exceeds all positions.
+        Returns -1 if no MatchEvents are available.
+        """
+        total = self.match_count
+        if total == 0:
+            return -1
+        off = self._section_offsets.get(0)
+        if off is None:
+            return -1
+        mm = self._ensure_mmap()
+        elem_sz = 9
+        lo, hi = 0, total - 1
+        while lo < hi:
+            mid = (lo + hi) // 2
+            pos_bytes = mm[off + mid * elem_sz : off + mid * elem_sz + 4]
+            input_pos = struct.unpack_from("<I", pos_bytes, 0)[0]
+            if input_pos < byte_offset:
+                lo = mid + 1
+            else:
+                hi = mid
+        return lo
+
     def get_match_event(self, idx: int) -> MatchEvent | None:
         """O(1) single MatchEvent access via mmap (v2 only)."""
         if self._version < 2:

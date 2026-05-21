@@ -17,6 +17,7 @@
 #include "DataChunk.hpp"
 #include "DebugLog.hpp"
 #include "DiskVizObserver.hpp"
+#include "EntropyCollector.hpp"
 #include "IAlgorithm.hpp"
 #include "MemoryPool.hpp"
 #include "Pipeline.hpp"
@@ -759,7 +760,8 @@ auto compressFileWithViz(const std::string& input_path,
                          const std::string& output_path,
                          const std::string& viz_path,
                          std::span<const AlgorithmID> chain,
-                         size_t stream_chunk_bytes) -> CompressResult {
+                         size_t stream_chunk_bytes,
+                         const std::string& heat_path) -> CompressResult {
     CompressResult result;
 
     auto t0 = std::chrono::high_resolution_clock::now();
@@ -790,6 +792,13 @@ auto compressFileWithViz(const std::string& input_path,
             base->attachObserver(viz_observer.get());
             break;
         }
+    }
+
+    // Entropy collector (optional — same pass as compression)
+    std::shared_ptr<compressor::viz::EntropyCollector> entropy_collector;
+    if (!heat_path.empty()) {
+        entropy_collector =
+            std::make_shared<compressor::viz::EntropyCollector>(heat_path, static_cast<uint32_t>(chunk));
     }
 
     auto pool = std::make_shared<memory::MemoryPool>(
@@ -844,6 +853,10 @@ auto compressFileWithViz(const std::string& input_path,
         size_t actual = static_cast<size_t>(input.gcount());
         if (actual == 0) break;
 
+        // Compute entropy on raw chunk BEFORE compression
+        if (entropy_collector)
+            entropy_collector->onRawChunk(buf.data(), actual);
+
         bool is_last = (bytes_read + actual >= result.original_size);
         pipeline.push(std::span<const uint8_t>(buf.data(), actual), is_last);
         bytes_read += actual;
@@ -867,15 +880,21 @@ auto compressFileWithViz(const std::string& input_path,
         total_written += v.size();
     }
 
-    // Step 3 — viz observer MUST be reset before writer->stop(), so viz files
+    // Step 3 — flush entropy collector
+    if (entropy_collector) {
+        entropy_collector->onCompressionFinish();
+        entropy_collector.reset();
+    }
+
+    // Step 4 — viz observer MUST be reset before writer->stop(), so viz files
     // (written by independent BackgroundWriter threads) are flushed first.
     viz_observer.reset();
 
-    // Step 4 — wait for async writes to complete
+    // Step 5 — wait for async writes to complete
     writer->stop();
     writer.reset();
 
-    // Step 5 — patch compressed_size in WCX header at byte offset 10
+    // Step 6 — patch compressed_size in WCX header at byte offset 10
     {
         auto comp_u32 = static_cast<uint32_t>(std::min<uint64_t>(total_written, UINT32_MAX));
         std::fstream fout(path_part, std::ios::binary | std::ios::in | std::ios::out);
@@ -910,6 +929,173 @@ auto compressFileWithViz(const std::string& input_path,
             : 0.0;
     result.success = true;
     return result;
+}
+
+auto compressFileWithHeat(const std::string& input_path,
+                          const std::string& output_path,
+                          const std::string& heat_path,
+                          std::span<const AlgorithmID> chain,
+                          size_t stream_chunk_bytes) -> CompressResult {
+    CompressResult result;
+
+    auto t0 = std::chrono::high_resolution_clock::now();
+
+    const size_t chunk =
+        processor::effective_stream_chunk_bytes(stream_chunk_bytes);
+
+    std::error_code ec;
+    result.original_size = fs::file_size(input_path, ec);
+    if (ec) {
+        result.error_message = "Cannot open input: " + ec.message();
+        return result;
+    }
+
+    std::vector<std::unique_ptr<algorithm::IAlgorithm>> algos;
+    for (auto id : chain)
+        if (auto a = core::createAlgorithm(id)) algos.push_back(std::move(a));
+    if (algos.empty()) {
+        result.error_message = "Unknown or null algorithm";
+        return result;
+    }
+
+    auto entropy_collector =
+        std::make_shared<compressor::viz::EntropyCollector>(heat_path, static_cast<uint32_t>(chunk));
+
+    auto pool = std::make_shared<memory::MemoryPool>(
+        adaptivePoolChunks(static_cast<size_t>(result.original_size), chunk), chunk);
+    processor::Pipeline pipeline(std::move(algos), pool);
+
+    std::ifstream input(input_path, std::ios::binary);
+    if (!input) {
+        result.error_message = "Cannot open input file";
+        return result;
+    }
+
+    const fs::path path_final(output_path);
+    const fs::path path_part = staged_part_path(output_path);
+    remove_path_best_effort(path_part);
+
+    // Write WCX header
+    {
+        std::ofstream output(path_part, std::ios::binary | std::ios::trunc);
+        if (!output) {
+            result.error_message = "Cannot open staged output file";
+            return result;
+        }
+        std::string original_filename = fs::path(input_path).filename().string();
+        uint8_t algo_code = chain.empty() ? 0 : wcx::toAlgoCode(chain.front());
+        auto header_orig_u32 =
+            static_cast<uint32_t>(std::min<uint64_t>(result.original_size, UINT32_MAX));
+        if (!wcx::writeHeader(output, algo_code, header_orig_u32, 0, original_filename)) {
+            result.error_message = "Cannot write WCX header";
+            output.close();
+            remove_path_best_effort(path_part);
+            return result;
+        }
+        output.flush();
+        output.close();
+    }
+
+    auto writer = std::make_unique<compressor::viz::BackgroundWriter>(path_part.string(), true);
+
+    std::vector<uint8_t> buf(chunk);
+    uint64_t bytes_read = 0;
+    uint64_t total_written = 0;
+
+    while (bytes_read < result.original_size) {
+        size_t to_read = std::min(chunk,
+                                  static_cast<size_t>(result.original_size - bytes_read));
+        input.read(reinterpret_cast<char*>(buf.data()),
+                   static_cast<std::streamsize>(to_read));
+        size_t actual = static_cast<size_t>(input.gcount());
+        if (actual == 0) break;
+
+        entropy_collector->onRawChunk(buf.data(), actual);
+
+        bool is_last = (bytes_read + actual >= result.original_size);
+        pipeline.push(std::span<const uint8_t>(buf.data(), actual), is_last);
+        bytes_read += actual;
+
+        while (true) {
+            auto out_chunk = pipeline.pull();
+            if (out_chunk.empty()) break;
+            auto v = out_chunk.view();
+            writer->submit(out_chunk.owner(), v.size());
+            total_written += v.size();
+        }
+    }
+
+    pipeline.finish();
+
+    while (true) {
+        auto out_chunk = pipeline.pull();
+        if (out_chunk.empty()) break;
+        auto v = out_chunk.view();
+        writer->submit(out_chunk.owner(), v.size());
+        total_written += v.size();
+    }
+
+    entropy_collector->onCompressionFinish();
+    entropy_collector.reset();
+
+    writer->stop();
+    writer.reset();
+
+    // Patch compressed_size in WCX header
+    {
+        auto comp_u32 = static_cast<uint32_t>(std::min<uint64_t>(total_written, UINT32_MAX));
+        std::fstream fout(path_part, std::ios::binary | std::ios::in | std::ios::out);
+        if (!fout || !wcx::patchCompressedSize(fout, comp_u32)) {
+            result.error_message = "Cannot patch WCX header";
+            remove_path_best_effort(path_part);
+            auto t1 = std::chrono::high_resolution_clock::now();
+            result.time_ms =
+                std::chrono::duration<double, std::milli>(t1 - t0).count();
+            return result;
+        }
+        fout.flush();
+        fout.close();
+    }
+
+    std::string commit_err;
+    if (!commit_staged_to_final(path_part, path_final, commit_err)) {
+        result.error_message = "Cannot commit output: " + commit_err;
+        auto t1 = std::chrono::high_resolution_clock::now();
+        result.time_ms =
+            std::chrono::duration<double, std::milli>(t1 - t0).count();
+        return result;
+    }
+
+    auto t1 = std::chrono::high_resolution_clock::now();
+    result.time_ms =
+        std::chrono::duration<double, std::milli>(t1 - t0).count();
+    result.compressed_size = total_written;
+    result.compression_ratio =
+        result.original_size > 0
+            ? static_cast<double>(total_written) / result.original_size
+            : 0.0;
+    result.success = true;
+    return result;
+}
+
+auto scanWcx(const std::string& input_path) -> std::vector<WcxEntrySummary> {
+    std::vector<WcxEntrySummary> entries;
+    std::ifstream in(input_path, std::ios::binary);
+    if (!in) return entries;
+
+    while (in) {
+        wcx::HeaderView hdr;
+        if (!wcx::tryReadHeader(in, hdr) || !hdr.valid) break;
+        entries.push_back(WcxEntrySummary{
+            hdr.original_filename,
+            hdr.original_size,
+            hdr.compressed_size,
+            hdr.algo_code,
+        });
+        // Skip compressed payload
+        in.seekg(static_cast<std::streamoff>(hdr.compressed_size), std::ios::cur);
+    }
+    return entries;
 }
 
 #endif  // __EMSCRIPTEN__

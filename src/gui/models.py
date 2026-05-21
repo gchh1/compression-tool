@@ -59,6 +59,9 @@ class CompressionStatus(Enum):
     SKIPPED = "skipped"
 
 
+# Keep in sync with WCXProtocol.cpp toAlgoCode()
+_ALGO_CODE_MAP: dict[int, "AlgorithmType"] = {}
+
 class AlgorithmType(Enum):
     AUTO = "auto"
     DEFLATE = "deflate"
@@ -71,6 +74,21 @@ class AlgorithmType(Enum):
     ZSTD = "zstd"
     TRANSFORMER = "transformer (beta)"
     NONE = "none"
+
+    @classmethod
+    def from_code(cls, code: int) -> "AlgorithmType | None":
+        if not _ALGO_CODE_MAP:
+            _ALGO_CODE_MAP.update({
+                0: cls.NONE,
+                1: cls.DEFLATE,
+                2: cls.LZSS,
+                3: cls.LZDP,
+                5: cls.DPFLATE,
+                7: cls.BROTLI,
+                8: cls.ZSTD,
+                9: cls.LZSS,
+            })
+        return _ALGO_CODE_MAP.get(code)
 
 
 class AlgorithmParamDef:
@@ -388,11 +406,16 @@ class FolderRecord(Record):
     def __init__(self, path: str):
         super().__init__(path)
 
-        # Filled on first ``ensure_files_loaded()`` (single rglob + stat pass; avoids UI freeze
-        # from double-walking the tree in __init__).
+        # Flat list of ALL descendant files (worker compatibility).
+        # Filled on first ``ensure_files_loaded()`` (single rglob + stat pass).
         self._files_loaded: bool = False
         self.files: list[FileRecord] = []
         self.size: int = 0
+
+        # Tree structure: direct children only (FileRecord + nested FolderRecord).
+        # Filled on first ``ensure_tree_loaded()`` (single iterdir pass).
+        self._tree_loaded: bool = False
+        self.entries: list[Record] = []
 
         self.status: CompressionStatus = CompressionStatus.PENDING
 
@@ -401,6 +424,39 @@ class FolderRecord(Record):
         self.total_compressed: int = 0
         self.compression_ratio: float = 1.00
         self.total_time_ms: float = 0.0
+
+    def ensure_tree_loaded(self) -> None:
+        """Load direct children (files + sub-folders) for tree display.
+
+        Reuses FileRecord objects from ``ensure_files_loaded()`` so that
+        ``_find_item_by_record`` identity checks and in-place status updates
+        work correctly for child items.
+        """
+        if self._tree_loaded:
+            return
+        self._tree_loaded = True
+
+        self.ensure_files_loaded()
+        file_map: dict[str, FileRecord] = {fr.path: fr for fr in self.files}
+
+        root = Path(self.path)
+        if not root.exists() or not root.is_dir():
+            self.entries = []
+            return
+        entries: list[Record] = []
+        try:
+            for entry in sorted(root.iterdir(), key=lambda p: (not p.is_dir(), p.name.lower())):
+                if entry.is_file():
+                    ep = str(entry)
+                    if ep in file_map:
+                        entries.append(file_map[ep])
+                    else:
+                        entries.append(FileRecord(ep))
+                elif entry.is_dir():
+                    entries.append(FolderRecord(str(entry)))
+        except OSError:
+            pass
+        self.entries = entries
 
     def ensure_files_loaded(self) -> None:
         if self._files_loaded:

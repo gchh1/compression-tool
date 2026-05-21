@@ -166,7 +166,7 @@ class CompressionWorker(QThread):
         out_path = str(allocate_streaming_wcx_path(record.path))
         _core_set_streaming_compress_cancel(False)
         from gui.ade.explorer import SilentExplorer
-        from gui.utils.workspace import allocate_viz_path
+        from gui.utils.workspace import allocate_viz_path, allocate_heat_path
 
         # [VIZ] Allocate .viz path for supported algorithms (Deflate, DPFlate, Brotli, LZSS)
         _viz_algo = record.algorithm
@@ -176,9 +176,14 @@ class CompressionWorker(QThread):
             _viz_path = str(allocate_viz_path(record.path))
             logger.info("[compress] viz path allocated: %s", _viz_path)
 
+        # [HEAT] Allocate .heat path (entropy heatmap — works with any algorithm)
+        _heat_path = str(allocate_heat_path(record.path))
+        logger.info("[compress] heat path allocated: %s", _heat_path)
+
         with SilentExplorer.user_compression_priority():
             result = engine.smart_compress_file(record.path, out_path, record.algorithm,
-                                                viz_path=_viz_path, algo_config=algo_config)
+                                                viz_path=_viz_path, heat_path=_heat_path,
+                                                algo_config=algo_config)
         logger.info(
             "[compress] streaming compress returned success=%s compressed_size=%s",
             getattr(result, "success", None),
@@ -222,6 +227,8 @@ class CompressionWorker(QThread):
             record.compression_config_snapshot = algo_config
             # [VIZ] Store viz_path for later viewing via VizDialog
             record.viz_path = _viz_path
+            # [HEAT] Store heat_path for 3-tier entropy heatmap
+            record.heat_path = _heat_path
 
         record.status = CompressionStatus.DONE
         try:

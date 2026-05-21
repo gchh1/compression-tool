@@ -34,6 +34,14 @@ struct WCXUnpackResult {
     std::string error_message;
 };
 
+/// Lightweight entry summary from scanWcx (browse mode).
+struct WcxEntrySummary {
+    std::string filename;
+    size_t original_size{0};
+    size_t compressed_size{0};
+    uint8_t algo_code{0};
+};
+
 /// Compress a single buffer with the given algorithm chain.
 /// Pipeline knobs match ``compressFile`` when pointers are non-null (otherwise struct defaults).
 /// @param streaming_compress_chunk_bytes  Passed to ``createAlgorithm`` / ``MemoryPool``; ``0`` clamps via
@@ -91,11 +99,24 @@ auto compressFile(const std::string& input_path,
 /// The compress algorithm must inherit from AlgorithmBase (e.g. DPFlate);
 /// algorithms wrapped in StreamingCompressAdapter (Deflate, Brotli) are
 /// not yet supported for visualization.
+///
+/// When ``heat_path`` is non-empty, per-chunk Shannon entropy is also
+/// computed and written to a `.heat` v1 file in the same pass.
 auto compressFileWithViz(const std::string& input_path,
                          const std::string& output_path,
                          const std::string& viz_path,
                          std::span<const AlgorithmID> chain,
-                         size_t stream_chunk_bytes = 0) -> CompressResult;
+                         size_t stream_chunk_bytes = 0,
+                         const std::string& heat_path = "") -> CompressResult;
+
+/// Like compressFile, but also computes per-chunk Shannon entropy and
+/// writes a .heat v1 file to `heat_path`.  Works with any algorithm
+/// (entropy is computed on raw input chunks before compression).
+auto compressFileWithHeat(const std::string& input_path,
+                          const std::string& output_path,
+                          const std::string& heat_path,
+                          std::span<const AlgorithmID> chain,
+                          size_t stream_chunk_bytes = 0) -> CompressResult;
 
 /// WCX single-file decompression to disk (see ``docs/design/streaming-workspace-spec.md`` / GUI engine).
 ///
@@ -111,6 +132,10 @@ auto decompressFile(const std::string& input_path,
                     const std::string& output_path,
                     std::span<const AlgorithmID> chain,
                     size_t stream_chunk_bytes = 0) -> CompressResult;
+
+/// Scan a WCX file: read all entry headers sequentially without decompressing payloads.
+/// Returns a list of WcxEntrySummary for browse-mode display.
+auto scanWcx(const std::string& input_path) -> std::vector<WcxEntrySummary>;
 
 #endif  // __EMSCRIPTEN__
 
