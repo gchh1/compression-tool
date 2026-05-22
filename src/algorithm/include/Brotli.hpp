@@ -73,6 +73,14 @@ private:
     std::vector<HuffmanCode> len_dict_;
     std::vector<HuffmanCode> dist_dict_;
 
+    // Visualization tracking
+    uint32_t input_pos_{0};
+    uint32_t block_index_{0};
+    uint32_t block_input_start_{0};
+    uint32_t block_literal_count_{0};
+    uint32_t block_match_count_{0};
+    size_t block_output_start_{0};
+
     auto getHash(size_t pos) -> uint16_t;
     auto fillWindow(void) -> void;
     auto slideWindow(void) -> void;

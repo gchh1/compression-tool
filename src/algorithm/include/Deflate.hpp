@@ -25,6 +25,9 @@ struct Token {
     uint8_t dist_code;
     uint8_t dist_extra_bits;
     uint16_t dist_extra_val;
+
+    uint16_t match_len{0};
+    uint16_t match_dist{0};
 };
 
 /** @brief  */
@@ -32,10 +35,16 @@ constexpr uint16_t NULL_PTR = 0xffff;
 
 class Deflate : public AlgorithmBase {
    public:
-    Deflate(size_t slide_size = 32768, size_t min_match = 3,
-            size_t max_chain_length = 256);
+    /// ``lookahead_max`` caps LZ77 match length (clamped to 258 for valid DEFLATE length codes).
+    /// Pass 0 for 258 (full deflate match limit).
+    Deflate(size_t slide_size = 4096, size_t min_match = 3,
+            size_t max_chain_length = 256, size_t lookahead_max = 258,
+            bool use_flag_encoding = true);
 
     auto reset(void) -> void override;
+
+    void set_use_flag_encoding(bool v) { use_flag_encoding_ = v; }
+    bool get_use_flag_encoding() const { return use_flag_encoding_; }
 
    protected:
     auto handle(AlgorithmStatus& algorithm_status, bool is_last_chunk)
@@ -70,7 +79,7 @@ class Deflate : public AlgorithmBase {
     static constexpr size_t DISTANCE_DICTIONARY_SIZE = 30;
     static constexpr size_t DISTANCE_SYMBOL_BITS = 5;
 
-    static constexpr size_t MAX_BLOCK_TOKENS = 16384;
+    static constexpr size_t MAX_BLOCK_TOKENS = 1 << 20;  // 1M tokens
 
     // ===================================
     // Deflate state
@@ -90,6 +99,25 @@ class Deflate : public AlgorithmBase {
 
     std::vector<HuffmanCode> dictionary_;
     std::vector<HuffmanCode> dist_dictionary_;
+
+    bool use_flag_encoding_{true};
+    size_t offset_bits_{0};
+    size_t length_bits_{0};
+    bool nonflag_header_emitted_{false};
+
+    // ============================================================
+    // [VIZ] Visualization tracking fields — restored from 8672f99
+    // ============================================================
+    uint32_t input_pos_{0};
+    uint32_t block_index_{0};
+    uint32_t block_input_start_{0};
+    uint32_t block_literal_count_{0};
+    uint32_t block_match_count_{0};
+    size_t block_output_start_{0};  // writer bytes at block start
+    // ============================================================
+    // [VIZ END]
+    // ============================================================
+
     // ===================================
     // Private methods
     // ===================================

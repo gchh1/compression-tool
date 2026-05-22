@@ -1,0 +1,9 @@
+[Python::CompressionEngine.compress] LZSS data_size=60274
+[LZSSCompressor::compress] ENTER data_size=60274 dict=4095 min_match=3 flag=1
+[LZSSCompressor::compress] EXIT orig=60274 comp=22080 ratio=0.3663 time_ms=391.43 success=1
+[Python::CompressionEngine.compress] LZSS data_size=87120
+[LZSSCompressor::compress] ENTER data_size=87120 dict=4095 min_match=3 flag=1
+[LZSSCompressor::compress] EXIT orig=87120 comp=16724 ratio=0.1920 time_ms=294.31 success=1
+[Python::streaming] LZSS file=/Users/yhc/yhc/proj/compression-tool/resources/wow.html size=60274
+[Python::streaming] LZSS file=/Users/yhc/yhc/proj/compression-tool/resources/wow.html size=60274
+[Python::streaming] LZSS file=D:/yhc/compression-tool/src/README.md size=2190

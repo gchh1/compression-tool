@@ -2,6 +2,7 @@ add_library(
     processor
     STATIC
     Pipeline.cpp
+    PipelineBuilder.cpp
     StreamProcessor.cpp
 )
 
@@ -16,5 +17,5 @@ target_link_libraries(
     PUBLIC
     algorithm
     core
-    memory
+    utils
 )

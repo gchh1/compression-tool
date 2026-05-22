@@ -8,13 +8,10 @@
 #include <vector>
 
 #include "AlgorithmFactory.hpp"
-#include "BlockProfile.hpp"
 
 namespace compressor::api {
 
 using AlgorithmID = core::AlgorithmID;
-using BlockInfo = algorithm::BlockInfo;
-using BlockProfile = algorithm::BlockProfile;
 
 struct CompressResult {
     std::vector<uint8_t> data;
@@ -24,52 +21,77 @@ struct CompressResult {
     double time_ms{0.0};
     bool success{false};
     std::string error_message;
-    std::optional<BlockProfile> block_profile;
 };
 
-struct WebFile {
-    std::string name;
-    std::vector<uint8_t> content;
+struct WCXUnpackResult {
+    bool success{false};
+    uint8_t algo_code{0};
+    size_t original_size{0};
+    size_t compressed_size{0};
+    bool is_folder{false};
+    std::string original_filename;
+    std::vector<uint8_t> payload;
+    std::string error_message;
 };
 
-/// Compress a single buffer with the given algorithm chain.
+struct WcxEntrySummary {
+    std::string filename;
+    size_t original_size{0};
+    size_t compressed_size{0};
+    uint8_t algo_code{0};
+};
+
+/// In-memory compression. Algorithm parameters are read from the global
+/// ``CompressionConfig`` (loaded once at startup). Pass ``overrides_json``
+/// for per-call ADE delta.
 auto compress(const std::vector<uint8_t>& data,
-              std::span<const AlgorithmID> chain) -> CompressResult;
+              std::span<const AlgorithmID> chain,
+              std::size_t streaming_compress_chunk_bytes = 0,
+              const std::string& overrides_json = "") -> CompressResult;
 
-/// Decompress a single buffer with the given algorithm chain.
+/// In-memory decompression.
 auto decompress(const std::vector<uint8_t>& data,
-                std::span<const AlgorithmID> chain) -> CompressResult;
+                std::span<const AlgorithmID> chain,
+                std::size_t streaming_compress_chunk_bytes = 0) -> CompressResult;
 
-/// Pack multiple files into a compressed archive using an algorithm chain.
-auto packAndCompress(const std::vector<WebFile>& files,
-                     std::span<const AlgorithmID> chain)
-    -> std::vector<uint8_t>;
+auto pack_wcx(const std::vector<uint8_t>& compressed_data,
+              AlgorithmID algorithm,
+              size_t original_size,
+              const std::string& original_filename = "",
+              bool is_folder = false) -> std::vector<uint8_t>;
 
-/// Unpack a compressed archive back into individual files.
-auto decompressAndUnpack(const std::vector<uint8_t>& data)
-    -> std::vector<WebFile>;
+auto unpack_wcx(const std::vector<uint8_t>& data) -> WCXUnpackResult;
 
 #ifndef __EMSCRIPTEN__
 
-/// Streaming single-file compression: read input in chunks, write to disk.
+/// Cooperative cancel for ``compressFile`` (GUI worker sets true while C++ is in the read loop).
+void set_streaming_compress_cancel_requested(bool requested);
+
+/// Unified streaming file compression.
+///
+/// Writes WCX to ``output_path``. When ``viz_path`` is non-empty, visualization
+/// events are written in the same pass. When ``heat_path`` is non-empty, per-chunk
+/// Shannon entropy is written. All three outputs are produced in one streaming pass.
+///
+/// Algorithm parameters are read from the global ``CompressionConfig``.
+/// Pass ``overrides_json`` (a JSON object with per-key values) for ADE per-file delta.
 auto compressFile(const std::string& input_path,
                   const std::string& output_path,
-                  std::span<const AlgorithmID> chain) -> CompressResult;
+                  std::span<const AlgorithmID> chain,
+                  size_t stream_chunk_bytes = 0,
+                  const std::string& viz_path = "",
+                  const std::string& heat_path = "",
+                  const std::string& overrides_json = "")
+    -> CompressResult;
 
-/// Streaming single-file decompression: read archive in chunks, write to disk.
+/// WCX single-file decompression to disk.
 auto decompressFile(const std::string& input_path,
                     const std::string& output_path,
-                    std::span<const AlgorithmID> chain) -> CompressResult;
+                    std::span<const AlgorithmID> chain,
+                    size_t stream_chunk_bytes = 0) -> CompressResult;
 
-/// Recursively pack and compress a directory into an archive file.
-auto compressDirectory(const std::string& dir_path,
-                       const std::string& output_path,
-                       std::span<const AlgorithmID> chain) -> CompressResult;
-
-/// Unpack a compressed archive to disk, preserving directory structure.
-auto decompressAndUnpackToDisk(const std::string& input_path,
-                                const std::string& output_dir)
-    -> CompressResult;
+/// Scan a WCX file: read all entry headers sequentially without decompressing payloads.
+auto scanWcx(const std::string& input_path) -> std::vector<WcxEntrySummary>;
 
 #endif  // __EMSCRIPTEN__
 

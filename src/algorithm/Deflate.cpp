@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 
 #include <algorithm>
+#include <bit>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
@@ -12,6 +13,7 @@
 #include <vector>
 
 #include "BitWriter.hpp"
+#include "DebugLog.hpp"
 #include "Deflate.hpp"
 #include "HuffmanTree.hpp"
 
@@ -21,13 +23,24 @@ namespace compressor::algorithm {
  * @brief Construct a new Deflate:: Deflate object
  *
  */
-Deflate::Deflate(size_t slide_size, size_t min_match, size_t max_chain_length)
+Deflate::Deflate(size_t slide_size, size_t min_match, size_t max_chain_length,
+                 size_t lookahead_max, bool use_flag_encoding)
     : SLIDE_SIZE(slide_size),
       WINDOW_SIZE(2 * slide_size),
       MIN_MATCH(min_match),
-      MAX_MATCH(258),
+      MAX_MATCH([&]() -> size_t {
+          const size_t cap = lookahead_max == 0
+                                 ? size_t(258)
+                                 : std::min(lookahead_max, size_t(258));
+          return std::min(std::max(cap, min_match), size_t(258));
+      }()),
       HASH_SIZE(slide_size),
-      MAX_CHAIN_LENGTH(max_chain_length) {
+      MAX_CHAIN_LENGTH(max_chain_length),
+      use_flag_encoding_(use_flag_encoding) {
+    offset_bits_ =
+        static_cast<size_t>(std::bit_width(std::max(SLIDE_SIZE, size_t{1})));
+    length_bits_ =
+        static_cast<size_t>(std::bit_width(std::max(MAX_MATCH, size_t{1})));
     reset();
 }
 
@@ -46,6 +59,21 @@ auto Deflate::reset(void) -> void {
 
     token_buffer_.clear();
     token_flush_idx_ = 0;
+
+    nonflag_header_emitted_ = false;
+
+    // ============================================================
+    // [VIZ] Reset visualization tracking — restored from 8672f99
+    // ============================================================
+    input_pos_ = 0;
+    block_index_ = 0;
+    block_input_start_ = 0;
+    block_literal_count_ = 0;
+    block_match_count_ = 0;
+    block_output_start_ = 0;
+    // ============================================================
+    // [VIZ END]
+    // ============================================================
 
     deflate_state_ = DeflateState::FIND_MATCHES;
 }
@@ -122,7 +150,7 @@ auto Deflate::handleFindMatches(AlgorithmStatus& status, bool is_last_chunk)
         uint16_t hash_val = getHash(cursor_);
         uint16_t match_pos = head_[hash_val];
 
-        prev_[cursor_ & (SLIDE_SIZE - 1)] = match_pos;
+        prev_[cursor_ % SLIDE_SIZE] = match_pos;
         head_[hash_val] = static_cast<uint16_t>(cursor_);
 
         size_t chain_length = MAX_CHAIN_LENGTH;
@@ -144,7 +172,7 @@ auto Deflate::handleFindMatches(AlgorithmStatus& status, bool is_last_chunk)
                 match_distance = distance;
                 if (match_length == max_possible) break;
             }
-            match_pos = prev_[match_pos & (SLIDE_SIZE - 1)];
+            match_pos = prev_[match_pos % SLIDE_SIZE];
         }
     }
 
@@ -155,26 +183,55 @@ auto Deflate::handleFindMatches(AlgorithmStatus& status, bool is_last_chunk)
                       t.length_extra_val);
         getDistCode(match_distance, t.dist_code, t.dist_extra_bits,
                     t.dist_extra_val);
+        t.match_len = static_cast<uint16_t>(match_length);
+        t.match_dist = static_cast<uint16_t>(match_distance);
         token_buffer_.push_back(t);
 
+        // ============================================================
+        // [VIZ] Emit match event — restored from 8672f99
+        // ============================================================
+        notifyObservers(MatchEvent{input_pos_,
+                                   static_cast<uint16_t>(match_distance),
+                                   static_cast<uint16_t>(match_length), 0});
+        // ============================================================
+        // [VIZ END]
+        // ============================================================
+
         for (size_t i = 1; i < match_length; ++i) {
+            // [VIZ] Track input position — restored from 8672f99
+            input_pos_++;
             cursor_++;
             lookahead_--;
             if (lookahead_ >= MIN_MATCH) {
                 uint16_t hash_val = getHash(cursor_);
-                prev_[cursor_ & (SLIDE_SIZE - 1)] = head_[hash_val];
+                prev_[cursor_ % SLIDE_SIZE] = head_[hash_val];
                 head_[hash_val] = static_cast<uint16_t>(cursor_);
             }
         }
+        // [VIZ] Track input position & match count — restored from 8672f99
+        input_pos_++;
         cursor_++;
         lookahead_--;
+        ++block_match_count_;
     } else {
         Token t;
         t.is_literal = true;
         t.code = window_[cursor_];
         token_buffer_.push_back(t);
+
+        // ============================================================
+        // [VIZ] Emit literal event — restored from 8672f99
+        // ============================================================
+        notifyObservers(MatchEvent{input_pos_, 0, 0, window_[cursor_]});
+        // ============================================================
+        // [VIZ END]
+        // ============================================================
+
+        // [VIZ] Track input position & literal count — restored from 8672f99
+        input_pos_++;
         cursor_++;
         lookahead_--;
+        ++block_literal_count_;
     }
 
     if (token_buffer_.size() >= MAX_BLOCK_TOKENS) {
@@ -186,6 +243,12 @@ auto Deflate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk)
     -> void {
     if (token_buffer_.empty() && !is_last_chunk) {
         deflate_state_ = DeflateState::FIND_MATCHES;
+        return;
+    }
+
+    if (!use_flag_encoding_) {
+        token_flush_idx_ = 0;
+        deflate_state_ = DeflateState::FLUSH_TOKENS;
         return;
     }
 
@@ -208,8 +271,35 @@ auto Deflate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk)
     dictionary_ = huffman_tree_->buildDictionary();
     dist_dictionary_ = dist_tree_->buildDictionary();
 
+    // ============================================================
+    // [VIZ] Emit Huffman tree built events — restored from 8672f99
+    // ============================================================
+    {
+        HuffmanTreeBuilt lit_tree_ev;
+        lit_tree_ev.block_index = block_index_;
+        lit_tree_ev.tree_type = 0;
+        lit_tree_ev.alphabet_size = DEFLATE_ALPHABET_SIZE;
+        for (size_t i = 0; i < DEFLATE_ALPHABET_SIZE && i < 286; ++i)
+            lit_tree_ev.code_lengths[i] = dictionary_[i].length;
+        notifyObservers(lit_tree_ev);
+    }
+    {
+        HuffmanTreeBuilt dist_tree_ev;
+        dist_tree_ev.block_index = block_index_;
+        dist_tree_ev.tree_type = 1;
+        dist_tree_ev.alphabet_size = DISTANCE_DICTIONARY_SIZE;
+        for (size_t i = 0; i < DISTANCE_DICTIONARY_SIZE && i < 286; ++i)
+            dist_tree_ev.code_lengths[i] = dist_dictionary_[i].length;
+        notifyObservers(dist_tree_ev);
+    }
+    // ============================================================
+    // [VIZ END]
+    // ============================================================
+
     if (writer_.ensureSpace(huffman_tree_->getTreeSize() +
                             dist_tree_->getTreeSize())) {
+        // [VIZ] Track block output start — restored from 8672f99
+        block_output_start_ = writer_.getBytesWritten();
         huffman_tree_->serializeTree(writer_);
         dist_tree_->serializeTree(writer_);
 
@@ -222,18 +312,125 @@ auto Deflate::handleBuildTree(AlgorithmStatus& status, bool is_last_chunk)
 
 auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
     -> void {
+    if (!use_flag_encoding_) {
+        if (!nonflag_header_emitted_) {
+            if (!writer_.ensureSpace(24)) {
+                status.need_output = true;
+                return;
+            }
+            writer_.writeBits(0x4E, 8);
+            writer_.writeBits(static_cast<uint32_t>(offset_bits_), 8);
+            writer_.writeBits(static_cast<uint32_t>(length_bits_), 8);
+            nonflag_header_emitted_ = true;
+        }
+
+        while (token_flush_idx_ < token_buffer_.size()) {
+            size_t lit_run = 0;
+            size_t run_start = token_flush_idx_;
+
+            while (token_flush_idx_ < token_buffer_.size() &&
+                   token_buffer_[token_flush_idx_].is_literal) {
+                lit_run++;
+                token_flush_idx_++;
+            }
+
+            if (lit_run > 0) {
+                size_t max_lit_per_chunk = (size_t{1} << length_bits_) - 1;
+                size_t lit_pos = 0;
+                while (lit_pos < lit_run) {
+                    size_t chunk =
+                        std::min(lit_run - lit_pos, max_lit_per_chunk);
+                    if (!writer_.ensureSpace(static_cast<size_t>(
+                            offset_bits_ + length_bits_ + chunk * 8))) {
+                        token_flush_idx_ = run_start + lit_pos;
+                        status.need_output = true;
+                        return;
+                    }
+                    writer_.writeBits(0, static_cast<uint8_t>(offset_bits_));
+                    writer_.writeBits(static_cast<uint32_t>(chunk),
+                                      static_cast<uint8_t>(length_bits_));
+                    for (size_t i = 0; i < chunk; i++) {
+                        writer_.writeBits(
+                            token_buffer_[run_start + lit_pos + i].code, 8);
+                    }
+                    lit_pos += chunk;
+                }
+            }
+
+            if (token_flush_idx_ < token_buffer_.size()) {
+                const auto& token = token_buffer_[token_flush_idx_];
+                if (!writer_.ensureSpace(
+                        static_cast<size_t>(offset_bits_ + length_bits_))) {
+                    status.need_output = true;
+                    return;
+                }
+                writer_.writeBits(token.match_dist,
+                                  static_cast<uint8_t>(offset_bits_));
+                writer_.writeBits(token.match_len,
+                                  static_cast<uint8_t>(length_bits_));
+                token_flush_idx_++;
+            }
+        }
+
+        // ============================================================
+        // [VIZ] Emit block boundary — restored from 8672f99
+        // ============================================================
+        {
+            BlockBoundary bb;
+            bb.block_index = block_index_;
+            bb.input_start = block_input_start_;
+            bb.input_bytes = input_pos_ - block_input_start_;
+            bb.literal_count = block_literal_count_;
+            bb.match_count = block_match_count_;
+            bb.output_bytes = writer_.getBytesWritten() - block_output_start_;
+            notifyObservers(bb);
+            notifyBlockFinish();
+        }
+        // ============================================================
+        // [VIZ END]
+        // ============================================================
+
+        token_buffer_.clear();
+
+        if (is_last_chunk && lookahead_ == 0) {
+            if (!writer_.ensureSpace(
+                    static_cast<size_t>(offset_bits_ + length_bits_))) {
+                status.need_output = true;
+                return;
+            }
+            writer_.writeBits(0, static_cast<uint8_t>(offset_bits_));
+            writer_.writeBits(0, static_cast<uint8_t>(length_bits_));
+            // [VIZ] Notify compression finish — restored from 8672f99
+            notifyCompressionFinish();
+            writer_.flush();
+            status.done = true;
+            return;
+        }
+
+        // ============================================================
+        // [VIZ] Advance block index & reset tracking — restored from 8672f99
+        // ============================================================
+        ++block_index_;
+        block_input_start_ = input_pos_;
+        block_literal_count_ = 0;
+        block_match_count_ = 0;
+        // ============================================================
+        // [VIZ END]
+        // ============================================================
+
+        deflate_state_ = DeflateState::FIND_MATCHES;
+        return;
+    }
+
     while (token_flush_idx_ < token_buffer_.size()) {
-        if (!writer_.ensureSpace(6)) {
+        if (!writer_.ensureSpace(48)) {
             status.need_output = true;
             return;
         }
 
         const auto& token = token_buffer_[token_flush_idx_];
 
-        const auto& main_code = dictionary_[token.code];
-        for (int i = main_code.length - 1; i >= 0; i--) {
-            writer_.writeBit((main_code.code >> i) & 1);
-        }
+        writeHuffmanCode(writer_, dictionary_[token.code]);
 
         if (!token.is_literal) {
             if (token.length_extra_bits > 0) {
@@ -241,10 +438,7 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
                                   token.length_extra_bits);
             }
 
-            const auto& dist_code = dist_dictionary_[token.dist_code];
-            for (int i = dist_code.length - 1; i >= 0; i--) {
-                writer_.writeBit((dist_code.code >> i) & 1);
-            }
+            writeHuffmanCode(writer_, dist_dictionary_[token.dist_code]);
 
             if (token.dist_extra_bits > 0) {
                 writer_.writeBits(token.dist_extra_val, token.dist_extra_bits);
@@ -254,19 +448,55 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
         token_flush_idx_++;
     }
 
+    DEBUG_LOG(
+        "[Deflate] handleFlushTokens: writing block EOF, tokens_flushed=%zu",
+        token_flush_idx_);
+    if (!writer_.ensureSpace(16)) {
+        status.need_output = true;
+        return;
+    }
+    writeHuffmanCode(writer_, dictionary_[256]);
+
+    // ============================================================
+    // [VIZ] Emit block boundary — restored from 8672f99
+    // ============================================================
+    {
+        BlockBoundary bb;
+        bb.block_index = block_index_;
+        bb.input_start = block_input_start_;
+        bb.input_bytes = input_pos_ - block_input_start_;
+        bb.literal_count = block_literal_count_;
+        bb.match_count = block_match_count_;
+        bb.output_bytes = writer_.getBytesWritten() - block_output_start_;
+        notifyObservers(bb);
+        notifyBlockFinish();
+    }
+    // ============================================================
+    // [VIZ END]
+    // ============================================================
+
     token_buffer_.clear();
+    token_flush_idx_ = 0;
 
     if (is_last_chunk && lookahead_ == 0) {
-        // 写入 EOF
-        const auto& eof_code = dictionary_[256];
-        for (int i = eof_code.length - 1; i >= 0; i--) {
-            writer_.writeBit((eof_code.code >> i) & 1);
-        }
-
-        writer_.flush();  // 最终扫尾，补齐字节
+        // [VIZ] Notify compression finish — restored from 8672f99
+        notifyCompressionFinish();
+        writer_.flush();
+        DEBUG_LOG("[Deflate] handleFlushTokens: EOF written, done");
         status.done = true;
         return;
     }
+
+    // ============================================================
+    // [VIZ] Advance block index & reset tracking — restored from 8672f99
+    // ============================================================
+    ++block_index_;
+    block_input_start_ = input_pos_;
+    block_literal_count_ = 0;
+    block_match_count_ = 0;
+    // ============================================================
+    // [VIZ END]
+    // ============================================================
 
     deflate_state_ = DeflateState::FIND_MATCHES;
 }
@@ -278,7 +508,21 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
  * @return std::vector<Token>
  */
 auto Deflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
+    static int handle_call = 0;
+    ++handle_call;
+    int inner_iter = 0;
     while (true) {
+        ++inner_iter;
+        if (inner_iter > 100000000) {
+            DEBUG_LOG("[Deflate] SAFETY BREAK: inner_iter=%d state=%d",
+                      inner_iter, (int)deflate_state_);
+            // [VIZ] Notify compression finish on safety break — restored from
+            // 8672f99
+            notifyCompressionFinish();
+            status.done = true;
+            return;
+        }
+
         (this->*kStateHandlers[static_cast<size_t>(deflate_state_)])(
             status, is_last_chunk);
 

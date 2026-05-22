@@ -78,23 +78,6 @@ auto Pipeline::finish() -> void {
     finished_ = true;
 }
 
-/**
- * @brief
- *
- * @return std::optional<algorithm::BlockProfile>
- */
-auto Pipeline::getBlockProfile(void) -> std::optional<algorithm::BlockProfile> {
-    for (auto& stage : stages_) {
-        auto p = stage->getBlockProfile();
-        if (p) return p;
-    }
-    return std::nullopt;
-}
-
-/**
- * @brief chunk-level pipeline
- *
- */
 auto Pipeline::drainAll() -> void {
     for (size_t i = 0; i + 1 < stages_.size(); ++i) {
         drain(*stages_[i], *stages_[i + 1]);

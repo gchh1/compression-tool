@@ -1,0 +1,154 @@
+{
+  "version": 1,
+  "algorithms": {
+    "lzss": {
+      "search_size": 4095,
+      "lookahead_size": 18,
+      "min_match": 0,
+      "use_flag_encoding": 1
+    },
+    "lzdp": {
+      "search_size": 4096,
+      "lookahead_size": 256,
+      "min_match": 0,
+      "dp_top": 3,
+      "match_engine": 0,
+      "use_flag_encoding": 0
+    },
+    "dpflate": {
+      "search_size": 4096,
+      "lookahead_size": 256,
+      "min_match": 0,
+      "dp_sub_match_max": 6,
+      "max_chain_length": 256,
+      "match_engine": 1,
+      "use_flag_encoding": 1,
+      "use_3hfmtree": 0,
+      "huffman_offset_chunk_bits": 8,
+      "huffman_length_chunk_bits": 8
+    },
+    "deflate": {
+      "search_size": 32768,
+      "lookahead_size": 256,
+      "min_match": 0,
+      "max_chain_length": 256,
+      "use_flag_encoding": 1,
+      "use_3hfmtree": 0,
+      "huffman_offset_chunk_bits": 8,
+      "huffman_length_chunk_bits": 8
+    },
+    "gzip": {
+      "compression_level": 6
+    },
+    "brotli": {
+      "window_size": 65536,
+      "min_match": 0,
+      "max_chain_length": 256
+    },
+    "zstd": {
+      "compression_level": 3
+    },
+    "jpeg": {
+      "quality": 85,
+      "max_width": 0,
+      "max_height": 0
+    },
+    "webp": {
+      "quality": 80,
+      "max_width": 0,
+      "max_height": 0
+    }
+  },
+  "ade": {
+    "silent_explore_enabled": false
+  },
+  "streaming": {
+    "threshold_mb": 10.0,
+    "chunk_size_kb": 1024,
+    "workspace_root": "",
+    "per_algorithm": {
+      "deflate": {
+        "follow_global_chunk": true,
+        "chunk_size_kb": 1024,
+        "follow_global_threshold": true,
+        "threshold_mb": 10.0
+      },
+      "lzdp": {
+        "follow_global_chunk": true,
+        "chunk_size_kb": 1024,
+        "follow_global_threshold": true,
+        "threshold_mb": 10.0
+      },
+      "lzss": {
+        "follow_global_chunk": true,
+        "chunk_size_kb": 1024,
+        "follow_global_threshold": true,
+        "threshold_mb": 10.0
+      },
+      "dpflate": {
+        "follow_global_chunk": true,
+        "chunk_size_kb": 1024,
+        "follow_global_threshold": true,
+        "threshold_mb": 10.0
+      },
+      "gzip": {
+        "follow_global_chunk": true,
+        "chunk_size_kb": 1024,
+        "follow_global_threshold": true,
+        "threshold_mb": 10.0
+      },
+      "brotli": {
+        "follow_global_chunk": true,
+        "chunk_size_kb": 1024,
+        "follow_global_threshold": true,
+        "threshold_mb": 10.0
+      },
+      "zstd": {
+        "follow_global_chunk": true,
+        "chunk_size_kb": 1024,
+        "follow_global_threshold": true,
+        "threshold_mb": 10.0
+      },
+      "jpeg": {
+        "follow_global_chunk": true,
+        "chunk_size_kb": 1024,
+        "follow_global_threshold": true,
+        "threshold_mb": 10.0
+      },
+      "webp": {
+        "follow_global_chunk": true,
+        "chunk_size_kb": 1024,
+        "follow_global_threshold": true,
+        "threshold_mb": 10.0
+      }
+    }
+  },
+  "visualization": {
+    "lzdp_dp_viz_max_size": 131072,
+    "lzmine_dp_viz_max_size": 65536
+  },
+  "theme": {
+    "bg_primary": "#ffffff",
+    "bg_surface": "#f8f9fa",
+    "bg_elevated": "#ffffff",
+    "bg_hover": "#f0f1f3",
+    "bg_selection": "#e3f2fd",
+    "text_primary": "#212529",
+    "text_secondary": "#6c757d",
+    "text_muted": "#888888",
+    "border": "#dee2e6",
+    "border_dark": "#ced4da",
+    "accent": "#4a90d9",
+    "accent_hover": "#357abd",
+    "accent_text": "#ffffff",
+    "success": "#27ae60",
+    "warning": "#f5a623",
+    "error": "#e74c3c",
+    "chart_1": "#4a90d9",
+    "chart_2": "#f5a623",
+    "chart_3": "#7ed321",
+    "chart_4": "#d0021b",
+    "chart_5": "#9013fe",
+    "chart_6": "#50e3c2"
+  }
+}

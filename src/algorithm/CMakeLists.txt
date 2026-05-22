@@ -6,16 +6,16 @@ add_library(
     Brotli.cpp
     Deflate.cpp
 
-    # Huffman.cpp (pre-existing compile errors)
     HuffmanTree.cpp
+    HuffmanTree3HM.cpp
 
-    LZMine.cpp
+    ImageCompressor.cpp
+    LZDP.cpp
     LZSS.cpp
-    MyFlate.cpp
+    DPFlate.cpp
     Inflate.cpp
-    StreamingAdapter.cpp
-
-    # LZ77.cpp
+    Inflate3HM.cpp
+    Zstd.cpp
 )
 
 target_include_directories(
@@ -23,4 +23,6 @@ target_include_directories(
     PUBLIC
     include
     ${UTILS_DIR}/include
+    ${VIZ_DIR}/include
+    ${CMAKE_SOURCE_DIR}/third_party
 )

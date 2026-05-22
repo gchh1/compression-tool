@@ -43,11 +43,6 @@ class StreamProcessor {
     /** @brief Return if the processor is finished */
     auto isFinished(void) const -> bool { return finished_; }
 
-    /** @brief  */
-    auto getBlockProfile(void) -> std::optional<algorithm::BlockProfile> {
-        return algo_ ? algo_->getBlockProfile() : std::nullopt;
-    }
-
    private:
     /** @brief The algorithm that the processor object uses */
     std::unique_ptr<IAlgorithm> algo_;

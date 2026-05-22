@@ -1,0 +1,35 @@
+15:50:13 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\Package\bin\logs\gui.log
+15:50:13 [INFO] gui.core.app_config: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+15:50:13 [INFO] gui.core.theme: [theme] theme applied
+15:50:22 [INFO] gui.main_window: [add] adding 1 files
+15:50:22 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+15:50:23 [INFO] gui.main_window: [compress] _on_compress called
+15:50:23 [INFO] gui.main_window: [compress] selected_rows=[0]
+15:50:23 [INFO] gui.main_window: [compress] algorithm=lzmine, records=1
+15:50:23 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=gui.log, status=CompressionStatus.PENDING
+15:50:23 [INFO] gui.main_window: [compress] START row=0 file=D:/AAA_C/compression-tool/Package/bin/logs/gui.log algo=lzmine
+15:50:23 [INFO] gui.core.engine: C++ core_engine loaded from C:\Users\LAMTIM~1\AppData\Local\Temp\_MEI245282\core_engine\core_engine.cp312-win_amd64.pyd
+15:50:23 [INFO] gui.core.app_config: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+15:50:23 [INFO] gui.core.engine: [engine] config loaded from file, threshold=42.0MB
+15:50:23 [INFO] gui.main_window: [compress] loaded raw data: 1223 bytes
+15:50:23 [INFO] gui.main_window: [compress] compressing with lzmine ...
+15:50:23 [INFO] gui.main_window: [compress] compress done: 1223 -> 744 bytes
+15:50:23 [INFO] gui.main_window: [compress] row 0 finished: name=gui.log, status=CompressionStatus.DONE, ratio=0.6083
+15:50:25 [INFO] gui.main_window: [view] heatmap from right-click, row=0
+15:50:25 [INFO] gui.main_window: [view] record: type=FileRecord, name=gui.log, status=CompressionStatus.DONE, has_data=True
+15:50:25 [INFO] gui.main_window: [view] opening heatmap for gui.log (337 bytes, algo=lzmine)
+15:50:25 [INFO] gui.main_window: [heatmap] ext=.log is_text=True can_parse=True
+15:50:25 [INFO] gui.main_window: [heatmap] parser=LZMineTokenParser, calling parse
+15:50:25 [INFO] gui.main_window: [heatmap] parse done, tokens=475
+15:50:27 [INFO] gui.main_window: [view] Qt native heatmap opened
+15:51:49 [INFO] gui.main_window: [view] comparison from right-click, row=0
+15:51:49 [INFO] gui.main_window: [view] running comparison for gui.log (337 bytes)
+15:51:49 [INFO] gui.main_window: [view] lzss: 337 -> 629 (51.4%) 0.3ms
+15:51:49 [INFO] gui.main_window: [view] lzmine: 337 -> 744 (60.8%) 0.7ms
+15:51:49 [INFO] gui.main_window: [view] myflate: 337 -> 536 (43.8%) 0.2ms
+15:51:49 [INFO] gui.main_window: [view] deflate: 337 -> 548 (44.8%) 0.1ms
+15:51:49 [INFO] gui.main_window: [view] gzip: 337 -> 495 (40.5%) 0.0ms
+15:51:49 [WARNING] gui.main_window: [view] brotli compress failed: module 'core_engine' has no attribute 'BrotliCompressor'
+15:51:49 [WARNING] gui.main_window: [view] zstd compress failed: module 'core_engine' has no attribute 'ZstdCompressor'
+15:51:49 [INFO] gui.main_window: [view] comparison dialog created, calling exec
+15:55:20 [INFO] gui.main_window: [view] comparison dialog closed

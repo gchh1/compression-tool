@@ -8,6 +8,8 @@
 #include <utility>
 #include <vector>
 
+#include "DebugLog.hpp"
+
 namespace compressor::processor {
 
 /**
@@ -127,7 +129,6 @@ auto StreamProcessor::processChunks(bool is_last) -> void {
     }
 
     while (!in_chunks_.empty() || (is_last && !finished_)) {
-        // Ensure writable output chunk
         if (!current_out_ || out_pos_ >= current_out_->size()) {
             publishCurrent();
             if (pool_) {

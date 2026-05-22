@@ -1,44 +1,29 @@
 from __future__ import annotations
 
-import sys
 import logging
-
+import sys
 from pathlib import Path
 
+# Add src/ to sys.path automatically if running directly
+_src_dir = Path(__file__).resolve().parent.parent
+if str(_src_dir) not in sys.path:
+    sys.path.insert(0, str(_src_dir))
 
-def setup_logging(level: int = logging.INFO):
-    log_dir = Path("logs")
-    log_dir.mkdir(exist_ok=True)
-    log_file = log_dir / "gui.log"
-
-    root_logger = logging.getLogger()
-    root_logger.setLevel(level)
-
-    fmt = logging.Formatter(
-        "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-        datefmt="%H:%M:%S",
-    )
-
-    console_handler = logging.StreamHandler(sys.stderr)
-    console_handler.setLevel(level)
-    console_handler.setFormatter(fmt)
-    root_logger.addHandler(console_handler)
-
-    file_handler = logging.FileHandler(log_file, encoding="utf-8", mode="w")
-    file_handler.setLevel(logging.DEBUG)
-    file_handler.setFormatter(fmt)
-    root_logger.addHandler(file_handler)
-
-    logging.info("Logging initialized, file: %s", log_file.resolve())
+from gui.utils.logging import setup_logging, flush_logging
+from gui.utils.resources import resolve_icon_path
 
 
 def run_cli():
     setup_logging()
     logger = logging.getLogger("gui")
 
-    from gui.core.engine import CompressionEngine
-    from gui.core.file_helper import scan_directory, load_batch
-    from gui.core.strategy import StrategyDispatcher
+    from gui.utils.workspace import ensure_workspace_layout
+
+    ensure_workspace_layout()
+
+    from gui.engine.compressor import CompressionEngine
+    from gui.utils.file_helper import scan_directory, load_batch
+    from gui.ade.engine import StrategyDispatcher
 
     if len(sys.argv) < 2:
         print("Usage: python -m gui <directory>")
@@ -75,19 +60,55 @@ def run_cli():
 def run_gui():
     setup_logging()
 
+    import logging
+    logger = logging.getLogger("gui.main")
+
+    def handle_exception(exc_type, exc_value, exc_traceback):
+        if issubclass(exc_type, KeyboardInterrupt):
+            sys.__excepthook__(exc_type, exc_value, exc_traceback)
+            return
+        logger.error("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+        flush_logging()
+
+    sys.excepthook = handle_exception
+
     from PyQt6.QtWidgets import QApplication
-    from gui.widgets.main_window import MainWindow
-    from gui.core.app_config import apply_theme
+    from PyQt6.QtGui import QIcon
+    from gui.ui.main_window import MainWindow
+    from gui.config.settings import apply_theme
 
     app = QApplication(sys.argv)
     app.setApplicationName("WebCompress")
+    app.setApplicationDisplayName("WebCompress")
+
+    _icon_path = resolve_icon_path()
+    if _icon_path and _icon_path.exists():
+        app.setWindowIcon(QIcon(str(_icon_path)))
 
     apply_theme()
 
+    from gui.utils.workspace import ensure_workspace_layout
+
+    ensure_workspace_layout()
+
+    from gui.utils.workspace import cleanup_workspace_on_app_quit
+
+    def _log_quit() -> None:
+        logger.info("[ui] aboutToQuit")
+        flush_logging()
+
+    app.aboutToQuit.connect(_log_quit)
+    app.aboutToQuit.connect(cleanup_workspace_on_app_quit)
+
     window = MainWindow()
     window.show()
+    logger.info("[ui] MainWindow shown, entering event loop")
+    flush_logging()
 
-    sys.exit(app.exec())
+    code = app.exec()
+    logger.info("[ui] event loop exited code=%s", code)
+    flush_logging()
+    sys.exit(code)
 
 
 if __name__ == "__main__":

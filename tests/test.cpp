@@ -3,12 +3,9 @@
 #include <iostream>
 #include <vector>
 
-#include "DeflateCompressor.hpp"
-#include "LZSSCompressor.hpp"
-#include "compressor.hpp"
+#include "api.hpp"
 
-using namespace compressor::core;
-using namespace compressor::algorithm;
+using namespace compressor::api;
 
 // 辅助函数：将文件读取为字节流
 std::vector<uint8_t> readFile(const std::string& filename) {
@@ -45,15 +42,11 @@ bool writeToFile(const std::string& filename,
 }
 
 int main() {
-    // LZSSCompressor engine;
-    DeflateCompressor engine;
+    std::vector<AlgorithmID> chain = {AlgorithmID::Deflate};
 
-    std::string name = engine.get_algorithm_name();
+    std::cout << "--- Deflate (Pipeline) File Compression Test ---" << std::endl;
 
-    std::cout << "--- " << name << " File Compression Test ---" << std::endl;
-
-    // 1. 读取网页文件（请确保路径正确，如果使用 CMake
-    // 运行，可能需要传入绝对路径或放到 build 目录下）
+    // 1. 读取网页文件
     std::string filename = "../../tests/data/cmu445.html";
     std::vector<uint8_t> input_data = readFile(filename);
 
@@ -65,34 +58,35 @@ int main() {
     std::cout << "Original Size: " << input_data.size() << " bytes"
               << std::endl;
 
-    // 2. 调用纯净版算法进行压缩
-    CompressorResult compressed_data = engine.compress(input_data);
+    // 2. 调用 Pipeline API 进行压缩
+    CompressResult result = compress(input_data, chain);
 
-    std::cout << "Compressed Size: " << compressed_data.compressed_size
+    std::cout << "Compressed Size: " << result.compressed_size
               << " bytes" << std::endl;
 
     // 计算并打印压缩率
-    std::cout << "Compression Ratio: " << compressed_data.compression_ratio
-              << "%" << std::endl;
+    std::cout << "Compression Ratio: " << result.compression_ratio
+              << std::endl;
 
     // print time
-    std::cout << "Compress Time: " << compressed_data.time_ms << "ms"
+    std::cout << "Compress Time: " << result.time_ms << "ms"
               << std::endl;
 
     // 3. 将压缩后的结果保存到本地磁盘
     std::string output_filename =
-        "../../tests/data/cmu445.Deflate";  // 自定义一个酷炫的后缀名
-    if (writeToFile(output_filename, compressed_data.data)) {
-        std::cout << "\n🎉 Success! Compressed file generated at: "
+        "../../tests/data/cmu445.Deflate";
+    if (writeToFile(output_filename, result.data)) {
+        std::cout << "\nSuccess! Compressed file generated at: "
                   << output_filename << std::endl;
     }
 
     // 4. 解压缩
+    std::vector<AlgorithmID> decomp_chain = {AlgorithmID::Inflate};
     filename = "../../tests/data/cmu445_decompressed.html";
-    CompressorResult decompressed_data =
-        engine.decompress(compressed_data.data);
+    CompressResult decompressed_data =
+        decompress(result.data, decomp_chain);
     if (writeToFile(filename, decompressed_data.data)) {
-        std::cout << "\n🎉 Success! Decompressed file generated at: "
+        std::cout << "\nSuccess! Decompressed file generated at: "
                   << filename << std::endl;
     }
 

@@ -1,0 +1,34 @@
+# C++ build + small regression suite (no Python / no PyQt).
+# Excludes test_CompressFile (1GB workload — not CI-suitable).
+name: C++
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential ninja-build zlib1g-dev
+
+      - name: Configure (CMake >= 3.24)
+        run: cmake -S "$GITHUB_WORKSPACE" -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=OFF
+
+      - name: Build C++ regression tests
+        run: |
+          cmake --build build --parallel --target test_wcx_directory_archive test_wcx_file_strict test_wcx_strict_no_compat test_wcx_corrupt test_PackWriter_RoundTrip test_PackWriter
+
+      - name: Run C++ regression tests
+        run: |
+          ./build/bin/test_wcx_directory_archive
+          ./build/bin/test_wcx_file_strict
+          ./build/bin/test_wcx_strict_no_compat
+          ./build/bin/test_wcx_corrupt
+          ./build/bin/test_PackWriter_RoundTrip
+          ./build/bin/test_PackWriter

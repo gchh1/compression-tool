@@ -3,9 +3,9 @@
 #include <iostream>
 #include <vector>
 
-#include "DeflateCompressor.hpp"
+#include "HuffmanTree.hpp"
 
-using namespace compressor::core;
+using namespace compressor::algorithm;
 
 // 辅助函数：将文件读取为字节流
 std::vector<uint8_t> readFile(const std::string& filename) {
@@ -58,7 +58,6 @@ int main() {
               << std::endl;
 
     // 2. 调用纯净版算法进行压缩
-    DeflateCompressor engine;
     std::vector<uint8_t> compressed_data = Huffman::compress(input_data);
 
     std::cout << "Compressed Size: " << compressed_data.size() << " bytes"

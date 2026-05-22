@@ -1,6 +1,8 @@
 build/
 build_wasm/
 build_pybind/
+build_ci_check/
+build_verify_naming/
 .vscode/
 .cache/
 .gitignore/
@@ -18,6 +20,7 @@ ignore/
 
 .aider*
 .claude*
+<<<<<<< HEAD
 
 # Scratch/temporary files
 scratch/
@@ -39,3 +42,34 @@ bin/
 
 # Test data output
 tests/data/
+=======
+.exe*
+.bin*
+.wcx*
+.restored*
+.trae/
+
+# Runtime/package outputs (standardized as non-source artifacts)
+artifacts/
+workspace/
+Package/bin/logs/
+Package/logs/
+Package/compressed/
+Package/decompressed/
+logs/
+src/logs/
+src/*.dll
+bin/
+build/PyInstaller/
+resources/
+
+# Local backups and temp outputs
+*.backup
+*_output.txt
+tmp*.txt
+*.lnk
+*.wcx
+*.restored
+
+resources/level5_large/test_1gb.bin
+>>>>>>> d1ada8b9c3d24a7c6e01a5aa2d830596eb7df542
