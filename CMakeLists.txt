@@ -26,6 +26,8 @@ set(VIZ_DIR ${SRC_DIR}/viz)
 # ========= set build option ==========
 option(BUILD_PYTHON "Build Pybind11 bindings for PyQt desktop app" ON)
 
+add_definitions(-DNOMINMAX)
+
 # === DEBUG_BLOCK_BEGIN (可删除) ===
 add_definitions(-DDEBUG_LOG_ENABLED=1)
 

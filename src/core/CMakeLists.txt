@@ -16,5 +16,4 @@ target_link_libraries(
     core
     PUBLIC
     algorithm
-    z
 )

@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 
 #include <algorithm>
+#include <bit>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
@@ -28,15 +29,18 @@ Deflate::Deflate(size_t slide_size, size_t min_match, size_t max_chain_length,
       WINDOW_SIZE(2 * slide_size),
       MIN_MATCH(min_match),
       MAX_MATCH([&]() -> size_t {
-          const size_t cap = lookahead_max == 0 ? size_t(258)
-                                                : std::min(lookahead_max, size_t(258));
+          const size_t cap = lookahead_max == 0
+                                 ? size_t(258)
+                                 : std::min(lookahead_max, size_t(258));
           return std::min(std::max(cap, min_match), size_t(258));
       }()),
       HASH_SIZE(slide_size),
       MAX_CHAIN_LENGTH(max_chain_length),
       use_flag_encoding_(use_flag_encoding) {
-    offset_bits_ = static_cast<size_t>(std::bit_width(std::max(SLIDE_SIZE, size_t{1})));
-    length_bits_ = static_cast<size_t>(std::bit_width(std::max(MAX_MATCH, size_t{1})));
+    offset_bits_ =
+        static_cast<size_t>(std::bit_width(std::max(SLIDE_SIZE, size_t{1})));
+    length_bits_ =
+        static_cast<size_t>(std::bit_width(std::max(MAX_MATCH, size_t{1})));
     reset();
 }
 
@@ -218,8 +222,7 @@ auto Deflate::handleFindMatches(AlgorithmStatus& status, bool is_last_chunk)
         // ============================================================
         // [VIZ] Emit literal event — restored from 8672f99
         // ============================================================
-        notifyObservers(
-            MatchEvent{input_pos_, 0, 0, window_[cursor_]});
+        notifyObservers(MatchEvent{input_pos_, 0, 0, window_[cursor_]});
         // ============================================================
         // [VIZ END]
         // ============================================================
@@ -335,16 +338,20 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
                 size_t max_lit_per_chunk = (size_t{1} << length_bits_) - 1;
                 size_t lit_pos = 0;
                 while (lit_pos < lit_run) {
-                    size_t chunk = std::min(lit_run - lit_pos, max_lit_per_chunk);
-                    if (!writer_.ensureSpace(static_cast<size_t>(offset_bits_ + length_bits_ + chunk * 8))) {
+                    size_t chunk =
+                        std::min(lit_run - lit_pos, max_lit_per_chunk);
+                    if (!writer_.ensureSpace(static_cast<size_t>(
+                            offset_bits_ + length_bits_ + chunk * 8))) {
                         token_flush_idx_ = run_start + lit_pos;
                         status.need_output = true;
                         return;
                     }
                     writer_.writeBits(0, static_cast<uint8_t>(offset_bits_));
-                    writer_.writeBits(static_cast<uint32_t>(chunk), static_cast<uint8_t>(length_bits_));
+                    writer_.writeBits(static_cast<uint32_t>(chunk),
+                                      static_cast<uint8_t>(length_bits_));
                     for (size_t i = 0; i < chunk; i++) {
-                        writer_.writeBits(token_buffer_[run_start + lit_pos + i].code, 8);
+                        writer_.writeBits(
+                            token_buffer_[run_start + lit_pos + i].code, 8);
                     }
                     lit_pos += chunk;
                 }
@@ -352,12 +359,15 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
 
             if (token_flush_idx_ < token_buffer_.size()) {
                 const auto& token = token_buffer_[token_flush_idx_];
-                if (!writer_.ensureSpace(static_cast<size_t>(offset_bits_ + length_bits_))) {
+                if (!writer_.ensureSpace(
+                        static_cast<size_t>(offset_bits_ + length_bits_))) {
                     status.need_output = true;
                     return;
                 }
-                writer_.writeBits(token.match_dist, static_cast<uint8_t>(offset_bits_));
-                writer_.writeBits(token.match_len, static_cast<uint8_t>(length_bits_));
+                writer_.writeBits(token.match_dist,
+                                  static_cast<uint8_t>(offset_bits_));
+                writer_.writeBits(token.match_len,
+                                  static_cast<uint8_t>(length_bits_));
                 token_flush_idx_++;
             }
         }
@@ -383,7 +393,8 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
         token_buffer_.clear();
 
         if (is_last_chunk && lookahead_ == 0) {
-            if (!writer_.ensureSpace(static_cast<size_t>(offset_bits_ + length_bits_))) {
+            if (!writer_.ensureSpace(
+                    static_cast<size_t>(offset_bits_ + length_bits_))) {
                 status.need_output = true;
                 return;
             }
@@ -437,7 +448,9 @@ auto Deflate::handleFlushTokens(AlgorithmStatus& status, bool is_last_chunk)
         token_flush_idx_++;
     }
 
-    DEBUG_LOG("[Deflate] handleFlushTokens: writing block EOF, tokens_flushed=%zu", token_flush_idx_);
+    DEBUG_LOG(
+        "[Deflate] handleFlushTokens: writing block EOF, tokens_flushed=%zu",
+        token_flush_idx_);
     if (!writer_.ensureSpace(16)) {
         status.need_output = true;
         return;
@@ -503,7 +516,8 @@ auto Deflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
         if (inner_iter > 100000000) {
             DEBUG_LOG("[Deflate] SAFETY BREAK: inner_iter=%d state=%d",
                       inner_iter, (int)deflate_state_);
-            // [VIZ] Notify compression finish on safety break — restored from 8672f99
+            // [VIZ] Notify compression finish on safety break — restored from
+            // 8672f99
             notifyCompressionFinish();
             status.done = true;
             return;
