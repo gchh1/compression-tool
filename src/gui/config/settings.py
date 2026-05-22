@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 
 from gui.config.theme import ThemeManager, DEFAULT_THEME, THEME_FIELDS, CHART_FIELDS
+from gui.config.theme_tokens import DEFAULT_COMPONENT_MAPPINGS
 from gui.models import (
     AlgorithmType,
     ALGORITHM_PARAMS,
@@ -53,6 +54,8 @@ DEFAULTS = {
         "lzdp_dp_viz_max_size": LZDP_DP_VIZ_MAX_SIZE,
     },
     "theme": DEFAULT_THEME.to_dict(),
+    "theme_mappings": dict(DEFAULT_COMPONENT_MAPPINGS),
+    "theme_component_colors": {},
 }
 
 for algo, params in ALGORITHM_PARAMS.items():
@@ -135,6 +138,13 @@ def _merge_with_defaults(user_data: dict) -> dict:
         for key, val in user_data["theme"].items():
             if key in result["theme"]:
                 result["theme"][key] = str(val)
+    if "theme_mappings" in user_data and isinstance(user_data["theme_mappings"], dict):
+        result["theme_mappings"] = {
+            **result["theme_mappings"],
+            **user_data["theme_mappings"],
+        }
+    if "theme_component_colors" in user_data and isinstance(user_data["theme_component_colors"], dict):
+        result["theme_component_colors"] = dict(user_data["theme_component_colors"])
     return result
 
 
@@ -158,11 +168,22 @@ def apply_theme(config: dict | None = None) -> None:
     theme_dict = get_theme_config(config)
     theme = ThemeManager.from_dict(theme_dict)
     ThemeManager.apply(theme)
+    if config is None:
+        config = load_config()
+    mappings = config.get("theme_mappings", {})
+    if isinstance(mappings, dict):
+        ThemeManager.set_component_mappings(mappings)
+    overrides = config.get("theme_component_colors", {})
+    if isinstance(overrides, dict):
+        ThemeManager.set_component_overrides(overrides)
 
 
 def save_theme(theme_dict: dict[str, str]) -> None:
+    from gui.config.theme import ThemeManager
     full = load_config()
     full["theme"] = theme_dict
+    full["theme_mappings"] = ThemeManager._component_mappings
+    full["theme_component_colors"] = ThemeManager._component_overrides
     save_config(full)
 
 

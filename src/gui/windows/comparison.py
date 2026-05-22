@@ -6,6 +6,8 @@ import tempfile
 import webbrowser
 from pathlib import Path
 
+from gui.config.theme import ThemeManager
+
 logger = logging.getLogger(__name__)
 
 
@@ -18,6 +20,11 @@ def generate_comparison(
                  filename, original_size, len(results))
     results_json = json.dumps(results, ensure_ascii=False)
 
+    t = ThemeManager.get()
+    heat_low = ThemeManager.resolve_hex("heatmap_low")
+    heat_mid = ThemeManager.resolve_hex("heatmap_mid")
+    heat_high = ThemeManager.resolve_hex("heatmap_high")
+
     html = f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -25,24 +32,24 @@ def generate_comparison(
 <title>算法对比 - {filename}</title>
 <style>
 * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-body {{ font-family: "Microsoft YaHei", "Segoe UI", sans-serif; background: #0f172a; color: #e2e8f0; padding: 24px; }}
+body {{ font-family: "Microsoft YaHei", "Segoe UI", sans-serif; background: {t.bg_primary}; color: {t.text_primary}; padding: 24px; }}
 h1 {{ font-size: 20px; margin-bottom: 8px; }}
-.meta {{ color: #94a3b8; font-size: 13px; margin-bottom: 24px; }}
+.meta {{ color: {t.text_secondary}; font-size: 13px; margin-bottom: 24px; }}
 .chart {{ max-width: 700px; }}
 .bar-group {{ display: flex; align-items: center; margin-bottom: 12px; }}
-.bar-label {{ width: 120px; font-size: 13px; text-align: right; padding-right: 12px; color: #cbd5e1; flex-shrink: 0; }}
-.bar-track {{ flex: 1; height: 28px; background: #1e293b; border-radius: 6px; overflow: hidden; position: relative; }}
-.bar-fill {{ height: 100%; border-radius: 6px; transition: width 0.6s ease; display: flex; align-items: center; padding-left: 8px; font-size: 12px; font-weight: 600; color: #0f172a; min-width: 40px; }}
-.bar-time {{ width: 80px; font-size: 12px; text-align: right; color: #94a3b8; flex-shrink: 0; padding-left: 8px; }}
-.legend {{ display: flex; gap: 20px; margin-top: 20px; font-size: 12px; color: #94a3b8; }}
+.bar-label {{ width: 120px; font-size: 13px; text-align: right; padding-right: 12px; color: {t.text_primary}; flex-shrink: 0; }}
+.bar-track {{ flex: 1; height: 28px; background: {t.bg_surface}; border-radius: 6px; overflow: hidden; position: relative; }}
+.bar-fill {{ height: 100%; border-radius: 6px; transition: width 0.6s ease; display: flex; align-items: center; padding-left: 8px; font-size: 12px; font-weight: 600; color: {t.bg_primary}; min-width: 40px; }}
+.bar-time {{ width: 80px; font-size: 12px; text-align: right; color: {t.text_secondary}; flex-shrink: 0; padding-left: 8px; }}
+.legend {{ display: flex; gap: 20px; margin-top: 20px; font-size: 12px; color: {t.text_secondary}; }}
 .legend-item {{ display: flex; align-items: center; gap: 6px; }}
 .legend-dot {{ width: 10px; height: 10px; border-radius: 50%; }}
 .table-wrap {{ margin-top: 28px; }}
 table {{ border-collapse: collapse; width: 100%; max-width: 700px; font-size: 13px; }}
-th {{ background: #1e293b; color: #94a3b8; padding: 10px 14px; text-align: left; font-weight: 500; }}
-td {{ padding: 10px 14px; border-bottom: 1px solid #1e293b; }}
-tr:hover td {{ background: #1e293b; }}
-.highlight {{ color: #38bdf8; font-weight: 600; }}
+th {{ background: {t.bg_surface}; color: {t.text_secondary}; padding: 10px 14px; text-align: left; font-weight: 500; }}
+td {{ padding: 10px 14px; border-bottom: 1px solid {t.bg_surface}; }}
+tr:hover td {{ background: {t.bg_surface}; }}
+.highlight {{ color: {t.accent}; font-weight: 600; }}
 </style>
 </head>
 <body>
@@ -50,9 +57,9 @@ tr:hover td {{ background: #1e293b; }}
 <div class="meta">文件: {filename} &nbsp;|&nbsp; 原始大小: {original_size:,} B</div>
 <div class="chart" id="chart"></div>
 <div class="legend">
-  <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div> 压缩率 &lt; 5%</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#eab308"></div> 压缩率 5%-30%</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div> 压缩率 &gt; 30%</div>
+  <div class="legend-item"><div class="legend-dot" style="background:{heat_low}"></div> 压缩率 &lt; 5%</div>
+  <div class="legend-item"><div class="legend-dot" style="background:{heat_mid}"></div> 压缩率 5%-30%</div>
+  <div class="legend-item"><div class="legend-dot" style="background:{heat_high}"></div> 压缩率 &gt; 30%</div>
 </div>
 <div class="table-wrap">
   <table>
@@ -68,9 +75,9 @@ const tbody = document.getElementById('tbody');
 
 results.forEach(r => {{
   const pct = Math.min(100, Math.max(0, r.ratio * 100));
-  let color = '#22c55e';
-  if (r.ratio > 0.3) color = '#ef4444';
-  else if (r.ratio > 0.05) color = '#eab308';
+  let color = '{heat_low}';
+  if (r.ratio > 0.3) color = '{heat_high}';
+  else if (r.ratio > 0.05) color = '{heat_mid}';
 
   const group = document.createElement('div');
   group.className = 'bar-group';

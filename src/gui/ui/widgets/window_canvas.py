@@ -25,17 +25,6 @@ MIN_ZOOM = 0.25
 MAX_ZOOM = 4.0
 ZOOM_STEP = 0.1
 
-# Colors
-SEARCH_BG = QColor(30, 41, 59)        # dark blue-grey
-LOOKAHEAD_BG = QColor(15, 23, 42)     # darker
-MATCH_BG = QColor(34, 197, 94, 120)    # green with alpha
-LITERAL_BG = QColor(100, 116, 139, 60) # grey with alpha
-CURSOR_LINE = QColor(239, 68, 68)      # red divider
-HIGHLIGHT = QColor(250, 204, 21, 100)  # yellow for current match
-TEXT_COLOR = QColor(248, 250, 252)
-DIM_TEXT = QColor(148, 163, 184)
-HEADER_BG = QColor(51, 65, 85)
-
 
 class WindowCanvas(QWidget):
     """Interactive sliding window visualization for LZ77 compression.
@@ -85,6 +74,26 @@ class WindowCanvas(QWidget):
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
 
         self._scrollbar: QScrollBar | None = None
+
+        self._init_colors()
+        ThemeManager().theme_changed.connect(self._on_theme_changed)
+
+    def _init_colors(self) -> None:
+        """Cache theme colors as instance attributes for fast paint access."""
+        self._c_search_bg = ThemeManager.resolve_color("canvas_search_bg")
+        self._c_lookahead_bg = ThemeManager.resolve_color("canvas_lookahead_bg")
+        self._c_match_bg = ThemeManager.resolve_color("canvas_match_bg", alpha=120)
+        self._c_literal_bg = ThemeManager.resolve_color("canvas_literal_bg", alpha=60)
+        self._c_cursor_line = ThemeManager.resolve_color("canvas_cursor_line")
+        self._c_highlight = ThemeManager.resolve_color("canvas_highlight", alpha=100)
+        self._c_text = ThemeManager.resolve_color("canvas_text")
+        self._c_dim_text = ThemeManager.resolve_color("canvas_dim_text")
+        self._c_header_bg = ThemeManager.resolve_color("canvas_header_bg")
+        self._c_border = ThemeManager.resolve_color("canvas_border")
+
+    def _on_theme_changed(self):
+        self._init_colors()
+        self.update()
 
     # ── public API ──────────────────────────────────────────────────
 
@@ -352,18 +361,18 @@ class WindowCanvas(QWidget):
             # Draw cell background
             rect = QRect(cx + 1, cy + 1, self._cell_w - 2, self._cell_h - 2)
             if is_current:
-                painter.fillRect(rect, HIGHLIGHT)
+                painter.fillRect(rect, self._c_highlight)
             elif is_match:
-                painter.fillRect(rect, MATCH_BG)
+                painter.fillRect(rect, self._c_match_bg)
             elif is_lookahead:
-                painter.fillRect(rect, LOOKAHEAD_BG)
+                painter.fillRect(rect, self._c_lookahead_bg)
             elif is_search:
-                painter.fillRect(rect, SEARCH_BG)
+                painter.fillRect(rect, self._c_search_bg)
             else:
-                painter.fillRect(rect, SEARCH_BG if byte_pos < vis_start + self._window_size else LOOKAHEAD_BG)
+                painter.fillRect(rect, self._c_search_bg if byte_pos < vis_start + self._window_size else self._c_lookahead_bg)
 
             # Draw cell border
-            painter.setPen(QPen(QColor(71, 85, 105), 0.5))
+            painter.setPen(QPen(self._c_border, 0.5))
             painter.drawRect(QRect(cx, cy, self._cell_w, self._cell_h))
 
             # Draw hex (top) + ASCII (bottom)
@@ -374,11 +383,11 @@ class WindowCanvas(QWidget):
 
             if b is not None:
                 if is_current:
-                    painter.setPen(QColor(15, 23, 42))
+                    painter.setPen(self._c_lookahead_bg)  # dark bg used as text color on highlight
                 elif is_match:
-                    painter.setPen(QColor(34, 197, 94))
+                    painter.setPen(self._c_match_bg)
                 else:
-                    painter.setPen(TEXT_COLOR)
+                    painter.setPen(self._c_text)
 
                 # Top: hex value
                 painter.setFont(hex_font)
@@ -394,12 +403,12 @@ class WindowCanvas(QWidget):
 
             # Hover highlight
             if byte_pos == self._hover_pos:
-                painter.setPen(QPen(ThemeManager.color('accent'), 1.5))
+                painter.setPen(QPen(ThemeManager.resolve_color('canvas_match_bg'), 1.5))
                 painter.drawRect(QRect(cx, cy, self._cell_w, self._cell_h))
 
         # Draw row labels (byte offsets)
         painter.setFont(label_font)
-        painter.setPen(DIM_TEXT)
+        painter.setPen(self._c_dim_text)
         for row in range(0, (vis_end - vis_start + cols - 1) // cols):
             label = f"{vis_start + row * cols:08X}"
             painter.drawText(4, 28 + row * self._cell_h + self._cell_h // 2 + 4, label)
@@ -412,7 +421,7 @@ class WindowCanvas(QWidget):
                 row = local // cols
                 col = local % cols
                 cx = margin + col * self._cell_w
-                painter.setPen(QPen(CURSOR_LINE, 2))
+                painter.setPen(QPen(self._c_cursor_line, 2))
                 painter.drawLine(cx, 28, cx, 28 + row * self._cell_h + self._cell_h)
 
     def _draw_header(
@@ -420,11 +429,11 @@ class WindowCanvas(QWidget):
     ) -> None:
         """Draw the top information bar."""
         header_h = 26
-        painter.fillRect(0, 0, w, header_h, HEADER_BG)
+        painter.fillRect(0, 0, w, header_h, self._c_header_bg)
 
         painter.setFont(QFont("Consolas", 9))
         if curr_ev:
-            painter.setPen(TEXT_COLOR)
+            painter.setPen(self._c_text)
             if curr_ev.offset > 0:
                 text = (
                     f"pos={curr_ev.input_pos:08X}  "
@@ -436,7 +445,7 @@ class WindowCanvas(QWidget):
                 text = f"pos={curr_ev.input_pos:08X}  literal: {ch}"
             painter.drawText(8, header_h - 6, text)
         else:
-            painter.setPen(DIM_TEXT)
+            painter.setPen(self._c_dim_text)
             painter.drawText(8, header_h - 6, "滑动窗口 — 使用滚轮/滑块浏览")
 
         # Step counter on the right
@@ -447,7 +456,7 @@ class WindowCanvas(QWidget):
                 if self._current_idx >= 0
                 else f"共 {total} 步"
             )
-            painter.setPen(DIM_TEXT)
+            painter.setPen(self._c_dim_text)
             fm = QFontMetrics(painter.font())
             tw = fm.horizontalAdvance(step_text)
             painter.drawText(w - tw - 12, header_h - 6, step_text)

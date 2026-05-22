@@ -96,7 +96,7 @@ class HeatmapDialog(QDialog):
             logger.error("[HeatmapDialog] _setup_ui failed: %s", e, exc_info=True)
             error_layout = QVBoxLayout(self)
             error_label = QLabel(f"初始化热力图对话框失败:\n{e}")
-            error_label.setStyleSheet("color: red; padding: 20px;")
+            error_label.setStyleSheet(f"color: {ThemeManager.hex('status_error')}; padding: 20px;")
             error_layout.addWidget(error_label)
 
     def _on_token_hovered(self, idx: int) -> None:

@@ -19,6 +19,7 @@ from PyQt6.QtWidgets import (
 
 from gui.engine.viz_loader import VizLoader, HuffmanTreeBuilt, MatchEvent, BlockBoundary
 from gui.ui.widgets.window_canvas import WindowCanvas
+from gui.config.theme import ThemeManager
 
 logger = logging.getLogger(__name__)
 
@@ -26,12 +27,6 @@ PAGE_SIZE = 100_000  # match events per page (~900 KB)
 
 # ── Huffman code-length bar-chart widget ──────────────────────────
 
-HUFF_COLORS = [
-    QColor(59, 130, 246),   # blue   — type 0 (lit/len)
-    QColor(34, 197, 94),    # green  — type 1 (dist)
-    QColor(250, 204, 21),   # yellow — type 2 (Brotli lit0/lit1)
-    QColor(239, 68, 68),    # red    — type 3 (Brotli len/dist)
-]
 HUFF_TYPE_LABELS = {0: "Lit/Len", 1: "Dist", 2: "Lit", 3: "Len/Dist"}
 
 
@@ -41,8 +36,22 @@ class HuffmanBarWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._trees: list[HuffmanTreeBuilt] = []
+        self._huff_colors: list[QColor] = []
+        self._huff_bg: QColor = QColor("#1e293b")
+        self._huff_placeholder: QColor = QColor("#94a3b8")
+        self._load_theme_colors()
         self.setMinimumHeight(150)
         self.setMinimumWidth(300)
+
+    def _load_theme_colors(self) -> None:
+        self._huff_colors = [
+            ThemeManager.resolve_color("huffman_type0"),
+            ThemeManager.resolve_color("huffman_type1"),
+            ThemeManager.resolve_color("huffman_type2"),
+            ThemeManager.resolve_color("huffman_type3"),
+        ]
+        self._huff_bg = ThemeManager.resolve_color("huffman_bg")
+        self._huff_placeholder = ThemeManager.resolve_color("huffman_placeholder")
 
     def set_trees(self, trees: list[HuffmanTreeBuilt]) -> None:
         self._trees = trees
@@ -50,9 +59,9 @@ class HuffmanBarWidget(QWidget):
 
     def paintEvent(self, event) -> None:
         painter = QPainter(self)
-        painter.fillRect(self.rect(), QColor(30, 41, 59))
+        painter.fillRect(self.rect(), self._huff_bg)
         if not self._trees:
-            painter.setPen(QColor(148, 163, 184))
+            painter.setPen(self._huff_placeholder)
             painter.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, "(无 Huffman 树数据)")
             return
 
@@ -77,7 +86,7 @@ class HuffmanBarWidget(QWidget):
                 continue
 
             bar_w = max(1, (w - margin * 2) // t.alphabet_size)
-            color = HUFF_COLORS[tree_type % len(HUFF_COLORS)]
+            color = self._huff_colors[tree_type % len(self._huff_colors)]
 
             for sym in range(t.alphabet_size):
                 cl = t.code_lengths[sym]
@@ -92,7 +101,7 @@ class HuffmanBarWidget(QWidget):
         ly = 8
         for tree_type, trees in sorted(by_type.items()):
             label = HUFF_TYPE_LABELS.get(tree_type, f"Type {tree_type}")
-            color = HUFF_COLORS[tree_type % len(HUFF_COLORS)]
+            color = self._huff_colors[tree_type % len(self._huff_colors)]
             painter.setPen(color)
             painter.drawText(margin, ly, f"■ {label} ({len(trees)}块)")
             ly += 14
@@ -122,6 +131,7 @@ class VizDialog(QDialog):
         self._load_data()
 
     def _setup_ui(self) -> None:
+        self.setStyleSheet(ThemeManager.full_dialog_sheet())
         layout = QVBoxLayout(self)
 
         # Top bar: info + controls

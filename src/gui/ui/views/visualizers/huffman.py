@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import colorsys
 import math
 
 from PyQt6.QtCore import Qt, QRect, QRectF, QSize, pyqtSignal
@@ -260,8 +259,14 @@ class HuffmanTreeWidget(QWidget):
                 painter.setPen(QPen(_darken_color(ThemeManager.color('warning'), 40), 2))
             else:
                 depth = len(code)
-                v = max(120, 255 - depth * 20)
-                painter.setBrush(QColor(220, v, 220))
+                t = min(depth / 15.0, 1.0)
+                surface = ThemeManager.resolve_color("bg_surface")
+                accent = ThemeManager.resolve_color("accent")
+                painter.setBrush(QColor(
+                    int(accent.red() + (surface.red() - accent.red()) * t),
+                    int(accent.green() + (surface.green() - accent.green()) * t),
+                    int(accent.blue() + (surface.blue() - accent.blue()) * t),
+                ))
                 painter.setPen(QPen(ThemeManager.color('success'), 1))
 
             painter.drawPath(path)
@@ -330,7 +335,7 @@ class HuffmanTreePanel(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
 
         self._label = QLabel("Huffman 树")
-        self._label.setStyleSheet("font-weight: bold; padding: 4px;")
+        self._label.setStyleSheet(f"font-weight: bold; padding: 4px; color: {ThemeManager.hex('text_primary')};")
         layout.addWidget(self._label)
 
         self._ll_tree = HuffmanTreeWidget()
@@ -369,12 +374,22 @@ def _darken_color(qc: QColor, amount: int) -> QColor:
 
 
 def code_length_to_color(code_length: int, max_cl: int = 15) -> QColor:
+    """码长 → 色相：短码偏绿(heatmap_low)，长码偏红(heatmap_high)。"""
     t = min(code_length / max(max_cl, 10), 1.0)
-    hue = max(0.0, 120.0 * (1.0 - t))
-    sat = 0.80 - 0.15 * t
-    val = 0.90 - 0.20 * t
-    rgb = colorsys.hsv_to_rgb(hue / 360.0, sat, val)
-    return QColor(int(rgb[0] * 255), int(rgb[1] * 255), int(rgb[2] * 255))
+    low = ThemeManager.resolve_color("heatmap_low")
+    mid = ThemeManager.resolve_color("heatmap_mid")
+    high = ThemeManager.resolve_color("heatmap_high")
+    if t <= 0.5:
+        f = t / 0.5
+        r = int(low.red() + (mid.red() - low.red()) * f)
+        g = int(low.green() + (mid.green() - low.green()) * f)
+        b = int(low.blue() + (mid.blue() - low.blue()) * f)
+    else:
+        f = (t - 0.5) / 0.5
+        r = int(mid.red() + (high.red() - mid.red()) * f)
+        g = int(mid.green() + (high.green() - mid.green()) * f)
+        b = int(mid.blue() + (high.blue() - mid.blue()) * f)
+    return QColor(r, g, b)
 
 
 class HuffmanTreeCanvas(QWidget):
@@ -544,8 +559,14 @@ class HuffmanFreqChart(QWidget):
             y = margin_top + chart_h - bar_h
 
             if self._grayscale:
-                g = int(200 - 120 * min(entry.code_length / max(max_cl, 10), 1.0))
-                color = QColor(g, g, g)
+                t = min(entry.code_length / max(max_cl, 10), 1.0)
+                light = ThemeManager.resolve_color("text_primary")
+                dark = ThemeManager.resolve_color("bg_primary")
+                color = QColor(
+                    int(light.red() + (dark.red() - light.red()) * t),
+                    int(light.green() + (dark.green() - light.green()) * t),
+                    int(light.blue() + (dark.blue() - light.blue()) * t),
+                )
             else:
                 color = code_length_to_color(entry.code_length, max_cl=max_cl)
 

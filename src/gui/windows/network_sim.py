@@ -7,6 +7,7 @@ import webbrowser
 from pathlib import Path
 
 from gui.models import NETWORK_PROFILES
+from gui.config.theme import ThemeManager
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +55,15 @@ def generate_network_sim(
 
     profiles_json = json.dumps(profiles_data, ensure_ascii=False)
 
+    t = ThemeManager.get()
+    badge_good_bg = ThemeManager.resolve_hex("net_badge_good_bg")
+    badge_good_fg = ThemeManager.resolve_hex("net_badge_good_fg")
+    badge_bad_bg = ThemeManager.resolve_hex("net_badge_bad_bg")
+    badge_bad_fg = ThemeManager.resolve_hex("net_badge_bad_fg")
+    bar_raw = ThemeManager.resolve_hex("net_bar_raw")
+    bar_comp = ThemeManager.resolve_hex("net_bar_compressed")
+    saving_pos = ThemeManager.resolve_hex("net_saving_value")
+
     html = f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -61,33 +71,33 @@ def generate_network_sim(
 <title>网络传输模拟 - {filename}</title>
 <style>
 * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-body {{ font-family: "Microsoft YaHei", "Segoe UI", sans-serif; background: #0f172a; color: #e2e8f0; padding: 24px; }}
+body {{ font-family: "Microsoft YaHei", "Segoe UI", sans-serif; background: {t.bg_primary}; color: {t.text_primary}; padding: 24px; }}
 h1 {{ font-size: 20px; margin-bottom: 8px; }}
-.meta {{ color: #94a3b8; font-size: 13px; margin-bottom: 24px; }}
+.meta {{ color: {t.text_secondary}; font-size: 13px; margin-bottom: 24px; }}
 .cards {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; max-width: 900px; }}
-.card {{ background: #1e293b; border-radius: 10px; padding: 20px; border: 1px solid #334155; }}
+.card {{ background: {t.bg_surface}; border-radius: 10px; padding: 20px; border: 1px solid {t.border}; }}
 .card-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }}
 .card-title {{ font-size: 16px; font-weight: 700; }}
 .card-badge {{ font-size: 11px; padding: 3px 10px; border-radius: 12px; font-weight: 600; }}
-.badge-good {{ background: #166534; color: #86efac; }}
-.badge-bad {{ background: #7f1d1d; color: #fca5a5; }}
+.badge-good {{ background: {badge_good_bg}; color: {badge_good_fg}; }}
+.badge-bad {{ background: {badge_bad_bg}; color: {badge_bad_fg}; }}
 .race {{ margin-bottom: 12px; }}
-.race-label {{ font-size: 11px; color: #94a3b8; margin-bottom: 4px; }}
-.race-track {{ height: 22px; background: #0f172a; border-radius: 4px; overflow: hidden; }}
-.race-fill {{ height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 600; color: #0f172a; transition: width 1s ease; }}
-.race-fill.raw {{ background: #ef4444; }}
-.race-fill.comp {{ background: #22c55e; }}
-.race-time {{ font-size: 12px; color: #94a3b8; margin-top: 2px; text-align: right; }}
-.saving-row {{ display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid #334155; margin-top: 8px; }}
-.saving-label {{ font-size: 12px; color: #94a3b8; }}
+.race-label {{ font-size: 11px; color: {t.text_secondary}; margin-bottom: 4px; }}
+.race-track {{ height: 22px; background: {t.bg_primary}; border-radius: 4px; overflow: hidden; }}
+.race-fill {{ height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 600; color: {t.bg_primary}; transition: width 1s ease; }}
+.race-fill.raw {{ background: {bar_raw}; }}
+.race-fill.comp {{ background: {bar_comp}; }}
+.race-time {{ font-size: 12px; color: {t.text_secondary}; margin-top: 2px; text-align: right; }}
+.saving-row {{ display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid {t.border}; margin-top: 8px; }}
+.saving-label {{ font-size: 12px; color: {t.text_secondary}; }}
 .saving-value {{ font-size: 14px; font-weight: 700; }}
-.saving-value.positive {{ color: #22c55e; }}
-.saving-value.negative {{ color: #ef4444; }}
-.bandwidth {{ font-size: 11px; color: #64748b; margin-top: 2px; }}
-.summary {{ margin-top: 28px; background: #1e293b; border-radius: 10px; padding: 20px; max-width: 900px; }}
+.saving-value.positive {{ color: {saving_pos}; }}
+.saving-value.negative {{ color: {bar_raw}; }}
+.bandwidth {{ font-size: 11px; color: {t.text_muted}; margin-top: 2px; }}
+.summary {{ margin-top: 28px; background: {t.bg_surface}; border-radius: 10px; padding: 20px; max-width: 900px; }}
 .summary h2 {{ font-size: 16px; margin-bottom: 12px; }}
-.summary p {{ font-size: 13px; color: #94a3b8; line-height: 1.8; }}
-.summary .highlight {{ color: #38bdf8; font-weight: 600; }}
+.summary p {{ font-size: 13px; color: {t.text_secondary}; line-height: 1.8; }}
+.summary .highlight {{ color: {t.accent}; font-weight: 600; }}
 </style>
 </head>
 <body>

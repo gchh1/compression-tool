@@ -6,27 +6,29 @@ import tempfile
 import webbrowser
 from pathlib import Path
 
+from PyQt6.QtGui import QColor
+from gui.config.theme import ThemeManager
+
 logger = logging.getLogger(__name__)
 
 
-def _ratio_to_color(ratio: float) -> str:
-    if ratio <= 0.05:
-        return "#22c55e"
-    if ratio <= 0.2:
-        r = int(34 + (ratio / 0.2) * (234 - 34))
-        g = int(197 - (ratio / 0.2) * (197 - 179))
-        b = int(94 - (ratio / 0.2) * (94 - 8))
-        return f"rgb({r},{g},{b})"
+def _ratio_to_color(ratio: float, t=None) -> str:
+    """Interpolate between theme heatmap_low → mid → high based on *ratio*."""
+    if t is None:
+        t = ThemeManager.get()
+    low = QColor(ThemeManager.resolve_hex("heatmap_low"))
+    mid = QColor(ThemeManager.resolve_hex("heatmap_mid"))
+    high = QColor(ThemeManager.resolve_hex("heatmap_high"))
     if ratio <= 0.5:
-        t = (ratio - 0.2) / 0.3
-        r = int(234 + t * (239 - 234))
-        g = int(179 - t * (179 - 68))
-        b = int(8 + t * (68 - 8))
-        return f"rgb({r},{g},{b})"
-    t = min((ratio - 0.5) / 0.5, 1.0)
-    r = int(239 + t * (220 - 239))
-    g = int(68 - t * (68 - 38))
-    b = int(68 + t * (38 - 68))
+        f = ratio / 0.5
+        r = int(low.red() + (mid.red() - low.red()) * f)
+        g = int(low.green() + (mid.green() - low.green()) * f)
+        b = int(low.blue() + (mid.blue() - low.blue()) * f)
+    else:
+        f = min((ratio - 0.5) / 0.5, 1.0)
+        r = int(mid.red() + (high.red() - mid.red()) * f)
+        g = int(mid.green() + (high.green() - mid.green()) * f)
+        b = int(mid.blue() + (high.blue() - mid.blue()) * f)
     return f"rgb({r},{g},{b})"
 
 
@@ -78,6 +80,11 @@ def generate_heatmap(
 
     ratio_pct = f"{compressed_size / original_size * 100:.1f}" if original_size else "0"
 
+    t = ThemeManager.get()
+    heat_low = ThemeManager.resolve_hex("heatmap_low")
+    heat_mid = ThemeManager.resolve_hex("heatmap_mid")
+    heat_high = ThemeManager.resolve_hex("heatmap_high")
+
     html = f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -85,23 +92,23 @@ def generate_heatmap(
 <title>压缩热力图 - {filename}</title>
 <style>
 * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-body {{ font-family: "Microsoft YaHei", "Segoe UI", sans-serif; background: #0f172a; color: #e2e8f0; padding: 24px; }}
+body {{ font-family: "Microsoft YaHei", "Segoe UI", sans-serif; background: {t.bg_primary}; color: {t.text_primary}; padding: 24px; }}
 h1 {{ font-size: 20px; margin-bottom: 8px; }}
-.meta {{ color: #94a3b8; font-size: 13px; margin-bottom: 20px; }}
-.legend {{ display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-size: 12px; color: #94a3b8; }}
-.legend-bar {{ width: 200px; height: 12px; border-radius: 6px; background: linear-gradient(to right, #22c55e, #eab308, #ef4444); }}
+.meta {{ color: {t.text_secondary}; font-size: 13px; margin-bottom: 20px; }}
+.legend {{ display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-size: 12px; color: {t.text_secondary}; }}
+.legend-bar {{ width: 200px; height: 12px; border-radius: 6px; background: linear-gradient(to right, {heat_low}, {heat_mid}, {heat_high}); }}
 .heatmap {{ display: flex; flex-wrap: wrap; gap: 2px; max-width: 900px; }}
 .block {{ width: 20px; height: 20px; border-radius: 2px; cursor: pointer; transition: transform 0.1s; position: relative; }}
 .block:hover {{ transform: scale(1.8); z-index: 10; box-shadow: 0 0 8px rgba(255,255,255,0.3); }}
-.tooltip {{ display: none; position: fixed; background: #1e293b; border: 1px solid #475569; border-radius: 6px; padding: 10px 14px; font-size: 12px; z-index: 100; pointer-events: none; box-shadow: 0 4px 12px rgba(0,0,0,0.4); min-width: 180px; }}
+.tooltip {{ display: none; position: fixed; background: {t.bg_surface}; border: 1px solid {t.border_dark}; border-radius: 6px; padding: 10px 14px; font-size: 12px; z-index: 100; pointer-events: none; box-shadow: 0 4px 12px rgba(0,0,0,0.4); min-width: 180px; }}
 .tooltip.visible {{ display: block; }}
 .tooltip > div {{ display: flex; justify-content: space-between; gap: 12px; line-height: 1.8; }}
-.tooltip .label {{ color: #94a3b8; }}
-.tooltip .value {{ color: #f1f5f9; font-weight: 600; white-space: nowrap; }}
+.tooltip .label {{ color: {t.text_secondary}; }}
+.tooltip .value {{ color: {t.text_primary}; font-weight: 600; white-space: nowrap; }}
 .stats {{ margin-top: 24px; display: flex; gap: 24px; }}
-.stat {{ background: #1e293b; border-radius: 8px; padding: 16px 20px; }}
-.stat .num {{ font-size: 24px; font-weight: 700; color: #38bdf8; }}
-.stat .desc {{ font-size: 12px; color: #94a3b8; margin-top: 4px; }}
+.stat {{ background: {t.bg_surface}; border-radius: {t.border_radius_lg}px; padding: 16px 20px; }}
+.stat .num {{ font-size: 24px; font-weight: 700; color: {t.accent}; }}
+.stat .desc {{ font-size: 12px; color: {t.text_secondary}; margin-top: 4px; }}
 </style>
 </head>
 <body>

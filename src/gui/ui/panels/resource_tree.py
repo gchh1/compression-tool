@@ -27,13 +27,14 @@ class ResourceTree(QWidget):
         super().__init__(parent)
         self._records: dict[str, object] = {}  # path → Record
         self._setup_ui()
+        ThemeManager().theme_changed.connect(self._on_theme_changed)
 
     def _setup_ui(self) -> None:
         layout = QVBoxLayout(self)
         layout.setContentsMargins(4, 4, 4, 4)
 
         header = QLabel("资源列表")
-        header.setStyleSheet("font-weight: bold; padding: 4px; font-size: 13px;")
+        header.setStyleSheet(f"font-weight: bold; padding: 4px; font-size: 13px; color: {ThemeManager.hex('text_primary')};")
         layout.addWidget(header)
 
         self._tree = QTreeWidget()
@@ -54,6 +55,11 @@ class ResourceTree(QWidget):
         self._count_label = QLabel("")
         self._count_label.setStyleSheet(f"color: {ThemeManager.hex('text_muted')}; font-size: 11px; padding: 2px;")
         layout.addWidget(self._count_label)
+
+    def _on_theme_changed(self):
+        self._count_label.setStyleSheet(
+            f"color: {ThemeManager.hex('text_muted')}; font-size: 11px; padding: 2px;"
+        )
 
     def load_records(self, records: list) -> None:
         """Populate tree from FileRecord/FolderRecord list."""
@@ -264,6 +270,6 @@ class ResourceTree(QWidget):
         if data is rec:
             if rec.status.value == "done":
                 item.setText(1, f"{formatted_size(rec.size)} → {formatted_size(compressed_payload_size(rec))}")
-                item.setForeground(1, Qt.GlobalColor.darkGreen)
+                item.setForeground(1, ThemeManager.color("status_success"))
         for i in range(item.childCount()):
             self._update_item_recursive(item.child(i), rec)

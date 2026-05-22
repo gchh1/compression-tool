@@ -85,11 +85,11 @@ class NetworkSimDialog(QDialog):
             hdr.addWidget(title_lbl)
             hdr.addStretch()
             badge = QLabel("\u2705 值得压缩" if p["worth_it"] else "\u2717 不值得")
-            badge_color = "#166534" if p["worth_it"] else "#7f1d1d"
-            badge_fg = "#86efac" if p["worth_it"] else "#fca5a5"
+            badge_bg = ThemeManager.resolve_hex("net_badge_good_bg") if p["worth_it"] else ThemeManager.resolve_hex("net_badge_bad_bg")
+            badge_fg = ThemeManager.resolve_hex("net_badge_good_fg") if p["worth_it"] else ThemeManager.resolve_hex("net_badge_bad_fg")
             badge.setStyleSheet(
                 f"font-size: 11px; padding: 3px 10px; border-radius: 12px; font-weight: 600; "
-                f"background: {badge_color}; color: {badge_fg};"
+                f"background: {badge_bg}; color: {badge_fg};"
             )
             hdr.addWidget(badge)
             cl.addLayout(hdr)
@@ -111,7 +111,7 @@ class NetworkSimDialog(QDialog):
                 bar.setValue(pct)
                 bar.setTextVisible(True)
                 bar.setFormat(_format_time_ns(p["t_raw"] if not is_comp else p["t_comp"]))
-                c = "#ef4444" if not is_comp else "#22c55e"
+                c = ThemeManager.resolve_hex("net_bar_raw") if not is_comp else ThemeManager.resolve_hex("net_bar_compressed")
                 bar.setStyleSheet(bar.styleSheet() +
                     f"QProgressBar::chunk {{ background: {c}; border-radius: 3px; }}")
                 cl.addWidget(bar)
@@ -122,7 +122,7 @@ class NetworkSimDialog(QDialog):
             saving_row.addWidget(QLabel("传输节省"))
             saving_row.addStretch()
             sv = QLabel(f"+{_format_time_ns(saving_val)} ({saving_val/max_t_raw*100:.1f}%)")
-            sv.setStyleSheet(f"font-size: 13px; font-weight: 700; color: #22c55e; background: transparent;")
+            sv.setStyleSheet(f"font-size: 13px; font-weight: 700; color: {ThemeManager.resolve_hex('net_saving_value')}; background: transparent;")
             saving_row.addWidget(sv)
             cl.addLayout(saving_row)
 
@@ -130,7 +130,8 @@ class NetworkSimDialog(QDialog):
             net_row.addWidget(QLabel("净节省（扣除压缩耗时）"))
             net_row.addStretch()
             nv = QLabel(f"{'+' if net_val > 0 else '-'}{_format_time_ns(abs(net_val))}")
-            nv_css = f"font-size: 13px; font-weight: 700; color: {'#22c55e' if net_val > 0 else '#ef4444'}; background: transparent;"
+            nv_c = ThemeManager.resolve_hex("net_saving_value") if net_val > 0 else ThemeManager.resolve_hex("net_bar_raw")
+            nv_css = f"font-size: 13px; font-weight: 700; color: {nv_c}; background: transparent;"
             nv.setStyleSheet(nv_css)
             net_row.addWidget(nv)
             cl.addLayout(net_row)

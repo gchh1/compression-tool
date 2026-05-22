@@ -7,6 +7,9 @@ import webbrowser
 from pathlib import Path
 from html.parser import HTMLParser
 
+from PyQt6.QtGui import QColor
+from gui.config.theme import ThemeManager
+
 logger = logging.getLogger(__name__)
 
 
@@ -38,18 +41,20 @@ _RESOURCE_TAGS = {
 
 
 def _ratio_to_color(ratio: float) -> str:
-    if ratio <= 0.3:
-        return "#22c55e"
-    if ratio <= 0.6:
-        t = (ratio - 0.3) / 0.3
-        r = int(34 + t * (234 - 34))
-        g = int(197 - t * (197 - 179))
-        b = int(94 - t * (94 - 8))
-        return f"rgb({r},{g},{b})"
-    t = min((ratio - 0.6) / 0.4, 1.0)
-    r = int(234 + t * (220 - 234))
-    g = int(179 - t * (179 - 38))
-    b = int(8 + t * (38 - 8))
+    """Interpolate between theme heatmap_low → mid → high based on *ratio*."""
+    low = QColor(ThemeManager.resolve_hex("heatmap_low"))
+    mid = QColor(ThemeManager.resolve_hex("heatmap_mid"))
+    high = QColor(ThemeManager.resolve_hex("heatmap_high"))
+    if ratio <= 0.5:
+        f = ratio / 0.5
+        r = int(low.red() + (mid.red() - low.red()) * f)
+        g = int(low.green() + (mid.green() - low.green()) * f)
+        b = int(low.blue() + (mid.blue() - low.blue()) * f)
+    else:
+        f = min((ratio - 0.5) / 0.5, 1.0)
+        r = int(mid.red() + (high.red() - mid.red()) * f)
+        g = int(mid.green() + (high.green() - mid.green()) * f)
+        b = int(mid.blue() + (high.blue() - mid.blue()) * f)
     return f"rgb({r},{g},{b})"
 
 
@@ -191,59 +196,70 @@ def generate_webpage_heatmap(
 </style>
 """
 
-    inject_js = """
+    t = ThemeManager.get()
+    t_bg = t.bg_primary
+    t_surface = t.bg_surface
+    t_border = t.border
+    t_text = t.text_primary
+    t_secondary = t.text_secondary
+    t_muted = t.text_muted
+    t_accent = t.accent
+    heat_low = ThemeManager.resolve_hex("heatmap_low")
+    heat_high = ThemeManager.resolve_hex("heatmap_high")
+
+    inject_js = f"""
 <script id="wcx-heatmap-js">
-(function() {
+(function() {{
   const badges = document.querySelectorAll('.wcx-heatmap-badge');
-  badges.forEach(b => {
-    b.addEventListener('mouseenter', function() {
+  badges.forEach(b => {{
+    b.addEventListener('mouseenter', function() {{
       this.style.transform = 'scale(1.2)';
       this.style.zIndex = '10001';
-    });
-    b.addEventListener('mouseleave', function() {
+    }});
+    b.addEventListener('mouseleave', function() {{
       this.style.transform = '';
       this.style.zIndex = '10000';
-    });
-  });
+    }});
+  }});
 
   const panel = document.createElement('div');
   panel.id = 'wcx-panel';
   panel.innerHTML = `
-    <div style="position:fixed;bottom:16px;right:16px;background:#0f172a;border:1px solid #334155;
+    <div style="position:fixed;bottom:16px;right:16px;background:{t_bg};border:1px solid {t_border};
                 border-radius:12px;padding:16px 20px;font-family:'Microsoft YaHei',sans-serif;
-                color:#e2e8f0;font-size:13px;z-index:99999;box-shadow:0 8px 32px rgba(0,0,0,0.5);
+                color:{t_text};font-size:13px;z-index:99999;box-shadow:0 8px 32px rgba(0,0,0,0.5);
                 min-width:280px;max-width:400px;">
       <div style="font-size:16px;font-weight:700;margin-bottom:8px;">🔥 网页资源压缩热力图</div>
-      <div style="color:#94a3b8;font-size:11px;margin-bottom:12px;">标注资源: __COUNT__ 个</div>
+      <div style="color:{t_secondary};font-size:11px;margin-bottom:12px;">标注资源: __COUNT__ 个</div>
       <div style="display:flex;gap:8px;margin-bottom:8px;">
-        <div style="background:#1e293b;border-radius:6px;padding:8px 12px;flex:1;text-align:center;">
-          <div style="font-size:18px;font-weight:700;color:#38bdf8;">__TOTAL_ORIG__</div>
-          <div style="font-size:10px;color:#94a3b8;">原始大小</div>
+        <div style="background:{t_surface};border-radius:6px;padding:8px 12px;flex:1;text-align:center;">
+          <div style="font-size:18px;font-weight:700;color:{t_accent};">__TOTAL_ORIG__</div>
+          <div style="font-size:10px;color:{t_secondary};">原始大小</div>
         </div>
-        <div style="background:#1e293b;border-radius:6px;padding:8px 12px;flex:1;text-align:center;">
-          <div style="font-size:18px;font-weight:700;color:#38bdf8;">__TOTAL_COMP__</div>
-          <div style="font-size:10px;color:#94a3b8;">压缩后</div>
+        <div style="background:{t_surface};border-radius:6px;padding:8px 12px;flex:1;text-align:center;">
+          <div style="font-size:18px;font-weight:700;color:{t_accent};">__TOTAL_COMP__</div>
+          <div style="font-size:10px;color:{t_secondary};">压缩后</div>
         </div>
-        <div style="background:#1e293b;border-radius:6px;padding:8px 12px;flex:1;text-align:center;">
-          <div style="font-size:18px;font-weight:700;color:#38bdf8;">__TOTAL_RATIO__</div>
-          <div style="font-size:10px;color:#94a3b8;">总压缩率</div>
+        <div style="background:{t_surface};border-radius:6px;padding:8px 12px;flex:1;text-align:center;">
+          <div style="font-size:18px;font-weight:700;color:{t_accent};">__TOTAL_RATIO__</div>
+          <div style="font-size:10px;color:{t_secondary};">总压缩率</div>
         </div>
       </div>
       <div style="display:flex;gap:8px;">
-        <div style="background:#1e293b;border-radius:6px;padding:6px 10px;flex:1;text-align:center;">
-          <span style="color:#22c55e;">🟢 最优</span>
-          <div style="font-size:12px;font-weight:600;color:#22c55e;">__BEST__</div>
+        <div style="background:{t_surface};border-radius:6px;padding:6px 10px;flex:1;text-align:center;">
+          <span style="color:{heat_low};">🟢 最优</span>
+          <div style="font-size:12px;font-weight:600;color:{heat_low};">__BEST__</div>
         </div>
-        <div style="background:#1e293b;border-radius:6px;padding:6px 10px;flex:1;text-align:center;">
-          <span style="color:#ef4444;">🔴 最差</span>
-          <div style="font-size:12px;font-weight:600;color:#ef4444;">__WORST__</div>
+        <div style="background:{t_surface};border-radius:6px;padding:6px 10px;flex:1;text-align:center;">
+          <span style="color:{heat_high};">🔴 最差</span>
+          <div style="font-size:12px;font-weight:600;color:{heat_high};">__WORST__</div>
         </div>
       </div>
-      <div style="margin-top:8px;color:#64748b;font-size:10px;">图例: 🟢高效 🟡中等 🔴低效 | 资源边框颜色=压缩热力</div>
+      <div style="margin-top:8px;color:{t_muted};font-size:10px;">图例: 🟢高效 🟡中等 🔴低效 | 资源边框颜色=压缩热力</div>
     </div>
   `;
   document.body.appendChild(panel);
-})();
+}})();
 </script>
 """
 

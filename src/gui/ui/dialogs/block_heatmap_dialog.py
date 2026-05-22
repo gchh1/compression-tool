@@ -54,7 +54,7 @@ class BlockHeatmapCanvas(QWidget):
             if i == self._hover_idx:
                 rect = QRectF(x - 2, y - 2, self._cell_size + 4, self._cell_size + 4)
                 painter.setBrush(QBrush(color))
-                pen = QPen(QColor(255, 255, 255, 180), 2)
+                pen = QPen(ThemeManager.resolve_color("text_primary", alpha=179), 2)
                 painter.setPen(pen)
                 painter.drawRoundedRect(rect, 4, 4)
             else:
@@ -168,7 +168,14 @@ class BlockHeatmapDialog(QDialog):
         grad_w = QWidget()
         grad_w.setFixedWidth(200)
         grad_w.setFixedHeight(12)
-        grad_w.setStyleSheet("background: qlineargradient(x1:0,y1:0,x2:1,y2:0,stop:0 #22c55e,stop:0.5 #eab308,stop:1 #ef4444); border-radius: 6px;")
+        heat_low = ThemeManager.resolve_hex("heatmap_low")
+        heat_mid = ThemeManager.resolve_hex("heatmap_mid")
+        heat_high = ThemeManager.resolve_hex("heatmap_high")
+        grad_w.setStyleSheet(
+            f"background: qlineargradient(x1:0,y1:0,x2:1,y2:0,"
+            f"stop:0 {heat_low},stop:0.5 {heat_mid},stop:1 {heat_high}); "
+            f"border-radius: 6px;"
+        )
         legend_layout.addWidget(grad_w)
         legend_layout.addWidget(QLabel("低压缩"))
         legend_layout.addWidget(QLabel(f"  |  块大小: {block_size} B"))

@@ -36,31 +36,25 @@ logger = logging.getLogger(__name__)
 # ══════════════════════════════════════════════════════════════════════
 
 def _entropy_to_color(entropy: float) -> QColor:
-    e = max(0.0, min(8.0, entropy))
-    if e <= 2.0:
-        t = e / 2.0
-        return QColor.fromHslF((230.0 - t * 30.0) / 360.0,
-                               0.75 + t * 0.15,
-                               0.22 + t * 0.28)
-    if e <= 4.0:
-        t = (e - 2.0) / 2.0
-        return QColor.fromHslF((200.0 - t * 80.0) / 360.0,
-                               0.72 - t * 0.06,
-                               0.48 - t * 0.04)
-    if e <= 6.0:
-        t = (e - 4.0) / 2.0
-        return QColor.fromHslF((120.0 - t * 20.0) / 360.0,
-                               0.66 + t * 0.15,
-                               0.44 + t * 0.06)
-    if e <= 7.5:
-        t = (e - 6.0) / 1.5
-        return QColor.fromHslF((100.0 - t * 65.0) / 360.0,
-                               0.81 + t * 0.14,
-                               0.50 - t * 0.02)
-    t = (e - 7.5) / 0.5
-    return QColor.fromHslF((35.0 - t * 35.0) / 360.0,
-                           0.95 - t * 0.05,
-                           0.48 - t * 0.12)
+    """熵值 [0,8] → 颜色：低熵偏绿(heatmap_low)，高熵偏红(heatmap_high)。"""
+    t = max(0.0, min(1.0, entropy / 8.0))
+    low = ThemeManager.resolve_color("heatmap_low")
+    mid = ThemeManager.resolve_color("heatmap_mid")
+    high = ThemeManager.resolve_color("heatmap_high")
+    if t <= 0.5:
+        f = t / 0.5
+        return QColor(
+            int(low.red() + (mid.red() - low.red()) * f),
+            int(low.green() + (mid.green() - low.green()) * f),
+            int(low.blue() + (mid.blue() - low.blue()) * f),
+        )
+    else:
+        f = (t - 0.5) / 0.5
+        return QColor(
+            int(mid.red() + (high.red() - mid.red()) * f),
+            int(mid.green() + (high.green() - mid.green()) * f),
+            int(mid.blue() + (high.blue() - mid.blue()) * f),
+        )
 
 
 
@@ -148,7 +142,7 @@ class Tier1GlobalBar(QWidget):
 
             if i == self._selected_idx:
                 painter.setBrush(QBrush(color.lighter(130)))
-                painter.setPen(QPen(QColor(251, 191, 36), 2.5))
+                painter.setPen(QPen(ThemeManager.resolve_color("tier3_slider_stroke"), 2.5))
                 painter.drawRoundedRect(QRectF(x + 1, 2, seg_w - 1, h - 4), 6, 6)
             elif i == self._hover_idx:
                 painter.setBrush(QBrush(color.lighter(115)))
@@ -160,7 +154,7 @@ class Tier1GlobalBar(QWidget):
                 painter.drawRoundedRect(QRectF(x, 1, seg_w, h - 2), 6, 6)
 
             if seg_w > 60:
-                painter.setPen(QColor(255, 255, 255, 220))
+                painter.setPen(ThemeManager.resolve_color("text_primary", alpha=220))
                 fnt = QFont(painter.font())
                 fnt.setPointSize(9)
                 fnt.setBold(i == self._selected_idx)
@@ -286,16 +280,16 @@ class Tier2EntropyStrip(QWidget):
         s_left = max(0.0, slider_x - slider_w / 2)
         s_right = min(w, slider_x + slider_w / 2)
 
-        painter.setBrush(QColor(251, 191, 36, 40))
+        painter.setBrush(ThemeManager.resolve_color("tier3_slider_fill", alpha=40))
         painter.setPen(Qt.PenStyle.NoPen)
         painter.drawRoundedRect(QRectF(s_left, strip_top, s_right - s_left, strip_h), 4, 4)
 
-        painter.setPen(QPen(QColor(251, 191, 36, 180), 2.0))
+        painter.setPen(QPen(ThemeManager.resolve_color("tier3_slider_stroke", alpha=180), 2.0))
         painter.drawLine(int(slider_x), strip_top, int(slider_x), strip_top + strip_h)
 
         pin_r = 6.0
-        painter.setBrush(QColor(251, 191, 36))
-        painter.setPen(QPen(QColor(0, 0, 0, 60), 1))
+        painter.setBrush(ThemeManager.resolve_color("tier3_slider_pin"))
+        painter.setPen(QPen(ThemeManager.resolve_color("tier3_pin_shadow", alpha=60), 1))
         painter.drawEllipse(QRectF(slider_x - pin_r, strip_top - pin_r, pin_r * 2, pin_r * 2))
 
         # Readout
@@ -483,9 +477,15 @@ class Tier3VizWidget(QWidget):
             row, col = divmod(i, cols)
             x = start_x + col * cell_w
             y = start_y + row * cell_h
-            # Color: map byte value to grayscale (0=black, 255=white)
-            v = int(255 - b) if b <= 127 else b
-            c = QColor(v, v, v)
+            # Color: map byte value to grayscale using theme endpoints
+            t_byte = b / 255.0
+            dark = ThemeManager.resolve_color("bg_primary")
+            light = ThemeManager.resolve_color("text_primary")
+            c = QColor(
+                int(dark.red() + (light.red() - dark.red()) * t_byte),
+                int(dark.green() + (light.green() - dark.green()) * t_byte),
+                int(dark.blue() + (light.blue() - dark.blue()) * t_byte),
+            )
             painter.setBrush(c)
             painter.setPen(Qt.PenStyle.NoPen)
             painter.drawRoundedRect(QRectF(x + 1, y + 1, cell_w - 2, cell_h - 2), 2, 2)

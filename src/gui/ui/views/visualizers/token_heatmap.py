@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import colorsys
-
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QFont, QTextCharFormat, QTextCursor, QBrush
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPlainTextEdit
@@ -13,19 +11,34 @@ from gui.engine.token_parser import Token, TokenType
 
 
 def ratio_to_qcolor(ratio: float) -> QColor:
-    """压缩率(压缩字节/原始字节) → 色相：好(低)偏绿，差(高)偏红。LZ 演示/热力图/算法对比条共用。"""
-    r = max(0.0, min(ratio, 1.5))
-    hue = max(0.0, 120.0 * (1.0 - r / 1.5))
-    sat = 0.85 - 0.15 * (r / 1.5)
-    val = 0.95 - 0.25 * (r / 1.5)
-    rgb = colorsys.hsv_to_rgb(hue / 360.0, sat, val)
-    return QColor(int(rgb[0] * 255), int(rgb[1] * 255), int(rgb[2] * 255))
+    """压缩率 → 色相：好(低)偏绿，差(高)偏红。使用主题 heatmap_low→mid→high 插值。"""
+    t = max(0.0, min(1.0, ratio / 1.5))
+    low = ThemeManager.resolve_color("heatmap_low")
+    mid = ThemeManager.resolve_color("heatmap_mid")
+    high = ThemeManager.resolve_color("heatmap_high")
+    if t <= 0.5:
+        f = t / 0.5
+        r = int(low.red() + (mid.red() - low.red()) * f)
+        g = int(low.green() + (mid.green() - low.green()) * f)
+        b = int(low.blue() + (mid.blue() - low.blue()) * f)
+    else:
+        f = (t - 0.5) / 0.5
+        r = int(mid.red() + (high.red() - mid.red()) * f)
+        g = int(mid.green() + (high.green() - mid.green()) * f)
+        b = int(mid.blue() + (high.blue() - mid.blue()) * f)
+    return QColor(r, g, b)
 
 
 def ratio_to_gray(ratio: float) -> QColor:
-    r = max(0.0, min(ratio, 1.5))
-    v = int(240 - 180 * (r / 1.5))
-    return QColor(v, v, v)
+    """压缩率 → 灰度：使用主题色插值（色盲友好模式）。"""
+    t = max(0.0, min(1.0, ratio / 1.5))
+    light = ThemeManager.resolve_color("text_primary")
+    dark = ThemeManager.resolve_color("bg_primary")
+    return QColor(
+        int(light.red() + (dark.red() - light.red()) * t),
+        int(light.green() + (dark.green() - light.green()) * t),
+        int(light.blue() + (dark.blue() - light.blue()) * t),
+    )
 
 
 class TokenHeatmapWidget(QPlainTextEdit):

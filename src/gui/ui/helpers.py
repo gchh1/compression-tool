@@ -9,13 +9,13 @@ from gui.config.theme import ThemeManager
 
 def create_bold_label(text: str) -> QLabel:
     label = QLabel(text)
-    label.setStyleSheet("font-weight: bold")
+    label.setStyleSheet(f"font-weight: bold; color: {ThemeManager.hex('text_primary')}")
     return label
 
 
 def create_italic_label(text: str) -> QLabel:
     label = QLabel(text)
-    label.setStyleSheet("font-style: italic")
+    label.setStyleSheet(f"font-style: italic; color: {ThemeManager.hex('text_primary')}")
     return label
 
 

@@ -8,6 +8,7 @@ from functools import partial
 from pathlib import Path
 
 from PyQt6.QtCore import Qt, QMimeData, QUrl, QThread, QTimer, pyqtSignal
+from PyQt6.QtGui import QValidator
 from PyQt6.QtGui import QAction, QDragEnterEvent, QDropEvent, QBrush, QColor, QCloseEvent
 from PyQt6.QtWidgets import (
     QMainWindow, QFileDialog, QMessageBox, QToolBar, QWidget,
@@ -82,6 +83,7 @@ class StatusBarWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._setup_ui()
+        ThemeManager().theme_changed.connect(self._on_theme_changed)
 
     def _setup_ui(self) -> None:
         layout = QHBoxLayout(self)
@@ -107,10 +109,14 @@ class StatusBarWidget(QWidget):
         self.set_status_text("就绪")
         self.set_progress_value(0)
 
-    def refresh_theme(self):
+    def _on_theme_changed(self):
         from gui.config.theme import ThemeManager
         t = ThemeManager.get()
         self._status_label.setStyleSheet(f"color: {t.text_secondary}; font-size: 12px;")
+
+    # kept for backward compatibility
+    def refresh_theme(self):
+        self._on_theme_changed()
 
 
 # ============================================================
@@ -165,13 +171,15 @@ class ThemeConfigDialog(QDialog):
         self._update_preview()
 
     def _setup_ui(self) -> None:
+        from gui.config.theme import ThemeManager, THEME_FIELDS, LABELS_CN
+
         root = QVBoxLayout(self)
         body = QWidget()
         root.addWidget(body, 1)
         layout = QHBoxLayout(body)
-        
+
         try:
-            from gui.config.theme import ThemeManager, THEME_FIELDS, LABELS_CN
+            self.setStyleSheet(ThemeManager.full_dialog_sheet())
             from gui.config.settings import get_theme_config
             from PyQt6.QtWidgets import QColorDialog, QFormLayout, QScrollArea, QGroupBox, QTableWidget, QTableWidgetItem, QHeaderView
             from PyQt6.QtGui import QColor, QBrush
@@ -227,7 +235,7 @@ class ThemeConfigDialog(QDialog):
                     color_val = self._current_theme_dict[field_name]
                     if not str(color_val).startswith("#"): color_val = "#" + str(color_val)
                     
-                    color_btn.setStyleSheet(f"background: {color_val}; border: 1px solid gray; border-radius: 4px;")
+                    color_btn.setStyleSheet(f"background: {color_val}; border: 1px solid {ThemeManager.hex('border')}; border-radius: 4px;")
                     color_btn.setToolTip(f"点击选择颜色: {label_cn}")
                     color_btn.clicked.connect(lambda checked, f=field_name: self._pick_color(f))
                     self._color_buttons[field_name] = color_btn
@@ -324,7 +332,7 @@ class ThemeConfigDialog(QDialog):
         except Exception as e:
             logger.error("[ThemeConfigDialog] _setup_ui failed: %s", e, exc_info=True)
             error_label = QLabel(f"初始化主题配置对话框失败:\\n{e}")
-            error_label.setStyleSheet("color: red; padding: 20px;")
+            error_label.setStyleSheet(f"color: {ThemeManager.hex('status_error')}; padding: 20px;")
             layout.addWidget(error_label)
 
         btn_layout = QHBoxLayout()
@@ -351,7 +359,7 @@ class ThemeConfigDialog(QDialog):
         self._current_theme_dict[field_name] = hex_val
         btn = self._color_buttons.get(field_name)
         if btn:
-            btn.setStyleSheet(f"background: {hex_val}; border: 1px solid gray; border-radius: 4px;")
+            btn.setStyleSheet(f"background: {hex_val}; border: 1px solid {ThemeManager.hex('border')}; border-radius: 4px;")
         hex_label = getattr(self, f"_theme_hex_{field_name}", None)
         if hex_label:
             hex_label.setText(hex_val.upper())
@@ -427,6 +435,7 @@ class DecisionEngineManagerDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle("决策引擎管理")
         self.setMinimumSize(700, 550)
+        self.setStyleSheet(ThemeManager.full_dialog_sheet())
         self._setup_ui()
         try:
             self._refresh()
@@ -609,7 +618,7 @@ class DecisionEngineManagerDialog(QDialog):
 
         placeholder = QLabel("(训练数据详细查看功能开发中...)")
         placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        placeholder.setStyleSheet("color: #888; font-size: 13px;")
+        placeholder.setStyleSheet(f"color: {ThemeManager.hex('text_muted')}; font-size: 13px;")
         layout.addWidget(placeholder)
 
     def _build_config_tab(self, tab):
@@ -675,7 +684,7 @@ class DecisionEngineManagerDialog(QDialog):
         action_layout.addWidget(train_btn)
 
         placeholder = QLabel("更多功能（模型训练、数据导出、参数调优）将在后续版本实现")
-        placeholder.setStyleSheet("color: #888; font-size: 12px; padding: 8px;")
+        placeholder.setStyleSheet(f"color: {ThemeManager.hex('text_muted')}; font-size: 12px; padding: 8px;")
         action_layout.addWidget(placeholder)
         layout.addWidget(action_group)
 
@@ -779,7 +788,7 @@ class MinMatchWidget(QWidget):
         super().__init__(parent)
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        self.spin = QSpinBox()
+        self.spin = _ParamSpinBox()
         self.spin.setMinimum(max(1, p.min_val))
         self.spin.setMaximum(p.max_val)
         self.spin.setSingleStep(p.step)
@@ -813,11 +822,52 @@ class MinMatchWidget(QWidget):
             self.spin.setEnabled(True)
 
 
+class _ParamSpinBox(QSpinBox):
+    """QSpinBox that accepts any integer within range regardless of singleStep.
+
+    Overrides ``validate``, ``valueFromText``, and ``fixup`` so that typing an
+    arbitrary integer always commits correctly on focus-loss / apply, without
+    snapping to ``singleStep`` or reverting to the previous value.
+    """
+
+    def validate(self, text: str, pos: int):
+        # Qt may include prefix/suffix in the text passed to validate.
+        # Strip anything that is not a digit or leading minus.
+        import re
+        clean = re.sub(r'[^0-9\-]', '', text)
+        if clean in ("", "-"):
+            return (QValidator.State.Intermediate, text, pos)
+        try:
+            v = int(clean)
+        except ValueError:
+            return (QValidator.State.Invalid, text, pos)
+        if v < self.minimum() or v > self.maximum():
+            return (QValidator.State.Intermediate, text, pos)
+        return (QValidator.State.Acceptable, text, pos)
+
+    def valueFromText(self, text: str) -> int:
+        """Strip suffix / whitespace so the raw line-edit text parses cleanly."""
+        import re
+        digits = re.sub(r'[^0-9\-]', '', text)
+        if not digits or digits == '-':
+            return self.minimum()
+        try:
+            v = int(digits)
+        except ValueError:
+            return self.minimum()
+        return max(self.minimum(), min(self.maximum(), v))
+
+    def fixup(self, text: str) -> str:
+        """Never revert to the previous value; derive a valid value from *text*."""
+        v = self.valueFromText(text)
+        return str(v)
+
+
 class AlgorithmConfigDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("算法配置")
-        self.setMinimumSize(640, 520)
+        self.setMinimumSize(740, 680)
         self._spinboxes: dict[AlgorithmType, dict[str, QWidget]] = {}
         self._encoding_preview_labels: dict[AlgorithmType, QLabel] = {}
         self._streaming_threshold_spin: QDoubleSpinBox | None = None
@@ -826,12 +876,14 @@ class AlgorithmConfigDialog(QDialog):
         self._setup_ui()
 
     def _setup_ui(self) -> None:
+        from gui.config.theme import ThemeManager
+        from gui.config.settings import get_silent_explore_enabled, load_config as _cfg_for_ade
+
+        self.setStyleSheet(ThemeManager.full_dialog_sheet())
         root = QVBoxLayout(self)
         body = QWidget()
         root.addWidget(body, 1)
         layout = QVBoxLayout(body)
-        from gui.config.theme import ThemeManager
-        from gui.config.settings import get_silent_explore_enabled, load_config as _cfg_for_ade
 
         self._silent_explore_btn = _streaming_follow_toggle_button(
             "启用静默探索（后台对比压缩）",
@@ -893,9 +945,18 @@ class AlgorithmConfigDialog(QDialog):
                 tab = QWidget()
                 tab_outer = QVBoxLayout(tab)
                 tab_outer.setContentsMargins(0, 0, 0, 0)
+                tab_scroll = QScrollArea()
+                tab_scroll.setWidgetResizable(True)
+                tab_scroll.setFrameShape(QScrollArea.Shape.NoFrame)
+                tab_scroll_content = QWidget()
+                inner = QVBoxLayout(tab_scroll_content)
+                inner.setContentsMargins(0, 0, 0, 0)
                 form = QFormLayout()
                 form.setContentsMargins(12, 12, 12, 12)
-                tab_outer.addLayout(form)
+                form.setSpacing(8)
+                inner.addLayout(form)
+                tab_scroll.setWidget(tab_scroll_content)
+                tab_outer.addWidget(tab_scroll)
                 self._spinboxes[algo] = {}
 
                 cfg = current_config.get(algo, {})
@@ -919,7 +980,7 @@ class AlgorithmConfigDialog(QDialog):
                         form.addRow(f"{p.label}:", combo)
                         self._spinboxes[algo][p.key] = combo
                     else:
-                        spin = QSpinBox()
+                        spin = _ParamSpinBox()
                         spin.setMinimum(p.min_val)
                         spin.setMaximum(p.max_val)
                         spin.setSingleStep(p.step)
@@ -969,7 +1030,7 @@ class AlgorithmConfigDialog(QDialog):
                 thresh_sb.setEnabled(not follow_thresh)
                 sform.addRow("", follow_thresh_cb)
                 sform.addRow("本算法流式阈值:", thresh_sb)
-                tab_outer.addWidget(stream_gb)
+                inner.addWidget(stream_gb)
                 self._per_algo_stream_widgets[algo] = {
                     "follow": follow_cb,
                     "chunk": chunk_sb,
@@ -996,7 +1057,7 @@ class AlgorithmConfigDialog(QDialog):
                     )
                     gbl = QVBoxLayout(gb)
                     gbl.addWidget(prev)
-                    tab_outer.addWidget(gb)
+                    inner.addWidget(gb)
                     self._encoding_preview_labels[algo] = prev
 
                 tabs.addTab(tab, algo_labels.get(algo, algo.value))
@@ -1049,7 +1110,7 @@ class AlgorithmConfigDialog(QDialog):
 
             tabs.addTab(stream_tab, "流式设置")
 
-            layout.addWidget(tabs)
+            layout.addWidget(tabs, 1)
 
             for prev_algo in self._encoding_preview_labels:
                 self._refresh_encoding_preview(prev_algo)
@@ -1063,7 +1124,7 @@ class AlgorithmConfigDialog(QDialog):
                 if w is not None:
                     w.deleteLater()
             error_label = QLabel(f"初始化算法配置对话框失败:\n{e}")
-            error_label.setStyleSheet("color: red; padding: 20px;")
+            error_label.setStyleSheet(f"color: {ThemeManager.hex('status_error')}; padding: 20px;")
             layout.addWidget(error_label)
 
         btn_layout = QHBoxLayout()
@@ -1224,6 +1285,18 @@ class AlgorithmConfigDialog(QDialog):
     def _on_apply(self) -> None:
         from gui.engine.compressor import CompressionEngine
 
+        # Force all spinboxes to commit their current typed text before reading values.
+        for algo, widgets in self._spinboxes.items():
+            for key, widget in widgets.items():
+                if isinstance(widget, MinMatchWidget):
+                    widget.spin.interpretText()
+                elif isinstance(widget, (QSpinBox, QDoubleSpinBox)):
+                    widget.interpretText()
+        if self._streaming_threshold_spin:
+            self._streaming_threshold_spin.interpretText()
+        if self._streaming_chunk_spin:
+            self._streaming_chunk_spin.interpretText()
+
         config: dict[AlgorithmType, dict[str, int]] = {}
         for algo, widgets in self._spinboxes.items():
             config[algo] = {}
@@ -1333,6 +1406,7 @@ class MainWindow(QMainWindow):
             pass
 
         self.setStyleSheet(ThemeManager.main_window_sheet())
+        ThemeManager().theme_changed.connect(self._on_theme_changed)
         log_ui_flush(
             "main_window.ready",
             geometry=f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}",
@@ -1342,11 +1416,15 @@ class MainWindow(QMainWindow):
         log_ui_flush("main_window.closeEvent")
         super().closeEvent(event)
 
-    def refresh_theme(self):
+    def _on_theme_changed(self):
         self.setStyleSheet(ThemeManager.main_window_sheet())
         self._table.refresh_theme()
         if hasattr(self, '_statusbar'):
             self._statusbar.refresh_theme()
+
+    # kept for backward compatibility with any external callers
+    def refresh_theme(self):
+        self._on_theme_changed()
 
     # ========== 菜单设置 ==========
     def _setup_menu(self) -> None:
@@ -2300,8 +2378,7 @@ class MainWindow(QMainWindow):
     def _on_theme_config(self) -> None:
         logger.info("[main_window] opening ThemeConfigDialog")
         dlg = ThemeConfigDialog(self)
-        if dlg.exec() == QDialog.DialogCode.Accepted:
-            self.refresh_theme()
+        dlg.exec()
         logger.info("[main_window] ThemeConfigDialog closed")
 
     # ========== 视图：网页可视化 ==========
@@ -2839,6 +2916,7 @@ class FolderReportWidget(QWidget):
         self._populate_data()
 
     def _setup_ui(self):
+        self.setStyleSheet(ThemeManager.full_dialog_sheet())
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(24, 24, 24, 24)
         main_layout.setSpacing(16)

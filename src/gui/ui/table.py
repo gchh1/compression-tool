@@ -84,8 +84,14 @@ class FileTableWidget(QTreeWidget):
         self.itemChanged.connect(self._on_item_changed)
         self.itemExpanded.connect(self._on_item_expanded)
 
-    def refresh_theme(self):
+        ThemeManager().theme_changed.connect(self._on_theme_changed)
+
+    def _on_theme_changed(self):
         self.setStyleSheet(ThemeManager.table_sheet())
+
+    # kept for backward compatibility
+    def refresh_theme(self):
+        self._on_theme_changed()
 
     # ── Item creation ─────────────────────────────────────────────
 
@@ -104,7 +110,7 @@ class FileTableWidget(QTreeWidget):
         item = QTreeWidgetItem()
         item.setText(self.COL_NAME, record.name)
         item.setData(self.COL_NAME, self.Record_Role, record)
-        item.setForeground(self.COL_NAME, QBrush(Qt.GlobalColor.gray))
+        item.setForeground(self.COL_NAME, QBrush(ThemeManager.color("status_folder")))
         item.setText(self.COL_SIZE, "...")
         item.setText(self.COL_TYPE, "Folder")
         item.setText(self.COL_STATUS, CompressionStatus.PENDING.value)
@@ -125,7 +131,7 @@ class FileTableWidget(QTreeWidget):
         item.setText(self.COL_STATUS, "-")
         item.setText(self.COL_ALGORITHM, "-")
         item.setText(self.COL_RATIO, "-")
-        item.setForeground(self.COL_NAME, QBrush(Qt.GlobalColor.gray))
+        item.setForeground(self.COL_NAME, QBrush(ThemeManager.color("status_folder")))
         return item
 
     def _create_browse_item(self, entry) -> QTreeWidgetItem:
@@ -480,7 +486,7 @@ class FileTableWidget(QTreeWidget):
         if record:
             record.status = CompressionStatus.FAILED
         item.setText(self.COL_STATUS, CompressionStatus.FAILED.value)
-        item.setForeground(self.COL_STATUS, QBrush(Qt.GlobalColor.red))
+        item.setForeground(self.COL_STATUS, QBrush(ThemeManager.color("status_error")))
 
     def mark_error_record(self, record: Record) -> None:
         item = self.row_for_record(record)
@@ -489,7 +495,7 @@ class FileTableWidget(QTreeWidget):
             return
         record.status = CompressionStatus.FAILED
         item.setText(self.COL_STATUS, CompressionStatus.FAILED.value)
-        item.setForeground(self.COL_STATUS, QBrush(Qt.GlobalColor.red))
+        item.setForeground(self.COL_STATUS, QBrush(ThemeManager.color("status_error")))
         self._update_item(item)
 
     # ── Cleanup ───────────────────────────────────────────────────

@@ -82,7 +82,12 @@ class CompressionEngine:
     def _get_config_unlocked(cls) -> dict[AlgorithmType, dict[str, int]]:
         """Return live config dict; caller must hold ``_engine_op_lock``."""
         if cls._config is None:
-            cls._config = get_default_config()
+            try:
+                file_cfg = _load_app_config()
+                cls._config = _get_algo_from_file(file_cfg)
+                cls._streaming_threshold_mb = _get_threshold_from_file(file_cfg)
+            except Exception:
+                cls._config = get_default_config()
         return cls._config
 
     @classmethod
