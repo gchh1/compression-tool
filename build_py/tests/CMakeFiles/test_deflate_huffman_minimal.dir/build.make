@@ -93,6 +93,9 @@ test_deflate_huffman_minimal_EXTERNAL_OBJECTS =
 bin/test_deflate_huffman_minimal.exe: tests/CMakeFiles/test_deflate_huffman_minimal.dir/test_deflate_huffman_minimal.cpp.obj
 bin/test_deflate_huffman_minimal.exe: tests/CMakeFiles/test_deflate_huffman_minimal.dir/build.make
 bin/test_deflate_huffman_minimal.exe: src/algorithm_new/libalgorithm_new.a
+bin/test_deflate_huffman_minimal.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_deflate_huffman_minimal.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_deflate_huffman_minimal.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_deflate_huffman_minimal.exe: tests/CMakeFiles/test_deflate_huffman_minimal.dir/linkLibs.rsp
 bin/test_deflate_huffman_minimal.exe: tests/CMakeFiles/test_deflate_huffman_minimal.dir/objects1.rsp
 bin/test_deflate_huffman_minimal.exe: tests/CMakeFiles/test_deflate_huffman_minimal.dir/link.txt

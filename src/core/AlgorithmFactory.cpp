@@ -10,8 +10,7 @@
 #include "LZSS.hpp"
 #include "DPFlate.hpp"
 #include "DPFlateBin64kDebug.hpp"
-#include "ChunkedStreamAdapter.hpp"
-#include "StreamChunkPolicy.hpp"
+#include "StreamingAdapter.hpp"
 #include "Zstd.hpp"
 
 namespace compressor::core {
@@ -26,10 +25,10 @@ auto createAlgorithm(AlgorithmID id,
                      const DeflatePipelineParams* deflate_pipeline)
     -> std::unique_ptr<algorithm::IAlgorithm> {
     // Pipeline adapters from ChunkedStreamAdapter.hpp; short names keep the switch readable.
-    using SCA = processor::StreamingCompressAdapter;          // SCA: per-chunk compress + u32 length framing
-    using SDA = processor::StreamingDecompressAdapter;        // SDA: framed chunk decompress
+    using SCA = StreamingCompressAdapter;
+    using SDA = StreamingDecompressAdapter;
     const size_t sca_chunk =
-        processor::effective_stream_chunk_bytes(streaming_compress_chunk_bytes);
+        effective_stream_chunk_bytes(streaming_compress_chunk_bytes);
 
     switch (id) {
         case AlgorithmID::None:

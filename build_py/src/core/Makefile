@@ -366,29 +366,29 @@ ZstdCompressor.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core\CMakeFiles\core.dir\build.make src/core/CMakeFiles/core.dir/ZstdCompressor.cpp.s
 .PHONY : ZstdCompressor.cpp.s
 
-__/processor/ChunkedStreamAdapter.obj: __/processor/ChunkedStreamAdapter.cpp.obj
-.PHONY : __/processor/ChunkedStreamAdapter.obj
+__/core_new/StreamingAdapter.obj: __/core_new/StreamingAdapter.cpp.obj
+.PHONY : __/core_new/StreamingAdapter.obj
 
 # target to build an object file
-__/processor/ChunkedStreamAdapter.cpp.obj:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core\CMakeFiles\core.dir\build.make src/core/CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.obj
-.PHONY : __/processor/ChunkedStreamAdapter.cpp.obj
+__/core_new/StreamingAdapter.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core\CMakeFiles\core.dir\build.make src/core/CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.obj
+.PHONY : __/core_new/StreamingAdapter.cpp.obj
 
-__/processor/ChunkedStreamAdapter.i: __/processor/ChunkedStreamAdapter.cpp.i
-.PHONY : __/processor/ChunkedStreamAdapter.i
+__/core_new/StreamingAdapter.i: __/core_new/StreamingAdapter.cpp.i
+.PHONY : __/core_new/StreamingAdapter.i
 
 # target to preprocess a source file
-__/processor/ChunkedStreamAdapter.cpp.i:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core\CMakeFiles\core.dir\build.make src/core/CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.i
-.PHONY : __/processor/ChunkedStreamAdapter.cpp.i
+__/core_new/StreamingAdapter.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core\CMakeFiles\core.dir\build.make src/core/CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.i
+.PHONY : __/core_new/StreamingAdapter.cpp.i
 
-__/processor/ChunkedStreamAdapter.s: __/processor/ChunkedStreamAdapter.cpp.s
-.PHONY : __/processor/ChunkedStreamAdapter.s
+__/core_new/StreamingAdapter.s: __/core_new/StreamingAdapter.cpp.s
+.PHONY : __/core_new/StreamingAdapter.s
 
 # target to generate assembly for a file
-__/processor/ChunkedStreamAdapter.cpp.s:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core\CMakeFiles\core.dir\build.make src/core/CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.s
-.PHONY : __/processor/ChunkedStreamAdapter.cpp.s
+__/core_new/StreamingAdapter.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\core\CMakeFiles\core.dir\build.make src/core/CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.s
+.PHONY : __/core_new/StreamingAdapter.cpp.s
 
 # Help Target
 help:
@@ -427,9 +427,9 @@ help:
 	@echo ... ZstdCompressor.obj
 	@echo ... ZstdCompressor.i
 	@echo ... ZstdCompressor.s
-	@echo ... __/processor/ChunkedStreamAdapter.obj
-	@echo ... __/processor/ChunkedStreamAdapter.i
-	@echo ... __/processor/ChunkedStreamAdapter.s
+	@echo ... __/core_new/StreamingAdapter.obj
+	@echo ... __/core_new/StreamingAdapter.i
+	@echo ... __/core_new/StreamingAdapter.s
 .PHONY : help
 
 

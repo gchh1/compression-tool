@@ -595,6 +595,20 @@ test_algorithm_new_lzdp/fast:
 .PHONY : test_algorithm_new_lzdp/fast
 
 # Convenience name for target.
+tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/rule
+.PHONY : tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/rule
+
+# Convenience name for target.
+test_lzdp_imdb_gui_cfg: tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/rule
+.PHONY : test_lzdp_imdb_gui_cfg
+
+# fast build rule for target.
+test_lzdp_imdb_gui_cfg/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_imdb_gui_cfg.dir\build.make tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/build
+.PHONY : test_lzdp_imdb_gui_cfg/fast
+
+# Convenience name for target.
 tests/CMakeFiles/test_algorithm_new_phase1.dir/rule:
 	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_algorithm_new_phase1.dir/rule
 .PHONY : tests/CMakeFiles/test_algorithm_new_phase1.dir/rule
@@ -1327,6 +1341,30 @@ test_lzdp_dpflate_stream.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_dpflate_stream.dir\build.make tests/CMakeFiles/test_lzdp_dpflate_stream.dir/test_lzdp_dpflate_stream.cpp.s
 .PHONY : test_lzdp_dpflate_stream.cpp.s
 
+test_lzdp_imdb_gui_cfg.obj: test_lzdp_imdb_gui_cfg.cpp.obj
+.PHONY : test_lzdp_imdb_gui_cfg.obj
+
+# target to build an object file
+test_lzdp_imdb_gui_cfg.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_imdb_gui_cfg.dir\build.make tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/test_lzdp_imdb_gui_cfg.cpp.obj
+.PHONY : test_lzdp_imdb_gui_cfg.cpp.obj
+
+test_lzdp_imdb_gui_cfg.i: test_lzdp_imdb_gui_cfg.cpp.i
+.PHONY : test_lzdp_imdb_gui_cfg.i
+
+# target to preprocess a source file
+test_lzdp_imdb_gui_cfg.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_imdb_gui_cfg.dir\build.make tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/test_lzdp_imdb_gui_cfg.cpp.i
+.PHONY : test_lzdp_imdb_gui_cfg.cpp.i
+
+test_lzdp_imdb_gui_cfg.s: test_lzdp_imdb_gui_cfg.cpp.s
+.PHONY : test_lzdp_imdb_gui_cfg.s
+
+# target to generate assembly for a file
+test_lzdp_imdb_gui_cfg.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_imdb_gui_cfg.dir\build.make tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/test_lzdp_imdb_gui_cfg.cpp.s
+.PHONY : test_lzdp_imdb_gui_cfg.cpp.s
+
 test_lzdp_memory_flag.obj: test_lzdp_memory_flag.cpp.obj
 .PHONY : test_lzdp_memory_flag.obj
 
@@ -1772,6 +1810,7 @@ help:
 	@echo ... test_lzdp_debug
 	@echo ... test_lzdp_dpflate_regression
 	@echo ... test_lzdp_dpflate_stream
+	@echo ... test_lzdp_imdb_gui_cfg
 	@echo ... test_lzdp_memory_flag
 	@echo ... test_lzdp_memory_streaming_parity
 	@echo ... test_lzss_algorithm_new_matrix
@@ -1861,6 +1900,9 @@ help:
 	@echo ... test_lzdp_dpflate_stream.obj
 	@echo ... test_lzdp_dpflate_stream.i
 	@echo ... test_lzdp_dpflate_stream.s
+	@echo ... test_lzdp_imdb_gui_cfg.obj
+	@echo ... test_lzdp_imdb_gui_cfg.i
+	@echo ... test_lzdp_imdb_gui_cfg.s
 	@echo ... test_lzdp_memory_flag.obj
 	@echo ... test_lzdp_memory_flag.i
 	@echo ... test_lzdp_memory_flag.s

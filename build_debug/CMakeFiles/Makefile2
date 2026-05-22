@@ -366,6 +366,7 @@ tests/all: tests/CMakeFiles/test_regression_baseline.dir/all
 tests/all: tests/CMakeFiles/debug_dpflate.dir/all
 tests/all: tests/CMakeFiles/debug_token_trace.dir/all
 tests/all: tests/CMakeFiles/test_algorithm_new_lzdp.dir/all
+tests/all: tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/all
 tests/all: tests/CMakeFiles/test_algorithm_new_phase1.dir/all
 tests/all: tests/CMakeFiles/test_algorithm_new_phase2.dir/all
 tests/all: tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/all
@@ -415,6 +416,7 @@ tests/clean: tests/CMakeFiles/test_regression_baseline.dir/clean
 tests/clean: tests/CMakeFiles/debug_dpflate.dir/clean
 tests/clean: tests/CMakeFiles/debug_token_trace.dir/clean
 tests/clean: tests/CMakeFiles/test_algorithm_new_lzdp.dir/clean
+tests/clean: tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/clean
 tests/clean: tests/CMakeFiles/test_algorithm_new_phase1.dir/clean
 tests/clean: tests/CMakeFiles/test_algorithm_new_phase2.dir/clean
 tests/clean: tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/clean
@@ -463,12 +465,12 @@ src/algorithm/CMakeFiles/algorithm.dir/clean:
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all:
 	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\brotlicommon.dir\build.make _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\brotlicommon.dir\build.make _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=24,25,26,27 "Built target brotlicommon"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=24,25,26 "Built target brotlicommon"
 .PHONY : _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 
 # Build rule for subdir invocation for target.
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 3
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/rule
@@ -489,7 +491,7 @@ _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/clean:
 _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\brotlidec.dir\build.make _deps/google_brotli-build/CMakeFiles/brotlidec.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\brotlidec.dir\build.make _deps/google_brotli-build/CMakeFiles/brotlidec.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=28,29 "Built target brotlidec"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=27,28,29 "Built target brotlidec"
 .PHONY : _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
 
 # Build rule for subdir invocation for target.
@@ -520,7 +522,7 @@ _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all: _deps/google_brotli-buil
 
 # Build rule for subdir invocation for target.
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 15
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 14
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : _deps/google_brotli-build/CMakeFiles/brotlienc.dir/rule
@@ -1323,12 +1325,12 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/clean:
 src/core_new/CMakeFiles/core_new.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
 	$(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=46,47,48,49,50 "Built target core_new"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=46,47,48,49 "Built target core_new"
 .PHONY : src/core_new/CMakeFiles/core_new.dir/all
 
 # Build rule for subdir invocation for target.
 src/core_new/CMakeFiles/core_new.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 8
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 7
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/core_new/CMakeFiles/core_new.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : src/core_new/CMakeFiles/core_new.dir/rule
@@ -1355,7 +1357,7 @@ src/api_new/CMakeFiles/api_new.dir/all: src/core_new/CMakeFiles/core_new.dir/all
 
 # Build rule for subdir invocation for target.
 src/api_new/CMakeFiles/api_new.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 10
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 9
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/api_new/CMakeFiles/api_new.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : src/api_new/CMakeFiles/api_new.dir/rule
@@ -1472,7 +1474,7 @@ src/processor/CMakeFiles/processor.dir/all: _deps/google_brotli-build/CMakeFiles
 src/processor/CMakeFiles/processor.dir/all: src/core/CMakeFiles/core.dir/all
 	$(MAKE) $(MAKESILENT) -f src\processor\CMakeFiles\processor.dir\build.make src/processor/CMakeFiles/processor.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\processor\CMakeFiles\processor.dir\build.make src/processor/CMakeFiles/processor.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=54,55 "Built target processor"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=53,54 "Built target processor"
 .PHONY : src/processor/CMakeFiles/processor.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1524,7 +1526,7 @@ src/ade/CMakeFiles/ade.dir/clean:
 src/ade/CMakeFiles/test_ade_feature_extractor.dir/all: src/ade/CMakeFiles/ade.dir/all
 	$(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\test_ade_feature_extractor.dir\build.make src/ade/CMakeFiles/test_ade_feature_extractor.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\test_ade_feature_extractor.dir\build.make src/ade/CMakeFiles/test_ade_feature_extractor.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=64 "Built target test_ade_feature_extractor"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=63 "Built target test_ade_feature_extractor"
 .PHONY : src/ade/CMakeFiles/test_ade_feature_extractor.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1550,7 +1552,7 @@ src/ade/CMakeFiles/test_ade_feature_extractor.dir/clean:
 src/ade/CMakeFiles/test_ade_decision_engine.dir/all: src/ade/CMakeFiles/ade.dir/all
 	$(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\test_ade_decision_engine.dir\build.make src/ade/CMakeFiles/test_ade_decision_engine.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\test_ade_decision_engine.dir\build.make src/ade/CMakeFiles/test_ade_decision_engine.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=62 "Built target test_ade_decision_engine"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=61 "Built target test_ade_decision_engine"
 .PHONY : src/ade/CMakeFiles/test_ade_decision_engine.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1576,7 +1578,7 @@ src/ade/CMakeFiles/test_ade_decision_engine.dir/clean:
 src/ade/CMakeFiles/test_ade_evolutionary.dir/all: src/ade/CMakeFiles/ade.dir/all
 	$(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\test_ade_evolutionary.dir\build.make src/ade/CMakeFiles/test_ade_evolutionary.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\test_ade_evolutionary.dir\build.make src/ade/CMakeFiles/test_ade_evolutionary.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=63 "Built target test_ade_evolutionary"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=62 "Built target test_ade_evolutionary"
 .PHONY : src/ade/CMakeFiles/test_ade_evolutionary.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1654,7 +1656,7 @@ src/ade/CMakeFiles/train_ade_model.dir/clean:
 src/ade/CMakeFiles/generate_ade_dataset.dir/all: src/ade/CMakeFiles/ade.dir/all
 	$(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\generate_ade_dataset.dir\build.make src/ade/CMakeFiles/generate_ade_dataset.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\generate_ade_dataset.dir\build.make src/ade/CMakeFiles/generate_ade_dataset.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=53 "Built target generate_ade_dataset"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=52 "Built target generate_ade_dataset"
 .PHONY : src/ade/CMakeFiles/generate_ade_dataset.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1683,7 +1685,7 @@ tests/CMakeFiles/test_Deflate.dir/all: _deps/google_brotli-build/CMakeFiles/brot
 tests/CMakeFiles/test_Deflate.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_Deflate.dir\build.make tests/CMakeFiles/test_Deflate.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_Deflate.dir\build.make tests/CMakeFiles/test_Deflate.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=58 "Built target test_Deflate"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=57 "Built target test_Deflate"
 .PHONY : tests/CMakeFiles/test_Deflate.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1778,7 +1780,7 @@ tests/CMakeFiles/test_PackWriter_RoundTrip.dir/all: src/archiver/CMakeFiles/arch
 tests/CMakeFiles/test_PackWriter_RoundTrip.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_PackWriter_RoundTrip.dir\build.make tests/CMakeFiles/test_PackWriter_RoundTrip.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_PackWriter_RoundTrip.dir\build.make tests/CMakeFiles/test_PackWriter_RoundTrip.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=61 "Built target test_PackWriter_RoundTrip"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=60 "Built target test_PackWriter_RoundTrip"
 .PHONY : tests/CMakeFiles/test_PackWriter_RoundTrip.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1810,7 +1812,7 @@ tests/CMakeFiles/test_PackWriter.dir/all: src/archiver/CMakeFiles/archiver.dir/a
 tests/CMakeFiles/test_PackWriter.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_PackWriter.dir\build.make tests/CMakeFiles/test_PackWriter.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_PackWriter.dir\build.make tests/CMakeFiles/test_PackWriter.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=60 "Built target test_PackWriter"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=59 "Built target test_PackWriter"
 .PHONY : tests/CMakeFiles/test_PackWriter.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1975,7 +1977,7 @@ tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/all: src/api_new/CMakeFiles/
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 11
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 10
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/rule
@@ -2003,7 +2005,7 @@ tests/CMakeFiles/test_deflate.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_deflate.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate.dir\build.make tests/CMakeFiles/test_deflate.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate.dir\build.make tests/CMakeFiles/test_deflate.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=71 "Built target test_deflate"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=70 "Built target test_deflate"
 .PHONY : tests/CMakeFiles/test_deflate.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2065,7 +2067,7 @@ tests/CMakeFiles/test_lzdp_dpflate_regression.dir/all: _deps/google_brotli-build
 tests/CMakeFiles/test_lzdp_dpflate_regression.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_dpflate_regression.dir\build.make tests/CMakeFiles/test_lzdp_dpflate_regression.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_dpflate_regression.dir\build.make tests/CMakeFiles/test_lzdp_dpflate_regression.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=80 "Built target test_lzdp_dpflate_regression"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=79 "Built target test_lzdp_dpflate_regression"
 .PHONY : tests/CMakeFiles/test_lzdp_dpflate_regression.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2098,7 +2100,7 @@ tests/CMakeFiles/test_lzdp_dpflate_stream.dir/all: src/archiver/CMakeFiles/archi
 tests/CMakeFiles/test_lzdp_dpflate_stream.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_dpflate_stream.dir\build.make tests/CMakeFiles/test_lzdp_dpflate_stream.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_dpflate_stream.dir\build.make tests/CMakeFiles/test_lzdp_dpflate_stream.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=81 "Built target test_lzdp_dpflate_stream"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=80 "Built target test_lzdp_dpflate_stream"
 .PHONY : tests/CMakeFiles/test_lzdp_dpflate_stream.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2127,7 +2129,7 @@ tests/CMakeFiles/test_HuffmanTree3HM.dir/all: _deps/google_brotli-build/CMakeFil
 tests/CMakeFiles/test_HuffmanTree3HM.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_HuffmanTree3HM.dir\build.make tests/CMakeFiles/test_HuffmanTree3HM.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_HuffmanTree3HM.dir\build.make tests/CMakeFiles/test_HuffmanTree3HM.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=59 "Built target test_HuffmanTree3HM"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=58 "Built target test_HuffmanTree3HM"
 .PHONY : tests/CMakeFiles/test_HuffmanTree3HM.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2160,7 +2162,7 @@ tests/CMakeFiles/test_algorithm_comparison.dir/all: src/archiver/CMakeFiles/arch
 tests/CMakeFiles/test_algorithm_comparison.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_comparison.dir\build.make tests/CMakeFiles/test_algorithm_comparison.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_comparison.dir\build.make tests/CMakeFiles/test_algorithm_comparison.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=65 "Built target test_algorithm_comparison"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=64 "Built target test_algorithm_comparison"
 .PHONY : tests/CMakeFiles/test_algorithm_comparison.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2253,7 +2255,7 @@ tests/CMakeFiles/test_dpflate_3hm_stream.dir/all: src/archiver/CMakeFiles/archiv
 tests/CMakeFiles/test_dpflate_3hm_stream.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_3hm_stream.dir\build.make tests/CMakeFiles/test_dpflate_3hm_stream.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_3hm_stream.dir\build.make tests/CMakeFiles/test_dpflate_3hm_stream.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=74 "Built target test_dpflate_3hm_stream"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=73 "Built target test_dpflate_3hm_stream"
 .PHONY : tests/CMakeFiles/test_dpflate_3hm_stream.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2284,7 +2286,7 @@ tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/all: src/core/CMakeFiles/core
 tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_bin64k_3k_stream.dir\build.make tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_bin64k_3k_stream.dir\build.make tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=75 "Built target test_dpflate_bin64k_3k_stream"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=74 "Built target test_dpflate_bin64k_3k_stream"
 .PHONY : tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2315,7 +2317,7 @@ tests/CMakeFiles/test_dpflate_stream_trace.dir/all: src/core/CMakeFiles/core.dir
 tests/CMakeFiles/test_dpflate_stream_trace.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_stream_trace.dir\build.make tests/CMakeFiles/test_dpflate_stream_trace.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_stream_trace.dir\build.make tests/CMakeFiles/test_dpflate_stream_trace.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=76 "Built target test_dpflate_stream_trace"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=75 "Built target test_dpflate_stream_trace"
 .PHONY : tests/CMakeFiles/test_dpflate_stream_trace.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2348,7 +2350,7 @@ tests/CMakeFiles/test_cartesian_stream_matrix.dir/all: src/archiver/CMakeFiles/a
 tests/CMakeFiles/test_cartesian_stream_matrix.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_cartesian_stream_matrix.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_cartesian_stream_matrix.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=70 "Built target test_cartesian_stream_matrix"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=69 "Built target test_cartesian_stream_matrix"
 .PHONY : tests/CMakeFiles/test_cartesian_stream_matrix.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2414,7 +2416,7 @@ tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/all: src/archiver/CMakeFi
 tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=78 "Built target test_lzdp_cartesian_stream_matrix"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=77 "Built target test_lzdp_cartesian_stream_matrix"
 .PHONY : tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2447,7 +2449,7 @@ tests/CMakeFiles/test_3hm_binary.dir/all: src/archiver/CMakeFiles/archiver.dir/a
 tests/CMakeFiles/test_3hm_binary.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_3hm_binary.dir\build.make tests/CMakeFiles/test_3hm_binary.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_3hm_binary.dir\build.make tests/CMakeFiles/test_3hm_binary.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=57 "Built target test_3hm_binary"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=56 "Built target test_3hm_binary"
 .PHONY : tests/CMakeFiles/test_3hm_binary.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2480,7 +2482,7 @@ tests/CMakeFiles/test_lzdp_binary.dir/all: src/archiver/CMakeFiles/archiver.dir/
 tests/CMakeFiles/test_lzdp_binary.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_binary.dir\build.make tests/CMakeFiles/test_lzdp_binary.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_binary.dir\build.make tests/CMakeFiles/test_lzdp_binary.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=77 "Built target test_lzdp_binary"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=76 "Built target test_lzdp_binary"
 .PHONY : tests/CMakeFiles/test_lzdp_binary.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2513,7 +2515,7 @@ tests/CMakeFiles/test_3hm_all.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_3hm_all.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_3hm_all.dir\build.make tests/CMakeFiles/test_3hm_all.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_3hm_all.dir\build.make tests/CMakeFiles/test_3hm_all.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=56 "Built target test_3hm_all"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=55 "Built target test_3hm_all"
 .PHONY : tests/CMakeFiles/test_3hm_all.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2579,7 +2581,7 @@ tests/CMakeFiles/debug_dpflate.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/debug_dpflate.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_dpflate.dir\build.make tests/CMakeFiles/debug_dpflate.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_dpflate.dir\build.make tests/CMakeFiles/debug_dpflate.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=51 "Built target debug_dpflate"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=50 "Built target debug_dpflate"
 .PHONY : tests/CMakeFiles/debug_dpflate.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2608,7 +2610,7 @@ tests/CMakeFiles/debug_token_trace.dir/all: _deps/google_brotli-build/CMakeFiles
 tests/CMakeFiles/debug_token_trace.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_token_trace.dir\build.make tests/CMakeFiles/debug_token_trace.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_token_trace.dir\build.make tests/CMakeFiles/debug_token_trace.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=52 "Built target debug_token_trace"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=51 "Built target debug_token_trace"
 .PHONY : tests/CMakeFiles/debug_token_trace.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2635,12 +2637,12 @@ tests/CMakeFiles/test_algorithm_new_lzdp.dir/all: src/algorithm_new/CMakeFiles/a
 tests/CMakeFiles/test_algorithm_new_lzdp.dir/all: src/core_new/CMakeFiles/core_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzdp.dir\build.make tests/CMakeFiles/test_algorithm_new_lzdp.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzdp.dir\build.make tests/CMakeFiles/test_algorithm_new_lzdp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=66 "Built target test_algorithm_new_lzdp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=65 "Built target test_algorithm_new_lzdp"
 .PHONY : tests/CMakeFiles/test_algorithm_new_lzdp.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/test_algorithm_new_lzdp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 9
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 8
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_algorithm_new_lzdp.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : tests/CMakeFiles/test_algorithm_new_lzdp.dir/rule
@@ -2655,13 +2657,41 @@ tests/CMakeFiles/test_algorithm_new_lzdp.dir/clean:
 .PHONY : tests/CMakeFiles/test_algorithm_new_lzdp.dir/clean
 
 #=============================================================================
+# Target rules for target tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir
+
+# All Build rule for target.
+tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
+tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/all: src/core_new/CMakeFiles/core_new.dir/all
+tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/all: src/api_new/CMakeFiles/api_new.dir/all
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_imdb_gui_cfg.dir\build.make tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/depend
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_imdb_gui_cfg.dir\build.make tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=81 "Built target test_lzdp_imdb_gui_cfg"
+.PHONY : tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/all
+
+# Build rule for subdir invocation for target.
+tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 10
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
+.PHONY : tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/rule
+
+# Convenience name for target.
+test_lzdp_imdb_gui_cfg: tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/rule
+.PHONY : test_lzdp_imdb_gui_cfg
+
+# clean rule for target.
+tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/clean:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_imdb_gui_cfg.dir\build.make tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/clean
+.PHONY : tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/clean
+
+#=============================================================================
 # Target rules for target tests/CMakeFiles/test_algorithm_new_phase1.dir
 
 # All Build rule for target.
 tests/CMakeFiles/test_algorithm_new_phase1.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase1.dir\build.make tests/CMakeFiles/test_algorithm_new_phase1.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase1.dir\build.make tests/CMakeFiles/test_algorithm_new_phase1.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=68 "Built target test_algorithm_new_phase1"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=67 "Built target test_algorithm_new_phase1"
 .PHONY : tests/CMakeFiles/test_algorithm_new_phase1.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2687,7 +2717,7 @@ tests/CMakeFiles/test_algorithm_new_phase1.dir/clean:
 tests/CMakeFiles/test_algorithm_new_phase2.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase2.dir\build.make tests/CMakeFiles/test_algorithm_new_phase2.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase2.dir\build.make tests/CMakeFiles/test_algorithm_new_phase2.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=69 "Built target test_algorithm_new_phase2"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=68 "Built target test_algorithm_new_phase2"
 .PHONY : tests/CMakeFiles/test_algorithm_new_phase2.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2714,12 +2744,12 @@ tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/all: src/algorithm_new/CMak
 tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/all: src/core_new/CMakeFiles/core_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzss_deflate.dir\build.make tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzss_deflate.dir\build.make tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=67 "Built target test_algorithm_new_lzss_deflate"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=66 "Built target test_algorithm_new_lzss_deflate"
 .PHONY : tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 9
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 8
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/rule
@@ -2870,7 +2900,7 @@ tests/CMakeFiles/test_lzss_noflag_sizes.dir/clean:
 tests/CMakeFiles/test_deflate_huffman_minimal.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_huffman_minimal.dir\build.make tests/CMakeFiles/test_deflate_huffman_minimal.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_huffman_minimal.dir\build.make tests/CMakeFiles/test_deflate_huffman_minimal.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=73 "Built target test_deflate_huffman_minimal"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=72 "Built target test_deflate_huffman_minimal"
 .PHONY : tests/CMakeFiles/test_deflate_huffman_minimal.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2896,7 +2926,7 @@ tests/CMakeFiles/test_deflate_huffman_minimal.dir/clean:
 tests/CMakeFiles/test_deflate_3hm_large.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_3hm_large.dir\build.make tests/CMakeFiles/test_deflate_3hm_large.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_3hm_large.dir\build.make tests/CMakeFiles/test_deflate_3hm_large.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=72 "Built target test_deflate_3hm_large"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=71 "Built target test_deflate_3hm_large"
 .PHONY : tests/CMakeFiles/test_deflate_3hm_large.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2922,7 +2952,7 @@ tests/CMakeFiles/test_deflate_3hm_large.dir/clean:
 tests/CMakeFiles/test_lzdp_debug.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_debug.dir\build.make tests/CMakeFiles/test_lzdp_debug.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_debug.dir\build.make tests/CMakeFiles/test_lzdp_debug.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=79 "Built target test_lzdp_debug"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=78 "Built target test_lzdp_debug"
 .PHONY : tests/CMakeFiles/test_lzdp_debug.dir/all
 
 # Build rule for subdir invocation for target.

@@ -2,8 +2,7 @@
 
 #include <memory>
 
-#include "ChunkedStreamAdapter.hpp"
-#include "StreamChunkPolicy.hpp"
+#include "StreamingAdapter.hpp"
 
 // algorithm_new pipeline functions (via ../algorithm_new/include)
 #include "LZDP.hpp"
@@ -21,10 +20,10 @@ auto createAlgorithm(AlgorithmID id,
                      const DpflatePipelineParams* dpflate_pipeline,
                      const DeflatePipelineParams* deflate_pipeline)
     -> std::unique_ptr<algorithm::IAlgorithm> {
-    using SCA = processor::StreamingCompressAdapter;
-    using SDA = processor::StreamingDecompressAdapter;
+    using SCA = StreamingCompressAdapter;
+    using SDA = StreamingDecompressAdapter;
     const size_t sca_chunk =
-        processor::effective_stream_chunk_bytes(streaming_compress_chunk_bytes);
+        effective_stream_chunk_bytes(streaming_compress_chunk_bytes);
 
     switch (id) {
         // ──── algorithm_new (brick architecture) via SCA/SDA ────

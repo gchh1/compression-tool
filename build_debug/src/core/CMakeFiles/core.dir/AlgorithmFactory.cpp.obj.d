@@ -495,8 +495,7 @@ src/core/CMakeFiles/core.dir/AlgorithmFactory.cpp.obj: \
  D:/AAA_C/compression-tool/src/algorithm/include/DPFlate.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/HuffmanTree3HM.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/TempTokenIO.hpp \
- D:/AAA_C/compression-tool/src/processor/include/ChunkedStreamAdapter.hpp \
+ D:/AAA_C/compression-tool/src/core_new/include/StreamingAdapter.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/functional \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_function.h \
- D:/AAA_C/compression-tool/src/processor/include/StreamChunkPolicy.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/Zstd.hpp

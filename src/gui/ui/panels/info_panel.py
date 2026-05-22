@@ -88,8 +88,7 @@ def create_dp_literal_info(cur_pos, cur_state) -> InfoPanel:
     panel.add_info_row("前驱:", pred_str, ThemeManager.hex("chart_5"))
     
     byte_val = cur_state.choice.literal
-    char_repr = chr(byte_val) if 32 <= byte_val < 127 else ""
-    byte_str = f"0x{byte_val:02x}" + (f" ('{char_repr}')" if char_repr else " (非打印字符)")
+    byte_str = f"0x{byte_val:02X}"
     panel.add_info_row("字节:", byte_str)
     
     panel.add_spacing()

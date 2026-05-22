@@ -112,7 +112,9 @@ class DPArrayBar(QWidget):
     def mouseMoveEvent(self, event) -> None:
         pos = event.position().toPoint() if hasattr(event, 'position') else event.pos()
         start, end = self._visible_range()
-        x = pos.x() - 40
+        total_bars_width = (end - start) * self._cell_width
+        start_x = max(0, (self.width() - total_bars_width) // 2)
+        x = pos.x() - start_x
         if x >= 0 and start < end:
             idx = int(x / self._cell_width) + start
             if idx != self._hover_pos and idx < end:
@@ -146,7 +148,8 @@ class DPArrayBar(QWidget):
         max_tc = self._tc_max
         min_tc = self._tc_min
 
-        start_x = 40
+        total_bars_width = (end - start) * self._cell_width
+        start_x = max(0, (self.width() - total_bars_width) // 2)
         bar_y = 8
         cw = self._cell_width
         ch = self._cell_height
@@ -235,8 +238,7 @@ class DPArrayBar(QWidget):
                 f3 = QFont("Consolas", 8)
                 painter.setFont(f3)
                 nb = st.choice.literal
-                ch_repr = chr(nb) if 32 <= nb < 127 else f"{nb:02x}"
-                painter.drawText(QRect(cx + 2, cy + 36, cw - 4, 16), Qt.AlignmentFlag.AlignCenter, f"'{ch_repr}'")
+                painter.drawText(QRect(cx + 2, cy + 36, cw - 4, 16), Qt.AlignmentFlag.AlignCenter, f"{nb:02X}")
 
         if end < n:
             ell_x = start_x + (end - start) * cw + 4
@@ -542,7 +544,7 @@ class LZDPDPSliderWidget(QWidget):
             self._candidate_table.setItem(i, 2, len_item)
 
             nb = cand.literal
-            byte_str = chr(nb) if 32 <= nb < 127 else f"0x{nb:02x}"
+            byte_str = f"0x{nb:02X}"
             nb_item = QTableWidgetItem(byte_str)
             nb_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             self._candidate_table.setItem(i, 3, nb_item)

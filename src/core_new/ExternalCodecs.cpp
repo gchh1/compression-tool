@@ -5,10 +5,27 @@
 #include <vector>
 
 #include <zlib.h>
+#include "Brotli.hpp"
+#include "Zstd.hpp"
 
 namespace compressor::core {
 
 namespace {
+
+CompressorResult ok_codec(std::vector<uint8_t> data, size_t original_size,
+                          double time_ms) {
+    CompressorResult r;
+    r.success = true;
+    r.original_size = original_size;
+    r.compressed_size = data.size();
+    r.compression_ratio =
+        original_size > 0
+            ? static_cast<double>(data.size()) / original_size
+            : 0.0;
+    r.time_ms = time_ms;
+    r.data = std::move(data);
+    return r;
+}
 
 CompressorResult fail_codec(const std::string& msg, size_t in_size) {
     CompressorResult r;
@@ -118,23 +135,64 @@ CompressorResult GzipCompressor::decompress(std::vector<uint8_t> data) {
 std::string GzipCompressor::get_algorithm_name() { return "Gzip (zlib)"; }
 
 CompressorResult BrotliCompressor::compress(std::vector<uint8_t> data) {
-    return fail_codec("Brotli: not available in algorithm_new api stack", data.size());
+    const auto t0 = std::chrono::high_resolution_clock::now();
+
+    algorithm::BrotliParams params;
+    params.window_size = window_size_;
+    params.min_match = min_match_ == 0 ? 4 : min_match_;
+    params.max_chain_length = max_chain_length_;
+
+    auto result = algorithm::brotli_encode(data, params);
+    if (result.empty() && !data.empty()) {
+        return fail_codec("Brotli encode failed", data.size());
+    }
+
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    return ok_codec(std::move(result), data.size(),
+                    std::chrono::duration<double, std::milli>(t1 - t0).count());
 }
 
 CompressorResult BrotliCompressor::decompress(std::vector<uint8_t> data) {
-    return fail_codec("Brotli: not available in algorithm_new api stack", data.size());
+    const auto t0 = std::chrono::high_resolution_clock::now();
+
+    auto result = algorithm::brotli_decode(data);
+    if (result.empty() && !data.empty()) {
+        return fail_codec("Brotli decode failed", data.size());
+    }
+
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    return ok_codec(std::move(result), data.size(),
+                    std::chrono::duration<double, std::milli>(t1 - t0).count());
 }
 
-std::string BrotliCompressor::get_algorithm_name() { return "Brotli (unavailable)"; }
+std::string BrotliCompressor::get_algorithm_name() { return "Brotli"; }
 
 CompressorResult ZstdCompressor::compress(std::vector<uint8_t> data) {
-    return fail_codec("Zstd: not available in algorithm_new api stack", data.size());
+    const auto t0 = std::chrono::high_resolution_clock::now();
+
+    auto result = algorithm::zstd_compress(data, static_cast<int>(compression_level_));
+    if (result.empty() && !data.empty()) {
+        return fail_codec("Zstd compress failed", data.size());
+    }
+
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    return ok_codec(std::move(result), data.size(),
+                    std::chrono::duration<double, std::milli>(t1 - t0).count());
 }
 
 CompressorResult ZstdCompressor::decompress(std::vector<uint8_t> data) {
-    return fail_codec("Zstd: not available in algorithm_new api stack", data.size());
+    const auto t0 = std::chrono::high_resolution_clock::now();
+
+    auto result = algorithm::zstd_decompress(data);
+    if (result.empty() && !data.empty()) {
+        return fail_codec("Zstd decompress failed", data.size());
+    }
+
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    return ok_codec(std::move(result), data.size(),
+                    std::chrono::duration<double, std::milli>(t1 - t0).count());
 }
 
-std::string ZstdCompressor::get_algorithm_name() { return "Zstd (unavailable)"; }
+std::string ZstdCompressor::get_algorithm_name() { return "Zstd"; }
 
 }  // namespace compressor::core

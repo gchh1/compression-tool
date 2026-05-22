@@ -94,6 +94,9 @@ bin/test_algorithm_new_lzss_deflate.exe: tests/CMakeFiles/test_algorithm_new_lzs
 bin/test_algorithm_new_lzss_deflate.exe: tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/build.make
 bin/test_algorithm_new_lzss_deflate.exe: src/core_new/libcore_new.a
 bin/test_algorithm_new_lzss_deflate.exe: src/algorithm_new/libalgorithm_new.a
+bin/test_algorithm_new_lzss_deflate.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_algorithm_new_lzss_deflate.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_algorithm_new_lzss_deflate.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_algorithm_new_lzss_deflate.exe: tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/linkLibs.rsp
 bin/test_algorithm_new_lzss_deflate.exe: tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/objects1.rsp
 bin/test_algorithm_new_lzss_deflate.exe: tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/link.txt

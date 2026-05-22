@@ -626,6 +626,8 @@ src/core_new/CMakeFiles/core_new.dir/ExternalCodecs.cpp.obj: D:/AAA_C/compressio
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wctype.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/zconf.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/zlib.h \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/Brotli.hpp \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/GzipCompressor.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/ICompressor.hpp
 
@@ -1347,6 +1349,8 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_base.h:
 
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic:
+
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ostream:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_uninitialized.h:
@@ -1413,8 +1417,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_facets_nonio.tcc:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uses_allocator_args.h:
 
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stdexcept:
-
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/string_view.tcc:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/queue:
@@ -1444,8 +1446,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uniform_int_dist.h:
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_facets.h:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/Models.hpp:
-
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception.h:
 
@@ -1555,6 +1555,14 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_string.h:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/LZencoding.hpp:
 
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stdexcept:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/Brotli.hpp:
+
+D:/AAA_C/compression-tool/src/core_new/GuiCompressors.cpp:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_string.tcc:
+
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/charconv.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/streambuf_iterator.h:
@@ -1624,10 +1632,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/codecvt.h:
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/node_handle.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw.h:
-
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_string.tcc:
-
-D:/AAA_C/compression-tool/src/core_new/GuiCompressors.cpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/concepts:
 
@@ -1866,3 +1870,5 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/nested_exception.h:
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/zconf.h:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp:

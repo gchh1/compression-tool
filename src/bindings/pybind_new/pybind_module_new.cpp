@@ -9,6 +9,7 @@
 
 #include "AlgorithmFactory.hpp"
 #include "GuiCompressors.hpp"
+#include "GzipCompressor.hpp"
 #include "Visualization.hpp"
 #include "api.hpp"
 
@@ -241,6 +242,57 @@ void bind_compressors(py::module_& m) {
         .def(
             "decompress",
             [](DPFlateCompressor& self, py::buffer buf) {
+                return self.decompress(buffer_to_u8vec(buf));
+            });
+
+    py::class_<GzipCompressor, ICompressor, std::shared_ptr<GzipCompressor>>(m, "GzipCompressor")
+        .def(py::init<>())
+        .def("set_compression_level", &GzipCompressor::set_compression_level)
+        .def("get_compression_level", &GzipCompressor::get_compression_level)
+        .def(
+            "compress",
+            [](GzipCompressor& self, py::buffer buf) {
+                return self.compress(buffer_to_u8vec(buf));
+            })
+        .def(
+            "decompress",
+            [](GzipCompressor& self, py::buffer buf) {
+                return self.decompress(buffer_to_u8vec(buf));
+            });
+
+    py::class_<BrotliCompressor, ICompressor, std::shared_ptr<BrotliCompressor>>(
+        m, "BrotliCompressor")
+        .def(py::init<>())
+        .def("set_window_size", &BrotliCompressor::set_window_size)
+        .def("get_window_size", &BrotliCompressor::get_window_size)
+        .def("set_min_match", &BrotliCompressor::set_min_match)
+        .def("get_min_match", &BrotliCompressor::get_min_match)
+        .def("set_max_chain_length", &BrotliCompressor::set_max_chain_length)
+        .def("get_max_chain_length", &BrotliCompressor::get_max_chain_length)
+        .def(
+            "compress",
+            [](BrotliCompressor& self, py::buffer buf) {
+                return self.compress(buffer_to_u8vec(buf));
+            })
+        .def(
+            "decompress",
+            [](BrotliCompressor& self, py::buffer buf) {
+                return self.decompress(buffer_to_u8vec(buf));
+            });
+
+    py::class_<ZstdCompressor, ICompressor, std::shared_ptr<ZstdCompressor>>(
+        m, "ZstdCompressor")
+        .def(py::init<>())
+        .def("set_compression_level", &ZstdCompressor::set_compression_level)
+        .def("get_compression_level", &ZstdCompressor::get_compression_level)
+        .def(
+            "compress",
+            [](ZstdCompressor& self, py::buffer buf) {
+                return self.compress(buffer_to_u8vec(buf));
+            })
+        .def(
+            "decompress",
+            [](ZstdCompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
             });
 }

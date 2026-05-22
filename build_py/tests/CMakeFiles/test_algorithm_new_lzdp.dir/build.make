@@ -94,6 +94,9 @@ bin/test_algorithm_new_lzdp.exe: tests/CMakeFiles/test_algorithm_new_lzdp.dir/te
 bin/test_algorithm_new_lzdp.exe: tests/CMakeFiles/test_algorithm_new_lzdp.dir/build.make
 bin/test_algorithm_new_lzdp.exe: src/core_new/libcore_new.a
 bin/test_algorithm_new_lzdp.exe: src/algorithm_new/libalgorithm_new.a
+bin/test_algorithm_new_lzdp.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_algorithm_new_lzdp.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_algorithm_new_lzdp.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_algorithm_new_lzdp.exe: tests/CMakeFiles/test_algorithm_new_lzdp.dir/linkLibs.rsp
 bin/test_algorithm_new_lzdp.exe: tests/CMakeFiles/test_algorithm_new_lzdp.dir/objects1.rsp
 bin/test_algorithm_new_lzdp.exe: tests/CMakeFiles/test_algorithm_new_lzdp.dir/link.txt

@@ -362,7 +362,7 @@ class _LSBBitReader:
 
     def _fill(self) -> None:
         while self._bits_in_buffer <= 56 and self._byte_pos < len(self._data):
-            self._buffer |= self._data[self._byte_pos] << self._bits_in_buffer
+            self._buffer = (self._buffer << 8) | self._data[self._byte_pos]
             self._bits_in_buffer += 8
             self._byte_pos += 1
 
@@ -374,9 +374,10 @@ class _LSBBitReader:
     def read_bits(self, n: int) -> int:
         if not self.ensure(n):
             raise ValueError(f"Not enough bits: need {n}, have {self._bits_in_buffer}")
-        val = self._buffer & ((1 << n) - 1)
-        self._buffer >>= n
+        shift = self._bits_in_buffer - n
+        val = (self._buffer >> shift) & ((1 << n) - 1)
         self._bits_in_buffer -= n
+        self._buffer &= (1 << self._bits_in_buffer) - 1
         return val
 
     def read_bit(self) -> int:
@@ -386,39 +387,94 @@ class _LSBBitReader:
         return self._byte_pos * 8 - self._bits_in_buffer
 
 
-class _HuffmanNode:
-    __slots__ = ('symbol', 'left', 'right')
+class _CanonicalHuffmanTree:
 
-    def __init__(self, symbol: int | None = None):
-        self.symbol = symbol
-        self.left: _HuffmanNode | None = None
-        self.right: _HuffmanNode | None = None
+    def __init__(self, data: bytes):
+        self.reverse_map: dict[int, int] = {}
+        self.code_lengths: dict[int, int] = {}
+        self.entries: list[tuple[int, int]] = []
+        if len(data) < 2:
+            return
+        count = int.from_bytes(data[0:2], 'big')
+        pos = 2
+        for _ in range(count):
+            if pos + 3 > len(data):
+                break
+            sym = int.from_bytes(data[pos:pos + 2], 'big')
+            length = data[pos + 2]
+            pos += 3
+            if length > 0:
+                self.entries.append((sym, length))
+                self.code_lengths[sym] = length
+        self._build_reverse_map()
 
-    def is_leaf(self) -> bool:
-        return self.left is None and self.right is None
+    def _build_reverse_map(self):
+        self.reverse_map.clear()
+        if not self.entries:
+            return
+        entries = sorted(self.entries, key=lambda x: (x[1], x[0]))
+        max_len = max(e[1] for e in entries)
+        bl_count = [0] * (max_len + 1)
+        for _, l in entries:
+            bl_count[l] += 1
+        next_code = [0] * (max_len + 1)
+        code = 0
+        for i in range(1, max_len + 1):
+            code = (code + bl_count[i - 1]) << 1
+            next_code[i] = code
+        for sym, length in entries:
+            self.reverse_map[(next_code[length] << 8) | length] = sym
+            next_code[length] += 1
+
+    def decode(self, reader: _LSBBitReader) -> int | None:
+        code = 0
+        for length in range(1, 33):
+            if not reader.ensure(1):
+                return None
+            code = (code << 1) | reader.read_bit()
+            key = (code << 8) | length
+            if key in self.reverse_map:
+                return self.reverse_map[key]
+        return None
+
+    def to_tree_node(self) -> HuffmanTreeNode:
+        if not self.reverse_map:
+            return HuffmanTreeNode()
+        entries: list[tuple[str, int, int]] = []
+        for key, sym in self.reverse_map.items():
+            length = key & 0xFF
+            code_bits = key >> 8
+            code_str = format(code_bits, f'0{length}b')
+            entries.append((code_str, length, sym))
+        root = HuffmanTreeNode()
+        for code_str, length, sym in sorted(entries, key=lambda x: (x[1], x[0])):
+            node = root
+            for bit in code_str:
+                if bit == '0':
+                    if node.left is None:
+                        node.left = HuffmanTreeNode()
+                    node = node.left
+                else:
+                    if node.right is None:
+                        node.right = HuffmanTreeNode()
+                    node = node.right
+            node.symbol = sym
+            node.frequency = 1
+        return root
+
+    def to_code_table(self) -> list[HuffmanCodeEntry]:
+        entries: list[tuple[str, int, int]] = []
+        for key, sym in self.reverse_map.items():
+            length = key & 0xFF
+            code_bits = key >> 8
+            code_str = format(code_bits, f'0{length}b')
+            entries.append((code_str, length, sym))
+        entries.sort(key=lambda x: (x[1], x[2]))
+        return [HuffmanCodeEntry(symbol=sym, frequency=1, code=code, code_length=length)
+                for code, length, sym in entries]
 
 
 class DeflateTokenParser(TokenParser):
-
-    DEFLATE_SYMBOL_BITS = 9
-    DISTANCE_SYMBOL_BITS = 5
-
-    LENGTH_BASES = [
-        3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,
-        35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258,
-    ]
-    LENGTH_EXTRA = [
-        0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2,
-        3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0,
-    ]
-    DIST_BASES = [
-        1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193,
-        257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577,
-    ]
-    DIST_EXTRA = [
-        0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6,
-        7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13,
-    ]
 
     SUPPORTED_ALGORITHMS = frozenset({AlgorithmType.DEFLATE, AlgorithmType.DPFLATE})
 
@@ -433,202 +489,189 @@ class DeflateTokenParser(TokenParser):
         compressed_data = prepare_token_parse_payload(
             compressed_data, AlgorithmType.DPFLATE
         )
-        reader = _LSBBitReader(compressed_data)
         tokens: list[Token] = []
         cursor = 0
         huffman_trees: list[HuffmanTreeData] = []
 
+        if len(compressed_data) < 10:
+            return ParseResult(
+                tokens=tokens, original_size=cursor,
+                compressed_payload_size=len(compressed_data),
+                algorithm="deflate/dpflate",
+            )
+
+        triple_count = int.from_bytes(compressed_data[0:4], 'little')
+        lit_sz = int.from_bytes(compressed_data[4:6], 'little')
+        off_sz = int.from_bytes(compressed_data[6:8], 'little')
+        len_sz = int.from_bytes(compressed_data[8:10], 'little')
+
+        header_end = 10 + lit_sz + off_sz + len_sz
+        logger.info(
+            "[DeflateTokenParser] triple_count=%d lit_sz=%d off_sz=%d len_sz=%d "
+            "header_end=%d total_data=%d",
+            triple_count, lit_sz, off_sz, len_sz, header_end, len(compressed_data),
+        )
+        if len(compressed_data) < header_end:
+            return ParseResult(
+                tokens=tokens, original_size=cursor,
+                compressed_payload_size=len(compressed_data),
+                algorithm="deflate/dpflate",
+            )
+
+        lit_tree = _CanonicalHuffmanTree(compressed_data[10:10 + lit_sz])
+        off_tree = _CanonicalHuffmanTree(
+            compressed_data[10 + lit_sz:10 + lit_sz + off_sz])
+        len_tree = _CanonicalHuffmanTree(
+            compressed_data[10 + lit_sz + off_sz:header_end])
+
+        if compression_params:
+            search_size = int(compression_params.get('search_size', 4096))
+            lookahead = int(compression_params.get('lookahead_size', 256))
+            offset_chunk = int(compression_params.get(
+                'huffman_offset_chunk_bits',
+                compression_params.get('huffman_offset_bitwidth', 8)))
+            length_chunk = int(compression_params.get(
+                'huffman_length_chunk_bits',
+                compression_params.get('huffman_length_bitwidth', 8)))
+        else:
+            search_size = 4096
+            lookahead = 256
+            offset_chunk = 8
+            length_chunk = 8
+        offset_bits = max(1, search_size.bit_length())
+        length_bits = max(1, lookahead.bit_length())
+
+        lit_tree_node = lit_tree.to_tree_node()
+        if lit_tree_node.left or lit_tree_node.right or lit_tree_node.symbol is not None:
+            huffman_trees.append(HuffmanTreeData(
+                tree=lit_tree_node,
+                codes=lit_tree.to_code_table(),
+                tree_type="literal(8bit)",
+                total_bits=lit_sz * 8,
+            ))
+        off_tree_node = off_tree.to_tree_node()
+        if off_tree_node.left or off_tree_node.right or off_tree_node.symbol is not None:
+            huffman_trees.append(HuffmanTreeData(
+                tree=off_tree_node,
+                codes=off_tree.to_code_table(),
+                tree_type="offset(%d x %d)" % (
+                    math.ceil(offset_bits / offset_chunk), offset_chunk),
+                total_bits=off_sz * 8,
+            ))
+        len_tree_node = len_tree.to_tree_node()
+        if len_tree_node.left or len_tree_node.right or len_tree_node.symbol is not None:
+            huffman_trees.append(HuffmanTreeData(
+                tree=len_tree_node,
+                codes=len_tree.to_code_table(),
+                tree_type="length(%d x %d)" % (
+                    math.ceil(length_bits / length_chunk), length_chunk),
+                total_bits=len_sz * 8,
+            ))
+
+        token_data = compressed_data[header_end:]
+        reader = _LSBBitReader(token_data)
+
+        logger.info(
+            "[DeflateTokenParser] lit_tree entries=%d off_tree entries=%d len_tree entries=%d "
+            "token_data=%d bytes offset_bits=%d length_bits=%d "
+            "offset_chunk=%d length_chunk=%d",
+            len(lit_tree.reverse_map), len(off_tree.reverse_map),
+            len(len_tree.reverse_map), len(token_data),
+            offset_bits, length_bits, offset_chunk, length_chunk,
+        )
+
+        def _decode_multi_level(tree: _CanonicalHuffmanTree,
+                                total_bits: int, chunk_bits: int) -> int | None:
+            num_chunks = (total_bits + chunk_bits - 1) // chunk_bits
+            last_chunk_bits = total_bits % chunk_bits
+            if last_chunk_bits == 0:
+                last_chunk_bits = chunk_bits
+            value = 0
+            for i in range(num_chunks):
+                chunk = tree.decode(reader)
+                if chunk is None:
+                    return None
+                if i == num_chunks - 1 and last_chunk_bits < chunk_bits:
+                    chunk &= (1 << last_chunk_bits) - 1
+                value |= chunk << (i * chunk_bits)
+            return value
+
         try:
-            while True:
-                tree_start = reader.bit_position()
-
+            for ti in range(triple_count):
+                bit_start = reader.bit_position()
                 if not reader.ensure(1):
+                    logger.info(
+                        "[DeflateTokenParser] break at ti=%d/%d: ensure(1) failed at bit=%d",
+                        ti, triple_count, bit_start,
+                    )
                     break
-                lit_root = self._read_tree(reader, self.DEFLATE_SYMBOL_BITS)
-                if lit_root is None:
-                    break
-
-                if not reader.ensure(1):
-                    break
-                dist_root = self._read_tree(reader, self.DISTANCE_SYMBOL_BITS)
-                if dist_root is None:
-                    break
-
-                tree_bits = reader.bit_position() - tree_start
-
-                lit_freq = self._collect_frequencies(lit_root)
-                dist_freq = self._collect_frequencies(dist_root)
-                lit_codes = self._build_code_table(lit_root, lit_freq)
-                dist_codes = self._build_code_table(dist_root, dist_freq)
-
-                lit_tree_node = self._convert_tree(lit_root)
-                dist_tree_node = self._convert_tree(dist_root)
-
-                huffman_trees.append(HuffmanTreeData(
-                    tree=lit_tree_node,
-                    codes=lit_codes,
-                    tree_type="literal/length",
-                    total_bits=tree_bits // 2,
-                ))
-                huffman_trees.append(HuffmanTreeData(
-                    tree=dist_tree_node,
-                    codes=dist_codes,
-                    tree_type="distance",
-                    total_bits=tree_bits - tree_bits // 2,
-                ))
-
-                while True:
-                    bit_start = reader.bit_position()
-                    symbol = self._decode_symbol(reader, lit_root)
-                    if symbol is None:
+                is_literal = reader.read_bit()
+                if is_literal:
+                    lit_bit_start = reader.bit_position()
+                    sym = lit_tree.decode(reader)
+                    if sym is None:
+                        logger.info(
+                            "[DeflateTokenParser] break at ti=%d/%d: lit_tree.decode failed at bit=%d cursor=%d",
+                            ti, triple_count, lit_bit_start, cursor,
+                        )
                         break
-
-                    if symbol == 256:
+                    lit_bits = reader.bit_position() - lit_bit_start
+                    tokens.append(Token(
+                        type=TokenType.LITERAL,
+                        original_start=cursor,
+                        original_length=1,
+                        compressed_size=(reader.bit_position() - bit_start) / 8.0,
+                        huffman_bits=float(lit_bits),
+                        huffman_detail="LIT(%d)=%.1fbit" % (
+                            sym, float(lit_bits)),
+                    ))
+                    cursor += 1
+                else:
+                    offset = _decode_multi_level(
+                        off_tree, offset_bits, offset_chunk)
+                    if offset is None:
+                        logger.info(
+                            "[DeflateTokenParser] break at ti=%d/%d: offset decode failed at bit=%d cursor=%d",
+                            ti, triple_count, reader.bit_position(), cursor,
+                        )
                         break
-
-                    if symbol < 256:
-                        lit_bits = reader.bit_position() - bit_start
-                        tokens.append(Token(
-                            type=TokenType.LITERAL,
-                            original_start=cursor,
-                            original_length=1,
-                            compressed_size=lit_bits / 8.0,
-                            huffman_bits=float(lit_bits),
-                            huffman_detail="LIT(%d)=%.1fbit" % (symbol, float(lit_bits)),
-                        ))
-                        cursor += 1
-                        continue
-
-                    idx = symbol - 257
-                    if idx >= len(self.LENGTH_BASES):
+                    length = _decode_multi_level(
+                        len_tree, length_bits, length_chunk)
+                    if length is None:
+                        logger.info(
+                            "[DeflateTokenParser] break at ti=%d/%d: length decode failed at bit=%d cursor=%d",
+                            ti, triple_count, reader.bit_position(), cursor,
+                        )
                         break
-                    base_len = self.LENGTH_BASES[idx]
-                    extra_bits_count = self.LENGTH_EXTRA[idx]
-
-                    len_symbol_end = reader.bit_position()
-                    length = base_len
-                    if extra_bits_count > 0:
-                        if not reader.ensure(extra_bits_count):
-                            break
-                        length += reader.read_bits(extra_bits_count)
-
-                    dist_bit_start = reader.bit_position()
-                    dist_symbol = self._decode_symbol(reader, dist_root)
-                    if dist_symbol is None or dist_symbol >= len(self.DIST_BASES):
-                        break
-                    dist_symbol_end = reader.bit_position()
-
-                    base_dist = self.DIST_BASES[dist_symbol]
-                    dist_extra_count = self.DIST_EXTRA[dist_symbol]
-                    distance = base_dist
-                    if dist_extra_count > 0:
-                        if not reader.ensure(dist_extra_count):
-                            break
-                        distance += reader.read_bits(dist_extra_count)
-
                     token_bits = reader.bit_position() - bit_start
-                    len_code_bits = len_symbol_end - bit_start
-                    dist_code_bits = dist_symbol_end - dist_bit_start
-                    detail = "LEN(sym%d+%db)+DIST(sym%d+%db)=%.1fbit" % (
-                        idx, extra_bits_count, dist_symbol, dist_extra_count, float(token_bits))
                     tokens.append(Token(
                         type=TokenType.MATCH,
                         original_start=cursor,
                         original_length=length,
                         compressed_size=token_bits / 8.0,
-                        match_offset=distance,
+                        match_offset=offset,
                         huffman_bits=float(token_bits),
-                        huffman_detail=detail,
+                        huffman_detail=(
+                            "MATCH(off=%d len=%d %.1fbit)" % (
+                                offset, length, float(token_bits))),
                     ))
                     cursor += length
-
         except Exception as e:
-            logger.warning("[DeflateTokenParser] parse error: %s", e, exc_info=True)
+            logger.warning(
+                "[DeflateTokenParser] parse error: %s", e, exc_info=True)
 
-        algo_name = "deflate/dpflate"
+        logger.info(
+            "[DeflateTokenParser] loop finished: decoded %d tokens, cursor=%d, "
+            "total_bits_read=%d",
+            len(tokens), cursor, reader.bit_position(),
+        )
         return ParseResult(
             tokens=tokens,
             original_size=cursor,
             compressed_payload_size=len(compressed_data),
-            algorithm=algo_name,
+            algorithm="deflate/dpflate",
             huffman_trees=huffman_trees if huffman_trees else None,
         )
-
-    def _collect_frequencies(self, root: _HuffmanNode) -> dict[int, int]:
-        freq: dict[int, int] = {}
-        stack = [root]
-        while stack:
-            node = stack.pop()
-            if node is None:
-                continue
-            if node.is_leaf():
-                freq[node.symbol] = freq.get(node.symbol, 0) + 1
-            else:
-                stack.append(node.right)
-                stack.append(node.left)
-        return freq
-
-    def _build_code_table(self, root: _HuffmanNode, freq: dict[int, int]) -> list[HuffmanCodeEntry]:
-        codes: list[HuffmanCodeEntry] = []
-        self._traverse_for_codes(root, "", codes, freq)
-        codes.sort(key=lambda e: (e.code_length, e.symbol))
-        return codes
-
-    def _traverse_for_codes(self, node: _HuffmanNode, prefix: str,
-                            codes: list[HuffmanCodeEntry], freq: dict[int, int]) -> None:
-        if node is None:
-            return
-        if node.is_leaf():
-            code = prefix if prefix else "0"
-            codes.append(HuffmanCodeEntry(
-                symbol=node.symbol,
-                frequency=freq.get(node.symbol, 0),
-                code=code,
-                code_length=len(code),
-            ))
-            return
-        self._traverse_for_codes(node.left, prefix + "0", codes, freq)
-        self._traverse_for_codes(node.right, prefix + "1", codes, freq)
-
-    def _convert_tree(self, node: _HuffmanNode) -> HuffmanTreeNode:
-        if node is None:
-            return HuffmanTreeNode()
-        if node.is_leaf():
-            return HuffmanTreeNode(symbol=node.symbol, frequency=1)
-        left = self._convert_tree(node.left)
-        right = self._convert_tree(node.right)
-        return HuffmanTreeNode(
-            frequency=left.frequency + right.frequency,
-            left=left,
-            right=right,
-        )
-
-    def _read_tree(self, reader: _LSBBitReader, symbol_bits: int) -> _HuffmanNode | None:
-        if not reader.ensure(1):
-            return None
-        is_leaf = reader.read_bit()
-        if is_leaf:
-            if not reader.ensure(symbol_bits):
-                return None
-            sym = reader.read_bits(symbol_bits)
-            return _HuffmanNode(symbol=sym)
-        node = _HuffmanNode()
-        node.left = self._read_tree(reader, symbol_bits)
-        node.right = self._read_tree(reader, symbol_bits)
-        if node.left is None or node.right is None:
-            return None
-        return node
-
-    def _decode_symbol(self, reader: _LSBBitReader, root: _HuffmanNode) -> int | None:
-        node = root
-        while not node.is_leaf():
-            if not reader.ensure(1):
-                return None
-            bit = reader.read_bit()
-            node = node.right if bit else node.left
-            if node is None:
-                return None
-        return node.symbol
 
 
 _PARSER_MAP: dict[AlgorithmType, type[TokenParser]] = {
@@ -689,6 +732,11 @@ def parse_for_demo(
     if algorithm == AlgorithmType.LZDP:
         dp_result = LZDPTokenParser()._parse_via_dp(raw_data, compression_params)
         return dp_result if dp_result is not None else ParseResult(algorithm="lzdp")
+
+    if compression_params is None:
+        from gui.engine.compressor import CompressionEngine
+
+        compression_params = CompressionEngine.snapshot_for_algorithm(algorithm)
 
     compressed = _memory_compress_bytes_for_demo(algorithm, raw_data, compression_params)
     from gui.engine.file_protocol import prepare_token_parse_payload

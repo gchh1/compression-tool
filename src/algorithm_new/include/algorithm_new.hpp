@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BitProcessor.hpp"
+#include "Brotli.hpp"
 #include "ByteView.hpp"
 #include "Deflate.hpp"
 #include "Dpflate.hpp"
@@ -18,4 +19,5 @@
 #include "RecordIO.hpp"
 #include "Streaming.hpp"
 #include "Utils.hpp"
+#include "Zstd.hpp"
 #include "config/Config.hpp"

@@ -985,3 +985,1277 @@ RuntimeError: 解压结果大小 2491713 与 WCX 记录的原始大小 2996683 �
 22:57:43 [INFO] gui.main: [ui] aboutToQuit
 22:57:43 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
 22:57:43 [INFO] gui.main: [ui] event loop exited code=0
+11:41:37 [INFO] root: ==== gui session start 2026-05-22 11:41:37 ====
+11:41:37 [INFO] root: Logging initialized, file: D:\AAA_C\compression-tool\logs\gui.log (append mode, per-line flush)
+11:41:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+11:41:37 [INFO] gui.config.theme: [theme] theme applied
+11:41:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+11:41:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+11:41:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+11:41:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+11:41:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+11:41:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+11:41:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+11:41:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+11:41:37 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+11:41:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+11:41:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+11:41:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+11:41:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+11:41:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+11:41:37 [INFO] gui.engine.bridge: C++ core_engine loaded from D:\AAA_C\compression-tool\build_py\src\bindings\pybind\core_engine.cp312-win_amd64.pyd
+11:41:37 [INFO] gui.ade.engine: [decision] loaded model from D:\AAA_C\compression-tool\assets\ade\default_model.bin
+11:41:37 [INFO] gui.ade.engine: [decision] ADE loaded default model, using ML_HYBRID mode
+11:41:37 [INFO] gui.ade.engine: [decision] ADE initialized successfully
+11:41:37 [INFO] gui.ade.params: [param_regressor] C++ ParamRegressorNet available
+11:41:37 [DEBUG] gui.ade.training: [TrainingDataStore] loaded stats: 11 total samples
+11:41:37 [INFO] gui.ade.params: [param_regressor] loaded default C++ model
+11:41:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+11:41:37 [INFO] gui.explore: [explore] silent exploration enabled (see ade.silent_explore_enabled)
+11:41:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+11:41:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+11:41:38 [INFO] gui.ui: [ui] main_window.ready geometry=900x700
+11:41:38 [INFO] gui.main: [ui] MainWindow shown, entering event loop
+12:00:14 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+12:00:19 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+12:00:19 [INFO] gui.main_window: [add] adding 1 files
+12:00:19 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/resources/wow.html rows_before=0 source=file_dialog
+12:00:19 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+12:00:19 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=1.0 files_added=1 path_count=1 rows_after=1 source=file_dialog
+12:00:19 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+12:00:21 [INFO] gui.ui: [ui] compress.enter
+12:00:21 [INFO] gui.main_window: [compress] _on_compress called
+12:00:21 [INFO] gui.main_window: [compress] selected_rows=[0]
+12:00:21 [INFO] gui.main_window: [compress] algorithm=lzdp, records=1
+12:00:21 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=wow.html, status=CompressionStatus.PENDING
+12:00:21 [INFO] gui.ui: [ui] compress.dispatch algo=lzdp rows=[0] task_count=1
+12:00:21 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:00:21 [INFO] gui.worker: [compress] START record=2524377615344 file=D:/AAA_C/compression-tool/resources/wow.html algo=lzdp
+12:00:21 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:00:21 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:00:21 [WARNING] gui.engine.web_dict: [web_dict] web_phrases.txt not found (checked D:\AAA_C\compression-tool\resources\dict\web_phrases.txt, D:\AAA_C\compression-tool\Package\resources\dict\web_phrases.txt); using minimal fallback
+12:00:21 [INFO] gui.engine.web_dict: [web_dict] preprocessed wow.html: 60975 -> 60537 bytes
+12:00:21 [INFO] gui.worker: [compress] web resource dict preprocess enabled for wow.html
+12:00:21 [INFO] gui.worker: [compress] loaded raw data: 60537 bytes
+12:00:21 [INFO] gui.worker: [compress] compressing with lzdp (web_dict_cfg=True web_dict_active=True bytes=60537) ...
+12:00:21 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=22032
+12:00:21 [INFO] gui.worker: [compress] compress done: 60537 -> 22032 bytes
+12:00:21 [INFO] gui.explore: [explore] skip thread=Dummy-1 file=wow.html reason=user_ops_active
+12:00:21 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=wow.html
+12:00:21 [INFO] gui.main_window: [compress] row 0 finished: name=wow.html, status=CompressionStatus.DONE, ratio=0.3613
+12:00:21 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:00:21 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:00:21 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=12 threshold=50 total=12
+12:00:21 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:00:21 [INFO] gui.main_window: [compress] training data saved: 12 total samples
+12:00:21 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:00:23 [INFO] gui.ui: [ui] compress.enter
+12:00:23 [INFO] gui.main_window: [compress] _on_compress called
+12:00:23 [INFO] gui.main_window: [compress] selected_rows=[]
+12:00:26 [INFO] gui.ui: [ui] compress.enter
+12:00:26 [INFO] gui.main_window: [compress] _on_compress called
+12:00:26 [INFO] gui.main_window: [compress] selected_rows=[0]
+12:00:26 [INFO] gui.main_window: [compress] algorithm=deflate, records=1
+12:00:26 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=wow.html, status=CompressionStatus.DONE
+12:00:26 [INFO] gui.ui: [ui] compress.dispatch algo=deflate rows=[0] task_count=1
+12:00:26 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:00:26 [INFO] gui.worker: [compress] START record=2524377615344 file=D:/AAA_C/compression-tool/resources/wow.html algo=deflate
+12:00:26 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:00:26 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:00:26 [INFO] gui.engine.web_dict: [web_dict] preprocessed wow.html: 60975 -> 60537 bytes
+12:00:26 [INFO] gui.worker: [compress] web resource dict preprocess enabled for wow.html
+12:00:26 [INFO] gui.worker: [compress] loaded raw data: 60537 bytes
+12:00:26 [INFO] gui.worker: [compress] compressing with deflate (web_dict_cfg=True web_dict_active=True bytes=60537) ...
+12:00:27 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=19059
+12:00:27 [INFO] gui.worker: [compress] compress done: 60537 -> 19059 bytes
+12:00:27 [INFO] gui.explore: [explore] skip thread=Dummy-2 file=wow.html reason=user_ops_active
+12:00:27 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=wow.html
+12:00:27 [INFO] gui.main_window: [compress] row 0 finished: name=wow.html, status=CompressionStatus.DONE, ratio=0.3126
+12:00:27 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:00:27 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:00:27 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=13 threshold=50 total=13
+12:00:27 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:00:27 [INFO] gui.main_window: [compress] training data saved: 13 total samples
+12:00:27 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:00:28 [INFO] gui.main_window: [demo] START row=0
+12:00:28 [INFO] gui.main_window: [demo] memory demo path algo=deflate is_text=True raw=60975
+12:00:28 [INFO] gui.engine.token_parser: [DeflateTokenParser] triple_count=8676 lit_sz=332 off_sz=770 len_sz=353 header_end=1465 total_data=19071
+12:00:28 [INFO] gui.engine.token_parser: [DeflateTokenParser] lit_tree entries=110 off_tree entries=256 len_tree entries=117 token_data=17606 bytes offset_bits=15 length_bits=8 offset_chunk=8 length_chunk=8
+12:00:28 [INFO] gui.engine.token_parser: [DeflateTokenParser] loop finished: decoded 8676 tokens, cursor=26863, total_bits_read=106738
+12:00:28 [INFO] gui.main_window: [demo] parse_for_demo tokens=8676
+12:00:28 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=0/8676 text_len=60701
+12:00:28 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=0
+12:00:28 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=0 cs=0 ce=1 text_len=60701
+12:00:28 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:28 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [0:1]
+12:00:28 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 1 to end
+12:00:28 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 0
+12:00:28 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=0
+12:00:28 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:28 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=0
+12:00:30 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=1/8676 text_len=60701
+12:00:30 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=1
+12:00:30 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=1 cs=1 ce=4 text_len=60701
+12:00:30 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:30 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 1 chars
+12:00:30 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [1:4]
+12:00:30 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 4 to end
+12:00:30 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 1
+12:00:30 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=1
+12:00:30 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:30 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=1
+12:00:31 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=2/8676 text_len=60701
+12:00:31 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=2
+12:00:31 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=4 cs=4 ce=5 text_len=60701
+12:00:31 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:31 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 4 chars
+12:00:31 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [4:5]
+12:00:31 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 5 to end
+12:00:31 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 4
+12:00:31 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=2
+12:00:31 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:31 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=2
+12:00:32 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=3/8676 text_len=60701
+12:00:32 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=3
+12:00:32 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=5 cs=5 ce=5 text_len=60701
+12:00:32 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:32 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 5 chars
+12:00:32 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 5 to end
+12:00:32 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 5
+12:00:32 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=3
+12:00:32 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:32 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=3
+12:00:32 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=4/8676 text_len=60701
+12:00:32 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=4
+12:00:32 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=5 cs=5 ce=6 text_len=60701
+12:00:32 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:32 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 5 chars
+12:00:32 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [5:6]
+12:00:32 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 6 to end
+12:00:32 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 5
+12:00:32 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=4
+12:00:32 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:32 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=4
+12:00:33 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=5/8676 text_len=60701
+12:00:33 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=5
+12:00:33 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=6 cs=6 ce=6 text_len=60701
+12:00:33 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:33 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 6 chars
+12:00:33 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 6 to end
+12:00:33 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 6
+12:00:33 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=5
+12:00:33 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:33 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=5
+12:00:33 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=6/8676 text_len=60701
+12:00:33 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=6
+12:00:33 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=6 cs=6 ce=7 text_len=60701
+12:00:33 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:33 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 6 chars
+12:00:33 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [6:7]
+12:00:33 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 7 to end
+12:00:34 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 6
+12:00:34 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=6
+12:00:34 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:34 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=6
+12:00:34 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=7/8676 text_len=60701
+12:00:34 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=7
+12:00:34 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=7 cs=7 ce=8 text_len=60701
+12:00:34 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:34 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 7 chars
+12:00:34 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [7:8]
+12:00:34 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 8 to end
+12:00:34 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 7
+12:00:34 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=7
+12:00:34 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:34 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=7
+12:00:35 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=8/8676 text_len=60701
+12:00:35 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=8
+12:00:35 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=8 cs=8 ce=17 text_len=60701
+12:00:35 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:35 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 8 chars
+12:00:35 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [8:17]
+12:00:35 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 17 to end
+12:00:35 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 8
+12:00:35 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=8
+12:00:35 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:35 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=8
+12:00:35 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=9/8676 text_len=60701
+12:00:35 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=9
+12:00:35 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=17 cs=17 ce=18 text_len=60701
+12:00:35 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:35 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 17 chars
+12:00:35 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [17:18]
+12:00:35 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 18 to end
+12:00:35 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 17
+12:00:35 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=9
+12:00:35 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:35 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=9
+12:00:36 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=10/8676 text_len=60701
+12:00:36 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=10
+12:00:36 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=18 cs=18 ce=18 text_len=60701
+12:00:36 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:36 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 18 chars
+12:00:36 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 18 to end
+12:00:36 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 18
+12:00:36 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=10
+12:00:36 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:36 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=10
+12:00:37 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=11/8676 text_len=60701
+12:00:37 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=11
+12:00:37 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=18 cs=18 ce=18 text_len=60701
+12:00:37 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:37 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 18 chars
+12:00:37 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 18 to end
+12:00:37 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 18
+12:00:37 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=11
+12:00:37 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:37 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=11
+12:00:37 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=12/8676 text_len=60701
+12:00:37 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=12
+12:00:37 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=18 cs=18 ce=21 text_len=60701
+12:00:37 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:37 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 18 chars
+12:00:37 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [18:21]
+12:00:37 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 21 to end
+12:00:37 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 18
+12:00:37 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=12
+12:00:37 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:37 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=12
+12:00:38 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=13/8676 text_len=60701
+12:00:38 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=13
+12:00:38 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=21 cs=21 ce=22 text_len=60701
+12:00:38 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:38 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 21 chars
+12:00:38 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [21:22]
+12:00:38 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 22 to end
+12:00:38 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 21
+12:00:38 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=13
+12:00:38 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:38 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=13
+12:00:38 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=14/8676 text_len=60701
+12:00:38 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=14
+12:00:38 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=22 cs=22 ce=23 text_len=60701
+12:00:38 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:38 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 22 chars
+12:00:38 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [22:23]
+12:00:38 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 23 to end
+12:00:38 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 22
+12:00:38 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=14
+12:00:38 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:38 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=14
+12:00:39 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=15/8676 text_len=60701
+12:00:39 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=15
+12:00:39 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=23 cs=23 ce=58 text_len=60701
+12:00:39 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:39 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 23 chars
+12:00:39 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [23:58]
+12:00:39 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 58 to end
+12:00:39 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 23
+12:00:39 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=15
+12:00:39 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:39 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=15
+12:00:40 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=16/8676 text_len=60701
+12:00:40 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=16
+12:00:40 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=58 cs=58 ce=59 text_len=60701
+12:00:40 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:40 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 58 chars
+12:00:40 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [58:59]
+12:00:40 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 59 to end
+12:00:40 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 58
+12:00:40 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=16
+12:00:40 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:40 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=16
+12:00:40 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=17/8676 text_len=60701
+12:00:40 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=17
+12:00:40 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=59 cs=59 ce=59 text_len=60701
+12:00:40 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:40 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 59 chars
+12:00:40 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 59 to end
+12:00:40 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 59
+12:00:40 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=17
+12:00:40 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:40 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=17
+12:00:41 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=18/8676 text_len=60701
+12:00:41 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=18
+12:00:41 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=59 cs=59 ce=60 text_len=60701
+12:00:41 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:41 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 59 chars
+12:00:41 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [59:60]
+12:00:41 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 60 to end
+12:00:41 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 59
+12:00:41 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=18
+12:00:41 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:41 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=18
+12:00:41 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=19/8676 text_len=60701
+12:00:41 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=19
+12:00:41 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=60 cs=60 ce=78 text_len=60701
+12:00:41 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:41 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 60 chars
+12:00:41 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [60:78]
+12:00:41 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 78 to end
+12:00:41 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 60
+12:00:41 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=19
+12:00:41 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:41 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=19
+12:00:42 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=20/8676 text_len=60701
+12:00:42 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=20
+12:00:42 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=78 cs=78 ce=78 text_len=60701
+12:00:42 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:42 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 78 chars
+12:00:42 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 78 to end
+12:00:42 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 78
+12:00:42 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=20
+12:00:42 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:42 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=20
+12:00:43 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=21/8676 text_len=60701
+12:00:43 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=21
+12:00:43 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=78 cs=78 ce=79 text_len=60701
+12:00:43 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:43 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 78 chars
+12:00:43 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [78:79]
+12:00:43 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 79 to end
+12:00:43 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 78
+12:00:43 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=21
+12:00:43 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:43 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=21
+12:00:43 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=22/8676 text_len=60701
+12:00:43 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=22
+12:00:43 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=79 cs=79 ce=82 text_len=60701
+12:00:43 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:43 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 79 chars
+12:00:43 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [79:82]
+12:00:43 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 82 to end
+12:00:43 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 79
+12:00:43 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=22
+12:00:43 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:43 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=22
+12:00:44 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=23/8676 text_len=60701
+12:00:44 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=23
+12:00:44 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=82 cs=82 ce=83 text_len=60701
+12:00:44 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:44 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 82 chars
+12:00:44 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [82:83]
+12:00:44 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 83 to end
+12:00:44 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 82
+12:00:44 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=23
+12:00:44 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:44 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=23
+12:00:44 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=24/8676 text_len=60701
+12:00:44 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=24
+12:00:44 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=83 cs=83 ce=84 text_len=60701
+12:00:44 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:44 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 83 chars
+12:00:44 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [83:84]
+12:00:44 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 84 to end
+12:00:44 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 83
+12:00:44 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=24
+12:00:44 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:44 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=24
+12:00:45 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=25/8676 text_len=60701
+12:00:45 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=25
+12:00:45 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=84 cs=84 ce=85 text_len=60701
+12:00:45 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:45 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 84 chars
+12:00:45 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [84:85]
+12:00:45 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 85 to end
+12:00:45 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 84
+12:00:45 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=25
+12:00:45 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:45 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=25
+12:00:46 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=26/8676 text_len=60701
+12:00:46 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=26
+12:00:46 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=85 cs=85 ce=88 text_len=60701
+12:00:46 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:46 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 85 chars
+12:00:46 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [85:88]
+12:00:46 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 88 to end
+12:00:46 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 85
+12:00:46 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=26
+12:00:46 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:46 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=26
+12:00:46 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=27/8676 text_len=60701
+12:00:46 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=27
+12:00:46 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=88 cs=88 ce=89 text_len=60701
+12:00:46 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:46 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 88 chars
+12:00:46 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [88:89]
+12:00:46 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 89 to end
+12:00:46 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 88
+12:00:46 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=27
+12:00:46 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:46 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=27
+12:00:47 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=28/8676 text_len=60701
+12:00:47 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=28
+12:00:47 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=89 cs=89 ce=95 text_len=60701
+12:00:47 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:47 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 89 chars
+12:00:47 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [89:95]
+12:00:47 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 95 to end
+12:00:47 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 89
+12:00:47 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=28
+12:00:47 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:47 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=28
+12:00:47 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=29/8676 text_len=60701
+12:00:47 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=29
+12:00:47 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=95 cs=95 ce=95 text_len=60701
+12:00:47 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:47 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 95 chars
+12:00:47 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 95 to end
+12:00:48 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 95
+12:00:48 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=29
+12:00:48 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:48 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=29
+12:00:48 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=30/8676 text_len=60701
+12:00:48 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=30
+12:00:48 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=95 cs=95 ce=96 text_len=60701
+12:00:48 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:48 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 95 chars
+12:00:48 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [95:96]
+12:00:48 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 96 to end
+12:00:48 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 95
+12:00:48 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=30
+12:00:48 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:48 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=30
+12:00:49 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=31/8676 text_len=60701
+12:00:49 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=31
+12:00:49 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=96 cs=96 ce=97 text_len=60701
+12:00:49 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:49 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 96 chars
+12:00:49 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [96:97]
+12:00:49 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 97 to end
+12:00:49 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 96
+12:00:49 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=31
+12:00:49 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:49 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=31
+12:00:49 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=32/8676 text_len=60701
+12:00:49 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=32
+12:00:49 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=97 cs=97 ce=97 text_len=60701
+12:00:49 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:49 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 97 chars
+12:00:49 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 97 to end
+12:00:49 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 97
+12:00:49 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=32
+12:00:49 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:49 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=32
+12:00:50 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=33/8676 text_len=60701
+12:00:50 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=33
+12:00:50 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=97 cs=97 ce=98 text_len=60701
+12:00:50 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:50 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 97 chars
+12:00:50 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [97:98]
+12:00:50 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 98 to end
+12:00:50 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 97
+12:00:50 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=33
+12:00:50 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:50 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=33
+12:00:51 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step step=34/8676 text_len=60701
+12:00:51 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] getting prev_end and char range for step=34
+12:00:51 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] prev_end=98 cs=98 ce=99 text_len=60701
+12:00:51 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] clearing text display
+12:00:51 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting gray text: 98 chars
+12:00:51 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting highlighted text: [98:99]
+12:00:51 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] inserting pending text: from 99 to end
+12:00:51 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting cursor position to 98
+12:00:51 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] building detail label for token at step=34
+12:00:51 [DEBUG] gui.ui.dialogs.lz_demo_dialog: [LZSlider] setting detail label text
+12:00:51 [INFO] gui.ui.dialogs.lz_demo_dialog: [LZSlider] _render_step completed successfully for step=34
+12:00:55 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:00:55 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+12:00:55 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:04 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:04 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:04 [INFO] gui.engine.compressor: [engine] config saved to file
+12:01:04 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:04 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:04 [INFO] gui.engine.compressor: [engine] config saved to file
+12:01:04 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:04 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:05 [INFO] gui.ui: [ui] compress.enter
+12:01:05 [INFO] gui.main_window: [compress] _on_compress called
+12:01:05 [INFO] gui.main_window: [compress] selected_rows=[0]
+12:01:05 [INFO] gui.main_window: [compress] algorithm=deflate, records=1
+12:01:05 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=wow.html, status=CompressionStatus.DONE
+12:01:05 [INFO] gui.ui: [ui] compress.dispatch algo=deflate rows=[0] task_count=1
+12:01:05 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:01:05 [INFO] gui.worker: [compress] START record=2524377615344 file=D:/AAA_C/compression-tool/resources/wow.html algo=deflate
+12:01:05 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:05 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:05 [INFO] gui.engine.web_dict: [web_dict] preprocessed wow.html: 60975 -> 60537 bytes
+12:01:05 [INFO] gui.worker: [compress] web resource dict preprocess enabled for wow.html
+12:01:05 [INFO] gui.worker: [compress] loaded raw data: 60537 bytes
+12:01:05 [INFO] gui.worker: [compress] compressing with deflate (web_dict_cfg=True web_dict_active=True bytes=60537) ...
+12:01:05 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=18358
+12:01:05 [INFO] gui.worker: [compress] compress done: 60537 -> 18358 bytes
+12:01:05 [INFO] gui.explore: [explore] skip thread=Dummy-3 file=wow.html reason=user_ops_active
+12:01:05 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=wow.html
+12:01:05 [INFO] gui.main_window: [compress] row 0 finished: name=wow.html, status=CompressionStatus.DONE, ratio=0.3011
+12:01:05 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:01:05 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:05 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=14 threshold=50 total=14
+12:01:05 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:01:05 [INFO] gui.main_window: [compress] training data saved: 14 total samples
+12:01:05 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:01:06 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:06 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+12:01:06 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:14 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:14 [INFO] gui.engine.compressor: [engine] config saved to file
+12:01:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:14 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:14 [INFO] gui.engine.compressor: [engine] config saved to file
+12:01:14 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:14 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:15 [INFO] gui.ui: [ui] compress.enter
+12:01:15 [INFO] gui.main_window: [compress] _on_compress called
+12:01:15 [INFO] gui.main_window: [compress] selected_rows=[0]
+12:01:15 [INFO] gui.main_window: [compress] algorithm=deflate, records=1
+12:01:15 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=wow.html, status=CompressionStatus.DONE
+12:01:15 [INFO] gui.ui: [ui] compress.dispatch algo=deflate rows=[0] task_count=1
+12:01:15 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:01:15 [INFO] gui.worker: [compress] START record=2524377615344 file=D:/AAA_C/compression-tool/resources/wow.html algo=deflate
+12:01:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:15 [INFO] gui.engine.web_dict: [web_dict] preprocessed wow.html: 60975 -> 60537 bytes
+12:01:15 [INFO] gui.worker: [compress] web resource dict preprocess enabled for wow.html
+12:01:15 [INFO] gui.worker: [compress] loaded raw data: 60537 bytes
+12:01:15 [INFO] gui.worker: [compress] compressing with deflate (web_dict_cfg=True web_dict_active=True bytes=60537) ...
+12:01:15 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=18358
+12:01:15 [INFO] gui.worker: [compress] compress done: 60537 -> 18358 bytes
+12:01:15 [INFO] gui.explore: [explore] skip thread=Dummy-4 file=wow.html reason=user_ops_active
+12:01:15 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=wow.html
+12:01:15 [INFO] gui.main_window: [compress] row 0 finished: name=wow.html, status=CompressionStatus.DONE, ratio=0.3011
+12:01:15 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:01:15 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:15 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=15 threshold=50 total=15
+12:01:15 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:01:15 [INFO] gui.main_window: [compress] training data saved: 15 total samples
+12:01:15 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:01:20 [INFO] gui.main_window: [view] comparison from right-click, row=0
+12:01:20 [INFO] gui.main_window: [view] running comparison for wow.html (60975 bytes)
+12:01:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:20 [INFO] gui.worker: [comparison] wow.html/lzss done
+12:01:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:20 [INFO] gui.worker: [comparison] wow.html/lzdp done
+12:01:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:21 [INFO] gui.worker: [comparison] wow.html/dpflate done
+12:01:21 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:21 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:21 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:21 [INFO] gui.worker: [comparison] wow.html/deflate done
+12:01:21 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:21 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:22 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:22 [INFO] gui.worker: [comparison] wow.html/gzip done
+12:01:22 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:22 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:22 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:22 [WARNING] gui.worker: [comparison] brotli compress failed: Brotli: not available in algorithm_new api stack
+12:01:22 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:22 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:22 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:22 [WARNING] gui.worker: [comparison] zstd compress failed: Zstd: not available in algorithm_new api stack
+12:01:26 [ERROR] gui.main: Uncaught exception
+Traceback (most recent call last):
+  File "d:\AAA_C\compression-tool\src\gui\ui\main_window.py", line 3154, in _on_comparison_progress
+    self._comparison_progress.setLabelText(text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'setLabelText'
+12:01:27 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:27 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+12:01:27 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:36 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:36 [INFO] gui.engine.compressor: [engine] config saved to file
+12:01:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:36 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:36 [INFO] gui.engine.compressor: [engine] config saved to file
+12:01:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:36 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:39 [INFO] gui.ui: [ui] compress.enter
+12:01:39 [INFO] gui.main_window: [compress] _on_compress called
+12:01:39 [INFO] gui.main_window: [compress] selected_rows=[0]
+12:01:39 [INFO] gui.main_window: [compress] algorithm=dpflate, records=1
+12:01:39 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=wow.html, status=CompressionStatus.DONE
+12:01:39 [INFO] gui.ui: [ui] compress.dispatch algo=dpflate rows=[0] task_count=1
+12:01:39 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:01:39 [INFO] gui.worker: [compress] START record=2524377615344 file=D:/AAA_C/compression-tool/resources/wow.html algo=dpflate
+12:01:39 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:39 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:39 [INFO] gui.engine.web_dict: [web_dict] preprocessed wow.html: 60975 -> 60537 bytes
+12:01:39 [INFO] gui.worker: [compress] web resource dict preprocess enabled for wow.html
+12:01:39 [INFO] gui.worker: [compress] loaded raw data: 60537 bytes
+12:01:39 [INFO] gui.worker: [compress] compressing with dpflate (web_dict_cfg=True web_dict_active=True bytes=60537) ...
+12:01:40 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=17515
+12:01:40 [INFO] gui.worker: [compress] compress done: 60537 -> 17515 bytes
+12:01:40 [INFO] gui.explore: [explore] skip thread=Dummy-6 file=wow.html reason=user_ops_active
+12:01:40 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=wow.html
+12:01:40 [INFO] gui.main_window: [compress] row 0 finished: name=wow.html, status=CompressionStatus.DONE, ratio=0.2872
+12:01:40 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:01:40 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:40 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=16 threshold=50 total=16
+12:01:40 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:01:40 [INFO] gui.main_window: [compress] training data saved: 16 total samples
+12:01:40 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:01:43 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:43 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+12:01:43 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:53 [INFO] gui.ui: [ui] compress.enter
+12:01:53 [INFO] gui.main_window: [compress] _on_compress called
+12:01:53 [INFO] gui.main_window: [compress] selected_rows=[0]
+12:01:53 [INFO] gui.main_window: [compress] algorithm=lzdp, records=1
+12:01:53 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=wow.html, status=CompressionStatus.DONE
+12:01:53 [INFO] gui.ui: [ui] compress.dispatch algo=lzdp rows=[0] task_count=1
+12:01:53 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:01:53 [INFO] gui.worker: [compress] START record=2524377615344 file=D:/AAA_C/compression-tool/resources/wow.html algo=lzdp
+12:01:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:53 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:53 [INFO] gui.engine.web_dict: [web_dict] preprocessed wow.html: 60975 -> 60537 bytes
+12:01:53 [INFO] gui.worker: [compress] web resource dict preprocess enabled for wow.html
+12:01:53 [INFO] gui.worker: [compress] loaded raw data: 60537 bytes
+12:01:53 [INFO] gui.worker: [compress] compressing with lzdp (web_dict_cfg=True web_dict_active=True bytes=60537) ...
+12:01:54 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=22032
+12:01:54 [INFO] gui.worker: [compress] compress done: 60537 -> 22032 bytes
+12:01:54 [INFO] gui.explore: [explore] skip thread=Dummy-7 file=wow.html reason=user_ops_active
+12:01:54 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=wow.html
+12:01:54 [INFO] gui.main_window: [compress] row 0 finished: name=wow.html, status=CompressionStatus.DONE, ratio=0.3613
+12:01:54 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:01:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:54 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=17 threshold=50 total=17
+12:01:54 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:01:54 [INFO] gui.main_window: [compress] training data saved: 17 total samples
+12:01:54 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:01:56 [INFO] gui.ui: [ui] compress.enter
+12:01:56 [INFO] gui.main_window: [compress] _on_compress called
+12:01:56 [INFO] gui.main_window: [compress] selected_rows=[0]
+12:01:56 [INFO] gui.main_window: [compress] algorithm=lzss, records=1
+12:01:56 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=wow.html, status=CompressionStatus.DONE
+12:01:56 [INFO] gui.ui: [ui] compress.dispatch algo=lzss rows=[0] task_count=1
+12:01:56 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:01:56 [INFO] gui.worker: [compress] START record=2524377615344 file=D:/AAA_C/compression-tool/resources/wow.html algo=lzss
+12:01:56 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:56 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:56 [INFO] gui.engine.web_dict: [web_dict] preprocessed wow.html: 60975 -> 60537 bytes
+12:01:56 [INFO] gui.worker: [compress] web resource dict preprocess enabled for wow.html
+12:01:56 [INFO] gui.worker: [compress] loaded raw data: 60537 bytes
+12:01:56 [INFO] gui.worker.lzss: [LZSS_DEBUG] single_compress LZSS path: raw_data=60537 bytes, use_streaming=False, path=D:/AAA_C/compression-tool/resources/wow.html
+12:01:56 [INFO] gui.worker: [compress] compressing with lzss (web_dict_cfg=True web_dict_active=True bytes=60537) ...
+12:01:56 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=22598
+12:01:56 [INFO] gui.worker: [compress] compress done: 60537 -> 22598 bytes
+12:01:56 [INFO] gui.explore: [explore] skip thread=Dummy-8 file=wow.html reason=user_ops_active
+12:01:56 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=wow.html
+12:01:56 [INFO] gui.main_window: [compress] row 0 finished: name=wow.html, status=CompressionStatus.DONE, ratio=0.3706
+12:01:56 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:01:56 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:56 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=18 threshold=50 total=18
+12:01:56 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:01:56 [INFO] gui.main_window: [compress] training data saved: 18 total samples
+12:01:56 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:01:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:01:57 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+12:01:57 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:10 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:10 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:10 [INFO] gui.engine.compressor: [engine] config saved to file
+12:02:10 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:10 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:10 [INFO] gui.engine.compressor: [engine] config saved to file
+12:02:10 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:10 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:12 [INFO] gui.ui: [ui] compress.enter
+12:02:12 [INFO] gui.main_window: [compress] _on_compress called
+12:02:12 [INFO] gui.main_window: [compress] selected_rows=[0]
+12:02:12 [INFO] gui.main_window: [compress] algorithm=lzdp, records=1
+12:02:12 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=wow.html, status=CompressionStatus.DONE
+12:02:12 [INFO] gui.ui: [ui] compress.dispatch algo=lzdp rows=[0] task_count=1
+12:02:12 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:02:12 [INFO] gui.worker: [compress] START record=2524377615344 file=D:/AAA_C/compression-tool/resources/wow.html algo=lzdp
+12:02:12 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:12 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:12 [INFO] gui.engine.web_dict: [web_dict] preprocessed wow.html: 60975 -> 60537 bytes
+12:02:12 [INFO] gui.worker: [compress] web resource dict preprocess enabled for wow.html
+12:02:12 [INFO] gui.worker: [compress] loaded raw data: 60537 bytes
+12:02:12 [INFO] gui.worker: [compress] compressing with lzdp (web_dict_cfg=True web_dict_active=True bytes=60537) ...
+12:02:13 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=22857
+12:02:13 [INFO] gui.worker: [compress] compress done: 60537 -> 22857 bytes
+12:02:13 [INFO] gui.explore: [explore] skip thread=Dummy-9 file=wow.html reason=user_ops_active
+12:02:13 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=wow.html
+12:02:13 [INFO] gui.main_window: [compress] row 0 finished: name=wow.html, status=CompressionStatus.DONE, ratio=0.3749
+12:02:13 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:02:13 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:13 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=19 threshold=50 total=19
+12:02:13 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:02:13 [INFO] gui.main_window: [compress] training data saved: 19 total samples
+12:02:13 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:02:13 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:13 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+12:02:13 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:20 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:20 [INFO] gui.engine.compressor: [engine] config saved to file
+12:02:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:20 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:20 [INFO] gui.engine.compressor: [engine] config saved to file
+12:02:20 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:20 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:22 [INFO] gui.ui: [ui] compress.enter
+12:02:22 [INFO] gui.main_window: [compress] _on_compress called
+12:02:22 [INFO] gui.main_window: [compress] selected_rows=[0]
+12:02:22 [INFO] gui.main_window: [compress] algorithm=lzdp, records=1
+12:02:22 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=wow.html, status=CompressionStatus.DONE
+12:02:22 [INFO] gui.ui: [ui] compress.dispatch algo=lzdp rows=[0] task_count=1
+12:02:22 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:02:22 [INFO] gui.worker: [compress] START record=2524377615344 file=D:/AAA_C/compression-tool/resources/wow.html algo=lzdp
+12:02:22 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:22 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:22 [INFO] gui.engine.web_dict: [web_dict] preprocessed wow.html: 60975 -> 60537 bytes
+12:02:22 [INFO] gui.worker: [compress] web resource dict preprocess enabled for wow.html
+12:02:22 [INFO] gui.worker: [compress] loaded raw data: 60537 bytes
+12:02:22 [INFO] gui.worker: [compress] compressing with lzdp (web_dict_cfg=True web_dict_active=True bytes=60537) ...
+12:02:22 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=22032
+12:02:22 [INFO] gui.worker: [compress] compress done: 60537 -> 22032 bytes
+12:02:22 [INFO] gui.explore: [explore] skip thread=Dummy-10 file=wow.html reason=user_ops_active
+12:02:22 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=wow.html
+12:02:22 [INFO] gui.main_window: [compress] row 0 finished: name=wow.html, status=CompressionStatus.DONE, ratio=0.3613
+12:02:22 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:02:22 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:22 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=20 threshold=50 total=20
+12:02:22 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:02:22 [INFO] gui.main_window: [compress] training data saved: 20 total samples
+12:02:22 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:02:24 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:24 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+12:02:24 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:46 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:46 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:46 [INFO] gui.engine.compressor: [engine] config saved to file
+12:02:46 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:46 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:46 [INFO] gui.engine.compressor: [engine] config saved to file
+12:02:46 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:46 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:48 [INFO] gui.ui: [ui] compress.enter
+12:02:48 [INFO] gui.main_window: [compress] _on_compress called
+12:02:48 [INFO] gui.main_window: [compress] selected_rows=[0]
+12:02:48 [INFO] gui.main_window: [compress] algorithm=dpflate, records=1
+12:02:48 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=wow.html, status=CompressionStatus.DONE
+12:02:48 [INFO] gui.ui: [ui] compress.dispatch algo=dpflate rows=[0] task_count=1
+12:02:48 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:02:48 [INFO] gui.worker: [compress] START record=2524377615344 file=D:/AAA_C/compression-tool/resources/wow.html algo=dpflate
+12:02:48 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:48 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:48 [INFO] gui.engine.web_dict: [web_dict] preprocessed wow.html: 60975 -> 60537 bytes
+12:02:48 [INFO] gui.worker: [compress] web resource dict preprocess enabled for wow.html
+12:02:48 [INFO] gui.worker: [compress] loaded raw data: 60537 bytes
+12:02:48 [INFO] gui.worker: [compress] compressing with dpflate (web_dict_cfg=True web_dict_active=True bytes=60537) ...
+12:02:50 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=18387
+12:02:50 [INFO] gui.worker: [compress] compress done: 60537 -> 18387 bytes
+12:02:50 [INFO] gui.explore: [explore] skip thread=Dummy-11 file=wow.html reason=user_ops_active
+12:02:50 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=wow.html
+12:02:50 [INFO] gui.main_window: [compress] row 0 finished: name=wow.html, status=CompressionStatus.DONE, ratio=0.3015
+12:02:50 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:02:50 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:50 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=21 threshold=50 total=21
+12:02:50 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:02:50 [INFO] gui.main_window: [compress] training data saved: 21 total samples
+12:02:50 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:02:51 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:51 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+12:02:51 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:54 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:54 [INFO] gui.engine.compressor: [engine] config saved to file
+12:02:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:54 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:54 [INFO] gui.engine.compressor: [engine] config saved to file
+12:02:54 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:54 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:55 [INFO] gui.ui: [ui] compress.enter
+12:02:55 [INFO] gui.main_window: [compress] _on_compress called
+12:02:55 [INFO] gui.main_window: [compress] selected_rows=[0]
+12:02:55 [INFO] gui.main_window: [compress] algorithm=dpflate, records=1
+12:02:55 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=wow.html, status=CompressionStatus.DONE
+12:02:55 [INFO] gui.ui: [ui] compress.dispatch algo=dpflate rows=[0] task_count=1
+12:02:55 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:02:55 [INFO] gui.worker: [compress] START record=2524377615344 file=D:/AAA_C/compression-tool/resources/wow.html algo=dpflate
+12:02:55 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:55 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:55 [INFO] gui.engine.web_dict: [web_dict] preprocessed wow.html: 60975 -> 60537 bytes
+12:02:55 [INFO] gui.worker: [compress] web resource dict preprocess enabled for wow.html
+12:02:55 [INFO] gui.worker: [compress] loaded raw data: 60537 bytes
+12:02:55 [INFO] gui.worker: [compress] compressing with dpflate (web_dict_cfg=True web_dict_active=True bytes=60537) ...
+12:02:56 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=17515
+12:02:56 [INFO] gui.worker: [compress] compress done: 60537 -> 17515 bytes
+12:02:56 [INFO] gui.explore: [explore] skip thread=Dummy-12 file=wow.html reason=user_ops_active
+12:02:56 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=wow.html
+12:02:56 [INFO] gui.main_window: [compress] row 0 finished: name=wow.html, status=CompressionStatus.DONE, ratio=0.2872
+12:02:56 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:02:56 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:56 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=22 threshold=50 total=22
+12:02:56 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:02:56 [INFO] gui.main_window: [compress] training data saved: 22 total samples
+12:02:56 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:02:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:02:59 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+12:02:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:07 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+12:03:16 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+12:03:16 [INFO] gui.main_window: [add] adding 1 files
+12:03:16 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/resources/webpage_large/contact.html rows_before=1 source=file_dialog
+12:03:16 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+12:03:16 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=0.5 files_added=1 path_count=1 rows_after=2 source=file_dialog
+12:03:16 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+12:03:17 [INFO] gui.ui: [ui] compress.enter
+12:03:17 [INFO] gui.main_window: [compress] _on_compress called
+12:03:17 [INFO] gui.main_window: [compress] selected_rows=[1]
+12:03:17 [INFO] gui.main_window: [compress] algorithm=dpflate, records=1
+12:03:17 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=contact.html, status=CompressionStatus.PENDING
+12:03:17 [INFO] gui.ui: [ui] compress.dispatch algo=dpflate rows=[1] task_count=1
+12:03:17 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:03:17 [INFO] gui.worker: [compress] START record=2525149993376 file=D:/AAA_C/compression-tool/resources/webpage_large/contact.html algo=dpflate
+12:03:17 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:17 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:17 [INFO] gui.engine.web_dict: [web_dict] preprocessed contact.html: 2855 -> 2816 bytes
+12:03:17 [INFO] gui.worker: [compress] web resource dict preprocess enabled for contact.html
+12:03:17 [INFO] gui.worker: [compress] loaded raw data: 2816 bytes
+12:03:17 [INFO] gui.worker: [compress] compressing with dpflate (web_dict_cfg=True web_dict_active=True bytes=2816) ...
+12:03:17 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=1756
+12:03:17 [INFO] gui.worker: [compress] compress done: 2816 -> 1756 bytes
+12:03:17 [INFO] gui.explore: [explore] skip thread=Dummy-13 file=contact.html reason=user_ops_active
+12:03:17 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=contact.html
+12:03:17 [INFO] gui.main_window: [compress] row 1 finished: name=contact.html, status=CompressionStatus.DONE, ratio=0.6151
+12:03:17 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:03:17 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:17 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=23 threshold=50 total=23
+12:03:17 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:03:17 [INFO] gui.main_window: [compress] training data saved: 23 total samples
+12:03:17 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:03:19 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:19 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+12:03:19 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:23 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:23 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:23 [INFO] gui.engine.compressor: [engine] config saved to file
+12:03:23 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:23 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:23 [INFO] gui.engine.compressor: [engine] config saved to file
+12:03:23 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:23 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:25 [INFO] gui.ui: [ui] compress.enter
+12:03:25 [INFO] gui.main_window: [compress] _on_compress called
+12:03:25 [INFO] gui.main_window: [compress] selected_rows=[1]
+12:03:25 [INFO] gui.main_window: [compress] algorithm=dpflate, records=1
+12:03:25 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=contact.html, status=CompressionStatus.DONE
+12:03:25 [INFO] gui.ui: [ui] compress.dispatch algo=dpflate rows=[1] task_count=1
+12:03:25 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:03:25 [INFO] gui.worker: [compress] START record=2525149993376 file=D:/AAA_C/compression-tool/resources/webpage_large/contact.html algo=dpflate
+12:03:25 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:25 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:25 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:25 [INFO] gui.worker: [compress] loaded raw data: 2855 bytes
+12:03:25 [INFO] gui.worker: [compress] compressing with dpflate (web_dict_cfg=False web_dict_active=False bytes=2855) ...
+12:03:25 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:25 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=1750
+12:03:25 [INFO] gui.worker: [compress] compress done: 2855 -> 1750 bytes
+12:03:25 [INFO] gui.explore: [explore] skip thread=Dummy-14 file=contact.html reason=user_ops_active
+12:03:25 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=contact.html
+12:03:25 [INFO] gui.main_window: [compress] row 1 finished: name=contact.html, status=CompressionStatus.DONE, ratio=0.6130
+12:03:25 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:03:25 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:25 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=24 threshold=50 total=24
+12:03:25 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:03:25 [INFO] gui.main_window: [compress] training data saved: 24 total samples
+12:03:25 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:03:26 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:26 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+12:03:26 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:28 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:28 [INFO] gui.engine.compressor: [engine] config saved to file
+12:03:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:28 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:28 [INFO] gui.engine.compressor: [engine] config saved to file
+12:03:28 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:28 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:30 [INFO] gui.ui: [ui] compress.enter
+12:03:30 [INFO] gui.main_window: [compress] _on_compress called
+12:03:30 [INFO] gui.main_window: [compress] selected_rows=[1]
+12:03:30 [INFO] gui.main_window: [compress] algorithm=dpflate, records=1
+12:03:30 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=contact.html, status=CompressionStatus.DONE
+12:03:30 [INFO] gui.ui: [ui] compress.dispatch algo=dpflate rows=[1] task_count=1
+12:03:30 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:03:30 [INFO] gui.worker: [compress] START record=2525149993376 file=D:/AAA_C/compression-tool/resources/webpage_large/contact.html algo=dpflate
+12:03:30 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:30 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:30 [INFO] gui.engine.web_dict: [web_dict] preprocessed contact.html: 2855 -> 2816 bytes
+12:03:30 [INFO] gui.worker: [compress] web resource dict preprocess enabled for contact.html
+12:03:30 [INFO] gui.worker: [compress] loaded raw data: 2816 bytes
+12:03:30 [INFO] gui.worker: [compress] compressing with dpflate (web_dict_cfg=True web_dict_active=True bytes=2816) ...
+12:03:30 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=1756
+12:03:30 [INFO] gui.worker: [compress] compress done: 2816 -> 1756 bytes
+12:03:30 [INFO] gui.explore: [explore] skip thread=Dummy-15 file=contact.html reason=user_ops_active
+12:03:30 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=contact.html
+12:03:30 [INFO] gui.main_window: [compress] row 1 finished: name=contact.html, status=CompressionStatus.DONE, ratio=0.6151
+12:03:30 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:03:30 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:30 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=25 threshold=50 total=25
+12:03:30 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:03:30 [INFO] gui.main_window: [compress] training data saved: 25 total samples
+12:03:30 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:03:33 [INFO] gui.ui: [ui] compress.enter
+12:03:33 [INFO] gui.main_window: [compress] _on_compress called
+12:03:33 [INFO] gui.main_window: [compress] selected_rows=[1]
+12:03:33 [INFO] gui.main_window: [compress] algorithm=lzdp, records=1
+12:03:33 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=contact.html, status=CompressionStatus.DONE
+12:03:33 [INFO] gui.ui: [ui] compress.dispatch algo=lzdp rows=[1] task_count=1
+12:03:33 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:03:33 [INFO] gui.worker: [compress] START record=2525149993376 file=D:/AAA_C/compression-tool/resources/webpage_large/contact.html algo=lzdp
+12:03:33 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:33 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:33 [INFO] gui.engine.web_dict: [web_dict] preprocessed contact.html: 2855 -> 2816 bytes
+12:03:33 [INFO] gui.worker: [compress] web resource dict preprocess enabled for contact.html
+12:03:33 [INFO] gui.worker: [compress] loaded raw data: 2816 bytes
+12:03:33 [INFO] gui.worker: [compress] compressing with lzdp (web_dict_cfg=True web_dict_active=True bytes=2816) ...
+12:03:33 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=1267
+12:03:33 [INFO] gui.worker: [compress] compress done: 2816 -> 1267 bytes
+12:03:33 [INFO] gui.explore: [explore] skip thread=Dummy-16 file=contact.html reason=user_ops_active
+12:03:33 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=contact.html
+12:03:33 [INFO] gui.main_window: [compress] row 1 finished: name=contact.html, status=CompressionStatus.DONE, ratio=0.4438
+12:03:33 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:03:33 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:33 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=26 threshold=50 total=26
+12:03:33 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:03:33 [INFO] gui.main_window: [compress] training data saved: 26 total samples
+12:03:33 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:03:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:34 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+12:03:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:36 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:36 [INFO] gui.engine.compressor: [engine] config saved to file
+12:03:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:36 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:36 [INFO] gui.engine.compressor: [engine] config saved to file
+12:03:36 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:36 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:38 [INFO] gui.ui: [ui] compress.enter
+12:03:38 [INFO] gui.main_window: [compress] _on_compress called
+12:03:38 [INFO] gui.main_window: [compress] selected_rows=[1]
+12:03:38 [INFO] gui.main_window: [compress] algorithm=lzdp, records=1
+12:03:38 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=contact.html, status=CompressionStatus.DONE
+12:03:38 [INFO] gui.ui: [ui] compress.dispatch algo=lzdp rows=[1] task_count=1
+12:03:38 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:03:38 [INFO] gui.worker: [compress] START record=2525149993376 file=D:/AAA_C/compression-tool/resources/webpage_large/contact.html algo=lzdp
+12:03:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:38 [INFO] gui.worker: [compress] loaded raw data: 2855 bytes
+12:03:38 [INFO] gui.worker: [compress] compressing with lzdp (web_dict_cfg=False web_dict_active=False bytes=2855) ...
+12:03:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:38 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=1271
+12:03:38 [INFO] gui.worker: [compress] compress done: 2855 -> 1271 bytes
+12:03:38 [INFO] gui.explore: [explore] skip thread=Dummy-17 file=contact.html reason=user_ops_active
+12:03:38 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=contact.html
+12:03:38 [INFO] gui.main_window: [compress] row 1 finished: name=contact.html, status=CompressionStatus.DONE, ratio=0.4452
+12:03:38 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:03:38 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:38 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=27 threshold=50 total=27
+12:03:38 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:03:38 [INFO] gui.main_window: [compress] training data saved: 27 total samples
+12:03:38 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:03:39 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:39 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+12:03:39 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:41 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:41 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:41 [INFO] gui.engine.compressor: [engine] config saved to file
+12:03:41 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:41 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:41 [INFO] gui.engine.compressor: [engine] config saved to file
+12:03:41 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:41 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:41 [INFO] gui.ui: [ui] compress.enter
+12:03:41 [INFO] gui.main_window: [compress] _on_compress called
+12:03:41 [INFO] gui.main_window: [compress] selected_rows=[1]
+12:03:41 [INFO] gui.main_window: [compress] algorithm=lzdp, records=1
+12:03:41 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=contact.html, status=CompressionStatus.DONE
+12:03:41 [INFO] gui.ui: [ui] compress.dispatch algo=lzdp rows=[1] task_count=1
+12:03:41 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:03:41 [INFO] gui.worker: [compress] START record=2525149993376 file=D:/AAA_C/compression-tool/resources/webpage_large/contact.html algo=lzdp
+12:03:41 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:41 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:41 [INFO] gui.engine.web_dict: [web_dict] preprocessed contact.html: 2855 -> 2816 bytes
+12:03:41 [INFO] gui.worker: [compress] web resource dict preprocess enabled for contact.html
+12:03:41 [INFO] gui.worker: [compress] loaded raw data: 2816 bytes
+12:03:41 [INFO] gui.worker: [compress] compressing with lzdp (web_dict_cfg=True web_dict_active=True bytes=2816) ...
+12:03:41 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=1267
+12:03:41 [INFO] gui.worker: [compress] compress done: 2816 -> 1267 bytes
+12:03:41 [INFO] gui.explore: [explore] skip thread=Dummy-18 file=contact.html reason=user_ops_active
+12:03:41 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=contact.html
+12:03:41 [INFO] gui.main_window: [compress] row 1 finished: name=contact.html, status=CompressionStatus.DONE, ratio=0.4438
+12:03:42 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:03:42 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:42 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=28 threshold=50 total=28
+12:03:42 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:03:42 [INFO] gui.main_window: [compress] training data saved: 28 total samples
+12:03:42 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:03:45 [INFO] gui.main_window: [view] comparison from right-click, row=1
+12:03:45 [INFO] gui.main_window: [view] running comparison for contact.html (2855 bytes)
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [INFO] gui.worker: [comparison] contact.html/lzss done
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [INFO] gui.worker: [comparison] contact.html/lzdp done
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [INFO] gui.worker: [comparison] contact.html/dpflate done
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [INFO] gui.worker: [comparison] contact.html/deflate done
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [INFO] gui.worker: [comparison] contact.html/gzip done
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [WARNING] gui.worker: [comparison] brotli compress failed: Brotli: not available in algorithm_new api stack
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:45 [WARNING] gui.worker: [comparison] zstd compress failed: Zstd: not available in algorithm_new api stack
+12:03:51 [ERROR] gui.main: Uncaught exception
+Traceback (most recent call last):
+  File "d:\AAA_C\compression-tool\src\gui\ui\main_window.py", line 3154, in _on_comparison_progress
+    self._comparison_progress.setLabelText(text)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'setLabelText'
+12:03:52 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+12:03:56 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+12:03:56 [INFO] gui.main_window: [add] adding 1 files
+12:03:56 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb rows_before=2 source=file_dialog
+12:03:56 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+12:03:56 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=0.5 files_added=1 path_count=1 rows_after=3 source=file_dialog
+12:03:56 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+12:03:59 [INFO] gui.ui: [ui] compress.enter
+12:03:59 [INFO] gui.main_window: [compress] _on_compress called
+12:03:59 [INFO] gui.main_window: [compress] selected_rows=[2]
+12:03:59 [INFO] gui.main_window: [compress] algorithm=deflate, records=1
+12:03:59 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.PENDING
+12:03:59 [INFO] gui.ui: [ui] compress.dispatch algo=deflate rows=[2] task_count=1
+12:03:59 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:03:59 [INFO] gui.worker: [compress] START record=2525149992608 file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb algo=deflate
+12:03:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:59 [DEBUG] gui.engine.web_dict: [web_dict] skip imdb-movie-reviews-word2vec-tfidf-bow.ipynb: extension not in .css, .htm, .html, .js, .json
+12:03:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:59 [INFO] gui.worker: [compress] STREAMING mode for 2996683 bytes (file-to-file)
+12:03:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:59 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:03:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:59 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:03:59 [INFO] gui.engine.compressor: [smart_compress_file] D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb -> D:\AAA_C\compression-tool\Package\workspace\compressed\eb49ab007425_imdb-movie-reviews-word2vec-tfidf-bow.wcx via deflate (chunk_bytes=512000, file_opts=0)
+12:04:01 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+12:04:03 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+12:04:03 [INFO] gui.main_window: [add] adding 1 files
+12:04:03 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb rows_before=3 source=file_dialog
+12:04:03 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+12:04:03 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=0.5 files_added=1 path_count=1 rows_after=4 source=file_dialog
+12:04:03 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+12:04:04 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:04 [INFO] gui.engine.compressor: [engine] config reloaded from file, threshold=1.0000MB
+12:04:04 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:05 [INFO] gui.worker: [compress] streaming compress returned success=True compressed_size=502421
+12:04:05 [INFO] gui.explore: [explore] skip thread=Dummy-20 file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb reason=user_ops_active
+12:04:05 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+12:04:05 [INFO] gui.main_window: [compress] row 2 finished: name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.DONE, ratio=0.1677
+12:04:05 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:04:05 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:05 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=29 threshold=50 total=29
+12:04:05 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:04:05 [INFO] gui.main_window: [compress] training data saved: 29 total samples
+12:04:05 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:04:09 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:09 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:09 [INFO] gui.engine.compressor: [engine] config saved to file
+12:04:09 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:09 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:09 [INFO] gui.engine.compressor: [engine] config saved to file
+12:04:09 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:09 [INFO] gui.config.settings: [config] saved to D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:12 [INFO] gui.ui: [ui] compress.enter
+12:04:12 [INFO] gui.main_window: [compress] _on_compress called
+12:04:12 [INFO] gui.main_window: [compress] selected_rows=[3]
+12:04:12 [INFO] gui.main_window: [compress] algorithm=deflate, records=1
+12:04:12 [INFO] gui.main_window: [compress]   task[0]: type=FileRecord, name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.PENDING
+12:04:12 [INFO] gui.ui: [ui] compress.dispatch algo=deflate rows=[3] task_count=1
+12:04:12 [INFO] gui.ui: [ui] compress.worker_started file_count=1 task_count=1
+12:04:12 [INFO] gui.worker: [compress] START record=2525147396192 file=D:/AAA_C/compression-tool/resources/imdb-movie-reviews-word2vec-tfidf-bow.ipynb algo=deflate
+12:04:12 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:12 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:12 [DEBUG] gui.engine.web_dict: [web_dict] skip imdb-movie-reviews-word2vec-tfidf-bow.ipynb: extension not in .css, .htm, .html, .js, .json
+12:04:12 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:12 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:13 [INFO] gui.worker: [compress] loaded raw data: 2996683 bytes
+12:04:13 [INFO] gui.worker: [compress] compressing with deflate (web_dict_cfg=True web_dict_active=False bytes=2996683) ...
+12:04:13 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:19 [INFO] gui.worker: [compress] memory smart_compress returned success=True compressed_size=502403
+12:04:19 [INFO] gui.worker: [compress] compress done: 2996683 -> 502403 bytes
+12:04:19 [INFO] gui.explore: [explore] skip thread=Dummy-21 file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb reason=user_ops_active
+12:04:19 [INFO] gui.worker: [compress] maybe_explore enabled=True triggered=False file=imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+12:04:19 [INFO] gui.main_window: [compress] row 3 finished: name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb, status=CompressionStatus.DONE, ratio=0.1677
+12:04:19 [INFO] gui.ade.training: [TrainingDataStore] saved 1 samples to D:\AAA_C\compression-tool\ade\ade_training_v3.jsonl
+12:04:19 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:19 [DEBUG] gui.ade.retrain: [retrain] skip supplemental: new=30 threshold=50 total=30
+12:04:19 [INFO] gui.worker: [cancel] calling C++ set_streaming_compress_cancel_requested(False)
+12:04:19 [INFO] gui.main_window: [compress] training data saved: 30 total samples
+12:04:19 [INFO] gui.ui: [ui] compress.finished_ui cancelled=False
+12:04:24 [INFO] gui.ui: [ui] export.begin export_dir=D:/AAA_C/compression-tool/Package/compressed rows=[3]
+12:04:24 [INFO] gui.main_window: [export] rows=[3]
+12:04:24 [INFO] gui.main_window: [export] row=3 record=imdb-movie-reviews-word2vec-tfidf-bow.ipynb status=CompressionStatus.DONE type=FileRecord
+12:04:24 [INFO] gui.main_window: [export] done: exported=1
+12:04:24 [INFO] gui.ui: [ui] export.done export_dir=D:/AAA_C/compression-tool/Package/compressed exported=1
+12:04:25 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+12:04:26 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+12:04:26 [INFO] gui.main_window: [add] adding 1 files
+12:04:26 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/Package/compressed/imdb-movie-reviews-word2vec-tfidf-bow.ipynb.wcx rows_before=4 source=file_dialog
+12:04:26 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+12:04:26 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=0.6 files_added=1 path_count=1 rows_after=5 source=file_dialog
+12:04:26 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+12:04:28 [INFO] gui.ui: [ui] decompress.selection rows=[1, 2, 3, 4]
+12:04:29 [INFO] gui.ui: [ui] decompress.batch_start export_dir=D:/AAA_C/compression-tool/Package/decompressed task_count=4
+12:04:29 [INFO] gui.decompress: [decompress] gui_batch_begin export_dir=D:/AAA_C/compression-tool/Package/decompressed task_count=4
+12:04:29 [INFO] gui.decompress: [decompress] gui_item_begin name=contact.html row=1 task_type=session
+12:04:29 [INFO] gui.decompress: [decompress] gui_payload_begin algo=lzdp header_compressed=1267 header_original=2855 payload_bytes=1267
+12:04:29 [INFO] gui.decompress: [decompress] smart_decompress_begin algo=lzdp payload_bytes=1267
+12:04:29 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:29 [INFO] gui.decompress: [decompress] smart_decompress_branch mode=compressor_one_shot
+12:04:29 [INFO] gui.decompress: [decompress] decompress_native_begin algo=lzdp compressed_bytes=1267
+12:04:29 [INFO] gui.decompress: [decompress] decompress_native_end compressed_size=2816 compression_ratio=0.0 error_message= original_size=1267 out_bytes_len=2816 success=True time_ms=0.0207
+12:04:29 [INFO] gui.decompress: [decompress] smart_decompress_end branch=compressor_one_shot compressed_size=2816 compression_ratio=0.0 error_message= original_size=1267 out_bytes_len=2816 success=True time_ms=0.0207
+12:04:29 [INFO] gui.decompress: [decompress] gui_payload_engine compressed_size=2816 compression_ratio=0.0 error_message= original_size=1267 out_bytes_len=2816 success=True time_ms=0.0207
+12:04:29 [ERROR] gui.decompress: [decompress] gui_payload_size_mismatch actual=2816 algo=lzdp expected=2855
+12:04:29 [ERROR] gui.decompress: [decompress] gui_item_error err=解压结果大小 2816 与 WCX 记录的原始大小 2855 不一致 (lzdp)；请关闭 GUI 后重新编译 core_engine，并用当前版本重新压缩后再解压 name=contact.html
+12:04:29 [ERROR] gui.main_window: 解压失败 contact.html: 解压结果大小 2816 与 WCX 记录的原始大小 2855 不一致 (lzdp)；请关闭 GUI 后重新编译 core_engine，并用当前版本重新压缩后再解压
+Traceback (most recent call last):
+  File "d:\AAA_C\compression-tool\src\gui\ui\main_window.py", line 2787, in _on_decompress
+    output_data = self._decompress_payload(engine, header, payload)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\AAA_C\compression-tool\src\gui\ui\main_window.py", line 2493, in _decompress_payload
+    raise RuntimeError(
+RuntimeError: 解压结果大小 2816 与 WCX 记录的原始大小 2855 不一致 (lzdp)；请关闭 GUI 后重新编译 core_engine，并用当前版本重新压缩后再解压
+12:04:34 [INFO] gui.decompress: [decompress] gui_item_begin name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb row=2 task_type=session
+12:04:34 [INFO] gui.main_window: [decompress] STREAMING file-to-file: D:\AAA_C\compression-tool\Package\workspace\compressed\eb49ab007425_imdb-movie-reviews-word2vec-tfidf-bow.wcx -> D:/AAA_C/compression-tool/Package/decompressed\imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+12:04:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:34 [INFO] gui.engine.compressor: [smart_decompress_file] D:\AAA_C\compression-tool\Package\workspace\compressed\eb49ab007425_imdb-movie-reviews-word2vec-tfidf-bow.wcx -> D:/AAA_C/compression-tool/Package/decompressed\imdb-movie-reviews-word2vec-tfidf-bow.ipynb via deflate (default strategy-1: read-all WCX, full decode, then single disk write; native off)
+12:04:34 [INFO] gui.decompress: [decompress] smart_decompress_file_begin algo=deflate input=D:\AAA_C\compression-tool\Package\workspace\compressed\eb49ab007425_imdb-movie-reviews-word2vec-tfidf-bow.wcx input_file_bytes=502464 mode=python_strategy1_read_all_decompress_all output=D:/AAA_C/compression-tool/Package/decompressed\imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+12:04:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:34 [INFO] gui.decompress: [decompress] pipeline_decompress_begin algo=deflate chunk_bytes=512000 payload_bytes=502403
+12:04:34 [INFO] gui.decompress: [decompress] pipeline_decompress_end compressed_size=2996683 compression_ratio=0.0 error_message= original_size=502403 out_bytes_len=2996683 success=True time_ms=24.3109
+12:04:34 [INFO] gui.decompress: [decompress] smart_decompress_file_end compressed_size=2996683 compression_ratio=1.0 error_message= original_size=2996683 out_bytes_len=0 output_file_bytes=2996683 success=True time_ms=30.633999995188788
+12:04:34 [INFO] gui.decompress: [decompress] gui_file_session_verify compressed_size=2996683 compression_ratio=1.0 error_message= header_declared_original=2996683 original_size=2996683 out_bytes_len=0 output_file_bytes=2996683 output_path=D:/AAA_C/compression-tool/Package/decompressed\imdb-movie-reviews-word2vec-tfidf-bow.ipynb success=True time_ms=30.633999995188788
+12:04:34 [INFO] gui.decompress: [decompress] gui_item_begin name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb row=3 task_type=session
+12:04:34 [INFO] gui.decompress: [decompress] gui_payload_begin algo=deflate header_compressed=502403 header_original=2996683 payload_bytes=502403
+12:04:34 [INFO] gui.decompress: [decompress] smart_decompress_begin algo=deflate payload_bytes=502403
+12:04:34 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:34 [INFO] gui.decompress: [decompress] smart_decompress_branch mode=compressor_one_shot
+12:04:34 [INFO] gui.decompress: [decompress] decompress_native_begin algo=deflate compressed_bytes=502403
+12:04:35 [INFO] gui.decompress: [decompress] decompress_native_end compressed_size=2996683 compression_ratio=0.0 error_message= original_size=502403 out_bytes_len=2996683 success=True time_ms=24.6262
+12:04:35 [INFO] gui.decompress: [decompress] smart_decompress_end branch=compressor_one_shot compressed_size=2996683 compression_ratio=0.0 error_message= original_size=502403 out_bytes_len=2996683 success=True time_ms=24.6262
+12:04:35 [INFO] gui.decompress: [decompress] gui_payload_engine compressed_size=2996683 compression_ratio=0.0 error_message= original_size=502403 out_bytes_len=2996683 success=True time_ms=24.6262
+12:04:35 [INFO] gui.main_window: 解压成功: imdb-movie-reviews-word2vec-tfidf-bow.ipynb -> D:/AAA_C/compression-tool/Package/decompressed\imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+12:04:35 [INFO] gui.decompress: [decompress] gui_item_begin name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb.wcx row=4 task_type=disk
+12:04:35 [INFO] gui.decompress: [decompress] gui_payload_begin algo=deflate header_compressed=502403 header_original=2996683 payload_bytes=502403
+12:04:35 [INFO] gui.decompress: [decompress] smart_decompress_begin algo=deflate payload_bytes=502403
+12:04:35 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:35 [INFO] gui.decompress: [decompress] smart_decompress_branch mode=compressor_one_shot
+12:04:35 [INFO] gui.decompress: [decompress] decompress_native_begin algo=deflate compressed_bytes=502403
+12:04:35 [INFO] gui.decompress: [decompress] decompress_native_end compressed_size=2996683 compression_ratio=0.0 error_message= original_size=502403 out_bytes_len=2996683 success=True time_ms=29.7494
+12:04:35 [INFO] gui.decompress: [decompress] smart_decompress_end branch=compressor_one_shot compressed_size=2996683 compression_ratio=0.0 error_message= original_size=502403 out_bytes_len=2996683 success=True time_ms=29.7494
+12:04:35 [INFO] gui.decompress: [decompress] gui_payload_engine compressed_size=2996683 compression_ratio=0.0 error_message= original_size=502403 out_bytes_len=2996683 success=True time_ms=29.7494
+12:04:35 [INFO] gui.main_window: 解压成功: imdb-movie-reviews-word2vec-tfidf-bow.ipynb.wcx -> D:/AAA_C/compression-tool/Package/decompressed\imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+12:04:35 [INFO] gui.decompress: [decompress] gui_batch_end export_dir=D:/AAA_C/compression-tool/Package/decompressed success_count=3
+12:04:35 [INFO] gui.ui: [ui] decompress.batch_done export_dir=D:/AAA_C/compression-tool/Package/decompressed success_count=3
+12:04:40 [INFO] gui.ui: [ui] decompress.selection rows=[4]
+12:04:41 [INFO] gui.ui: [ui] decompress.aborted reason=no_export_dir
+12:04:43 [INFO] gui.ui: [ui] decompress.selection rows=[4]
+12:04:45 [INFO] gui.ui: [ui] decompress.batch_start export_dir=D:/AAA_C/compression-tool/Package/decompressed task_count=1
+12:04:45 [INFO] gui.decompress: [decompress] gui_batch_begin export_dir=D:/AAA_C/compression-tool/Package/decompressed task_count=1
+12:04:45 [INFO] gui.decompress: [decompress] gui_item_begin name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb.wcx row=4 task_type=disk
+12:04:45 [INFO] gui.decompress: [decompress] gui_payload_begin algo=deflate header_compressed=502403 header_original=2996683 payload_bytes=502403
+12:04:45 [INFO] gui.decompress: [decompress] smart_decompress_begin algo=deflate payload_bytes=502403
+12:04:45 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:04:45 [INFO] gui.decompress: [decompress] smart_decompress_branch mode=compressor_one_shot
+12:04:45 [INFO] gui.decompress: [decompress] decompress_native_begin algo=deflate compressed_bytes=502403
+12:04:45 [INFO] gui.decompress: [decompress] decompress_native_end compressed_size=2996683 compression_ratio=0.0 error_message= original_size=502403 out_bytes_len=2996683 success=True time_ms=24.4915
+12:04:45 [INFO] gui.decompress: [decompress] smart_decompress_end branch=compressor_one_shot compressed_size=2996683 compression_ratio=0.0 error_message= original_size=502403 out_bytes_len=2996683 success=True time_ms=24.4915
+12:04:45 [INFO] gui.decompress: [decompress] gui_payload_engine compressed_size=2996683 compression_ratio=0.0 error_message= original_size=502403 out_bytes_len=2996683 success=True time_ms=24.4915
+12:04:45 [INFO] gui.main_window: 解压成功: imdb-movie-reviews-word2vec-tfidf-bow.ipynb.wcx -> D:/AAA_C/compression-tool/Package/decompressed\imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+12:04:45 [INFO] gui.decompress: [decompress] gui_batch_end export_dir=D:/AAA_C/compression-tool/Package/decompressed success_count=1
+12:04:45 [INFO] gui.ui: [ui] decompress.batch_done export_dir=D:/AAA_C/compression-tool/Package/decompressed success_count=1
+12:04:48 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+12:04:50 [INFO] gui.ui: [ui] file_dialog.closed accepted=False count=0 kind=open_files
+12:04:58 [INFO] gui.ui: [ui] export.begin export_dir=D:/AAA_C/compression-tool/Package/compressed rows=[3]
+12:04:58 [INFO] gui.main_window: [export] rows=[3]
+12:04:58 [INFO] gui.main_window: [export] row=3 record=imdb-movie-reviews-word2vec-tfidf-bow.ipynb status=CompressionStatus.DONE type=FileRecord
+12:04:58 [INFO] gui.main_window: [export] done: exported=1
+12:04:58 [INFO] gui.ui: [ui] export.done export_dir=D:/AAA_C/compression-tool/Package/compressed exported=1
+12:04:59 [INFO] gui.ui: [ui] file_dialog.open kind=open_files
+12:05:00 [INFO] gui.ui: [ui] file_dialog.closed accepted=True count=1 kind=open_files
+12:05:00 [INFO] gui.main_window: [add] adding 1 files
+12:05:00 [INFO] gui.ui: [ui] add_paths.begin path_count=1 preview=D:/AAA_C/compression-tool/Package/compressed/imdb-movie-reviews-word2vec-tfidf-bow.ipynb.wcx rows_before=4 source=file_dialog
+12:05:00 [INFO] gui.main_window: [add] added 1 files, 0 dirs from 1 paths
+12:05:00 [INFO] gui.ui: [ui] add_paths.end dirs_added=0 elapsed_ms=0.5 files_added=1 path_count=1 rows_after=5 source=file_dialog
+12:05:00 [INFO] gui.ui: [ui] add_paths.status_applied msg=已添加 1 个文件 source=file_dialog
+12:05:11 [INFO] gui.ui: [ui] decompress.selection rows=[4]
+12:05:13 [INFO] gui.ui: [ui] decompress.batch_start export_dir=D:/AAA_C/compression-tool/Package/decompressed task_count=1
+12:05:13 [INFO] gui.decompress: [decompress] gui_batch_begin export_dir=D:/AAA_C/compression-tool/Package/decompressed task_count=1
+12:05:13 [INFO] gui.decompress: [decompress] gui_item_begin name=imdb-movie-reviews-word2vec-tfidf-bow.ipynb.wcx row=4 task_type=disk
+12:05:13 [INFO] gui.decompress: [decompress] gui_payload_begin algo=deflate header_compressed=502403 header_original=2996683 payload_bytes=502403
+12:05:13 [INFO] gui.decompress: [decompress] smart_decompress_begin algo=deflate payload_bytes=502403
+12:05:13 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:05:13 [INFO] gui.decompress: [decompress] smart_decompress_branch mode=compressor_one_shot
+12:05:13 [INFO] gui.decompress: [decompress] decompress_native_begin algo=deflate compressed_bytes=502403
+12:05:13 [INFO] gui.decompress: [decompress] decompress_native_end compressed_size=2996683 compression_ratio=0.0 error_message= original_size=502403 out_bytes_len=2996683 success=True time_ms=24.5178
+12:05:13 [INFO] gui.decompress: [decompress] smart_decompress_end branch=compressor_one_shot compressed_size=2996683 compression_ratio=0.0 error_message= original_size=502403 out_bytes_len=2996683 success=True time_ms=24.5178
+12:05:13 [INFO] gui.decompress: [decompress] gui_payload_engine compressed_size=2996683 compression_ratio=0.0 error_message= original_size=502403 out_bytes_len=2996683 success=True time_ms=24.5178
+12:05:13 [INFO] gui.main_window: 解压成功: imdb-movie-reviews-word2vec-tfidf-bow.ipynb.wcx -> D:/AAA_C/compression-tool/Package/decompressed\imdb-movie-reviews-word2vec-tfidf-bow.ipynb
+12:05:13 [INFO] gui.decompress: [decompress] gui_batch_end export_dir=D:/AAA_C/compression-tool/Package/decompressed success_count=1
+12:05:13 [INFO] gui.ui: [ui] decompress.batch_done export_dir=D:/AAA_C/compression-tool/Package/decompressed success_count=1
+12:05:37 [INFO] gui.ui: [ui] main_window.closeEvent
+12:05:37 [INFO] gui.main: [ui] aboutToQuit
+12:05:37 [DEBUG] gui.config.settings: [config] loaded from D:\AAA_C\compression-tool\Package\config\webcompress_settings.json
+12:05:37 [INFO] gui.main: [ui] event loop exited code=0

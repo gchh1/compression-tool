@@ -15,8 +15,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/core.dir/LZSSCompressor.cpp.obj.d"
   "CMakeFiles/core.dir/ZstdCompressor.cpp.obj"
   "CMakeFiles/core.dir/ZstdCompressor.cpp.obj.d"
-  "CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.obj"
-  "CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.obj.d"
+  "CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.obj"
+  "CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.obj.d"
   "libcore.a"
   "libcore.pdb"
 )

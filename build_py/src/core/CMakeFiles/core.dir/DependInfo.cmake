@@ -16,7 +16,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "D:/AAA_C/compression-tool/src/core/LZDPCompressor.cpp" "src/core/CMakeFiles/core.dir/LZDPCompressor.cpp.obj" "gcc" "src/core/CMakeFiles/core.dir/LZDPCompressor.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/core/LZSSCompressor.cpp" "src/core/CMakeFiles/core.dir/LZSSCompressor.cpp.obj" "gcc" "src/core/CMakeFiles/core.dir/LZSSCompressor.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/core/ZstdCompressor.cpp" "src/core/CMakeFiles/core.dir/ZstdCompressor.cpp.obj" "gcc" "src/core/CMakeFiles/core.dir/ZstdCompressor.cpp.obj.d"
-  "D:/AAA_C/compression-tool/src/processor/ChunkedStreamAdapter.cpp" "src/core/CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.obj" "gcc" "src/core/CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.obj.d"
+  "D:/AAA_C/compression-tool/src/core_new/StreamingAdapter.cpp" "src/core/CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.obj" "gcc" "src/core/CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.obj.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

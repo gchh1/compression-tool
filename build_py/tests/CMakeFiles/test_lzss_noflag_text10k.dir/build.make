@@ -93,6 +93,9 @@ test_lzss_noflag_text10k_EXTERNAL_OBJECTS =
 bin/test_lzss_noflag_text10k.exe: tests/CMakeFiles/test_lzss_noflag_text10k.dir/test_lzss_noflag_text10k.cpp.obj
 bin/test_lzss_noflag_text10k.exe: tests/CMakeFiles/test_lzss_noflag_text10k.dir/build.make
 bin/test_lzss_noflag_text10k.exe: src/algorithm_new/libalgorithm_new.a
+bin/test_lzss_noflag_text10k.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_lzss_noflag_text10k.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_lzss_noflag_text10k.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_lzss_noflag_text10k.exe: tests/CMakeFiles/test_lzss_noflag_text10k.dir/linkLibs.rsp
 bin/test_lzss_noflag_text10k.exe: tests/CMakeFiles/test_lzss_noflag_text10k.dir/objects1.rsp
 bin/test_lzss_noflag_text10k.exe: tests/CMakeFiles/test_lzss_noflag_text10k.dir/link.txt

@@ -6,7 +6,7 @@ add_library(
     DeflateCompressor.cpp
     LZDPCompressor.cpp
     DPFlateCompressor.cpp
-    ../processor/ChunkedStreamAdapter.cpp
+    ../core_new/StreamingAdapter.cpp
     GzipCompressor.cpp
     BrotliCompressor.cpp
     ZstdCompressor.cpp
@@ -16,6 +16,7 @@ target_include_directories(
     core
     PUBLIC
     include
+    ../core_new/include
     ../processor/include
 )
 

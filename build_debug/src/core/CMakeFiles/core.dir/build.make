@@ -143,20 +143,20 @@ src/core/CMakeFiles/core.dir/DPFlateCompressor.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/core.dir/DPFlateCompressor.cpp.s"
 	cd /d D:\AAA_C\compression-tool\build_debug\src\core && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\core\DPFlateCompressor.cpp -o CMakeFiles\core.dir\DPFlateCompressor.cpp.s
 
-src/core/CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.obj: src/core/CMakeFiles/core.dir/flags.make
-src/core/CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.obj: src/core/CMakeFiles/core.dir/includes_CXX.rsp
-src/core/CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.obj: D:/AAA_C/compression-tool/src/processor/ChunkedStreamAdapter.cpp
-src/core/CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.obj: src/core/CMakeFiles/core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object src/core/CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\src\core && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/core/CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.obj -MF CMakeFiles\core.dir\__\processor\ChunkedStreamAdapter.cpp.obj.d -o CMakeFiles\core.dir\__\processor\ChunkedStreamAdapter.cpp.obj -c D:\AAA_C\compression-tool\src\processor\ChunkedStreamAdapter.cpp
+src/core/CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.obj: src/core/CMakeFiles/core.dir/flags.make
+src/core/CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.obj: src/core/CMakeFiles/core.dir/includes_CXX.rsp
+src/core/CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.obj: D:/AAA_C/compression-tool/src/core_new/StreamingAdapter.cpp
+src/core/CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.obj: src/core/CMakeFiles/core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object src/core/CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.obj"
+	cd /d D:\AAA_C\compression-tool\build_debug\src\core && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/core/CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.obj -MF CMakeFiles\core.dir\__\core_new\StreamingAdapter.cpp.obj.d -o CMakeFiles\core.dir\__\core_new\StreamingAdapter.cpp.obj -c D:\AAA_C\compression-tool\src\core_new\StreamingAdapter.cpp
 
-src/core/CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\src\core && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\AAA_C\compression-tool\src\processor\ChunkedStreamAdapter.cpp > CMakeFiles\core.dir\__\processor\ChunkedStreamAdapter.cpp.i
+src/core/CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.i"
+	cd /d D:\AAA_C\compression-tool\build_debug\src\core && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\AAA_C\compression-tool\src\core_new\StreamingAdapter.cpp > CMakeFiles\core.dir\__\core_new\StreamingAdapter.cpp.i
 
-src/core/CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\src\core && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\processor\ChunkedStreamAdapter.cpp -o CMakeFiles\core.dir\__\processor\ChunkedStreamAdapter.cpp.s
+src/core/CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.s"
+	cd /d D:\AAA_C\compression-tool\build_debug\src\core && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\core_new\StreamingAdapter.cpp -o CMakeFiles\core.dir\__\core_new\StreamingAdapter.cpp.s
 
 src/core/CMakeFiles/core.dir/GzipCompressor.cpp.obj: src/core/CMakeFiles/core.dir/flags.make
 src/core/CMakeFiles/core.dir/GzipCompressor.cpp.obj: src/core/CMakeFiles/core.dir/includes_CXX.rsp
@@ -210,7 +210,7 @@ core_OBJECTS = \
 "CMakeFiles/core.dir/DeflateCompressor.cpp.obj" \
 "CMakeFiles/core.dir/LZDPCompressor.cpp.obj" \
 "CMakeFiles/core.dir/DPFlateCompressor.cpp.obj" \
-"CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.obj" \
+"CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.obj" \
 "CMakeFiles/core.dir/GzipCompressor.cpp.obj" \
 "CMakeFiles/core.dir/BrotliCompressor.cpp.obj" \
 "CMakeFiles/core.dir/ZstdCompressor.cpp.obj"
@@ -223,7 +223,7 @@ src/core/libcore.a: src/core/CMakeFiles/core.dir/LZSSCompressor.cpp.obj
 src/core/libcore.a: src/core/CMakeFiles/core.dir/DeflateCompressor.cpp.obj
 src/core/libcore.a: src/core/CMakeFiles/core.dir/LZDPCompressor.cpp.obj
 src/core/libcore.a: src/core/CMakeFiles/core.dir/DPFlateCompressor.cpp.obj
-src/core/libcore.a: src/core/CMakeFiles/core.dir/__/processor/ChunkedStreamAdapter.cpp.obj
+src/core/libcore.a: src/core/CMakeFiles/core.dir/__/core_new/StreamingAdapter.cpp.obj
 src/core/libcore.a: src/core/CMakeFiles/core.dir/GzipCompressor.cpp.obj
 src/core/libcore.a: src/core/CMakeFiles/core.dir/BrotliCompressor.cpp.obj
 src/core/libcore.a: src/core/CMakeFiles/core.dir/ZstdCompressor.cpp.obj

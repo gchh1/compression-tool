@@ -210,4 +210,6 @@ src/core_new/CMakeFiles/core_new.dir/ExternalCodecs.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stdarg.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/unistd.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/io.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/getopt.h
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/getopt.h \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/Brotli.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp

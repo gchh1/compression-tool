@@ -174,6 +174,30 @@ algorithm_new/fast:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/build
 .PHONY : algorithm_new/fast
 
+Brotli.obj: Brotli.cpp.obj
+.PHONY : Brotli.obj
+
+# target to build an object file
+Brotli.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/Brotli.cpp.obj
+.PHONY : Brotli.cpp.obj
+
+Brotli.i: Brotli.cpp.i
+.PHONY : Brotli.i
+
+# target to preprocess a source file
+Brotli.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/Brotli.cpp.i
+.PHONY : Brotli.cpp.i
+
+Brotli.s: Brotli.cpp.s
+.PHONY : Brotli.s
+
+# target to generate assembly for a file
+Brotli.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/Brotli.cpp.s
+.PHONY : Brotli.cpp.s
+
 Deflate.obj: Deflate.cpp.obj
 .PHONY : Deflate.obj
 
@@ -294,6 +318,30 @@ Visualization.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.s
 .PHONY : Visualization.cpp.s
 
+Zstd.obj: Zstd.cpp.obj
+.PHONY : Zstd.obj
+
+# target to build an object file
+Zstd.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj
+.PHONY : Zstd.cpp.obj
+
+Zstd.i: Zstd.cpp.i
+.PHONY : Zstd.i
+
+# target to preprocess a source file
+Zstd.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.i
+.PHONY : Zstd.cpp.i
+
+Zstd.s: Zstd.cpp.s
+.PHONY : Zstd.s
+
+# target to generate assembly for a file
+Zstd.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.s
+.PHONY : Zstd.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -307,6 +355,9 @@ help:
 	@echo ... list_install_components
 	@echo ... rebuild_cache
 	@echo ... algorithm_new
+	@echo ... Brotli.obj
+	@echo ... Brotli.i
+	@echo ... Brotli.s
 	@echo ... Deflate.obj
 	@echo ... Deflate.i
 	@echo ... Deflate.s
@@ -322,6 +373,9 @@ help:
 	@echo ... Visualization.obj
 	@echo ... Visualization.i
 	@echo ... Visualization.s
+	@echo ... Zstd.obj
+	@echo ... Zstd.i
+	@echo ... Zstd.s
 .PHONY : help
 
 

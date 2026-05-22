@@ -95,6 +95,9 @@ bin/test_lzss_algorithm_new_matrix.exe: tests/CMakeFiles/test_lzss_algorithm_new
 bin/test_lzss_algorithm_new_matrix.exe: src/api_new/libapi_new.a
 bin/test_lzss_algorithm_new_matrix.exe: src/core_new/libcore_new.a
 bin/test_lzss_algorithm_new_matrix.exe: src/algorithm_new/libalgorithm_new.a
+bin/test_lzss_algorithm_new_matrix.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_lzss_algorithm_new_matrix.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_lzss_algorithm_new_matrix.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_lzss_algorithm_new_matrix.exe: tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/linkLibs.rsp
 bin/test_lzss_algorithm_new_matrix.exe: tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/objects1.rsp
 bin/test_lzss_algorithm_new_matrix.exe: tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/link.txt
