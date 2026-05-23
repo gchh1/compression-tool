@@ -1,7 +1,6 @@
 add_library(
     viz
     STATIC
-    BackgroundWriter.cpp
     DiskVizObserver.cpp
     EntropyCollector.cpp
 )

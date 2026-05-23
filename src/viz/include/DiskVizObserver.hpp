@@ -1,22 +1,21 @@
 #pragma once
 
 #include "VizEvent.hpp"
-#include "BackgroundWriter.hpp"
 
 #include <cstddef>
 #include <cstdint>
-#include <memory>
+#include <fstream>
 #include <string>
-
-namespace compressor::memory { class MemoryPool; }
+#include <vector>
 
 namespace compressor::viz {
 
-/// Async .viz v2 writer backed by MemoryPool + BackgroundWriter.
+/// Synchronous .viz v2 writer.
 ///
-/// Each of the 4 event types gets a MemoryPool buffer.  When full, the
-/// buffer is submitted to a BackgroundWriter thread — the main thread
-/// never blocks on disk I/O.
+/// Events are buffered per type in reusable 64 KB vectors and flushed to
+/// temp files when full.  Final assembly in ``onCompressionFinish()``
+/// merges the per-type temp files into a single .viz file with a table of
+/// contents and footer.
 class DiskVizObserver : public IVizObserver {
 public:
     explicit DiskVizObserver(const std::string& path);
@@ -41,13 +40,10 @@ private:
 
     std::string path_;
     std::string tmp_paths_[kNumEventTypes];
+    std::ofstream streams_[kNumEventTypes];
 
-    // One background writer per event type → separate temp file
-    std::unique_ptr<BackgroundWriter> writers_[kNumEventTypes];
-
-    // Pool-backed buffers (one per type)
-    std::shared_ptr<compressor::memory::MemoryPool> pool_;
-    std::shared_ptr<std::vector<uint8_t>> bufs_[kNumEventTypes];
+    // Reusable per-type buffers (one vector per event type, 64 KB each)
+    std::vector<uint8_t> bufs_[kNumEventTypes];
     size_t buf_offsets_[kNumEventTypes] = {};
 
     uint64_t type_sizes_[kNumEventTypes] = {};

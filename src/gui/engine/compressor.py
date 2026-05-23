@@ -156,47 +156,6 @@ class CompressionEngine:
             cls._save_to_file()
             cls._push_config_to_native()
 
-    def _image_compress_file(
-        self,
-        input_path: str,
-        output_path: str,
-        algorithm: AlgorithmType,
-        algo_config: dict | None = None,
-    ):
-        """Compress an image file: read → memory → ImageCompressor → WCX write."""
-        t0 = time.perf_counter()
-        p = Path(input_path)
-        orig = p.stat().st_size if p.is_file() else 0
-        data = p.read_bytes()
-
-        result = self.pipeline_compress(data, algorithm, algo_config=algo_config)
-        if not result.success:
-            return result
-
-        # Wrap in WCX and write to output
-        wcx = self._engine.pack_wcx(
-            result.data,
-            self._get_pipeline_id(algorithm),
-            orig,
-            p.name,
-            False,
-        )
-        part_path = f"{output_path}.part"
-        try:
-            Path(part_path).write_bytes(wcx)
-            os.replace(part_path, output_path)
-        except OSError as e:
-            try:
-                Path(part_path).unlink(missing_ok=True)
-            except OSError:
-                pass
-            ms = (time.perf_counter() - t0) * 1000.0
-            return self._make_pipeline_result(False, orig, 0, ms, str(e), None)
-
-        comp = Path(output_path).stat().st_size
-        ms = (time.perf_counter() - t0) * 1000.0
-        return self._make_pipeline_result(True, orig, comp, ms, "", None)
-
     @staticmethod
     def _auto_detect_algorithm(input_path: str) -> AlgorithmType:
         """Detect the best algorithm for a file based on its content type.
@@ -390,9 +349,6 @@ class CompressionEngine:
         algo_id = self._get_pipeline_id(algorithm)
         if algo_id is None:
             raise ValueError(f"Algorithm {algorithm.value} not supported in pipeline mode")
-
-        if algorithm in (AlgorithmType.JPEG, AlgorithmType.WEBP):
-            return self._image_compress_file(input_path, output_path, algorithm, algo_config)
 
         cfg = _load_app_config()
         chunk_bytes = int(_get_effective_chunk_kb(algorithm, cfg)) * 1024
@@ -710,6 +666,9 @@ class CompressionEngine:
 
         if not self.available:
             raise RuntimeError("C++ core_engine not available")
+
+        if algorithm in (AlgorithmType.NONE,):
+            return self._make_pipeline_result(True, len(data), len(data), 0.0, "", data)
 
         algo_id = self._get_pipeline_id(algorithm)
         if algo_id is None:

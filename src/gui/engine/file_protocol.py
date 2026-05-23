@@ -199,41 +199,7 @@ def strip_wcx_if_present(container: bytes) -> bytes:
     return container
 
 
-def is_u32_be_chunk_framed_stream_payload(payload: bytes) -> bool:
-    """Return True if ``payload`` matches ``StreamingCompressAdapter`` / ``WholeFileFramedCompressAdapter`` wire format.
 
-    Format: ``(be_u32 chunk_len || chunk_bytes)*`` then ``be_u32 0`` terminator, consuming the entire buffer.
-
-    ``compressFile`` / ``pipeline_compress`` emit this; one-shot ``compress()`` emits raw codec bytes without
-    these length prefixes. ``smart_decompress`` must use ``pipeline_decompress`` for framed payloads even when
-    the payload is below the size threshold, otherwise native one-shot decode may crash.
-    """
-    pos = 0
-    n = len(payload)
-    if n < 8:
-        return False
-    saw_chunk = False
-    while pos + 4 <= n:
-        sz = int.from_bytes(payload[pos : pos + 4], "big")
-        pos += 4
-        if sz == 0:
-            return saw_chunk and pos == n
-        if sz > n - pos:
-            return False
-        saw_chunk = True
-        pos += sz
-    return False
-
-
-def detect_algorithm_from_file(path: str | Path) -> AlgorithmType | None:
-    p = Path(path)
-    try:
-        data = p.read_bytes()
-        header, _ = unpack_compressed_file(data)
-        return header.algorithm
-    except Exception as e:
-        logger.warning("[detect] failed to read header from %s: %s", path, e)
-        return None
 
 
 def make_export_filename(original_name: str, algorithm: AlgorithmType | None = None) -> str:

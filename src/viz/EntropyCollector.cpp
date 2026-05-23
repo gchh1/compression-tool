@@ -1,7 +1,5 @@
 #include "EntropyCollector.hpp"
 
-#include "BackgroundWriter.hpp"
-
 #include <cmath>
 #include <cstring>
 #include <filesystem>
@@ -18,13 +16,12 @@ EntropyCollector::EntropyCollector(const std::string& heat_path,
 {
     tmp_path_ = heat_path_ + ".part";
     entropy_buf_.reserve(kBufferFlushCount);
+    tmp_file_.open(tmp_path_, std::ios::binary | std::ios::trunc);
 }
 
 EntropyCollector::~EntropyCollector() {
-    if (writer_) {
-        writer_->stop();
-        writer_.reset();
-    }
+    if (tmp_file_.is_open())
+        tmp_file_.close();
     std::error_code ec;
     fs::remove(tmp_path_, ec);
 }
@@ -51,11 +48,6 @@ float EntropyCollector::avg_entropy() const {
     return static_cast<float>(entropy_sum_ / static_cast<double>(total_chunks_));
 }
 
-void EntropyCollector::ensureWriter() {
-    if (writer_) return;
-    writer_ = std::make_unique<BackgroundWriter>(tmp_path_);
-}
-
 void EntropyCollector::onRawChunk(const uint8_t* data, size_t size) {
     if (size == 0) return;
 
@@ -70,22 +62,18 @@ void EntropyCollector::onRawChunk(const uint8_t* data, size_t size) {
 
 void EntropyCollector::flushEntropyBuffer() {
     if (entropy_buf_.empty()) return;
-    ensureWriter();
 
     size_t nbytes = entropy_buf_.size() * sizeof(float);
-    auto buf = std::make_shared<std::vector<uint8_t>>(nbytes);
-    std::memcpy(buf->data(), entropy_buf_.data(), nbytes);
-    writer_->submit(std::move(buf), nbytes);
+    tmp_file_.write(reinterpret_cast<const char*>(entropy_buf_.data()),
+                    static_cast<std::streamsize>(nbytes));
     entropy_buf_.clear();
 }
 
 void EntropyCollector::onCompressionFinish() {
     flushEntropyBuffer();
 
-    if (writer_) {
-        writer_->stop();
-        writer_.reset();
-    }
+    if (tmp_file_.is_open())
+        tmp_file_.close();
 
     // ── Assemble .heat v2 file ────────────────────────
     // Header (20 bytes): magic(4) + version(4) + total_chunks(4) +

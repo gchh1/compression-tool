@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import math
+import os
 from collections import Counter
 from enum import Enum
 from pathlib import Path
@@ -445,6 +446,11 @@ class FolderRecord(Record):
         Reuses FileRecord objects from ``ensure_files_loaded()`` so that
         ``_find_item_by_record`` identity checks and in-place status updates
         work correctly for child items.
+
+        Nested ``FolderRecord`` entries inherit compressed ``FileRecord``
+        objects from the parent's flat ``files`` list so that their
+        ``total_original``, ``total_compressed``, and per-file ``heat_path`` /
+        ``viz_path`` metadata is available for heatmap / viz dialogs.
         """
         if self._tree_loaded:
             return
@@ -467,7 +473,34 @@ class FolderRecord(Record):
                     else:
                         entries.append(FileRecord(ep))
                 elif entry.is_dir():
-                    entries.append(FolderRecord(str(entry)))
+                    sub = FolderRecord(str(entry))
+                    # Link compressed file records from parent's flat list so
+                    # nested folders carry compression metadata (heat_path, viz_path).
+                    sub_path = str(entry)
+                    prefix = sub_path + os.sep
+                    sub_files = [fr for fr in self.files
+                                 if fr.path.startswith(prefix)]
+                    if sub_files:
+                        sub.files = sub_files
+                        sub.size = sum(fr.size for fr in sub_files)
+                        sub._files_loaded = True
+                        sub.total_original = sum(fr.size for fr in sub_files)
+                        sub.total_compressed = sum(
+                            (getattr(fr, 'compression_ratio', 1.0) or 1.0) * fr.size
+                            for fr in sub_files)
+                        sub.compression_ratio = (
+                            sub.total_compressed / sub.total_original
+                            if sub.total_original > 0 else 1.0)
+                        sub.total_time_ms = sum(
+                            getattr(fr, 'compression_time_ms', 0.0) or 0.0
+                            for fr in sub_files)
+                        done = sum(1 for fr in sub_files
+                                   if getattr(fr, 'status', None) == CompressionStatus.DONE)
+                        if done == len(sub_files):
+                            sub.status = CompressionStatus.DONE
+                        elif done > 0:
+                            sub.status = CompressionStatus.COMPRESSING
+                    entries.append(sub)
         except OSError:
             pass
         self.entries = entries

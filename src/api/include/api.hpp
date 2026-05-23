@@ -34,13 +34,6 @@ struct WCXUnpackResult {
     std::string error_message;
 };
 
-struct WcxEntrySummary {
-    std::string filename;
-    size_t original_size{0};
-    size_t compressed_size{0};
-    uint8_t algo_code{0};
-};
-
 /// In-memory compression. Algorithm parameters are read from the global
 /// ``CompressionConfig`` (loaded once at startup). Pass ``overrides_json``
 /// for per-call ADE delta.
@@ -89,9 +82,6 @@ auto decompressFile(const std::string& input_path,
                     const std::string& output_path,
                     std::span<const AlgorithmID> chain,
                     size_t stream_chunk_bytes = 0) -> CompressResult;
-
-/// Scan a WCX file: read all entry headers sequentially without decompressing payloads.
-auto scanWcx(const std::string& input_path) -> std::vector<WcxEntrySummary>;
 
 #endif  // __EMSCRIPTEN__
 

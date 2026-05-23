@@ -64,7 +64,7 @@
   },
   "streaming": {
     "threshold_mb": 10.0,
-    "chunk_size_kb": 1024,
+    "chunk_size_kb": 102,
     "workspace_root": "",
     "per_algorithm": {
       "deflate": {

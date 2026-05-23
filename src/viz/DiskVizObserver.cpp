@@ -1,11 +1,8 @@
 #include "DiskVizObserver.hpp"
 
-#include "MemoryPool.hpp"
-
 #include <cstdio>
 #include <cstring>
 #include <fstream>
-#include <iostream>
 
 namespace compressor::viz {
 
@@ -13,9 +10,9 @@ DiskVizObserver::DiskVizObserver(const std::string& path)
     : path_(path) {}
 
 DiskVizObserver::~DiskVizObserver() {
-    // Stop writers and clean up temp files
     for (uint32_t i = 0; i < kNumEventTypes; ++i) {
-        writers_[i].reset();  // calls stop() + join
+        if (streams_[i].is_open())
+            streams_[i].close();
         if (!tmp_paths_[i].empty())
             std::remove(tmp_paths_[i].c_str());
     }
@@ -25,24 +22,18 @@ void DiskVizObserver::ensureStarted() {
     if (started_) return;
     started_ = true;
 
-    // 8 chunks × 64 KB = 512 KB pool; main thread holds 4, leaves 4 for queue
-    pool_ = std::make_shared<compressor::memory::MemoryPool>(8, kChunkSize);
-
     for (uint32_t i = 0; i < kNumEventTypes; ++i) {
         tmp_paths_[i] = path_ + ".part" + std::to_string(i);
-        writers_[i] = std::make_unique<BackgroundWriter>(tmp_paths_[i]);
-        bufs_[i] = pool_->acquire();
+        bufs_[i].resize(kChunkSize);
+        streams_[i].open(tmp_paths_[i], std::ios::binary | std::ios::trunc);
     }
 }
 
 void DiskVizObserver::flushType(uint32_t type_idx) {
     if (buf_offsets_[type_idx] == 0) return;
-
-    // Move shared_ptr to background thread → it writes, then deleter returns to pool
-    writers_[type_idx]->submit(std::move(bufs_[type_idx]), buf_offsets_[type_idx]);
-
-    // Acquire fresh buffer from pool (blocks iff pool exhausted = natural back-pressure)
-    bufs_[type_idx] = pool_->acquire();
+    streams_[type_idx].write(
+        reinterpret_cast<const char*>(bufs_[type_idx].data()),
+        static_cast<std::streamsize>(buf_offsets_[type_idx]));
     buf_offsets_[type_idx] = 0;
 }
 
@@ -58,7 +49,7 @@ void DiskVizObserver::onEvent(VizEvent event) {
     if (off + n > kChunkSize)
         flushType(type_idx);
 
-    std::memcpy(bufs_[type_idx]->data() + off, tmp, n);
+    std::memcpy(bufs_[type_idx].data() + off, tmp, n);
     off += n;
     type_sizes_[type_idx] += n;
     ++event_counts_[type_idx];
@@ -68,10 +59,10 @@ void DiskVizObserver::onEvent(VizEvent event) {
 void DiskVizObserver::onBlockFinish() {}
 
 void DiskVizObserver::onCompressionFinish() {
-    // Flush remaining buffers + stop all writers
+    // Flush remaining buffers and close all per-type streams
     for (uint32_t i = 0; i < kNumEventTypes; ++i) {
         flushType(i);
-        writers_[i]->stop();
+        streams_[i].close();
     }
 
     // ── Compute layout ──────────────────────────────────────────

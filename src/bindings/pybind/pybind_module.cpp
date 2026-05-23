@@ -9,7 +9,6 @@
 
 #include "api.hpp"
 #include "AlgorithmFactory.hpp"
-#include "LZDP.hpp"
 #include "DebugLog.hpp"
 
 namespace py = pybind11;
@@ -65,48 +64,7 @@ PYBIND11_MODULE(core_engine, m) {
             DEBUG_LOG("[pybind] WEBCOMPRESS_DEBUG_LOG enabled: %s", debug_log_path);
         }
     }
-    m.def("enable_debug_log",
-          [](const std::string& path) {
-              compressor::debug::DebugLog::instance().enable(path);
-              DEBUG_LOG("[pybind] enable_debug_log: %s", path.c_str());
-          },
-          py::arg("path"),
-          "Enable native debug log output.");
-    m.def("disable_debug_log",
-          []() { compressor::debug::DebugLog::instance().disable(); },
-          "Disable native debug log output.");
     // === DEBUG_BLOCK_END ===
-
-    py::class_<compressor::algorithm::LZDP::Triple>(m, "LZDPTriple")
-        .def_readonly("offset", &compressor::algorithm::LZDP::Triple::offset)
-        .def_readonly("length", &compressor::algorithm::LZDP::Triple::length)
-        .def_readonly("literal", &compressor::algorithm::LZDP::Triple::literal);
-
-    py::class_<compressor::algorithm::LZDP::DPCandidate>(m, "LZDPDPCandidate")
-        .def_readonly("offset", &compressor::algorithm::LZDP::DPCandidate::offset)
-        .def_readonly("length", &compressor::algorithm::LZDP::DPCandidate::length)
-        .def_readonly("literal", &compressor::algorithm::LZDP::DPCandidate::literal)
-        .def_readonly("is_chosen", &compressor::algorithm::LZDP::DPCandidate::is_chosen);
-
-    py::class_<compressor::algorithm::LZDP::DPState>(m, "LZDPDPState")
-        .def_readonly("position", &compressor::algorithm::LZDP::DPState::position)
-        .def_readonly("reachable", &compressor::algorithm::LZDP::DPState::reachable)
-        .def_readonly("token_count", &compressor::algorithm::LZDP::DPState::token_count)
-        .def_readonly("predecessor", &compressor::algorithm::LZDP::DPState::predecessor)
-        .def_readonly("choice", &compressor::algorithm::LZDP::DPState::choice);
-
-    py::class_<compressor::algorithm::LZDP::DPStep>(m, "LZDPDPStep")
-        .def_readonly("position", &compressor::algorithm::LZDP::DPStep::position)
-        .def_readonly("candidates", &compressor::algorithm::LZDP::DPStep::candidates)
-        .def_readonly("best_token_count", &compressor::algorithm::LZDP::DPStep::best_token_count);
-
-    py::class_<compressor::algorithm::LZDP::DPVisualization>(m, "LZDPDPVisualization")
-        .def_readonly("steps", &compressor::algorithm::LZDP::DPVisualization::steps)
-        .def_readonly("dp_array", &compressor::algorithm::LZDP::DPVisualization::dp_array)
-        .def_readonly("optimal_path", &compressor::algorithm::LZDP::DPVisualization::optimal_path)
-        .def_readonly("input_length", &compressor::algorithm::LZDP::DPVisualization::input_length)
-        .def_readonly("search_size", &compressor::algorithm::LZDP::DPVisualization::search_size)
-        .def_readonly("lookahead_size", &compressor::algorithm::LZDP::DPVisualization::lookahead_size);
 
     // ===== AlgorithmID enum =====
 
@@ -134,51 +92,6 @@ PYBIND11_MODULE(core_engine, m) {
         .value("WEBP_COMPRESS", compressor::core::AlgorithmID::WebP_Compress)
         .value("WEBP_DECOMPRESS", compressor::core::AlgorithmID::WebP_Decompress)
         .export_values();
-
-    // ===== Parameter struct bindings (kept for backward compat) =====
-
-    py::class_<compressor::core::LzdpWholeFileParams>(m, "LzdpWholeFileParams")
-        .def(py::init<>())
-        .def_readwrite("search_size", &compressor::core::LzdpWholeFileParams::search_size)
-        .def_readwrite("lookahead_size", &compressor::core::LzdpWholeFileParams::lookahead_size)
-        .def_readwrite("min_match", &compressor::core::LzdpWholeFileParams::min_match)
-        .def_readwrite("dp_top", &compressor::core::LzdpWholeFileParams::dp_top)
-        .def_readwrite("use_flag_encoding", &compressor::core::LzdpWholeFileParams::use_flag_encoding)
-        .def_readwrite("match_engine", &compressor::core::LzdpWholeFileParams::match_engine);
-
-    py::class_<compressor::core::DpflatePipelineParams>(m, "DpflatePipelineParams")
-        .def(py::init<>())
-        .def_readwrite("search_size", &compressor::core::DpflatePipelineParams::search_size)
-        .def_readwrite("lookahead_size", &compressor::core::DpflatePipelineParams::lookahead_size)
-        .def_readwrite("min_match", &compressor::core::DpflatePipelineParams::min_match)
-        .def_readwrite("max_chain_length",
-                       &compressor::core::DpflatePipelineParams::max_chain_length)
-        .def_readwrite("dp_sub_match_max",
-                       &compressor::core::DpflatePipelineParams::dp_sub_match_max)
-        .def_readwrite("match_engine", &compressor::core::DpflatePipelineParams::match_engine)
-        .def_readwrite("use_flag_encoding",
-                       &compressor::core::DpflatePipelineParams::use_flag_encoding)
-        .def_readwrite("use_3hfmtree",
-                       &compressor::core::DpflatePipelineParams::use_3hfmtree)
-        .def_readwrite("huffman_offset_chunk_bits",
-                       &compressor::core::DpflatePipelineParams::huffman_offset_chunk_bits)
-        .def_readwrite("huffman_length_chunk_bits",
-                       &compressor::core::DpflatePipelineParams::huffman_length_chunk_bits);
-
-    py::class_<compressor::core::DeflatePipelineParams>(m, "DeflatePipelineParams")
-        .def(py::init<>())
-        .def_readwrite("search_size", &compressor::core::DeflatePipelineParams::search_size)
-        .def_readwrite("lookahead_size",
-                       &compressor::core::DeflatePipelineParams::lookahead_size)
-        .def_readwrite("min_match", &compressor::core::DeflatePipelineParams::min_match)
-        .def_readwrite("max_chain_length",
-                       &compressor::core::DeflatePipelineParams::max_chain_length);
-
-    py::class_<compressor::core::ImageCompressParams>(m, "ImageCompressParams")
-        .def(py::init<>())
-        .def_readwrite("quality", &compressor::core::ImageCompressParams::quality)
-        .def_readwrite("max_width", &compressor::core::ImageCompressParams::max_width)
-        .def_readwrite("max_height", &compressor::core::ImageCompressParams::max_height);
 
     // ===== Result structs =====
 
@@ -226,12 +139,6 @@ PYBIND11_MODULE(core_engine, m) {
           py::arg("config_path"),
           "Load compression config from JSON file into C++ global config. "
           "Call at startup and after GUI config changes.");
-
-    m.def("get_config_json",
-          []() -> std::string {
-              return compressor::core::compression_config().to_json_string();
-          },
-          "Return the current global compression config as a JSON string.");
 
     // ===== Core API functions =====
 
@@ -331,21 +238,6 @@ PYBIND11_MODULE(core_engine, m) {
           },
           py::arg("requested"),
           "Request cooperative cancel for pipeline_compress_file (checked between input chunks).");
-
-    py::class_<compressor::api::WcxEntrySummary>(m, "WcxEntrySummary")
-        .def(py::init<>())
-        .def_readwrite("filename", &compressor::api::WcxEntrySummary::filename)
-        .def_readwrite("original_size", &compressor::api::WcxEntrySummary::original_size)
-        .def_readwrite("compressed_size", &compressor::api::WcxEntrySummary::compressed_size)
-        .def_readwrite("algo_code", &compressor::api::WcxEntrySummary::algo_code);
-
-    m.def("scan_wcx",
-          [](const std::string& input_path) -> std::vector<compressor::api::WcxEntrySummary> {
-              return compressor::api::scanWcx(input_path);
-          },
-          py::arg("input_path"),
-          "Scan a WCX archive: read all entry headers sequentially without decompressing payloads. "
-          "Returns a list of WcxEntrySummary for browse-mode display.");
 
     // ===== ADE (Algorithm Decision Engine) =====
     init_ade(m);

@@ -205,6 +205,11 @@ class FileTableWidget(QTreeWidget):
         # Update folder summary after loading
         record.ensure_files_loaded()
         folder_item.setText(self.COL_SIZE, f"{record.filenum} 文件 / {formatted_size(record.size)}")
+        if record.total_original > 0:
+            folder_item.setText(self.COL_RATIO,
+                                f"{(record.compression_ratio * 100):.2f}%")
+        if record.total_time_ms > 0:
+            folder_item.setText(self.COL_STATUS, record.status.value)
 
     # ── Public API ────────────────────────────────────────────────
 

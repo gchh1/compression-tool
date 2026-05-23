@@ -219,7 +219,6 @@ class VizLoader:
             self._section_sizes[type_tag] = byte_size
         self._total_events = struct.unpack("<I", f.read(4))[0]
 
-    # ── v2 O(1) random access (mmap) ───────────────────────────────
 
     def find_event_index_at_offset(self, byte_offset: int) -> int:
         """Binary-search MatchEvents by input_pos to find the event nearest *byte_offset*.

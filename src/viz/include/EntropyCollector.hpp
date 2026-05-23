@@ -2,16 +2,14 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <memory>
+#include <fstream>
 #include <string>
 #include <vector>
 
 namespace compressor::viz {
 
-class BackgroundWriter;
-
 /// Collects per-chunk Shannon entropy during streaming compression and
-/// writes a single-file .heat v2 file via BackgroundWriter.
+/// writes a single-file .heat v2 file.
 ///
 /// .heat v2 format (mmap-friendly, all fixed-size):
 ///
@@ -49,8 +47,6 @@ class EntropyCollector {
     EntropyCollector& operator=(const EntropyCollector&) = delete;
 
     /// Compute Shannon entropy of data[0..size) and buffer the result.
-    /// @param data   Raw input bytes (not compressed).
-    /// @param size   Number of valid bytes in data.
     void onRawChunk(const uint8_t* data, size_t size);
 
     /// Flush remaining buffers, write .heat v2 header + chunk data,
@@ -69,19 +65,16 @@ class EntropyCollector {
     static float computeEntropy(const uint8_t* data, size_t size);
 
    private:
-    void ensureWriter();
     void flushEntropyBuffer();
 
     std::string heat_path_;
     std::string tmp_path_;
+    std::ofstream tmp_file_;
     uint32_t chunk_bytes_;
     uint32_t total_chunks_ = 0;
-    double entropy_sum_ = 0.0;  // running sum for avg_entropy
+    double entropy_sum_ = 0.0;
 
-    // BackgroundWriter for async chunk entropy writes
-    std::unique_ptr<BackgroundWriter> writer_;
-
-    // Buffered entropy values (float32 per chunk) — flushed to writer
+    // Buffered entropy values (float32 per chunk) — flushed to temp file
     // when the buffer reaches kBufferFlushCount entries.
     static constexpr size_t kBufferFlushCount = 256;
     std::vector<float> entropy_buf_;

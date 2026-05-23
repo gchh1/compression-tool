@@ -13,7 +13,7 @@
 #include <span>
 #include <vector>
 
-#include "BackgroundWriter.hpp"
+
 #include "DataChunk.hpp"
 #include "DebugLog.hpp"
 #include "DiskVizObserver.hpp"
@@ -59,7 +59,7 @@ void set_streaming_compress_cancel_requested(bool requested) {
 #endif
 
 constexpr size_t kStreamingPipelinePoolChunksMin = 4;
-constexpr size_t kStreamingPipelinePoolChunksMax = 32;
+constexpr size_t kStreamingPipelinePoolChunksMax = 8;
 
 inline size_t adaptivePoolChunks(size_t data_size, size_t chunk_bytes) {
     if (data_size == 0) return kStreamingPipelinePoolChunksMin;
@@ -375,8 +375,13 @@ auto compressFile(const std::string& input_path,
         output.close();
     }
 
-    // Background writer for async payload writes
-    auto writer = std::make_unique<compressor::viz::BackgroundWriter>(path_part.string(), true);
+    // Open .part for synchronous append (header already written above)
+    std::ofstream output(path_part, std::ios::binary | std::ios::app);
+    if (!output) {
+        result.error_message = "Cannot open staged output file for append";
+        remove_path_best_effort(path_part);
+        return result;
+    }
 
     std::vector<uint8_t> buf(chunk);
     uint64_t bytes_read = 0;
@@ -384,7 +389,7 @@ auto compressFile(const std::string& input_path,
 
     while (bytes_read < result.original_size) {
         if (detail_stream_cancel::is_cancel_requested()) {
-            writer->stop();
+            output.close();
             remove_path_best_effort(path_part);
             auto t1 = std::chrono::high_resolution_clock::now();
             result.time_ms =
@@ -411,7 +416,8 @@ auto compressFile(const std::string& input_path,
             auto out_chunk = pipeline.pull();
             if (out_chunk.empty()) break;
             auto v = out_chunk.view();
-            writer->submit(out_chunk.owner(), v.size());
+            output.write(reinterpret_cast<const char*>(v.data()),
+                         static_cast<std::streamsize>(v.size()));
             total_written += v.size();
         }
     }
@@ -422,22 +428,23 @@ auto compressFile(const std::string& input_path,
         auto out_chunk = pipeline.pull();
         if (out_chunk.empty()) break;
         auto v = out_chunk.view();
-        writer->submit(out_chunk.owner(), v.size());
+        output.write(reinterpret_cast<const char*>(v.data()),
+                     static_cast<std::streamsize>(v.size()));
         total_written += v.size();
     }
 
-    // Flush entropy collector before stopping writers
+    // Flush entropy collector
     if (entropy_collector) {
         entropy_collector->onCompressionFinish();
         entropy_collector.reset();
     }
 
-    // Viz observer MUST be reset before writer->stop()
+    // Viz observer MUST be reset before final output flush
     viz_observer.reset();
 
-    // Wait for async writes to complete
-    writer->stop();
-    writer.reset();
+    // Flush and close output
+    output.flush();
+    output.close();
 
     // Patch compressed_size in WCX header at byte offset 10
     {
@@ -746,44 +753,6 @@ auto decompressFile(const std::string& input_path,
         }
     }
     return result;
-}
-
-auto scanWcx(const std::string& input_path) -> std::vector<WcxEntrySummary> {
-    std::error_code ec;
-    const auto file_size = fs::file_size(input_path, ec);
-    if (ec) return {};
-
-    std::ifstream fin(input_path, std::ios::binary);
-    if (!fin) return {};
-
-    uint64_t pos = 0;
-    std::vector<WcxEntrySummary> entries;
-    while (pos < file_size) {
-        std::vector<uint8_t> buf(static_cast<size_t>(
-            std::min<uint64_t>(file_size - pos, 4096ULL)));
-        fin.read(reinterpret_cast<char*>(buf.data()),
-                 static_cast<std::streamsize>(buf.size()));
-        auto got = fin.gcount();
-        if (got <= 0) break;
-        buf.resize(static_cast<size_t>(got));
-
-        wcx::HeaderView h{};
-        if (!wcx::tryParseHeader(std::span<const uint8_t>(buf), h) || !h.valid)
-            break;
-
-        WcxEntrySummary entry;
-        entry.filename = h.original_filename;
-        entry.original_size = h.original_size;
-        entry.compressed_size = h.compressed_size;
-        entry.algo_code = h.algo_code;
-        entries.push_back(entry);
-
-        uint64_t skip = static_cast<uint64_t>(h.total_size) + h.compressed_size;
-        if (skip == 0) break;
-        pos += skip;
-        fin.seekg(static_cast<std::streamoff>(pos), std::ios::beg);
-    }
-    return entries;
 }
 
 #endif  // __EMSCRIPTEN__
