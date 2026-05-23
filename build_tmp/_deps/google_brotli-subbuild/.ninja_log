@@ -1,0 +1,21 @@
+# ninja log v6
+850	967	8011570514152576	D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-test	b96f9ad61a90c9cc
+967	1139	8011570515884650	D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/CMakeFiles/google_brotli-populate-complete	371a31772893bb9c
+1	125	8011570505729773	google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-mkdir	fae76059e23f4641
+489	611	8011570510595885	google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-configure	90350fda75403740
+730	849	8011570512984783	google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-install	6f617d35fd6a2c2c
+248	367	8011570508160743	D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-update	609b102b3807df83
+730	849	8011570512984783	D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-install	6f617d35fd6a2c2c
+367	489	8011570509376507	D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-patch	f069363f005fa27
+367	489	8011570509376507	google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-patch	f069363f005fa27
+967	1139	8011570515884650	D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-done	371a31772893bb9c
+967	1139	8011570515884650	google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-done	371a31772893bb9c
+125	248	8011570506969376	google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-download	c47244ad8fcb4ef0
+489	611	8011570510595885	D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-configure	90350fda75403740
+125	248	8011570506969376	D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-download	c47244ad8fcb4ef0
+611	730	8011570511783314	google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-build	276a7dfba4b0f074
+1	125	8011570505729773	D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-mkdir	fae76059e23f4641
+248	367	8011570508160743	google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-update	609b102b3807df83
+967	1139	8011570515884650	CMakeFiles/google_brotli-populate-complete	371a31772893bb9c
+611	730	8011570511783314	D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-build	276a7dfba4b0f074
+850	967	8011570514152576	google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-test	b96f9ad61a90c9cc

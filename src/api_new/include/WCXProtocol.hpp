@@ -11,9 +11,9 @@ namespace compressor::core {
 enum class AlgorithmID;
 }
 
-namespace compressor::api::wcx {
+namespace compressor::api_new::wcx {
 
-auto toAlgoCode(core::AlgorithmID id) -> uint8_t;
+auto toAlgoCode(compressor::core::AlgorithmID id) -> uint8_t;
 
 struct HeaderView {
     bool valid{false};
@@ -44,4 +44,4 @@ auto buildHeaderBytes(uint8_t algo_code, uint32_t original_size,
                       uint32_t compressed_size,
                       const std::string& original_filename) -> std::vector<uint8_t>;
 
-}  // namespace compressor::api::wcx
+}  // namespace compressor::api_new::wcx

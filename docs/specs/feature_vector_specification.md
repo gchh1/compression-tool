@@ -496,7 +496,7 @@ const std::vector<MagicPattern> MAGIC_DB = {
 
 #### Base[7]: 字节值标准差归一化 (std_byte_normalized)
 - **范围**: [0.0, 1.0]
-- **公式**: stddev(byte_values) / 115.0
+- **公式**: std(byte_values) / 115.0
 - **实现**: Welford's online algorithm (与Base[6]共享遍历!)
 
 #### Base[8]: 最长连续相同字节 (longest_run_log2)

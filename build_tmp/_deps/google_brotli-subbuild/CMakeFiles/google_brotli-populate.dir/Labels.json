@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/CMakeFiles/google_brotli-populate"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/CMakeFiles/google_brotli-populate.rule"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/CMakeFiles/google_brotli-populate-complete.rule"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-build.rule"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-configure.rule"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-download.rule"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-install.rule"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-mkdir.rule"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-patch.rule"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-test.rule"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"google_brotli-populate"
+		],
+		"name" : "google_brotli-populate"
+	}
+}

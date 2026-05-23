@@ -1,0 +1,76 @@
+[deflate_dpflate_cartesian] sizes=64/256/512/2048 KiB chunk=300 KiB quick=1
+
+=== Deflate FLATE ===
+  [Deflate/FLATE] PASS size=65536 flag=1 payload=288 (B)
+  [Deflate/FLATE] PASS size=65536 flag=0 payload=833 (B)
+
+=== Deflate 3HfMT ===
+  [Deflate/3HfMT] PASS size=65536 flag=0 payload=5242 (B)
+  [Deflate/3HfMT] PASS size=65536 flag=1 payload=5242 (B)
+
+=== DPFlate FLATE ===
+[DP-backtrack] start cur_pos=65536 dp_size=65537 dp_last.pre_pos=65316
+[DP-backtrack] step 1: cur_pre_pos=65316 cur_offset=36 cur_length=220
+[DP-backtrack] step 2: cur_pre_pos=65061 cur_offset=36 cur_length=255
+[DP-backtrack] step 3: cur_pre_pos=64806 cur_offset=36 cur_length=255
+[DP-backtrack] step 4: cur_pre_pos=64551 cur_offset=36 cur_length=255
+[DP-backtrack] step 5: cur_pre_pos=64296 cur_offset=36 cur_length=255
+[DP-backtrack] done: total_steps=293 n_triples=294
+  [DPFlate/FLATE] NEW compress done: compressed=440
+  [DPFlate/FLATE] streaming compress start...
+[DPFLATE-STREAM] compress_file start: C:\Users\LAMTIM~1\AppData\Local\Temp\dpflate_flate_cartesian\in.bin
+[DPFLATE-STREAM] phase1 start...
+[PHASE1] before while: proc_end=65536 is_end=1 data_vb.size=65536
+[PHASE1] after while: proc_end=65536
+[PHASE1] final forward: next_abs=65536 proc_end=65536
+[PHASE1] done: total_input=65536
+[DPFLATE-STREAM] phase1 done: total_input=65536
+[DPFLATE-STREAM] phase2 start...
+[DPFLATE-STREAM] phase2 done: n_triples=293
+[DPFLATE-STREAM] encoding done: compressed=440 writing file...
+[DPFLATE-STREAM] compress_file done.
+  [DPFlate/FLATE] streaming compress done.
+  [DPFlate/FLATE] OLD compress starting...
+[BRIDGE] old_dpflate_compress: n=65536 search=4095 look=255 min_match=4 dp_top=3 sub=6 3hm=0 chunk=8
+[BRIDGE] running: "D:\AAA_C\compression-tool\build_py\bin\old_dpflate_tool.exe" 4095 255 4 3 6 0 8 "C:\Users\LAMTIM~1\AppData\Local\Temp\old_dpflate_bridge\in.bin" "C:\Users\LAMTIM~1\AppData\Local\Temp\old_dpflate_bridge\out.bin"
+[BRIDGE] tool returned rc=0 output_size=440
+  [DPFlate/FLATE] OLD compress done: 440
+  [DPFlate/FLATE] PASS size=65536 flag=0 payload=440 (OLD)
+[DP-backtrack] start cur_pos=65536 dp_size=65537 dp_last.pre_pos=65316
+[DP-backtrack] step 1: cur_pre_pos=65316 cur_offset=36 cur_length=220
+[DP-backtrack] step 2: cur_pre_pos=65061 cur_offset=36 cur_length=255
+[DP-backtrack] step 3: cur_pre_pos=64806 cur_offset=36 cur_length=255
+[DP-backtrack] step 4: cur_pre_pos=64551 cur_offset=36 cur_length=255
+[DP-backtrack] step 5: cur_pre_pos=64296 cur_offset=36 cur_length=255
+[DP-backtrack] done: total_steps=293 n_triples=294
+  [DPFlate/FLATE] NEW compress done: compressed=440
+  [DPFlate/FLATE] streaming compress start...
+[DPFLATE-STREAM] compress_file start: C:\Users\LAMTIM~1\AppData\Local\Temp\dpflate_flate_cartesian\in.bin
+[DPFLATE-STREAM] phase1 start...
+[PHASE1] before while: proc_end=65536 is_end=1 data_vb.size=65536
+[PHASE1] after while: proc_end=65536
+[PHASE1] final forward: next_abs=65536 proc_end=65536
+[PHASE1] done: total_input=65536
+[DPFLATE-STREAM] phase1 done: total_input=65536
+[DPFLATE-STREAM] phase2 start...
+[DPFLATE-STREAM] phase2 done: n_triples=293
+[DPFLATE-STREAM] encoding done: compressed=440 writing file...
+[DPFLATE-STREAM] compress_file done.
+  [DPFlate/FLATE] streaming compress done.
+  [DPFlate/FLATE] OLD compress starting...
+[BRIDGE] old_dpflate_compress: n=65536 search=4095 look=255 min_match=4 dp_top=3 sub=6 3hm=0 chunk=8
+[BRIDGE] running: "D:\AAA_C\compression-tool\build_py\bin\old_dpflate_tool.exe" 4095 255 4 3 6 0 8 "C:\Users\LAMTIM~1\AppData\Local\Temp\old_dpflate_bridge\in.bin" "C:\Users\LAMTIM~1\AppData\Local\Temp\old_dpflate_bridge\out.bin"
+[BRIDGE] tool returned rc=0 output_size=440
+  [DPFlate/FLATE] OLD compress done: 440
+  [DPFlate/FLATE] PASS size=65536 flag=1 payload=440 (OLD)
+
+=== DPFlate 3HfMT ===
+[DP-backtrack] start cur_pos=65536 dp_size=65537 dp_last.pre_pos=65316
+[DP-backtrack] step 1: cur_pre_pos=65316 cur_offset=36 cur_length=220
+[DP-backtrack] step 2: cur_pre_pos=65061 cur_offset=36 cur_length=255
+[DP-backtrack] step 3: cur_pre_pos=64806 cur_offset=36 cur_length=255
+[DP-backtrack] step 4: cur_pre_pos=64551 cur_offset=36 cur_length=255
+[DP-backtrack] step 5: cur_pre_pos=64296 cur_offset=36 cur_length=255
+[DP-backtrack] done: total_steps=293 n_triples=294
+terminate called after throwing an instance of 'std::bad_alloc'
+  what():  std::bad_alloc

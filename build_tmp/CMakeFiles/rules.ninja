@@ -7,7 +7,7 @@
 
 # =============================================================================
 # Project: compression-tool
-# Configurations: 
+# Configurations: Release
 # =============================================================================
 # =============================================================================
 
@@ -22,7 +22,7 @@ rule CUSTOM_COMMAND
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__algorithm_
+rule CXX_SCAN__algorithm_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -31,7 +31,7 @@ rule CXX_SCAN__algorithm_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__algorithm_
+rule CXX_DYNDEP__algorithm_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=src\algorithm\CMakeFiles\algorithm.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -42,7 +42,7 @@ rule CXX_DYNDEP__algorithm_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__algorithm_scanned_
+rule CXX_COMPILER__algorithm_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -52,7 +52,7 @@ rule CXX_COMPILER__algorithm_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__algorithm_unscanned_
+rule CXX_COMPILER__algorithm_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -62,16 +62,92 @@ rule CXX_COMPILER__algorithm_unscanned_
 #############################################
 # Rule for linking CXX static library.
 
-rule CXX_STATIC_LIBRARY_LINKER__algorithm_
+rule CXX_STATIC_LIBRARY_LINKER__algorithm_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E rm -f $TARGET_FILE && D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc $TARGET_FILE $LINK_FLAGS $in && D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe $TARGET_FILE && $POST_BUILD"
   description = Linking CXX static library $TARGET_FILE
   restat = $RESTAT
 
 
 #############################################
+# Rule for compiling C files.
+
+rule C_COMPILER__brotlicommon_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C static library.
+
+rule C_STATIC_LIBRARY_LINKER__brotlicommon_Release
+  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E rm -f $TARGET_FILE && D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc $TARGET_FILE $LINK_FLAGS $in && D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe $TARGET_FILE && $POST_BUILD"
+  description = Linking C static library $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling C files.
+
+rule C_COMPILER__brotlidec_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C static library.
+
+rule C_STATIC_LIBRARY_LINKER__brotlidec_Release
+  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E rm -f $TARGET_FILE && D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc $TARGET_FILE $LINK_FLAGS $in && D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe $TARGET_FILE && $POST_BUILD"
+  description = Linking C static library $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling C files.
+
+rule C_COMPILER__brotlienc_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C static library.
+
+rule C_STATIC_LIBRARY_LINKER__brotlienc_Release
+  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E rm -f $TARGET_FILE && D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc $TARGET_FILE $LINK_FLAGS $in && D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe $TARGET_FILE && $POST_BUILD"
+  description = Linking C static library $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling C files.
+
+rule C_COMPILER__brotli_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C executable.
+
+rule C_EXECUTABLE_LINKER__brotli_Release
+  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
+  description = Linking C executable $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__algorithm_new_
+rule CXX_SCAN__algorithm_new_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -80,7 +156,7 @@ rule CXX_SCAN__algorithm_new_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__algorithm_new_
+rule CXX_DYNDEP__algorithm_new_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=src\algorithm_new\CMakeFiles\algorithm_new.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -91,7 +167,7 @@ rule CXX_DYNDEP__algorithm_new_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__algorithm_new_scanned_
+rule CXX_COMPILER__algorithm_new_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -101,7 +177,7 @@ rule CXX_COMPILER__algorithm_new_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__algorithm_new_unscanned_
+rule CXX_COMPILER__algorithm_new_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -111,7 +187,7 @@ rule CXX_COMPILER__algorithm_new_unscanned_
 #############################################
 # Rule for linking CXX static library.
 
-rule CXX_STATIC_LIBRARY_LINKER__algorithm_new_
+rule CXX_STATIC_LIBRARY_LINKER__algorithm_new_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E rm -f $TARGET_FILE && D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc $TARGET_FILE $LINK_FLAGS $in && D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe $TARGET_FILE && $POST_BUILD"
   description = Linking CXX static library $TARGET_FILE
   restat = $RESTAT
@@ -120,7 +196,7 @@ rule CXX_STATIC_LIBRARY_LINKER__algorithm_new_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__core_new_
+rule CXX_SCAN__core_new_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -129,7 +205,7 @@ rule CXX_SCAN__core_new_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__core_new_
+rule CXX_DYNDEP__core_new_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=src\core_new\CMakeFiles\core_new.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -140,7 +216,7 @@ rule CXX_DYNDEP__core_new_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__core_new_scanned_
+rule CXX_COMPILER__core_new_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -150,7 +226,7 @@ rule CXX_COMPILER__core_new_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__core_new_unscanned_
+rule CXX_COMPILER__core_new_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -160,7 +236,7 @@ rule CXX_COMPILER__core_new_unscanned_
 #############################################
 # Rule for linking CXX static library.
 
-rule CXX_STATIC_LIBRARY_LINKER__core_new_
+rule CXX_STATIC_LIBRARY_LINKER__core_new_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E rm -f $TARGET_FILE && D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc $TARGET_FILE $LINK_FLAGS $in && D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe $TARGET_FILE && $POST_BUILD"
   description = Linking CXX static library $TARGET_FILE
   restat = $RESTAT
@@ -169,7 +245,7 @@ rule CXX_STATIC_LIBRARY_LINKER__core_new_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__api_
+rule CXX_SCAN__api_new_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -178,7 +254,56 @@ rule CXX_SCAN__api_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__api_
+rule CXX_DYNDEP__api_new_Release
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=src\api_new\CMakeFiles\api_new.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
+  description = Generating CXX dyndep file $out
+  rspfile = $out.rsp
+  rspfile_content = $in
+  restat = 1
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__api_new_scanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__api_new_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for linking CXX static library.
+
+rule CXX_STATIC_LIBRARY_LINKER__api_new_Release
+  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E rm -f $TARGET_FILE && D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc $TARGET_FILE $LINK_FLAGS $in && D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe $TARGET_FILE && $POST_BUILD"
+  description = Linking CXX static library $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for generating CXX dependencies.
+
+rule CXX_SCAN__api_Release
+  depfile = $DEP_FILE
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
+  description = Scanning $in for CXX dependencies
+
+
+#############################################
+# Rule to generate ninja dyndep files for CXX.
+
+rule CXX_DYNDEP__api_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=src\api\CMakeFiles\api.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -189,7 +314,7 @@ rule CXX_DYNDEP__api_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__api_scanned_
+rule CXX_COMPILER__api_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -199,7 +324,7 @@ rule CXX_COMPILER__api_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__api_unscanned_
+rule CXX_COMPILER__api_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -209,7 +334,7 @@ rule CXX_COMPILER__api_unscanned_
 #############################################
 # Rule for linking CXX static library.
 
-rule CXX_STATIC_LIBRARY_LINKER__api_
+rule CXX_STATIC_LIBRARY_LINKER__api_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E rm -f $TARGET_FILE && D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc $TARGET_FILE $LINK_FLAGS $in && D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe $TARGET_FILE && $POST_BUILD"
   description = Linking CXX static library $TARGET_FILE
   restat = $RESTAT
@@ -218,7 +343,7 @@ rule CXX_STATIC_LIBRARY_LINKER__api_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__core_
+rule CXX_SCAN__core_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -227,7 +352,7 @@ rule CXX_SCAN__core_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__core_
+rule CXX_DYNDEP__core_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=src\core\CMakeFiles\core.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -238,7 +363,7 @@ rule CXX_DYNDEP__core_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__core_scanned_
+rule CXX_COMPILER__core_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -248,7 +373,7 @@ rule CXX_COMPILER__core_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__core_unscanned_
+rule CXX_COMPILER__core_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -258,7 +383,7 @@ rule CXX_COMPILER__core_unscanned_
 #############################################
 # Rule for linking CXX static library.
 
-rule CXX_STATIC_LIBRARY_LINKER__core_
+rule CXX_STATIC_LIBRARY_LINKER__core_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E rm -f $TARGET_FILE && D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc $TARGET_FILE $LINK_FLAGS $in && D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe $TARGET_FILE && $POST_BUILD"
   description = Linking CXX static library $TARGET_FILE
   restat = $RESTAT
@@ -267,7 +392,7 @@ rule CXX_STATIC_LIBRARY_LINKER__core_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__archiver_
+rule CXX_SCAN__archiver_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -276,7 +401,7 @@ rule CXX_SCAN__archiver_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__archiver_
+rule CXX_DYNDEP__archiver_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=src\archiver\CMakeFiles\archiver.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -287,7 +412,7 @@ rule CXX_DYNDEP__archiver_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__archiver_scanned_
+rule CXX_COMPILER__archiver_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -297,7 +422,7 @@ rule CXX_COMPILER__archiver_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__archiver_unscanned_
+rule CXX_COMPILER__archiver_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -307,7 +432,7 @@ rule CXX_COMPILER__archiver_unscanned_
 #############################################
 # Rule for linking CXX static library.
 
-rule CXX_STATIC_LIBRARY_LINKER__archiver_
+rule CXX_STATIC_LIBRARY_LINKER__archiver_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E rm -f $TARGET_FILE && D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc $TARGET_FILE $LINK_FLAGS $in && D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe $TARGET_FILE && $POST_BUILD"
   description = Linking CXX static library $TARGET_FILE
   restat = $RESTAT
@@ -316,7 +441,7 @@ rule CXX_STATIC_LIBRARY_LINKER__archiver_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__processor_
+rule CXX_SCAN__processor_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -325,7 +450,7 @@ rule CXX_SCAN__processor_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__processor_
+rule CXX_DYNDEP__processor_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=src\processor\CMakeFiles\processor.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -336,7 +461,7 @@ rule CXX_DYNDEP__processor_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__processor_scanned_
+rule CXX_COMPILER__processor_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -346,7 +471,7 @@ rule CXX_COMPILER__processor_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__processor_unscanned_
+rule CXX_COMPILER__processor_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -356,7 +481,7 @@ rule CXX_COMPILER__processor_unscanned_
 #############################################
 # Rule for linking CXX static library.
 
-rule CXX_STATIC_LIBRARY_LINKER__processor_
+rule CXX_STATIC_LIBRARY_LINKER__processor_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E rm -f $TARGET_FILE && D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc $TARGET_FILE $LINK_FLAGS $in && D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe $TARGET_FILE && $POST_BUILD"
   description = Linking CXX static library $TARGET_FILE
   restat = $RESTAT
@@ -365,7 +490,7 @@ rule CXX_STATIC_LIBRARY_LINKER__processor_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__ade_unscanned_
+rule CXX_COMPILER__ade_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -375,7 +500,7 @@ rule CXX_COMPILER__ade_unscanned_
 #############################################
 # Rule for linking CXX static library.
 
-rule CXX_STATIC_LIBRARY_LINKER__ade_
+rule CXX_STATIC_LIBRARY_LINKER__ade_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E rm -f $TARGET_FILE && D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc $TARGET_FILE $LINK_FLAGS $in && D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe $TARGET_FILE && $POST_BUILD"
   description = Linking CXX static library $TARGET_FILE
   restat = $RESTAT
@@ -384,7 +509,7 @@ rule CXX_STATIC_LIBRARY_LINKER__ade_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_ade_feature_extractor_unscanned_
+rule CXX_COMPILER__test_ade_feature_extractor_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -394,7 +519,7 @@ rule CXX_COMPILER__test_ade_feature_extractor_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_ade_feature_extractor_
+rule CXX_EXECUTABLE_LINKER__test_ade_feature_extractor_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -403,7 +528,7 @@ rule CXX_EXECUTABLE_LINKER__test_ade_feature_extractor_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_ade_decision_engine_unscanned_
+rule CXX_COMPILER__test_ade_decision_engine_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -413,7 +538,7 @@ rule CXX_COMPILER__test_ade_decision_engine_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_ade_decision_engine_
+rule CXX_EXECUTABLE_LINKER__test_ade_decision_engine_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -422,7 +547,7 @@ rule CXX_EXECUTABLE_LINKER__test_ade_decision_engine_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_ade_evolutionary_unscanned_
+rule CXX_COMPILER__test_ade_evolutionary_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -432,7 +557,7 @@ rule CXX_COMPILER__test_ade_evolutionary_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_ade_evolutionary_
+rule CXX_EXECUTABLE_LINKER__test_ade_evolutionary_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -441,7 +566,7 @@ rule CXX_EXECUTABLE_LINKER__test_ade_evolutionary_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__bench_ade_extractor_unscanned_
+rule CXX_COMPILER__bench_ade_extractor_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -451,7 +576,7 @@ rule CXX_COMPILER__bench_ade_extractor_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__bench_ade_extractor_
+rule CXX_EXECUTABLE_LINKER__bench_ade_extractor_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -460,7 +585,7 @@ rule CXX_EXECUTABLE_LINKER__bench_ade_extractor_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__train_ade_model_unscanned_
+rule CXX_COMPILER__train_ade_model_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -470,7 +595,7 @@ rule CXX_COMPILER__train_ade_model_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__train_ade_model_
+rule CXX_EXECUTABLE_LINKER__train_ade_model_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -479,7 +604,7 @@ rule CXX_EXECUTABLE_LINKER__train_ade_model_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__generate_ade_dataset_unscanned_
+rule CXX_COMPILER__generate_ade_dataset_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -489,7 +614,7 @@ rule CXX_COMPILER__generate_ade_dataset_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__generate_ade_dataset_
+rule CXX_EXECUTABLE_LINKER__generate_ade_dataset_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -498,7 +623,7 @@ rule CXX_EXECUTABLE_LINKER__generate_ade_dataset_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_Deflate_
+rule CXX_SCAN__test_Deflate_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -507,7 +632,7 @@ rule CXX_SCAN__test_Deflate_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_Deflate_
+rule CXX_DYNDEP__test_Deflate_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_Deflate.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -518,7 +643,7 @@ rule CXX_DYNDEP__test_Deflate_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_Deflate_scanned_
+rule CXX_COMPILER__test_Deflate_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -528,7 +653,7 @@ rule CXX_COMPILER__test_Deflate_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_Deflate_unscanned_
+rule CXX_COMPILER__test_Deflate_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -538,7 +663,7 @@ rule CXX_COMPILER__test_Deflate_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_Deflate_
+rule CXX_EXECUTABLE_LINKER__test_Deflate_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -547,7 +672,7 @@ rule CXX_EXECUTABLE_LINKER__test_Deflate_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_roundtrip_
+rule CXX_SCAN__test_roundtrip_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -556,7 +681,7 @@ rule CXX_SCAN__test_roundtrip_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_roundtrip_
+rule CXX_DYNDEP__test_roundtrip_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_roundtrip.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -567,7 +692,7 @@ rule CXX_DYNDEP__test_roundtrip_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_roundtrip_scanned_
+rule CXX_COMPILER__test_roundtrip_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -577,7 +702,7 @@ rule CXX_COMPILER__test_roundtrip_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_roundtrip_unscanned_
+rule CXX_COMPILER__test_roundtrip_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -587,7 +712,7 @@ rule CXX_COMPILER__test_roundtrip_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_roundtrip_
+rule CXX_EXECUTABLE_LINKER__test_roundtrip_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -596,7 +721,7 @@ rule CXX_EXECUTABLE_LINKER__test_roundtrip_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_wcx_directory_archive_
+rule CXX_SCAN__test_wcx_directory_archive_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -605,7 +730,7 @@ rule CXX_SCAN__test_wcx_directory_archive_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_wcx_directory_archive_
+rule CXX_DYNDEP__test_wcx_directory_archive_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_wcx_directory_archive.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -616,7 +741,7 @@ rule CXX_DYNDEP__test_wcx_directory_archive_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_wcx_directory_archive_scanned_
+rule CXX_COMPILER__test_wcx_directory_archive_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -626,7 +751,7 @@ rule CXX_COMPILER__test_wcx_directory_archive_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_wcx_directory_archive_unscanned_
+rule CXX_COMPILER__test_wcx_directory_archive_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -636,7 +761,7 @@ rule CXX_COMPILER__test_wcx_directory_archive_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_wcx_directory_archive_
+rule CXX_EXECUTABLE_LINKER__test_wcx_directory_archive_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -645,7 +770,7 @@ rule CXX_EXECUTABLE_LINKER__test_wcx_directory_archive_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_PackWriter_RoundTrip_
+rule CXX_SCAN__test_PackWriter_RoundTrip_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -654,7 +779,7 @@ rule CXX_SCAN__test_PackWriter_RoundTrip_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_PackWriter_RoundTrip_
+rule CXX_DYNDEP__test_PackWriter_RoundTrip_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_PackWriter_RoundTrip.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -665,7 +790,7 @@ rule CXX_DYNDEP__test_PackWriter_RoundTrip_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_PackWriter_RoundTrip_scanned_
+rule CXX_COMPILER__test_PackWriter_RoundTrip_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -675,7 +800,7 @@ rule CXX_COMPILER__test_PackWriter_RoundTrip_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_PackWriter_RoundTrip_unscanned_
+rule CXX_COMPILER__test_PackWriter_RoundTrip_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -685,7 +810,7 @@ rule CXX_COMPILER__test_PackWriter_RoundTrip_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_PackWriter_RoundTrip_
+rule CXX_EXECUTABLE_LINKER__test_PackWriter_RoundTrip_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -694,7 +819,7 @@ rule CXX_EXECUTABLE_LINKER__test_PackWriter_RoundTrip_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_PackWriter_
+rule CXX_SCAN__test_PackWriter_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -703,7 +828,7 @@ rule CXX_SCAN__test_PackWriter_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_PackWriter_
+rule CXX_DYNDEP__test_PackWriter_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_PackWriter.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -714,7 +839,7 @@ rule CXX_DYNDEP__test_PackWriter_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_PackWriter_scanned_
+rule CXX_COMPILER__test_PackWriter_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -724,7 +849,7 @@ rule CXX_COMPILER__test_PackWriter_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_PackWriter_unscanned_
+rule CXX_COMPILER__test_PackWriter_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -734,7 +859,7 @@ rule CXX_COMPILER__test_PackWriter_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_PackWriter_
+rule CXX_EXECUTABLE_LINKER__test_PackWriter_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -743,7 +868,7 @@ rule CXX_EXECUTABLE_LINKER__test_PackWriter_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_wcx_file_strict_
+rule CXX_SCAN__test_wcx_file_strict_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -752,7 +877,7 @@ rule CXX_SCAN__test_wcx_file_strict_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_wcx_file_strict_
+rule CXX_DYNDEP__test_wcx_file_strict_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_wcx_file_strict.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -763,7 +888,7 @@ rule CXX_DYNDEP__test_wcx_file_strict_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_wcx_file_strict_scanned_
+rule CXX_COMPILER__test_wcx_file_strict_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -773,7 +898,7 @@ rule CXX_COMPILER__test_wcx_file_strict_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_wcx_file_strict_unscanned_
+rule CXX_COMPILER__test_wcx_file_strict_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -783,7 +908,7 @@ rule CXX_COMPILER__test_wcx_file_strict_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_wcx_file_strict_
+rule CXX_EXECUTABLE_LINKER__test_wcx_file_strict_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -792,7 +917,7 @@ rule CXX_EXECUTABLE_LINKER__test_wcx_file_strict_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_wcx_strict_no_compat_
+rule CXX_SCAN__test_wcx_strict_no_compat_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -801,7 +926,7 @@ rule CXX_SCAN__test_wcx_strict_no_compat_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_wcx_strict_no_compat_
+rule CXX_DYNDEP__test_wcx_strict_no_compat_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_wcx_strict_no_compat.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -812,7 +937,7 @@ rule CXX_DYNDEP__test_wcx_strict_no_compat_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_wcx_strict_no_compat_scanned_
+rule CXX_COMPILER__test_wcx_strict_no_compat_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -822,7 +947,7 @@ rule CXX_COMPILER__test_wcx_strict_no_compat_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_wcx_strict_no_compat_unscanned_
+rule CXX_COMPILER__test_wcx_strict_no_compat_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -832,7 +957,7 @@ rule CXX_COMPILER__test_wcx_strict_no_compat_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_wcx_strict_no_compat_
+rule CXX_EXECUTABLE_LINKER__test_wcx_strict_no_compat_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -841,7 +966,7 @@ rule CXX_EXECUTABLE_LINKER__test_wcx_strict_no_compat_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_wcx_corrupt_
+rule CXX_SCAN__test_wcx_corrupt_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -850,7 +975,7 @@ rule CXX_SCAN__test_wcx_corrupt_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_wcx_corrupt_
+rule CXX_DYNDEP__test_wcx_corrupt_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_wcx_corrupt.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -861,7 +986,7 @@ rule CXX_DYNDEP__test_wcx_corrupt_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_wcx_corrupt_scanned_
+rule CXX_COMPILER__test_wcx_corrupt_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -871,7 +996,7 @@ rule CXX_COMPILER__test_wcx_corrupt_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_wcx_corrupt_unscanned_
+rule CXX_COMPILER__test_wcx_corrupt_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -881,7 +1006,7 @@ rule CXX_COMPILER__test_wcx_corrupt_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_wcx_corrupt_
+rule CXX_EXECUTABLE_LINKER__test_wcx_corrupt_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -890,7 +1015,7 @@ rule CXX_EXECUTABLE_LINKER__test_wcx_corrupt_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_lzss_noflag_
+rule CXX_SCAN__test_lzss_noflag_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -899,7 +1024,7 @@ rule CXX_SCAN__test_lzss_noflag_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_lzss_noflag_
+rule CXX_DYNDEP__test_lzss_noflag_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_lzss_noflag.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -910,7 +1035,7 @@ rule CXX_DYNDEP__test_lzss_noflag_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzss_noflag_scanned_
+rule CXX_COMPILER__test_lzss_noflag_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -920,7 +1045,7 @@ rule CXX_COMPILER__test_lzss_noflag_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzss_noflag_unscanned_
+rule CXX_COMPILER__test_lzss_noflag_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -930,7 +1055,7 @@ rule CXX_COMPILER__test_lzss_noflag_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_lzss_noflag_
+rule CXX_EXECUTABLE_LINKER__test_lzss_noflag_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -939,7 +1064,7 @@ rule CXX_EXECUTABLE_LINKER__test_lzss_noflag_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_deflate_
+rule CXX_SCAN__test_lzss_algorithm_new_matrix_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -948,7 +1073,56 @@ rule CXX_SCAN__test_deflate_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_deflate_
+rule CXX_DYNDEP__test_lzss_algorithm_new_matrix_Release
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_lzss_algorithm_new_matrix.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
+  description = Generating CXX dyndep file $out
+  rspfile = $out.rsp
+  rspfile_content = $in
+  restat = 1
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__test_lzss_algorithm_new_matrix_scanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__test_lzss_algorithm_new_matrix_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for linking CXX executable.
+
+rule CXX_EXECUTABLE_LINKER__test_lzss_algorithm_new_matrix_Release
+  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
+  description = Linking CXX executable $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for generating CXX dependencies.
+
+rule CXX_SCAN__test_deflate_Release
+  depfile = $DEP_FILE
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
+  description = Scanning $in for CXX dependencies
+
+
+#############################################
+# Rule to generate ninja dyndep files for CXX.
+
+rule CXX_DYNDEP__test_deflate_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_deflate.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -959,7 +1133,7 @@ rule CXX_DYNDEP__test_deflate_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_deflate_scanned_
+rule CXX_COMPILER__test_deflate_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -969,7 +1143,7 @@ rule CXX_COMPILER__test_deflate_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_deflate_unscanned_
+rule CXX_COMPILER__test_deflate_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -979,7 +1153,7 @@ rule CXX_COMPILER__test_deflate_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_deflate_
+rule CXX_EXECUTABLE_LINKER__test_deflate_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -988,7 +1162,7 @@ rule CXX_EXECUTABLE_LINKER__test_deflate_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_lzdp_memory_streaming_parity_
+rule CXX_SCAN__test_lzdp_memory_streaming_parity_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -997,7 +1171,7 @@ rule CXX_SCAN__test_lzdp_memory_streaming_parity_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_lzdp_memory_streaming_parity_
+rule CXX_DYNDEP__test_lzdp_memory_streaming_parity_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_lzdp_memory_streaming_parity.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1008,7 +1182,7 @@ rule CXX_DYNDEP__test_lzdp_memory_streaming_parity_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzdp_memory_streaming_parity_scanned_
+rule CXX_COMPILER__test_lzdp_memory_streaming_parity_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1018,7 +1192,7 @@ rule CXX_COMPILER__test_lzdp_memory_streaming_parity_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzdp_memory_streaming_parity_unscanned_
+rule CXX_COMPILER__test_lzdp_memory_streaming_parity_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1028,7 +1202,7 @@ rule CXX_COMPILER__test_lzdp_memory_streaming_parity_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_lzdp_memory_streaming_parity_
+rule CXX_EXECUTABLE_LINKER__test_lzdp_memory_streaming_parity_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1037,7 +1211,7 @@ rule CXX_EXECUTABLE_LINKER__test_lzdp_memory_streaming_parity_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_lzdp_dpflate_regression_
+rule CXX_SCAN__test_lzdp_dpflate_regression_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1046,7 +1220,7 @@ rule CXX_SCAN__test_lzdp_dpflate_regression_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_lzdp_dpflate_regression_
+rule CXX_DYNDEP__test_lzdp_dpflate_regression_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_lzdp_dpflate_regression.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1057,7 +1231,7 @@ rule CXX_DYNDEP__test_lzdp_dpflate_regression_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzdp_dpflate_regression_scanned_
+rule CXX_COMPILER__test_lzdp_dpflate_regression_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1067,7 +1241,7 @@ rule CXX_COMPILER__test_lzdp_dpflate_regression_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzdp_dpflate_regression_unscanned_
+rule CXX_COMPILER__test_lzdp_dpflate_regression_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1077,7 +1251,7 @@ rule CXX_COMPILER__test_lzdp_dpflate_regression_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_lzdp_dpflate_regression_
+rule CXX_EXECUTABLE_LINKER__test_lzdp_dpflate_regression_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1086,7 +1260,7 @@ rule CXX_EXECUTABLE_LINKER__test_lzdp_dpflate_regression_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_lzdp_dpflate_stream_
+rule CXX_SCAN__test_lzdp_dpflate_stream_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1095,7 +1269,7 @@ rule CXX_SCAN__test_lzdp_dpflate_stream_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_lzdp_dpflate_stream_
+rule CXX_DYNDEP__test_lzdp_dpflate_stream_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_lzdp_dpflate_stream.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1106,7 +1280,7 @@ rule CXX_DYNDEP__test_lzdp_dpflate_stream_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzdp_dpflate_stream_scanned_
+rule CXX_COMPILER__test_lzdp_dpflate_stream_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1116,7 +1290,7 @@ rule CXX_COMPILER__test_lzdp_dpflate_stream_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzdp_dpflate_stream_unscanned_
+rule CXX_COMPILER__test_lzdp_dpflate_stream_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1126,7 +1300,7 @@ rule CXX_COMPILER__test_lzdp_dpflate_stream_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_lzdp_dpflate_stream_
+rule CXX_EXECUTABLE_LINKER__test_lzdp_dpflate_stream_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1135,7 +1309,7 @@ rule CXX_EXECUTABLE_LINKER__test_lzdp_dpflate_stream_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_HuffmanTree3HM_
+rule CXX_SCAN__test_HuffmanTree3HM_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1144,7 +1318,7 @@ rule CXX_SCAN__test_HuffmanTree3HM_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_HuffmanTree3HM_
+rule CXX_DYNDEP__test_HuffmanTree3HM_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_HuffmanTree3HM.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1155,7 +1329,7 @@ rule CXX_DYNDEP__test_HuffmanTree3HM_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_HuffmanTree3HM_scanned_
+rule CXX_COMPILER__test_HuffmanTree3HM_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1165,7 +1339,7 @@ rule CXX_COMPILER__test_HuffmanTree3HM_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_HuffmanTree3HM_unscanned_
+rule CXX_COMPILER__test_HuffmanTree3HM_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1175,7 +1349,7 @@ rule CXX_COMPILER__test_HuffmanTree3HM_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_HuffmanTree3HM_
+rule CXX_EXECUTABLE_LINKER__test_HuffmanTree3HM_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1184,7 +1358,7 @@ rule CXX_EXECUTABLE_LINKER__test_HuffmanTree3HM_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_algorithm_comparison_
+rule CXX_SCAN__test_algorithm_comparison_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1193,7 +1367,7 @@ rule CXX_SCAN__test_algorithm_comparison_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_algorithm_comparison_
+rule CXX_DYNDEP__test_algorithm_comparison_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_algorithm_comparison.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1204,7 +1378,7 @@ rule CXX_DYNDEP__test_algorithm_comparison_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_algorithm_comparison_scanned_
+rule CXX_COMPILER__test_algorithm_comparison_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1214,7 +1388,7 @@ rule CXX_COMPILER__test_algorithm_comparison_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_algorithm_comparison_unscanned_
+rule CXX_COMPILER__test_algorithm_comparison_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1224,7 +1398,7 @@ rule CXX_COMPILER__test_algorithm_comparison_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_algorithm_comparison_
+rule CXX_EXECUTABLE_LINKER__test_algorithm_comparison_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1233,7 +1407,7 @@ rule CXX_EXECUTABLE_LINKER__test_algorithm_comparison_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_mixed_dpflate_only_
+rule CXX_SCAN__test_mixed_dpflate_only_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1242,7 +1416,7 @@ rule CXX_SCAN__test_mixed_dpflate_only_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_mixed_dpflate_only_
+rule CXX_DYNDEP__test_mixed_dpflate_only_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_mixed_dpflate_only.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1253,7 +1427,7 @@ rule CXX_DYNDEP__test_mixed_dpflate_only_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_mixed_dpflate_only_scanned_
+rule CXX_COMPILER__test_mixed_dpflate_only_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1263,7 +1437,7 @@ rule CXX_COMPILER__test_mixed_dpflate_only_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_mixed_dpflate_only_unscanned_
+rule CXX_COMPILER__test_mixed_dpflate_only_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1273,7 +1447,7 @@ rule CXX_COMPILER__test_mixed_dpflate_only_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_mixed_dpflate_only_
+rule CXX_EXECUTABLE_LINKER__test_mixed_dpflate_only_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1282,7 +1456,7 @@ rule CXX_EXECUTABLE_LINKER__test_mixed_dpflate_only_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_lzdp_memory_flag_
+rule CXX_SCAN__test_lzdp_memory_flag_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1291,7 +1465,7 @@ rule CXX_SCAN__test_lzdp_memory_flag_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_lzdp_memory_flag_
+rule CXX_DYNDEP__test_lzdp_memory_flag_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_lzdp_memory_flag.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1302,7 +1476,7 @@ rule CXX_DYNDEP__test_lzdp_memory_flag_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzdp_memory_flag_scanned_
+rule CXX_COMPILER__test_lzdp_memory_flag_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1312,7 +1486,7 @@ rule CXX_COMPILER__test_lzdp_memory_flag_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzdp_memory_flag_unscanned_
+rule CXX_COMPILER__test_lzdp_memory_flag_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1322,7 +1496,7 @@ rule CXX_COMPILER__test_lzdp_memory_flag_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_lzdp_memory_flag_
+rule CXX_EXECUTABLE_LINKER__test_lzdp_memory_flag_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1331,7 +1505,7 @@ rule CXX_EXECUTABLE_LINKER__test_lzdp_memory_flag_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_dpflate_3hm_stream_
+rule CXX_SCAN__test_dpflate_3hm_stream_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1340,7 +1514,7 @@ rule CXX_SCAN__test_dpflate_3hm_stream_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_dpflate_3hm_stream_
+rule CXX_DYNDEP__test_dpflate_3hm_stream_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_dpflate_3hm_stream.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1351,7 +1525,7 @@ rule CXX_DYNDEP__test_dpflate_3hm_stream_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_dpflate_3hm_stream_scanned_
+rule CXX_COMPILER__test_dpflate_3hm_stream_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1361,7 +1535,7 @@ rule CXX_COMPILER__test_dpflate_3hm_stream_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_dpflate_3hm_stream_unscanned_
+rule CXX_COMPILER__test_dpflate_3hm_stream_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1371,7 +1545,7 @@ rule CXX_COMPILER__test_dpflate_3hm_stream_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_dpflate_3hm_stream_
+rule CXX_EXECUTABLE_LINKER__test_dpflate_3hm_stream_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1380,7 +1554,7 @@ rule CXX_EXECUTABLE_LINKER__test_dpflate_3hm_stream_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_dpflate_bin64k_3k_stream_
+rule CXX_SCAN__test_dpflate_bin64k_3k_stream_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1389,7 +1563,7 @@ rule CXX_SCAN__test_dpflate_bin64k_3k_stream_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_dpflate_bin64k_3k_stream_
+rule CXX_DYNDEP__test_dpflate_bin64k_3k_stream_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_dpflate_bin64k_3k_stream.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1400,7 +1574,7 @@ rule CXX_DYNDEP__test_dpflate_bin64k_3k_stream_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_dpflate_bin64k_3k_stream_scanned_
+rule CXX_COMPILER__test_dpflate_bin64k_3k_stream_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1410,7 +1584,7 @@ rule CXX_COMPILER__test_dpflate_bin64k_3k_stream_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_dpflate_bin64k_3k_stream_unscanned_
+rule CXX_COMPILER__test_dpflate_bin64k_3k_stream_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1420,7 +1594,7 @@ rule CXX_COMPILER__test_dpflate_bin64k_3k_stream_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_dpflate_bin64k_3k_stream_
+rule CXX_EXECUTABLE_LINKER__test_dpflate_bin64k_3k_stream_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1429,7 +1603,7 @@ rule CXX_EXECUTABLE_LINKER__test_dpflate_bin64k_3k_stream_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_dpflate_stream_trace_
+rule CXX_SCAN__test_dpflate_stream_trace_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1438,7 +1612,7 @@ rule CXX_SCAN__test_dpflate_stream_trace_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_dpflate_stream_trace_
+rule CXX_DYNDEP__test_dpflate_stream_trace_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_dpflate_stream_trace.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1449,7 +1623,7 @@ rule CXX_DYNDEP__test_dpflate_stream_trace_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_dpflate_stream_trace_scanned_
+rule CXX_COMPILER__test_dpflate_stream_trace_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1459,7 +1633,7 @@ rule CXX_COMPILER__test_dpflate_stream_trace_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_dpflate_stream_trace_unscanned_
+rule CXX_COMPILER__test_dpflate_stream_trace_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1469,7 +1643,7 @@ rule CXX_COMPILER__test_dpflate_stream_trace_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_dpflate_stream_trace_
+rule CXX_EXECUTABLE_LINKER__test_dpflate_stream_trace_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1478,7 +1652,7 @@ rule CXX_EXECUTABLE_LINKER__test_dpflate_stream_trace_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_cartesian_stream_matrix_
+rule CXX_SCAN__test_cartesian_stream_matrix_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1487,7 +1661,7 @@ rule CXX_SCAN__test_cartesian_stream_matrix_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_cartesian_stream_matrix_
+rule CXX_DYNDEP__test_cartesian_stream_matrix_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_cartesian_stream_matrix.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1498,7 +1672,7 @@ rule CXX_DYNDEP__test_cartesian_stream_matrix_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_cartesian_stream_matrix_scanned_
+rule CXX_COMPILER__test_cartesian_stream_matrix_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1508,7 +1682,7 @@ rule CXX_COMPILER__test_cartesian_stream_matrix_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_cartesian_stream_matrix_unscanned_
+rule CXX_COMPILER__test_cartesian_stream_matrix_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1518,7 +1692,7 @@ rule CXX_COMPILER__test_cartesian_stream_matrix_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_cartesian_stream_matrix_
+rule CXX_EXECUTABLE_LINKER__test_cartesian_stream_matrix_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1527,7 +1701,7 @@ rule CXX_EXECUTABLE_LINKER__test_cartesian_stream_matrix_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_small_stream_7k_67k_
+rule CXX_SCAN__test_small_stream_7k_67k_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1536,7 +1710,7 @@ rule CXX_SCAN__test_small_stream_7k_67k_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_small_stream_7k_67k_
+rule CXX_DYNDEP__test_small_stream_7k_67k_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_small_stream_7k_67k.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1547,7 +1721,7 @@ rule CXX_DYNDEP__test_small_stream_7k_67k_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_small_stream_7k_67k_scanned_
+rule CXX_COMPILER__test_small_stream_7k_67k_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1557,7 +1731,7 @@ rule CXX_COMPILER__test_small_stream_7k_67k_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_small_stream_7k_67k_unscanned_
+rule CXX_COMPILER__test_small_stream_7k_67k_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1567,7 +1741,7 @@ rule CXX_COMPILER__test_small_stream_7k_67k_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_small_stream_7k_67k_
+rule CXX_EXECUTABLE_LINKER__test_small_stream_7k_67k_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1576,7 +1750,7 @@ rule CXX_EXECUTABLE_LINKER__test_small_stream_7k_67k_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_lzdp_cartesian_stream_matrix_
+rule CXX_SCAN__test_lzdp_cartesian_stream_matrix_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1585,7 +1759,7 @@ rule CXX_SCAN__test_lzdp_cartesian_stream_matrix_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_lzdp_cartesian_stream_matrix_
+rule CXX_DYNDEP__test_lzdp_cartesian_stream_matrix_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_lzdp_cartesian_stream_matrix.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1596,7 +1770,7 @@ rule CXX_DYNDEP__test_lzdp_cartesian_stream_matrix_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzdp_cartesian_stream_matrix_scanned_
+rule CXX_COMPILER__test_lzdp_cartesian_stream_matrix_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1606,7 +1780,7 @@ rule CXX_COMPILER__test_lzdp_cartesian_stream_matrix_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzdp_cartesian_stream_matrix_unscanned_
+rule CXX_COMPILER__test_lzdp_cartesian_stream_matrix_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1616,7 +1790,7 @@ rule CXX_COMPILER__test_lzdp_cartesian_stream_matrix_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_lzdp_cartesian_stream_matrix_
+rule CXX_EXECUTABLE_LINKER__test_lzdp_cartesian_stream_matrix_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1625,7 +1799,7 @@ rule CXX_EXECUTABLE_LINKER__test_lzdp_cartesian_stream_matrix_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_3hm_binary_
+rule CXX_SCAN__test_3hm_binary_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1634,7 +1808,7 @@ rule CXX_SCAN__test_3hm_binary_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_3hm_binary_
+rule CXX_DYNDEP__test_3hm_binary_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_3hm_binary.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1645,7 +1819,7 @@ rule CXX_DYNDEP__test_3hm_binary_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_3hm_binary_scanned_
+rule CXX_COMPILER__test_3hm_binary_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1655,7 +1829,7 @@ rule CXX_COMPILER__test_3hm_binary_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_3hm_binary_unscanned_
+rule CXX_COMPILER__test_3hm_binary_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1665,7 +1839,7 @@ rule CXX_COMPILER__test_3hm_binary_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_3hm_binary_
+rule CXX_EXECUTABLE_LINKER__test_3hm_binary_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1674,7 +1848,7 @@ rule CXX_EXECUTABLE_LINKER__test_3hm_binary_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_lzdp_binary_
+rule CXX_SCAN__test_lzdp_binary_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1683,7 +1857,7 @@ rule CXX_SCAN__test_lzdp_binary_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_lzdp_binary_
+rule CXX_DYNDEP__test_lzdp_binary_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_lzdp_binary.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1694,7 +1868,7 @@ rule CXX_DYNDEP__test_lzdp_binary_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzdp_binary_scanned_
+rule CXX_COMPILER__test_lzdp_binary_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1704,7 +1878,7 @@ rule CXX_COMPILER__test_lzdp_binary_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzdp_binary_unscanned_
+rule CXX_COMPILER__test_lzdp_binary_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1714,7 +1888,7 @@ rule CXX_COMPILER__test_lzdp_binary_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_lzdp_binary_
+rule CXX_EXECUTABLE_LINKER__test_lzdp_binary_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1723,7 +1897,7 @@ rule CXX_EXECUTABLE_LINKER__test_lzdp_binary_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_3hm_all_
+rule CXX_SCAN__test_3hm_all_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1732,7 +1906,7 @@ rule CXX_SCAN__test_3hm_all_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_3hm_all_
+rule CXX_DYNDEP__test_3hm_all_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_3hm_all.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1743,7 +1917,7 @@ rule CXX_DYNDEP__test_3hm_all_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_3hm_all_scanned_
+rule CXX_COMPILER__test_3hm_all_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1753,7 +1927,7 @@ rule CXX_COMPILER__test_3hm_all_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_3hm_all_unscanned_
+rule CXX_COMPILER__test_3hm_all_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1763,7 +1937,7 @@ rule CXX_COMPILER__test_3hm_all_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_3hm_all_
+rule CXX_EXECUTABLE_LINKER__test_3hm_all_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1772,7 +1946,7 @@ rule CXX_EXECUTABLE_LINKER__test_3hm_all_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_regression_baseline_
+rule CXX_SCAN__test_regression_baseline_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1781,7 +1955,7 @@ rule CXX_SCAN__test_regression_baseline_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_regression_baseline_
+rule CXX_DYNDEP__test_regression_baseline_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_regression_baseline.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1792,7 +1966,7 @@ rule CXX_DYNDEP__test_regression_baseline_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_regression_baseline_scanned_
+rule CXX_COMPILER__test_regression_baseline_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1802,7 +1976,7 @@ rule CXX_COMPILER__test_regression_baseline_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_regression_baseline_unscanned_
+rule CXX_COMPILER__test_regression_baseline_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1812,7 +1986,7 @@ rule CXX_COMPILER__test_regression_baseline_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_regression_baseline_
+rule CXX_EXECUTABLE_LINKER__test_regression_baseline_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1821,7 +1995,7 @@ rule CXX_EXECUTABLE_LINKER__test_regression_baseline_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__debug_dpflate_
+rule CXX_SCAN__debug_dpflate_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1830,7 +2004,7 @@ rule CXX_SCAN__debug_dpflate_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__debug_dpflate_
+rule CXX_DYNDEP__debug_dpflate_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\debug_dpflate.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1841,7 +2015,7 @@ rule CXX_DYNDEP__debug_dpflate_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__debug_dpflate_scanned_
+rule CXX_COMPILER__debug_dpflate_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1851,7 +2025,7 @@ rule CXX_COMPILER__debug_dpflate_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__debug_dpflate_unscanned_
+rule CXX_COMPILER__debug_dpflate_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1861,7 +2035,7 @@ rule CXX_COMPILER__debug_dpflate_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__debug_dpflate_
+rule CXX_EXECUTABLE_LINKER__debug_dpflate_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1870,7 +2044,7 @@ rule CXX_EXECUTABLE_LINKER__debug_dpflate_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__debug_token_trace_
+rule CXX_SCAN__debug_token_trace_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1879,7 +2053,7 @@ rule CXX_SCAN__debug_token_trace_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__debug_token_trace_
+rule CXX_DYNDEP__debug_token_trace_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\debug_token_trace.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1890,7 +2064,7 @@ rule CXX_DYNDEP__debug_token_trace_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__debug_token_trace_scanned_
+rule CXX_COMPILER__debug_token_trace_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1900,7 +2074,7 @@ rule CXX_COMPILER__debug_token_trace_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__debug_token_trace_unscanned_
+rule CXX_COMPILER__debug_token_trace_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1910,7 +2084,7 @@ rule CXX_COMPILER__debug_token_trace_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__debug_token_trace_
+rule CXX_EXECUTABLE_LINKER__debug_token_trace_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1919,7 +2093,7 @@ rule CXX_EXECUTABLE_LINKER__debug_token_trace_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_algorithm_new_lzdp_
+rule CXX_SCAN__test_algorithm_new_lzdp_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1928,7 +2102,7 @@ rule CXX_SCAN__test_algorithm_new_lzdp_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_algorithm_new_lzdp_
+rule CXX_DYNDEP__test_algorithm_new_lzdp_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_algorithm_new_lzdp.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1939,7 +2113,7 @@ rule CXX_DYNDEP__test_algorithm_new_lzdp_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_algorithm_new_lzdp_scanned_
+rule CXX_COMPILER__test_algorithm_new_lzdp_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1949,7 +2123,7 @@ rule CXX_COMPILER__test_algorithm_new_lzdp_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_algorithm_new_lzdp_unscanned_
+rule CXX_COMPILER__test_algorithm_new_lzdp_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -1959,7 +2133,7 @@ rule CXX_COMPILER__test_algorithm_new_lzdp_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_algorithm_new_lzdp_
+rule CXX_EXECUTABLE_LINKER__test_algorithm_new_lzdp_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1968,7 +2142,7 @@ rule CXX_EXECUTABLE_LINKER__test_algorithm_new_lzdp_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_algorithm_new_phase1_
+rule CXX_SCAN__test_lzdp_imdb_gui_cfg_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -1977,7 +2151,56 @@ rule CXX_SCAN__test_algorithm_new_phase1_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_algorithm_new_phase1_
+rule CXX_DYNDEP__test_lzdp_imdb_gui_cfg_Release
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_lzdp_imdb_gui_cfg.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
+  description = Generating CXX dyndep file $out
+  rspfile = $out.rsp
+  rspfile_content = $in
+  restat = 1
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__test_lzdp_imdb_gui_cfg_scanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__test_lzdp_imdb_gui_cfg_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for linking CXX executable.
+
+rule CXX_EXECUTABLE_LINKER__test_lzdp_imdb_gui_cfg_Release
+  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
+  description = Linking CXX executable $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for generating CXX dependencies.
+
+rule CXX_SCAN__test_algorithm_new_phase1_Release
+  depfile = $DEP_FILE
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
+  description = Scanning $in for CXX dependencies
+
+
+#############################################
+# Rule to generate ninja dyndep files for CXX.
+
+rule CXX_DYNDEP__test_algorithm_new_phase1_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_algorithm_new_phase1.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -1988,7 +2211,7 @@ rule CXX_DYNDEP__test_algorithm_new_phase1_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_algorithm_new_phase1_scanned_
+rule CXX_COMPILER__test_algorithm_new_phase1_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -1998,7 +2221,7 @@ rule CXX_COMPILER__test_algorithm_new_phase1_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_algorithm_new_phase1_unscanned_
+rule CXX_COMPILER__test_algorithm_new_phase1_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -2008,7 +2231,7 @@ rule CXX_COMPILER__test_algorithm_new_phase1_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_algorithm_new_phase1_
+rule CXX_EXECUTABLE_LINKER__test_algorithm_new_phase1_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -2017,7 +2240,7 @@ rule CXX_EXECUTABLE_LINKER__test_algorithm_new_phase1_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_algorithm_new_phase2_
+rule CXX_SCAN__test_algorithm_new_phase2_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -2026,7 +2249,7 @@ rule CXX_SCAN__test_algorithm_new_phase2_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_algorithm_new_phase2_
+rule CXX_DYNDEP__test_algorithm_new_phase2_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_algorithm_new_phase2.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -2037,7 +2260,7 @@ rule CXX_DYNDEP__test_algorithm_new_phase2_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_algorithm_new_phase2_scanned_
+rule CXX_COMPILER__test_algorithm_new_phase2_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -2047,7 +2270,7 @@ rule CXX_COMPILER__test_algorithm_new_phase2_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_algorithm_new_phase2_unscanned_
+rule CXX_COMPILER__test_algorithm_new_phase2_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -2057,7 +2280,7 @@ rule CXX_COMPILER__test_algorithm_new_phase2_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_algorithm_new_phase2_
+rule CXX_EXECUTABLE_LINKER__test_algorithm_new_phase2_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -2066,7 +2289,7 @@ rule CXX_EXECUTABLE_LINKER__test_algorithm_new_phase2_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_algorithm_new_lzss_deflate_
+rule CXX_SCAN__test_algorithm_new_lzss_deflate_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -2075,7 +2298,7 @@ rule CXX_SCAN__test_algorithm_new_lzss_deflate_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_algorithm_new_lzss_deflate_
+rule CXX_DYNDEP__test_algorithm_new_lzss_deflate_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_algorithm_new_lzss_deflate.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -2086,7 +2309,7 @@ rule CXX_DYNDEP__test_algorithm_new_lzss_deflate_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_algorithm_new_lzss_deflate_scanned_
+rule CXX_COMPILER__test_algorithm_new_lzss_deflate_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -2096,7 +2319,7 @@ rule CXX_COMPILER__test_algorithm_new_lzss_deflate_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_algorithm_new_lzss_deflate_unscanned_
+rule CXX_COMPILER__test_algorithm_new_lzss_deflate_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -2106,7 +2329,7 @@ rule CXX_COMPILER__test_algorithm_new_lzss_deflate_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_algorithm_new_lzss_deflate_
+rule CXX_EXECUTABLE_LINKER__test_algorithm_new_lzss_deflate_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -2115,7 +2338,7 @@ rule CXX_EXECUTABLE_LINKER__test_algorithm_new_lzss_deflate_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_lzss_roundtrip_debug_
+rule CXX_SCAN__test_lzss_roundtrip_debug_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -2124,7 +2347,7 @@ rule CXX_SCAN__test_lzss_roundtrip_debug_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_lzss_roundtrip_debug_
+rule CXX_DYNDEP__test_lzss_roundtrip_debug_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_lzss_roundtrip_debug.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -2135,7 +2358,7 @@ rule CXX_DYNDEP__test_lzss_roundtrip_debug_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzss_roundtrip_debug_scanned_
+rule CXX_COMPILER__test_lzss_roundtrip_debug_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -2145,7 +2368,7 @@ rule CXX_COMPILER__test_lzss_roundtrip_debug_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzss_roundtrip_debug_unscanned_
+rule CXX_COMPILER__test_lzss_roundtrip_debug_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -2155,7 +2378,7 @@ rule CXX_COMPILER__test_lzss_roundtrip_debug_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_lzss_roundtrip_debug_
+rule CXX_EXECUTABLE_LINKER__test_lzss_roundtrip_debug_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -2164,7 +2387,7 @@ rule CXX_EXECUTABLE_LINKER__test_lzss_roundtrip_debug_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_lzss_noflag_debug_
+rule CXX_SCAN__test_lzss_noflag_debug_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -2173,7 +2396,7 @@ rule CXX_SCAN__test_lzss_noflag_debug_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_lzss_noflag_debug_
+rule CXX_DYNDEP__test_lzss_noflag_debug_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_lzss_noflag_debug.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -2184,7 +2407,7 @@ rule CXX_DYNDEP__test_lzss_noflag_debug_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzss_noflag_debug_scanned_
+rule CXX_COMPILER__test_lzss_noflag_debug_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -2194,7 +2417,7 @@ rule CXX_COMPILER__test_lzss_noflag_debug_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzss_noflag_debug_unscanned_
+rule CXX_COMPILER__test_lzss_noflag_debug_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -2204,7 +2427,7 @@ rule CXX_COMPILER__test_lzss_noflag_debug_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_lzss_noflag_debug_
+rule CXX_EXECUTABLE_LINKER__test_lzss_noflag_debug_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -2213,7 +2436,7 @@ rule CXX_EXECUTABLE_LINKER__test_lzss_noflag_debug_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_lzss_noflag_text10k_
+rule CXX_SCAN__test_lzss_noflag_text10k_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -2222,7 +2445,7 @@ rule CXX_SCAN__test_lzss_noflag_text10k_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_lzss_noflag_text10k_
+rule CXX_DYNDEP__test_lzss_noflag_text10k_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_lzss_noflag_text10k.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -2233,7 +2456,7 @@ rule CXX_DYNDEP__test_lzss_noflag_text10k_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzss_noflag_text10k_scanned_
+rule CXX_COMPILER__test_lzss_noflag_text10k_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -2243,7 +2466,7 @@ rule CXX_COMPILER__test_lzss_noflag_text10k_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzss_noflag_text10k_unscanned_
+rule CXX_COMPILER__test_lzss_noflag_text10k_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -2253,7 +2476,7 @@ rule CXX_COMPILER__test_lzss_noflag_text10k_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_lzss_noflag_text10k_
+rule CXX_EXECUTABLE_LINKER__test_lzss_noflag_text10k_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -2262,7 +2485,7 @@ rule CXX_EXECUTABLE_LINKER__test_lzss_noflag_text10k_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_lzss_noflag_minimal_
+rule CXX_SCAN__test_lzss_noflag_minimal_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -2271,7 +2494,7 @@ rule CXX_SCAN__test_lzss_noflag_minimal_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_lzss_noflag_minimal_
+rule CXX_DYNDEP__test_lzss_noflag_minimal_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_lzss_noflag_minimal.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -2282,7 +2505,7 @@ rule CXX_DYNDEP__test_lzss_noflag_minimal_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzss_noflag_minimal_scanned_
+rule CXX_COMPILER__test_lzss_noflag_minimal_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -2292,7 +2515,7 @@ rule CXX_COMPILER__test_lzss_noflag_minimal_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzss_noflag_minimal_unscanned_
+rule CXX_COMPILER__test_lzss_noflag_minimal_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -2302,7 +2525,7 @@ rule CXX_COMPILER__test_lzss_noflag_minimal_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_lzss_noflag_minimal_
+rule CXX_EXECUTABLE_LINKER__test_lzss_noflag_minimal_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -2311,7 +2534,7 @@ rule CXX_EXECUTABLE_LINKER__test_lzss_noflag_minimal_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__test_lzss_noflag_sizes_
+rule CXX_SCAN__test_lzss_noflag_sizes_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -2320,7 +2543,7 @@ rule CXX_SCAN__test_lzss_noflag_sizes_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__test_lzss_noflag_sizes_
+rule CXX_DYNDEP__test_lzss_noflag_sizes_Release
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_lzss_noflag_sizes.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
@@ -2331,7 +2554,7 @@ rule CXX_DYNDEP__test_lzss_noflag_sizes_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzss_noflag_sizes_scanned_
+rule CXX_COMPILER__test_lzss_noflag_sizes_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -2341,7 +2564,7 @@ rule CXX_COMPILER__test_lzss_noflag_sizes_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__test_lzss_noflag_sizes_unscanned_
+rule CXX_COMPILER__test_lzss_noflag_sizes_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -2351,7 +2574,7 @@ rule CXX_COMPILER__test_lzss_noflag_sizes_unscanned_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__test_lzss_noflag_sizes_
+rule CXX_EXECUTABLE_LINKER__test_lzss_noflag_sizes_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -2360,7 +2583,7 @@ rule CXX_EXECUTABLE_LINKER__test_lzss_noflag_sizes_
 #############################################
 # Rule for generating CXX dependencies.
 
-rule CXX_SCAN__core_engine_
+rule CXX_SCAN__test_deflate_huffman_minimal_Release
   depfile = $DEP_FILE
   command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
   description = Scanning $in for CXX dependencies
@@ -2369,8 +2592,8 @@ rule CXX_SCAN__core_engine_
 #############################################
 # Rule to generate ninja dyndep files for CXX.
 
-rule CXX_DYNDEP__core_engine_
-  command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=src\bindings\pybind\CMakeFiles\core_engine.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
+rule CXX_DYNDEP__test_deflate_huffman_minimal_Release
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_deflate_huffman_minimal.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
   description = Generating CXX dyndep file $out
   rspfile = $out.rsp
   rspfile_content = $in
@@ -2380,7 +2603,7 @@ rule CXX_DYNDEP__core_engine_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__core_engine_scanned_
+rule CXX_COMPILER__test_deflate_huffman_minimal_scanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
@@ -2390,7 +2613,350 @@ rule CXX_COMPILER__core_engine_scanned_
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__core_engine_unscanned_
+rule CXX_COMPILER__test_deflate_huffman_minimal_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for linking CXX executable.
+
+rule CXX_EXECUTABLE_LINKER__test_deflate_huffman_minimal_Release
+  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
+  description = Linking CXX executable $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for generating CXX dependencies.
+
+rule CXX_SCAN__test_deflate_3hm_large_Release
+  depfile = $DEP_FILE
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
+  description = Scanning $in for CXX dependencies
+
+
+#############################################
+# Rule to generate ninja dyndep files for CXX.
+
+rule CXX_DYNDEP__test_deflate_3hm_large_Release
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_deflate_3hm_large.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
+  description = Generating CXX dyndep file $out
+  rspfile = $out.rsp
+  rspfile_content = $in
+  restat = 1
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__test_deflate_3hm_large_scanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__test_deflate_3hm_large_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for linking CXX executable.
+
+rule CXX_EXECUTABLE_LINKER__test_deflate_3hm_large_Release
+  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
+  description = Linking CXX executable $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for generating CXX dependencies.
+
+rule CXX_SCAN__test_lzdp_debug_Release
+  depfile = $DEP_FILE
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
+  description = Scanning $in for CXX dependencies
+
+
+#############################################
+# Rule to generate ninja dyndep files for CXX.
+
+rule CXX_DYNDEP__test_lzdp_debug_Release
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_lzdp_debug.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
+  description = Generating CXX dyndep file $out
+  rspfile = $out.rsp
+  rspfile_content = $in
+  restat = 1
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__test_lzdp_debug_scanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__test_lzdp_debug_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for linking CXX executable.
+
+rule CXX_EXECUTABLE_LINKER__test_lzdp_debug_Release
+  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
+  description = Linking CXX executable $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for generating CXX dependencies.
+
+rule CXX_SCAN__test_deflate_step_old_Release
+  depfile = $DEP_FILE
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
+  description = Scanning $in for CXX dependencies
+
+
+#############################################
+# Rule to generate ninja dyndep files for CXX.
+
+rule CXX_DYNDEP__test_deflate_step_old_Release
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_deflate_step_old.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
+  description = Generating CXX dyndep file $out
+  rspfile = $out.rsp
+  rspfile_content = $in
+  restat = 1
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__test_deflate_step_old_scanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__test_deflate_step_old_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for linking CXX executable.
+
+rule CXX_EXECUTABLE_LINKER__test_deflate_step_old_Release
+  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
+  description = Linking CXX executable $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for generating CXX dependencies.
+
+rule CXX_SCAN__test_deflate_step_new_Release
+  depfile = $DEP_FILE
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
+  description = Scanning $in for CXX dependencies
+
+
+#############################################
+# Rule to generate ninja dyndep files for CXX.
+
+rule CXX_DYNDEP__test_deflate_step_new_Release
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_deflate_step_new.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
+  description = Generating CXX dyndep file $out
+  rspfile = $out.rsp
+  rspfile_content = $in
+  restat = 1
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__test_deflate_step_new_scanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__test_deflate_step_new_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for linking CXX executable.
+
+rule CXX_EXECUTABLE_LINKER__test_deflate_step_new_Release
+  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
+  description = Linking CXX executable $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for generating CXX dependencies.
+
+rule CXX_SCAN__test_deflate_dpflate_cartesian_Release
+  depfile = $DEP_FILE
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
+  description = Scanning $in for CXX dependencies
+
+
+#############################################
+# Rule to generate ninja dyndep files for CXX.
+
+rule CXX_DYNDEP__test_deflate_dpflate_cartesian_Release
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\test_deflate_dpflate_cartesian.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
+  description = Generating CXX dyndep file $out
+  rspfile = $out.rsp
+  rspfile_content = $in
+  restat = 1
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__test_deflate_dpflate_cartesian_scanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__test_deflate_dpflate_cartesian_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for linking CXX executable.
+
+rule CXX_EXECUTABLE_LINKER__test_deflate_dpflate_cartesian_Release
+  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
+  description = Linking CXX executable $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for generating CXX dependencies.
+
+rule CXX_SCAN__old_dpflate_tool_Release
+  depfile = $DEP_FILE
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
+  description = Scanning $in for CXX dependencies
+
+
+#############################################
+# Rule to generate ninja dyndep files for CXX.
+
+rule CXX_DYNDEP__old_dpflate_tool_Release
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=tests\CMakeFiles\old_dpflate_tool.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
+  description = Generating CXX dyndep file $out
+  rspfile = $out.rsp
+  rspfile_content = $in
+  restat = 1
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__old_dpflate_tool_scanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__old_dpflate_tool_unscanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for linking CXX executable.
+
+rule CXX_EXECUTABLE_LINKER__old_dpflate_tool_Release
+  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
+  description = Linking CXX executable $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for generating CXX dependencies.
+
+rule CXX_SCAN__core_engine_new_Release
+  depfile = $DEP_FILE
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -E -x c++ $in -MT $DYNDEP_INTERMEDIATE_FILE -MD -MF $DEP_FILE -fmodules-ts -fdeps-file=$DYNDEP_INTERMEDIATE_FILE -fdeps-target=$OBJ_FILE -fdeps-format=p1689r5 -o $PREPROCESSED_OUTPUT_FILE
+  description = Scanning $in for CXX dependencies
+
+
+#############################################
+# Rule to generate ninja dyndep files for CXX.
+
+rule CXX_DYNDEP__core_engine_new_Release
+  command = D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E cmake_ninja_dyndep --tdi=src\bindings\pybind_new\CMakeFiles\core_engine_new.dir\CXXDependInfo.json --lang=CXX --modmapfmt=gcc --dd=$out @$out.rsp
+  description = Generating CXX dyndep file $out
+  rspfile = $out.rsp
+  rspfile_content = $in
+  restat = 1
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__core_engine_new_scanned_Release
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -fmodules-ts -fmodule-mapper=$DYNDEP_MODULE_MAP_FILE -MD -fdeps-format=p1689r5 -x c++ -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__core_engine_new_unscanned_Release
   depfile = $DEP_FILE
   deps = gcc
   command = ${LAUNCHER}${CODE_CHECK}D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -2400,7 +2966,7 @@ rule CXX_COMPILER__core_engine_unscanned_
 #############################################
 # Rule for linking CXX shared module.
 
-rule CXX_MODULE_LIBRARY_LINKER__core_engine_
+rule CXX_MODULE_LIBRARY_LINKER__core_engine_new_Release
   command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $LANGUAGE_COMPILE_FLAGS $ARCH_FLAGS $LINK_FLAGS -shared -o $TARGET_FILE -Wl,--major-image-version,0,--minor-image-version,0 $in $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX shared module $TARGET_FILE
   restat = $RESTAT

@@ -57,16 +57,16 @@ auto createAlgorithm(AlgorithmID id,
             const DpflatePipelineParams df_fallback{};
             const DpflatePipelineParams& df =
                 dpflate_pipeline ? *dpflate_pipeline : df_fallback;
-            auto cfg = algorithm::DPflateConfig(
-                df.search_size, df.lookahead_size, df.max_chain_length,
-                static_cast<algorithm::models::MatchEngine>(df.match_engine),
-                df.use_flag_encoding, df.use_3hfmtree,
-                static_cast<uint8_t>(df.huffman_offset_chunk_bits),
-                static_cast<uint8_t>(df.huffman_length_chunk_bits),
-                df.min_match);
+            auto cfg = algorithm::DPFlateConfig(
+                df.search_size, df.lookahead_size,
+                3,
+                df.use_flag_encoding, df.use_3hfmtree, df.max_chain_length);
+            cfg.lzdp.dp.match_engine = static_cast<algorithm::models::MatchEngine>(df.match_engine);
+            cfg.lzdp.window.min_match_len = df.min_match;
+            cfg.huffman_3hm.chunk_bits = static_cast<uint32_t>(df.huffman_offset_chunk_bits);
             return std::make_unique<SCA>(
                 [cfg](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {
-                    auto r = algorithm::pipeline::compress_bytes_dpflate(data, cfg);
+                    auto r = algorithm::dpflate_compress(data, cfg);
                     return r.compressed;
                 },
                 static_cast<std::size_t>(sca_chunk));
@@ -97,6 +97,36 @@ auto createAlgorithm(AlgorithmID id,
                     return algorithm::pipeline::decompress_bytes_lzss(data, cfg);
                 });
         }
+        case AlgorithmID::Deflate_New: {
+             const DeflatePipelineParams df_fallback{};
+             const DeflatePipelineParams& df =
+                 deflate_pipeline ? *deflate_pipeline : df_fallback;
+             auto cfg = algorithm::DeflateConfig(
+                 df.search_size, df.lookahead_size, df.max_chain_length,
+                 df.use_flag_encoding, df.use_3hfmtree);
+             cfg.window.min_match_len = df.min_match;
+             cfg.huffman_3hm.chunk_bits = static_cast<uint32_t>(df.huffman_offset_chunk_bits);
+             return std::make_unique<SCA>(
+                 [cfg](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {
+                     auto r = algorithm::deflate_compress(data, cfg);
+                     return r.compressed;
+                 },
+                 static_cast<std::size_t>(sca_chunk));
+         }
+         case AlgorithmID::DeflateDecompress_New: {
+             const DeflatePipelineParams df_fallback{};
+             const DeflatePipelineParams& df =
+                 deflate_pipeline ? *deflate_pipeline : df_fallback;
+             auto cfg = algorithm::DeflateConfig(
+                 df.search_size, df.lookahead_size, df.max_chain_length,
+                 df.use_flag_encoding, df.use_3hfmtree);
+             cfg.window.min_match_len = df.min_match;
+             cfg.huffman_3hm.chunk_bits = static_cast<uint32_t>(df.huffman_offset_chunk_bits);
+             return std::make_unique<SDA>(
+                 [cfg](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {
+                     return algorithm::deflate_decompress(data, cfg);
+                 });
+         }
         default:
             break;
     }

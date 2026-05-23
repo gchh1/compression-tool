@@ -14,9 +14,7 @@ static bool check_roundtrip(const std::vector<uint8_t>& input,
 
     Huffman_InflateConfig icfg{
         cfg.encoding.offset_bits,
-        cfg.encoding.length_bits,
-        cfg.huffman.huffman_offset_bitwidth,
-        cfg.huffman.huffman_length_bitwidth
+        cfg.encoding.length_bits
     };
     Huffman_Inflate encoder(icfg, cfg.encoding);
     encoder.countFreq(triples);

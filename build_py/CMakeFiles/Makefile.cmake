@@ -61,7 +61,6 @@ set(CMAKE_MAKEFILE_DEPENDS
   "D:/AAA_C/compression-tool/src/api/CMakeLists.txt"
   "D:/AAA_C/compression-tool/src/api_new/CMakeLists.txt"
   "D:/AAA_C/compression-tool/src/archiver/CMakeLists.txt"
-  "D:/AAA_C/compression-tool/src/bindings/pybind/CMakeLists.txt"
   "D:/AAA_C/compression-tool/src/bindings/pybind_new/CMakeLists.txt"
   "D:/AAA_C/compression-tool/src/core/CMakeLists.txt"
   "D:/AAA_C/compression-tool/src/core_new/CMakeLists.txt"
@@ -100,7 +99,6 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "src/processor/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/ade/CMakeFiles/CMakeDirectoryInformation.cmake"
   "tests/CMakeFiles/CMakeDirectoryInformation.cmake"
-  "src/bindings/pybind/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/bindings/pybind_new/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
@@ -196,6 +194,9 @@ set(CMAKE_DEPEND_INFO_FILES
   "tests/CMakeFiles/test_deflate_huffman_minimal.dir/DependInfo.cmake"
   "tests/CMakeFiles/test_deflate_3hm_large.dir/DependInfo.cmake"
   "tests/CMakeFiles/test_lzdp_debug.dir/DependInfo.cmake"
-  "src/bindings/pybind/CMakeFiles/core_engine.dir/DependInfo.cmake"
+  "tests/CMakeFiles/test_deflate_step_old.dir/DependInfo.cmake"
+  "tests/CMakeFiles/test_deflate_step_new.dir/DependInfo.cmake"
+  "tests/CMakeFiles/test_deflate_dpflate_cartesian.dir/DependInfo.cmake"
+  "tests/CMakeFiles/old_dpflate_tool.dir/DependInfo.cmake"
   "src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/DependInfo.cmake"
   )

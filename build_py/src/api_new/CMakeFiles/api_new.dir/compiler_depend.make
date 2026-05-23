@@ -427,11 +427,11 @@ src/api_new/CMakeFiles/api_new.dir/api.cpp.obj: D:/AAA_C/compression-tool/src/ap
   D:/AAA_C/compression-tool/src/algorithm_new/include/ByteView.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Deflate.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Dpflate.hpp \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/EncodingTriple.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman.hpp \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman_3HfMTree.hpp \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman_Inflate.hpp \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/HuffmanTree.hpp \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/HuffmanTree3HM.hpp \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/Inflate3HMCoding.hpp \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/InflateCoding.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/LZDP.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/LZSS.hpp \
@@ -628,6 +628,8 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_algorithm_defs.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/new_allocator.h:
 
+D:/AAA_C/compression-tool/src/algorithm_new/include/HuffmanTree3HM.hpp:
+
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/concept_check.h:
@@ -716,8 +718,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/exception:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/gthr-default.h:
 
-D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman_Inflate.hpp:
-
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/deque:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_defines.h:
@@ -800,6 +800,8 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/os_defines
 
 D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/limits.h:
 
+D:/AAA_C/compression-tool/src/algorithm_new/include/InflateCoding.hpp:
+
 D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/mm_malloc.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/swprintf.inl:
@@ -842,8 +844,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/typeinfo:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/malloc.h:
 
-D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman_3HfMTree.hpp:
-
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_time.h:
@@ -873,6 +873,8 @@ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdlib.h:
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unicode.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sys/types.h:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/Inflate3HMCoding.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wchar.h:
 
@@ -908,8 +910,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/shared_ptr.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/shared_ptr_base.h:
 
-D:/AAA_C/compression-tool/src/algorithm_new/include/EncodingTriple.hpp:
-
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/sstream.tcc:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_queue.h:
@@ -936,8 +936,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/charconv:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/optional:
 
-D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman.hpp:
-
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/queue:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/sstream:
@@ -953,6 +951,8 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/iosfwd:
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/variant:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/time_members.h:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/HuffmanTree.hpp:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/LZDP.hpp:
 

@@ -9,7 +9,7 @@
 namespace compressor::core_new {
 
 struct DPflateCompressorConfig {
-    algorithm::DPflateConfig dpflate;
+    algorithm::DPFlateConfig dpflate;
     bool use_streaming{false};
     size_t streaming_chunk_size{1 << 20};
     std::string workspace_dir{"."};

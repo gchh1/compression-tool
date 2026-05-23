@@ -1330,6 +1330,32 @@ test_lzdp_debug/fast:
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_debug.dir\build.make tests/CMakeFiles/test_lzdp_debug.dir/build
 .PHONY : test_lzdp_debug/fast
 
+#=============================================================================
+# Target rules for targets named test_deflate_step_old
+
+# Build rule for target.
+test_deflate_step_old: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_deflate_step_old
+.PHONY : test_deflate_step_old
+
+# fast build rule for target.
+test_deflate_step_old/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_old.dir\build.make tests/CMakeFiles/test_deflate_step_old.dir/build
+.PHONY : test_deflate_step_old/fast
+
+#=============================================================================
+# Target rules for targets named test_deflate_step_new
+
+# Build rule for target.
+test_deflate_step_new: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_deflate_step_new
+.PHONY : test_deflate_step_new
+
+# fast build rule for target.
+test_deflate_step_new/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_new.dir\build.make tests/CMakeFiles/test_deflate_step_new.dir/build
+.PHONY : test_deflate_step_new/fast
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -1405,6 +1431,8 @@ help:
 	@echo ... test_deflate
 	@echo ... test_deflate_3hm_large
 	@echo ... test_deflate_huffman_minimal
+	@echo ... test_deflate_step_new
+	@echo ... test_deflate_step_old
 	@echo ... test_dpflate_3hm_stream
 	@echo ... test_dpflate_bin64k_3k_stream
 	@echo ... test_dpflate_stream_trace

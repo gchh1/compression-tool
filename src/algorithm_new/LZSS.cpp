@@ -3,7 +3,7 @@
 #include <filesystem>
 #include <utility>
 
-#include "EncodingTriple.hpp"
+#include "LZencoding.hpp"
 #include "RecordIO.hpp"
 #include "Streaming.hpp"
 #include "StreamingCancel.hpp"

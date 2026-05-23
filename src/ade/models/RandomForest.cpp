@@ -21,16 +21,20 @@ auto DecisionTree::train(const std::vector<TrainingSample>& samples,
 
     num_features_ = samples[0].features.size();
     labels_ = extract_labels(samples);
+    // 无法确保标签连续的话，直接计算最大标签下标加1作为类别数
     num_classes_ = *std::max_element(labels_.begin(), labels_.end()) + 1;
 
     if (config.max_features == 0 || config.max_features > num_features_) {
+        // 默认使用 sqrt(num_features) 的特征数量，类似于 scikit-learn 的做法
         max_features_ = static_cast<size_t>(std::sqrt(static_cast<double>(num_features_)));
         if (max_features_ == 0) max_features_ = num_features_;
     } else {
         max_features_ = config.max_features;
     }
 
+    
     std::vector<size_t> indices(samples.size());
+    //会填充为0,1,2,...,samples.size()-1
     std::iota(indices.begin(), indices.end(), 0);
 
     root_ = build_tree(samples, indices, 0);
@@ -175,7 +179,7 @@ auto DecisionTree::build_tree(const std::vector<TrainingSample>& samples,
 auto DecisionTree::is_pure(const std::vector<size_t>& indices) const -> bool {
     if (indices.size() <= 1) return true;
     int first_label = labels_[indices[0]];
-    for (size_t i = 1; i < indices.size(); ++i) {
+    for (size_t i = 1; i < indices.size(); ++i) {//出现不同算法标签就是不纯的
         if (labels_[indices[i]] != first_label) return false;
     }
     return true;

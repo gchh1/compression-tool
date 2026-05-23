@@ -16,7 +16,8 @@ std::vector<Triple> hashChainSearch(
     Iter lookahead_begin,
     uint32_t lookahead_len,
     uint8_t dp_top,
-    uint32_t min_match_len)
+    uint32_t min_match_len,
+    uint32_t max_chain_length = 0)
 {
     if (lookahead_len < min_match_len || dp_top == 0 || search_len == 0) {
         return {};
@@ -30,19 +31,16 @@ std::vector<Triple> hashChainSearch(
                                 : static_cast<uint8_t>(lookahead_begin[i - search_len]);
     };
 
-    uint32_t bucket_count = 1;
-    while (bucket_count <= search_len) {
-        bucket_count <<= 1;
-    }
-    const uint32_t hash_mask = bucket_count - 1;
+    uint32_t bucket_count = search_len > 0 ? search_len : 1;
+    const bool pow2 = (bucket_count & (bucket_count - 1)) == 0;
 
     std::vector<uint32_t> head(bucket_count, UINT32_MAX);
     std::vector<uint32_t> prev(total, UINT32_MAX);
 
     for (uint32_t p = 0; p + 2 < total; ++p) {
         const uint8_t a = at(p), b = at(p + 1), c = at(p + 2);
-        const uint32_t slot =
-            ((uint32_t{a} << 10) ^ (uint32_t{b} << 5) ^ c) & hash_mask;
+        const uint32_t h = (uint32_t{a} << 10) ^ (uint32_t{b} << 5) ^ c;
+        const uint32_t slot = pow2 ? (h & (bucket_count - 1)) : (h % bucket_count);
         prev[p] = head[slot];
         head[slot] = p;
     }
@@ -50,7 +48,9 @@ std::vector<Triple> hashChainSearch(
     models::TopMatch matches(dp_top);
 
     uint32_t match_pos = (pos + 2 < total) ? prev[pos] : UINT32_MAX;
-    uint32_t chain_length = static_cast<uint32_t>(dp_top) * 8;
+    uint32_t chain_length = max_chain_length > 0
+        ? max_chain_length
+        : static_cast<uint32_t>(dp_top) * 8;
 
     while (match_pos != UINT32_MAX && chain_length-- > 0) {
         const uint32_t offset = pos - match_pos;

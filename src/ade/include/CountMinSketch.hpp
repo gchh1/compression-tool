@@ -186,41 +186,81 @@ class CountMinSketch {
      * @param k Number of top items to consider (default: 10)
      * @return Concentration ratio [0, 1] where higher = more repetitive data
      */
+    // auto calculate_topk_concentration(size_t k = 10) const -> float {
+    //     if (total_count_ == 0 || k == 0) return 0.0f;
+
+    //     struct KeyCount {
+    //         uint32_t key;
+    //         Counter count;
+    //     };
+
+    //     // Sample candidates to find top-K approximate maxima
+    //     std::vector<KeyCount> candidates;
+    //     size_t num_samples = std::min((size_t)100000, WIDTH * DEPTH);
+
+    //     for (size_t i = 0; i < num_samples; ++i) {
+    //         uint32_t test_key = static_cast<uint32_t>(i * 2654435769u);
+    //         Counter cnt = query(test_key);
+
+    //         if (cnt > 0) {
+    //             candidates.push_back({test_key, cnt});
+    //         }
+    //     }
+
+    //     // Sort by count descending and take top K
+    //     std::partial_sort(candidates.begin(),
+    //                      candidates.begin() + std::min(k, candidates.size()),
+    //                      candidates.end(),
+    //                      [](const KeyCount& a, const KeyCount& b) {
+    //                          return a.count > b.count;
+    //                      });
+
+    //     // Sum top-K counts
+    //     uint64_t top_k_sum = 0;
+    //     size_t actual_k = std::min(k, candidates.size());
+
+    //     for (size_t i = 0; i < actual_k; ++i) {
+    //         top_k_sum += candidates[i].count;
+    //     }
+
+    //     return static_cast<float>(top_k_sum) / total_count_;
+    // }
+    ///////这里改用了小顶堆，避免了对所有样本排序的开销，在大数据量时效率更高
     auto calculate_topk_concentration(size_t k = 10) const -> float {
         if (total_count_ == 0 || k == 0) return 0.0f;
 
         struct KeyCount {
             uint32_t key;
             Counter count;
+            // 小顶堆用 > 比较（堆顶最小）
+            bool operator>(const KeyCount& other) const {
+                return count > other.count;
+            }
         };
 
-        // Sample candidates to find top-K approximate maxima
-        std::vector<KeyCount> candidates;
+        // 小顶堆：只保留最大的 K 个
+        std::priority_queue<KeyCount, std::vector<KeyCount>, std::greater<KeyCount>> min_heap;
+        
         size_t num_samples = std::min((size_t)100000, WIDTH * DEPTH);
-
         for (size_t i = 0; i < num_samples; ++i) {
             uint32_t test_key = static_cast<uint32_t>(i * 2654435769u);
             Counter cnt = query(test_key);
-
+            
             if (cnt > 0) {
-                candidates.push_back({test_key, cnt});
+                if (min_heap.size() < k) {
+                    min_heap.push({test_key, cnt});
+                } else if (cnt > min_heap.top().count) {
+                    min_heap.pop();           // 移除当前最小的
+                    min_heap.push({test_key, cnt});
+                }
             }
         }
 
-        // Sort by count descending and take top K
-        std::partial_sort(candidates.begin(),
-                         candidates.begin() + std::min(k, candidates.size()),
-                         candidates.end(),
-                         [](const KeyCount& a, const KeyCount& b) {
-                             return a.count > b.count;
-                         });
-
-        // Sum top-K counts
+        // 累加堆中所有（即 Top K）
         uint64_t top_k_sum = 0;
-        size_t actual_k = std::min(k, candidates.size());
-
-        for (size_t i = 0; i < actual_k; ++i) {
-            top_k_sum += candidates[i].count;
+        while (!min_heap.empty()) {
+            top_k_sum += min_heap.top().count;
+            min_heap.pop();
         }
 
         return static_cast<float>(top_k_sum) / total_count_;

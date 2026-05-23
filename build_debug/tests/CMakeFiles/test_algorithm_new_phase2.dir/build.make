@@ -93,6 +93,11 @@ test_algorithm_new_phase2_EXTERNAL_OBJECTS =
 bin/test_algorithm_new_phase2.exe: tests/CMakeFiles/test_algorithm_new_phase2.dir/test_algorithm_new_phase2.cpp.obj
 bin/test_algorithm_new_phase2.exe: tests/CMakeFiles/test_algorithm_new_phase2.dir/build.make
 bin/test_algorithm_new_phase2.exe: src/algorithm_new/libalgorithm_new.a
+bin/test_algorithm_new_phase2.exe: src/core_new/libcore_new.a
+bin/test_algorithm_new_phase2.exe: src/algorithm_new/libalgorithm_new.a
+bin/test_algorithm_new_phase2.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_algorithm_new_phase2.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_algorithm_new_phase2.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_algorithm_new_phase2.exe: tests/CMakeFiles/test_algorithm_new_phase2.dir/linkLibs.rsp
 bin/test_algorithm_new_phase2.exe: tests/CMakeFiles/test_algorithm_new_phase2.dir/objects1.rsp
 bin/test_algorithm_new_phase2.exe: tests/CMakeFiles/test_algorithm_new_phase2.dir/link.txt

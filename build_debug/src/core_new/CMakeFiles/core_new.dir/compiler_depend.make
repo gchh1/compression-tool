@@ -196,7 +196,6 @@ src/core_new/CMakeFiles/core_new.dir/DPflatecompressor.cpp.obj: D:/AAA_C/compres
   D:/AAA_C/compression-tool/src/algorithm_new/include/BitProcessor.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/ByteView.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Dpflate.hpp \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/EncodingTriple.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman_3HfMTree.hpp \
@@ -626,6 +625,8 @@ src/core_new/CMakeFiles/core_new.dir/ExternalCodecs.cpp.obj: D:/AAA_C/compressio
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wctype.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/zconf.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/zlib.h \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/Brotli.hpp \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/GzipCompressor.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/ICompressor.hpp
 
@@ -656,9 +657,7 @@ src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.obj: D:/AAA_C/compressio
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/cpp_type_traits.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/cxxabi_forced.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/cxxabi_init_exception.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/deque.tcc \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/enable_special_members.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/erase_if.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_defines.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_ptr.h \
@@ -666,8 +665,6 @@ src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.obj: D:/AAA_C/compressio
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functexcept.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functional_hash.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hash_bytes.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hashtable.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hashtable_policy.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/invoke.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ios_base.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/istream.tcc \
@@ -686,7 +683,6 @@ src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.obj: D:/AAA_C/compressio
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/move.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/nested_exception.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/new_allocator.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/node_handle.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ostream.tcc \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ostream_insert.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/parse_numbers.h \
@@ -711,14 +707,12 @@ src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.obj: D:/AAA_C/compressio
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algobase.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_construct.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_deque.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_function.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_heap.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_funcs.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_types.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_pair.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_queue.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_relops.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_tempbuf.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_uninitialized.h \
@@ -731,7 +725,6 @@ src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.obj: D:/AAA_C/compressio
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unicode.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uniform_int_dist.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unique_ptr.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unordered_map.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uses_allocator.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uses_allocator_args.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/utility.h \
@@ -754,7 +747,6 @@ src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.obj: D:/AAA_C/compressio
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cwctype \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/debug/assertions.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/debug/debug.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/deque \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/exception \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/aligned_buffer.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/alloc_traits.h \
@@ -779,7 +771,6 @@ src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.obj: D:/AAA_C/compressio
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/execution_defs.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_algorithm_defs.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/pstl_config.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/queue \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ratio \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/span \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/sstream \
@@ -792,7 +783,6 @@ src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.obj: D:/AAA_C/compressio
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tuple \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/type_traits \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/typeinfo \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/unordered_map \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/utility \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/variant \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/vector \
@@ -859,11 +849,7 @@ src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.obj: D:/AAA_C/compressio
   D:/AAA_C/compression-tool/src/algorithm_new/include/ByteView.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Deflate.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Dpflate.hpp \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/EncodingTriple.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman.hpp \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman_3HfMTree.hpp \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman_Inflate.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/LZDP.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/LZSS.hpp \
@@ -1057,7 +1043,6 @@ src/core_new/CMakeFiles/core_new.dir/LZDPcompressor.cpp.obj: D:/AAA_C/compressio
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wctype.h \
   D:/AAA_C/compression-tool/src/algorithm_new/include/BitProcessor.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/ByteView.hpp \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/EncodingTriple.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/LZDP.hpp \
@@ -1347,6 +1332,8 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_base.h:
 
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic:
+
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ostream:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_uninitialized.h:
@@ -1413,8 +1400,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_facets_nonio.tcc:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uses_allocator_args.h:
 
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stdexcept:
-
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/string_view.tcc:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/queue:
@@ -1444,8 +1429,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uniform_int_dist.h:
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_facets.h:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/Models.hpp:
-
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception.h:
 
@@ -1554,6 +1537,10 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cwctype:
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_string.h:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/LZencoding.hpp:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stdexcept:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/Brotli.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/charconv.h:
 
@@ -1841,8 +1828,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/shared_ptr.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/shared_ptr_base.h:
 
-D:/AAA_C/compression-tool/src/algorithm_new/include/EncodingTriple.hpp:
-
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/sstream.tcc:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/locale:
@@ -1866,3 +1851,5 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/nested_exception.h:
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/zconf.h:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp:

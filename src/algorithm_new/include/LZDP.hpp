@@ -28,8 +28,9 @@ struct LZDPConfig {
         size_t dp_top = 3,
         models::MatchEngine me = models::MatchEngine::HashChain,
         bool flag = true,
-        size_t mml = 0
-    ) : window{sw, lw, mml},
+        size_t mml = 0,
+        size_t mcl = 256
+    ) : window{sw, lw, mml, mcl},
         dp{dp_top, me},
         encoding{static_cast<uint8_t>(utils::calcBitWidth(sw)),
                  static_cast<uint8_t>(utils::calcBitWidth(lw)),
@@ -45,17 +46,13 @@ class LZDP {
 
     size_t cal_cost(size_t literal_count, size_t match_count) const {
         if (config_.encoding.use_flag_encoding) {
-            return literal_count * (config_.encoding.offset_bits + 1) + match_count * (config_.encoding.length_bits + 1);
+            const size_t lit_cost = 9;
+            const size_t match_cost = 1 + config_.encoding.offset_bits + config_.encoding.length_bits;
+            return literal_count * lit_cost + match_count * match_cost;
         }
-        size_t tmp = literal_count;
-        size_t maxlen = (size_t{1} << config_.encoding.length_bits) - 1;
-        size_t cost = 0;
-        while (tmp > maxlen) {
-            cost += config_.encoding.offset_bits + config_.encoding.length_bits + maxlen * 8;
-            tmp -= maxlen;
-        }
-        cost += config_.encoding.offset_bits + config_.encoding.length_bits + tmp * 8;
-        return cost;
+        const size_t lit_cost = 8;
+        const size_t match_cost = config_.encoding.offset_bits + config_.encoding.length_bits;
+        return literal_count * lit_cost + match_count * match_cost;
     }
 
 public:
@@ -85,7 +82,7 @@ public:
 
 // ──── Pipeline ────
 
-#include "EncodingTriple.hpp"
+#include "LZencoding.hpp"
 #include "Models.hpp"
 
 namespace compressor::algorithm::pipeline {

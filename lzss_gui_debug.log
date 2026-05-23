@@ -1625,3 +1625,6 @@
 [Python::CompressionEngine.compress] LZSS data_size=60537
 [Python::CompressionEngine.compress] LZSS data_size=2816
 [Python::CompressionEngine.compress] LZSS data_size=60537
+[Python::single_compress] LZSS raw_data=60537 use_streaming=False path=D:/AAA_C/compression-tool/resources/wow.html
+[Python::CompressionEngine.compress] LZSS data_size=60537
+[Python::CompressionEngine.compress] LZSS data_size=60537

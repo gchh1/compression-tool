@@ -1,10 +1,10 @@
-=== Debug Log started at Fri May 15 21:58:28 2026
+=== Debug Log started at Sat May 23 00:19:23 2026
 ===
 [DPFlateCompressor] compress start: original_size=2097152 use_3hfmtree=0
-[DPFlate] handleCollectInput enter: input_buffer=0 remain=2097152 current_i=0 window_abs=0 is_last=1 dp_slots=514 search=4096 lookahead=256
+[DPFlate] handleCollectInput enter: input_buffer=0 remain=2097152 current_i=0 window_abs=0 is_last=1 dp_slots=256 search=4096 lookahead=256
 [DPFlate] handleCollectInput processable=2097152 buffer=2097152 current_i=0 tempA_before=0 prev_buf=2097152
-[DPFlate] handleCollectInput final: total_in_len=2097152 final_link=(len=0 off=65) tempA=6029315 input_buffer=2097152
-[DPFlate] handleBacktrack enter: total_in_len=2097152 tempA=6029315 links=2097153 use_3hm=0
+[DPFlate] handleCollectInput final: total_in_len=2097152 final_link=(len=0 off=65) tempA=8388612 input_buffer=2097152
+[DPFlate] handleBacktrack enter: total_in_len=2097152 tempA=8388612 use_3hm=0
 [DPFlate] handleBacktrack token: cur=2097152 len=0 off=65 tokens=0
 [DPFlate] handleBacktrack token: cur=2097151 len=0 off=226 tokens=1
 [DPFlate] handleBacktrack token: cur=2097150 len=0 off=159 tokens=2
@@ -55,7 +55,7 @@
 [DPFlate] handleBacktrack token: cur=2097105 len=0 off=121 tokens=47
 [DPFlate] handleBacktrack token: cur=2097104 len=0 off=149 tokens=48
 [DPFlate] handleBacktrack token: cur=2097103 len=0 off=12 tokens=49
-[DPFlate] handleBacktrack done: total_tokens=704662 out_bytes=2097152 expected=2097152 tempA=6029315 tempB=2025904
+[DPFlate] handleBacktrack done: total_tokens=704662 out_bytes=2097152 expected=2097152 tempA=8388612 tempB=2818648
 [DPFlate] handleBuildTree enter: use_3hm=0 writer_bytes=0 total_tokens=704662
 [DPFlate] huff_build_tree_and_write_trees FLATE: main_tree_bits=2881 dist_tree_bits=34 total_tokens=704662
 [DPFlate] handleBuildTree done: writer_bytes=365 need_output=0
@@ -217,11 +217,11 @@
 [DPFlateCompressor] decompress_to_end iter=1 in_off=713494/713495 out_pos=2097152 done=1 need_input=0 need_output=0 consumed=713494 produced=2097152
 [DPFlateCompressor] decompress_to_end: done after 1 iterations, final out_pos=2097152
 [DPFlateCompressor] compress start: original_size=2097152 use_3hfmtree=1
-[DPFlate] handleCollectInput enter: input_buffer=0 remain=2097152 current_i=0 window_abs=0 is_last=1 dp_slots=514 search=4096 lookahead=256
+[DPFlate] handleCollectInput enter: input_buffer=0 remain=2097152 current_i=0 window_abs=0 is_last=1 dp_slots=256 search=4096 lookahead=256
 [DPFlate] handleCollectInput processable=2097152 buffer=2097152 current_i=0 tempA_before=0 prev_buf=2097152
-[DPFlate] handleCollectInput final: total_in_len=2097152 final_link=(len=0 off=65) tempA=6029315 input_buffer=2097152
-[DPFlate] handleBacktrack enter: total_in_len=2097152 tempA=6029315 links=2097153 use_3hm=1
-[DPFlate] handleBacktrack done: total_tokens=704662 out_bytes=2097152 expected=2097152 tempA=6029315 tempB=2025904
+[DPFlate] handleCollectInput final: total_in_len=2097152 final_link=(len=0 off=65) tempA=8388612 input_buffer=2097152
+[DPFlate] handleBacktrack enter: total_in_len=2097152 tempA=8388612 use_3hm=1
+[DPFlate] handleBacktrack done: total_tokens=704662 out_bytes=2097152 expected=2097152 tempA=8388612 tempB=2818648
 [DPFlate] handleBuildTree enter: use_3hm=1 writer_bytes=0 total_tokens=704662
 [DPFlate] huff_build_tree_and_write_trees 3HM: offset_bits=13 length_bits=9 offset_chunk=8 length_chunk=8 offset_count=256 length_count=256 tree_bits=7709
 [DPFlate] handleBuildTree done: writer_bytes=964 need_output=0

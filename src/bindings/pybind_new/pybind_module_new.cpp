@@ -309,6 +309,10 @@ void bind_pipeline(py::module_& m) {
         .value("LZMINE", compressor::core::AlgorithmID::LZDP)
         .value("LZMINE_DECOMPRESS", compressor::core::AlgorithmID::LZDPDecompress)
         .value("DPFLATE", compressor::core::AlgorithmID::DPFlate)
+        .value("BROTLI", compressor::core::AlgorithmID::Brotli)
+        .value("BROTLI_DECOMPRESS", compressor::core::AlgorithmID::BrotliDecompress)
+        .value("ZSTD", compressor::core::AlgorithmID::Zstd)
+        .value("ZSTD_DECOMPRESS", compressor::core::AlgorithmID::ZstdDecompress)
         .export_values();
 
     py::class_<compressor::core::LzdpWholeFileParams>(m, "LzdpWholeFileParams")
@@ -356,6 +360,15 @@ void bind_pipeline(py::module_& m) {
         .def_readwrite("huffman_length_chunk_bits",
                        &compressor::core::DeflatePipelineParams::huffman_length_chunk_bits);
 
+    py::class_<compressor::core::LzssPipelineParams>(m, "LzssPipelineParams")
+        .def(py::init<>())
+        .def_readwrite("search_size", &compressor::core::LzssPipelineParams::search_size)
+        .def_readwrite("lookahead_size",
+                       &compressor::core::LzssPipelineParams::lookahead_size)
+        .def_readwrite("min_match", &compressor::core::LzssPipelineParams::min_match)
+        .def_readwrite("use_flag_encoding",
+                       &compressor::core::LzssPipelineParams::use_flag_encoding);
+
     py::class_<compressor::api_new::CompressResult>(m, "PipelineCompressResult")
         .def(py::init<>())
         .def_property(
@@ -395,7 +408,7 @@ void bind_pipeline(py::module_& m) {
     m.def(
         "pack_wcx",
         [](py::buffer buf, compressor::core::AlgorithmID algorithm, size_t original_size,
-           const std::string& original_filename, bool is_folder, bool web_dict_preprocess) {
+           const std::string& original_filename, bool is_folder, bool web_dict_preprocess) -> py::bytes {
             return vector_to_pybytes(compressor::api_new::pack_wcx(
                 buffer_to_u8vec(buf), algorithm, original_size, original_filename, is_folder,
                 web_dict_preprocess));
@@ -406,7 +419,7 @@ void bind_pipeline(py::module_& m) {
 
     m.def(
         "unpack_wcx",
-        [](py::buffer buf) { return compressor::api_new::unpack_wcx(buffer_to_u8vec(buf)); },
+        [](py::buffer buf) -> compressor::api_new::WCXUnpackResult { return compressor::api_new::unpack_wcx(buffer_to_u8vec(buf)); },
         py::arg("data"));
 
     m.def(
@@ -415,14 +428,14 @@ void bind_pipeline(py::module_& m) {
            const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
            const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p,
            const std::optional<compressor::core::DeflatePipelineParams>& deflate_p,
-           size_t stream_chunk_bytes) {
+           size_t stream_chunk_bytes) -> compressor::api_new::CompressResult {
             const compressor::core::LzdpWholeFileParams* p =
                 lzdp_wf.has_value() ? &lzdp_wf.value() : nullptr;
             const compressor::core::DpflatePipelineParams* d =
                 dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
             const compressor::core::DeflatePipelineParams* df =
                 deflate_p.has_value() ? &deflate_p.value() : nullptr;
-            return compressor::api_new::compress(buffer_to_u8vec(buf), chain, p, d, df,
+            return compressor::api_new::compress(buffer_to_u8vec(buf), chain, p, d, df, nullptr,
                                                  stream_chunk_bytes);
         },
         py::arg("data"), py::arg("chain"), py::arg("lzdp_whole_file") = std::nullopt,
@@ -435,14 +448,14 @@ void bind_pipeline(py::module_& m) {
            const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
            const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p,
            const std::optional<compressor::core::DeflatePipelineParams>& deflate_p,
-           size_t stream_chunk_bytes) {
+           size_t stream_chunk_bytes) -> compressor::api_new::CompressResult {
             const compressor::core::LzdpWholeFileParams* p =
                 lzdp_wf.has_value() ? &lzdp_wf.value() : nullptr;
             const compressor::core::DpflatePipelineParams* d =
                 dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
             const compressor::core::DeflatePipelineParams* df =
                 deflate_p.has_value() ? &deflate_p.value() : nullptr;
-            return compressor::api_new::decompress(buffer_to_u8vec(buf), chain, p, d, df,
+            return compressor::api_new::decompress(buffer_to_u8vec(buf), chain, p, d, df, nullptr,
                                                    stream_chunk_bytes);
         },
         py::arg("data"), py::arg("chain"), py::arg("lzdp_whole_file") = std::nullopt,
@@ -456,26 +469,29 @@ void bind_pipeline(py::module_& m) {
            uint32_t file_compress_opts,
            const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
            const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p,
-           const std::optional<compressor::core::DeflatePipelineParams>& deflate_p) {
+           const std::optional<compressor::core::DeflatePipelineParams>& deflate_p,
+           const std::optional<compressor::core::LzssPipelineParams>& lzss_p) -> compressor::api_new::CompressResult {
             const compressor::core::LzdpWholeFileParams* p =
                 lzdp_wf.has_value() ? &lzdp_wf.value() : nullptr;
             const compressor::core::DpflatePipelineParams* d =
                 dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
             const compressor::core::DeflatePipelineParams* df =
                 deflate_p.has_value() ? &deflate_p.value() : nullptr;
+            const compressor::core::LzssPipelineParams* ls =
+                lzss_p.has_value() ? &lzss_p.value() : nullptr;
             return compressor::api_new::compressFile(input_path, output_path, chain,
                                                      stream_chunk_bytes, file_compress_opts, p,
-                                                     d, df);
+                                                     d, df, ls);
         },
         py::arg("input_path"), py::arg("output_path"), py::arg("chain"),
         py::arg("stream_chunk_bytes") = size_t{0}, py::arg("file_compress_opts") = uint32_t{0},
         py::arg("lzdp_whole_file") = std::nullopt, py::arg("dpflate_pipeline") = std::nullopt,
-        py::arg("deflate_pipeline") = std::nullopt);
+        py::arg("deflate_pipeline") = std::nullopt, py::arg("lzss_pipeline") = std::nullopt);
 
     m.def(
         "pipeline_decompress_file",
         [](const std::string& input_path, const std::string& output_path,
-           const std::vector<compressor::core::AlgorithmID>& chain, size_t stream_chunk_bytes) {
+           const std::vector<compressor::core::AlgorithmID>& chain, size_t stream_chunk_bytes) -> compressor::api_new::CompressResult {
             return compressor::api_new::decompressFile(input_path, output_path, chain,
                                                        stream_chunk_bytes);
         },
@@ -484,7 +500,7 @@ void bind_pipeline(py::module_& m) {
 
     m.def(
         "set_streaming_compress_cancel_requested",
-        [](bool requested) {
+        [](bool requested) -> void {
             compressor::api_new::set_streaming_compress_cancel_requested(requested);
         },
         py::arg("requested"));
@@ -499,5 +515,5 @@ PYBIND11_MODULE(core_engine_new, m) {
     bind_compressors(m);
     bind_pipeline(m);
 
-    m.def("test_algorithm_new", []() { return true; }, "Smoke test: module loaded");
+    m.def("test_algorithm_new", []() -> bool { return true; }, "Smoke test: module loaded");
 }

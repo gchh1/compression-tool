@@ -5,7 +5,7 @@
 #include <functional>
 #include <vector>
 
-#include "EncodingTriple.hpp"
+#include "LZencoding.hpp"
 #include "MemoryPool.hpp"
 
 namespace compressor::algorithm {

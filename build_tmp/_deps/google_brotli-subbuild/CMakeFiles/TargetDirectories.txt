@@ -1,0 +1,3 @@
+D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/CMakeFiles/google_brotli-populate.dir
+D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/CMakeFiles/edit_cache.dir
+D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-subbuild/CMakeFiles/rebuild_cache.dir

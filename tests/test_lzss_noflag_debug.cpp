@@ -7,7 +7,7 @@
 
 #include "LZSS.hpp"
 #include "LZencoding.hpp"
-#include "EncodingTriple.hpp"
+#include "LZencoding.hpp"
 #include "BitProcessor.hpp"
 
 int main() {

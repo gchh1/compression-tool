@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/algorithm_new.dir/Brotli.cpp.obj"
+  "CMakeFiles/algorithm_new.dir/Brotli.cpp.obj.d"
   "CMakeFiles/algorithm_new.dir/Deflate.cpp.obj"
   "CMakeFiles/algorithm_new.dir/Deflate.cpp.obj.d"
   "CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj"
@@ -9,6 +11,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/algorithm_new.dir/LZSS.cpp.obj.d"
   "CMakeFiles/algorithm_new.dir/Visualization.cpp.obj"
   "CMakeFiles/algorithm_new.dir/Visualization.cpp.obj.d"
+  "CMakeFiles/algorithm_new.dir/Zstd.cpp.obj"
+  "CMakeFiles/algorithm_new.dir/Zstd.cpp.obj.d"
   "libalgorithm_new.a"
   "libalgorithm_new.pdb"
 )

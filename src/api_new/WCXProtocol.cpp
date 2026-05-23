@@ -8,7 +8,7 @@
 #include <ios>
 #include <ostream>
 
-namespace compressor::api::wcx {
+namespace compressor::api_new::wcx {
 
 namespace {
 
@@ -43,34 +43,34 @@ auto readU32LE(const uint8_t* p) -> uint32_t {
 
 }  // namespace
 
-auto toAlgoCode(core::AlgorithmID id) -> uint8_t {
+auto toAlgoCode(compressor::core::AlgorithmID id) -> uint8_t {
     switch (id) {
-        case core::AlgorithmID::None:
+        case compressor::core::AlgorithmID::None:
             return 0;
-        case core::AlgorithmID::Deflate:
-        case core::AlgorithmID::Inflate:
+        case compressor::core::AlgorithmID::Deflate:
+        case compressor::core::AlgorithmID::Inflate:
             return 1;
-        case core::AlgorithmID::LZSS:
-        case core::AlgorithmID::LZSSDecompress:
-        case core::AlgorithmID::LZSS_New:
-        case core::AlgorithmID::LZSSDecompress_New:
+        case compressor::core::AlgorithmID::LZSS:
+        case compressor::core::AlgorithmID::LZSSDecompress:
+        case compressor::core::AlgorithmID::LZSS_New:
+        case compressor::core::AlgorithmID::LZSSDecompress_New:
             return 2;
-        case core::AlgorithmID::LZSS_NoFlag:
-        case core::AlgorithmID::LZSSDecompress_NoFlag:
+        case compressor::core::AlgorithmID::LZSS_NoFlag:
+        case compressor::core::AlgorithmID::LZSSDecompress_NoFlag:
             return 9;
-        case core::AlgorithmID::LZDP:
-        case core::AlgorithmID::LZDPDecompress:
-        case core::AlgorithmID::LZDP_New:
-        case core::AlgorithmID::LZDPDecompress_New:
+        case compressor::core::AlgorithmID::LZDP:
+        case compressor::core::AlgorithmID::LZDPDecompress:
+        case compressor::core::AlgorithmID::LZDP_New:
+        case compressor::core::AlgorithmID::LZDPDecompress_New:
             return 3;
-        case core::AlgorithmID::DPFlate:
-        case core::AlgorithmID::DPFlate_New:
+        case compressor::core::AlgorithmID::DPFlate:
+        case compressor::core::AlgorithmID::DPFlate_New:
             return 5;
-        case core::AlgorithmID::Brotli:
-        case core::AlgorithmID::BrotliDecompress:
+        case compressor::core::AlgorithmID::Brotli:
+        case compressor::core::AlgorithmID::BrotliDecompress:
             return 7;
-        case core::AlgorithmID::Zstd:
-        case core::AlgorithmID::ZstdDecompress:
+        case compressor::core::AlgorithmID::Zstd:
+        case compressor::core::AlgorithmID::ZstdDecompress:
             return 8;
         default:
             return 0;
@@ -204,4 +204,4 @@ auto tryParseHeader(std::span<const uint8_t> data, HeaderView& out) -> bool {
     return true;
 }
 
-}  // namespace compressor::api::wcx
+}  // namespace compressor::api_new::wcx

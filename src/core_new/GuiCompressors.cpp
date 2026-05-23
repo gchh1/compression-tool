@@ -176,13 +176,13 @@ DeflateCompressor::DeflateCompressor() = default;
 
 CompressorResult DeflateCompressor::compress(std::vector<uint8_t> data) {
     return run_compress_job(std::move(data), [&](const std::vector<uint8_t>& in) {
-        return algorithm::pipeline::compress_bytes_deflate(in, deflate_).compressed;
+        return algorithm::deflate_compress(in, deflate_).compressed;
     });
 }
 
 CompressorResult DeflateCompressor::decompress(std::vector<uint8_t> data) {
     auto t0 = std::chrono::high_resolution_clock::now();
-    auto out = algorithm::pipeline::decompress_bytes_deflate(data, deflate_);
+    auto out = algorithm::deflate_decompress(data, deflate_);
     auto t1 = std::chrono::high_resolution_clock::now();
     return make_result(std::move(data), std::move(out),
                        std::chrono::duration<double, std::milli>(t1 - t0).count());
@@ -207,28 +207,25 @@ size_t DeflateCompressor::get_min_match() const {
         deflate_.encoding.offset_bits,
         deflate_.encoding.length_bits);
 }
-void DeflateCompressor::set_max_chain_length(size_t) {}
-size_t DeflateCompressor::get_max_chain_length() const { return 256; }
-void DeflateCompressor::set_use_3hfmtree(bool v) { deflate_.huffman.use_3hfmtree = v; }
-bool DeflateCompressor::get_use_3hfmtree() const { return deflate_.huffman.use_3hfmtree; }
+void DeflateCompressor::set_max_chain_length(size_t v) { deflate_.window.max_chain_length = v; }
+size_t DeflateCompressor::get_max_chain_length() const { return deflate_.window.max_chain_length; }
+void DeflateCompressor::set_use_3hfmtree(bool v) { deflate_.use_3hfmtree = v; }
+bool DeflateCompressor::get_use_3hfmtree() const { return deflate_.use_3hfmtree; }
 void DeflateCompressor::set_huffman_chunk_bits(size_t k) {
-    deflate_.huffman.huffman_offset_bitwidth = static_cast<uint8_t>(k);
-    deflate_.huffman.huffman_length_bitwidth = static_cast<uint8_t>(k);
+    deflate_.huffman_3hm.chunk_bits = static_cast<uint32_t>(k);
 }
 size_t DeflateCompressor::get_huffman_chunk_bits() const {
-    return deflate_.huffman.huffman_offset_bitwidth;
+    return deflate_.huffman_3hm.chunk_bits;
 }
 void DeflateCompressor::set_huffman_offset_chunk_bits(size_t k) {
-    deflate_.huffman.huffman_offset_bitwidth = static_cast<uint8_t>(k);
+    deflate_.huffman_3hm.chunk_bits = static_cast<uint32_t>(k);
 }
-void DeflateCompressor::set_huffman_length_chunk_bits(size_t k) {
-    deflate_.huffman.huffman_length_bitwidth = static_cast<uint8_t>(k);
-}
+void DeflateCompressor::set_huffman_length_chunk_bits(size_t) {}
 size_t DeflateCompressor::get_huffman_offset_chunk_bits() const {
-    return deflate_.huffman.huffman_offset_bitwidth;
+    return deflate_.huffman_3hm.chunk_bits;
 }
 size_t DeflateCompressor::get_huffman_length_chunk_bits() const {
-    return deflate_.huffman.huffman_length_bitwidth;
+    return deflate_.huffman_3hm.chunk_bits;
 }
 void DeflateCompressor::set_dp_sub_match_max(size_t) {}
 size_t DeflateCompressor::get_dp_sub_match_max() const { return 6; }
@@ -243,13 +240,13 @@ DPFlateCompressor::DPFlateCompressor() = default;
 
 CompressorResult DPFlateCompressor::compress(std::vector<uint8_t> data) {
     return run_compress_job(std::move(data), [&](const std::vector<uint8_t>& in) {
-        return algorithm::pipeline::compress_bytes_dpflate(in, dpflate_).compressed;
+        return algorithm::dpflate_compress(in, dpflate_).compressed;
     });
 }
 
 CompressorResult DPFlateCompressor::decompress(std::vector<uint8_t> data) {
     auto t0 = std::chrono::high_resolution_clock::now();
-    auto out = algorithm::pipeline::decompress_bytes_dpflate(data, dpflate_);
+    auto out = algorithm::dpflate_decompress(data, dpflate_);
     auto t1 = std::chrono::high_resolution_clock::now();
     return make_result(std::move(data), std::move(out),
                        std::chrono::duration<double, std::milli>(t1 - t0).count());
@@ -258,62 +255,51 @@ CompressorResult DPFlateCompressor::decompress(std::vector<uint8_t> data) {
 std::string DPFlateCompressor::get_algorithm_name() { return "DPFlate (algorithm_new)"; }
 
 void DPFlateCompressor::set_search_size(size_t v) {
-    dpflate_.window.search_size = v;
+    dpflate_.lzdp.window.search_size = v;
     dpflate_.encoding.offset_bits =
         static_cast<uint8_t>(algorithm::utils::calcBitWidth(v));
-    if (dpflate_.min_match_len == 0) {
-        dpflate_.min_match_len = algorithm::utils::getMinMatch(
-            dpflate_.encoding.offset_bits, dpflate_.encoding.length_bits);
-    }
 }
-size_t DPFlateCompressor::get_search_size() const { return dpflate_.window.search_size; }
+size_t DPFlateCompressor::get_search_size() const { return dpflate_.lzdp.window.search_size; }
 void DPFlateCompressor::set_lookahead_size(size_t v) {
-    dpflate_.window.look_size = v;
+    dpflate_.lzdp.window.look_size = v;
     dpflate_.encoding.length_bits =
         static_cast<uint8_t>(algorithm::utils::calcBitWidth(v));
-    if (dpflate_.min_match_len == 0) {
-        dpflate_.min_match_len = algorithm::utils::getMinMatch(
-            dpflate_.encoding.offset_bits, dpflate_.encoding.length_bits);
-    }
 }
-size_t DPFlateCompressor::get_lookahead_size() const { return dpflate_.window.look_size; }
-void DPFlateCompressor::set_min_match(size_t v) { dpflate_.min_match_len = v; }
-size_t DPFlateCompressor::get_min_match() const { return dpflate_.min_match_len; }
-void DPFlateCompressor::set_max_chain_length(size_t) {}
-size_t DPFlateCompressor::get_max_chain_length() const { return 256; }
+size_t DPFlateCompressor::get_lookahead_size() const { return dpflate_.lzdp.window.look_size; }
+void DPFlateCompressor::set_min_match(size_t v) { dpflate_.lzdp.window.min_match_len = v; }
+size_t DPFlateCompressor::get_min_match() const { return dpflate_.lzdp.window.min_match_len; }
+void DPFlateCompressor::set_max_chain_length(size_t v) { dpflate_.lzdp.window.max_chain_length = v; }
+size_t DPFlateCompressor::get_max_chain_length() const { return dpflate_.lzdp.window.max_chain_length; }
 void DPFlateCompressor::set_dp_sub_match_max(size_t v) {
-    dpflate_.dp.dp_top = static_cast<uint8_t>(v);
+    dpflate_.lzdp.dp.dp_top = static_cast<uint8_t>(v);
 }
-size_t DPFlateCompressor::get_dp_sub_match_max() const { return dpflate_.dp.dp_top; }
+size_t DPFlateCompressor::get_dp_sub_match_max() const { return dpflate_.lzdp.dp.dp_top; }
 void DPFlateCompressor::set_match_engine(int v) {
-    dpflate_.dp.match_engine =
+    dpflate_.lzdp.dp.match_engine =
         v == 0 ? algorithm::models::MatchEngine::KMP : algorithm::models::MatchEngine::HashChain;
 }
 int DPFlateCompressor::get_match_engine() const {
-    return dpflate_.dp.match_engine == algorithm::models::MatchEngine::KMP ? 0 : 1;
+    return dpflate_.lzdp.dp.match_engine == algorithm::models::MatchEngine::KMP ? 0 : 1;
 }
 void DPFlateCompressor::set_use_flag_encoding(bool v) { dpflate_.encoding.use_flag_encoding = v; }
 bool DPFlateCompressor::get_use_flag_encoding() const { return dpflate_.encoding.use_flag_encoding; }
-void DPFlateCompressor::set_use_3hfmtree(bool v) { dpflate_.huffman.use_3hfmtree = v; }
-bool DPFlateCompressor::get_use_3hfmtree() const { return dpflate_.huffman.use_3hfmtree; }
+void DPFlateCompressor::set_use_3hfmtree(bool v) { dpflate_.use_3hfmtree = v; }
+bool DPFlateCompressor::get_use_3hfmtree() const { return dpflate_.use_3hfmtree; }
 void DPFlateCompressor::set_huffman_chunk_bits(size_t k) {
-    dpflate_.huffman.huffman_offset_bitwidth = static_cast<uint8_t>(k);
-    dpflate_.huffman.huffman_length_bitwidth = static_cast<uint8_t>(k);
+    dpflate_.huffman_3hm.chunk_bits = static_cast<uint32_t>(k);
 }
 size_t DPFlateCompressor::get_huffman_chunk_bits() const {
-    return dpflate_.huffman.huffman_offset_bitwidth;
+    return dpflate_.huffman_3hm.chunk_bits;
 }
 void DPFlateCompressor::set_huffman_offset_chunk_bits(size_t k) {
-    dpflate_.huffman.huffman_offset_bitwidth = static_cast<uint8_t>(k);
+    dpflate_.huffman_3hm.chunk_bits = static_cast<uint32_t>(k);
 }
-void DPFlateCompressor::set_huffman_length_chunk_bits(size_t k) {
-    dpflate_.huffman.huffman_length_bitwidth = static_cast<uint8_t>(k);
-}
+void DPFlateCompressor::set_huffman_length_chunk_bits(size_t) {}
 size_t DPFlateCompressor::get_huffman_offset_chunk_bits() const {
-    return dpflate_.huffman.huffman_offset_bitwidth;
+    return dpflate_.huffman_3hm.chunk_bits;
 }
 size_t DPFlateCompressor::get_huffman_length_chunk_bits() const {
-    return dpflate_.huffman.huffman_length_bitwidth;
+    return dpflate_.huffman_3hm.chunk_bits;
 }
 
 }  // namespace compressor::core

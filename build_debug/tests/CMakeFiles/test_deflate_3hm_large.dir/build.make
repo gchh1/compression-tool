@@ -93,6 +93,11 @@ test_deflate_3hm_large_EXTERNAL_OBJECTS =
 bin/test_deflate_3hm_large.exe: tests/CMakeFiles/test_deflate_3hm_large.dir/test_deflate_3hm_large.cpp.obj
 bin/test_deflate_3hm_large.exe: tests/CMakeFiles/test_deflate_3hm_large.dir/build.make
 bin/test_deflate_3hm_large.exe: src/algorithm_new/libalgorithm_new.a
+bin/test_deflate_3hm_large.exe: src/core_new/libcore_new.a
+bin/test_deflate_3hm_large.exe: src/algorithm_new/libalgorithm_new.a
+bin/test_deflate_3hm_large.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_deflate_3hm_large.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_deflate_3hm_large.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_deflate_3hm_large.exe: tests/CMakeFiles/test_deflate_3hm_large.dir/linkLibs.rsp
 bin/test_deflate_3hm_large.exe: tests/CMakeFiles/test_deflate_3hm_large.dir/objects1.rsp
 bin/test_deflate_3hm_large.exe: tests/CMakeFiles/test_deflate_3hm_large.dir/link.txt

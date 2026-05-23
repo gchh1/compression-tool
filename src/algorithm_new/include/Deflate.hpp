@@ -2,99 +2,91 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <string>
 #include <vector>
 
-#include "config/Config.hpp"
-#include "Huffman_3HfMTree.hpp"
-#include "Huffman_Inflate.hpp"
+#include "HuffmanTree3HM.hpp"
+#include "InflateCoding.hpp"
+#include "Inflate3HMCoding.hpp"
 #include "LZencoding.hpp"
+#include "MatchEngine.hpp"
+#include "config/Config.hpp"
 #include "Utils.hpp"
 
 namespace compressor::algorithm {
 
 struct DeflateConfig {
     config::Lz77WindowConfig window;
-    config::HuffmanBackendConfig huffman;
     EncodingConfig encoding;
+    bool use_3hfmtree{false};
+    HuffmanTree3HMConfig huffman_3hm;
 
     DeflateConfig(
-        size_t sw = 16384,
+        size_t sw = 32768,
         size_t lw = 258,
-        size_t mml = 3,
-        bool use3hfm = false,
-        uint8_t off_chunk_bits = 8,
-        uint8_t len_chunk_bits = 8,
-        bool use_flag = true)
-        : window{sw, lw, mml},
-          huffman{use3hfm, off_chunk_bits, len_chunk_bits},
+        size_t mcl = 256,
+        bool flag_encoding = true,
+        bool use_3hm = false)
+        : window{sw, lw, 3, mcl},
           encoding{static_cast<uint8_t>(utils::calcBitWidth(sw)),
                    static_cast<uint8_t>(utils::calcBitWidth(lw)),
-                   use_flag} {
-        if (window.min_match_len == 0) {
-            window.min_match_len =
-                utils::getMinMatch(encoding.offset_bits, encoding.length_bits);
-        }
-    }
+                   flag_encoding},
+          use_3hfmtree(use_3hm) {
+              huffman_3hm.max_offset_bits = utils::calcBitWidth(sw);
+              huffman_3hm.max_length_bits = utils::calcBitWidth(lw);
+          }
 };
 
-class Deflate {
-public:
-    explicit Deflate(const DeflateConfig& cfg = DeflateConfig{}) : config_(cfg) {}
-
-    const DeflateConfig& getConfig() const { return config_; }
-
-    /// §1.6 熵编码层 only；LZ 匹配见 ``LZMatcher::greedyWholeInput`` / ``matchAtPosition``（§1.14）。
-    std::vector<uint8_t> huffmanEncode(const std::vector<Triple>& triples) const {
-        if (config_.huffman.use_3hfmtree) {
-            Huffman_3HfMTConfig hmcfg{
-                config_.huffman.huffman_offset_bitwidth,
-                config_.huffman.huffman_length_bitwidth};
-            Huffman_3HfMT encoder(hmcfg, config_.encoding);
-            encoder.countFreq(triples);
-            encoder.buildTree();
-            return encoder.encode(triples);
-        } else {
-            Huffman_InflateConfig icfg{
-                config_.encoding.offset_bits,
-                config_.encoding.length_bits,
-                config_.huffman.huffman_offset_bitwidth,
-                config_.huffman.huffman_length_bitwidth};
-            Huffman_Inflate encoder(icfg, config_.encoding);
-            encoder.countFreq(triples);
-            encoder.buildTree();
-            return encoder.encode(triples);
-        }
-    }
-
-    std::vector<Triple> huffmanDecode(const std::vector<uint8_t>& data) const {
-        if (config_.huffman.use_3hfmtree) {
-            Huffman_3HfMTConfig hmcfg{
-                config_.huffman.huffman_offset_bitwidth,
-                config_.huffman.huffman_length_bitwidth};
-            Huffman_3HfMT decoder(hmcfg, config_.encoding);
-            return decoder.decode(data);
-        } else {
-            Huffman_InflateConfig icfg{
-                config_.encoding.offset_bits,
-                config_.encoding.length_bits,
-                config_.huffman.huffman_offset_bitwidth,
-                config_.huffman.huffman_length_bitwidth};
-            Huffman_Inflate decoder(icfg, config_.encoding);
-            return decoder.decode(data);
-        }
-    }
-
-private:
-    DeflateConfig config_;
+struct DeflateResult {
+    std::vector<uint8_t> compressed;
+    std::vector<Triple> triples;
 };
 
-}  // namespace compressor::algorithm
+inline DeflateResult deflate_compress(
+    const std::vector<uint8_t>& input,
+    const DeflateConfig& config) {
+    DeflateResult result;
+    if (input.empty()) return result;
 
-// ──── Pipeline ────
+    auto triples = LZMatcher::greedyWholeInput(
+        input, config.window,
+        config.encoding.offset_bits,
+        config.encoding.length_bits);
 
-#include <string>
+    if (!config.encoding.use_flag_encoding && !config.use_3hfmtree) {
+        triples = literalrun(triples, config.window.look_size);
+    }
 
-namespace compressor::algorithm::pipeline {
+    result.triples = triples;
+
+    compressor::utils::_buffer pending;
+    if (config.use_3hfmtree) {
+        auto enc = inflate3hm_encode(triples, config.huffman_3hm, pending);
+        result.compressed = std::move(enc.data);
+    } else if (!config.encoding.use_flag_encoding) {
+        result.compressed = encoding_triple_lz(triples, config.encoding, pending, true);
+    } else {
+        auto enc = inflate_encode(triples, pending);
+        result.compressed = std::move(enc.data);
+    }
+    return result;
+}
+
+inline std::vector<uint8_t> deflate_decompress(
+    const std::vector<uint8_t>& compressed,
+    const DeflateConfig& config) {
+    compressor::utils::_buffer pending;
+    if (config.use_3hfmtree) {
+        auto dec = inflate3hm_decode(compressed, pending);
+        return std::move(dec.data);
+    }
+    if (!config.encoding.use_flag_encoding) {
+        auto triples = readtriple(compressed, config.encoding, pending);
+        return decode_triple(triples, config.encoding, pending);
+    }
+    auto dec = inflate_decode(compressed, pending);
+    return std::move(dec.data);
+}
 
 struct DeflateNonStreamingResult {
     std::vector<uint8_t> compressed;
@@ -109,23 +101,23 @@ std::vector<uint8_t> decompress_bytes_deflate(
     const std::vector<uint8_t>& compressed,
     const DeflateConfig& config);
 
+}  // namespace compressor::algorithm
+
+namespace compressor::algorithm::pipeline {
+
 struct DeflateStreamingOptions {
-    size_t chunk_size{1 << 20};
+    size_t chunk_size{300 * 1024};
     std::string workspace_dir;
-    std::string temp_a_name{"temp_deflate.dp"};
+    std::string temp_triples_name{"temp_deflate.tri"};
 };
 
 class DeflateStreamingPipeline {
 public:
-    explicit DeflateStreamingPipeline(DeflateConfig config, DeflateStreamingOptions options);
-
+    DeflateStreamingPipeline(DeflateConfig config, DeflateStreamingOptions options);
     void compress_file(const std::string& input_path, const std::string& output_path);
-
 private:
     DeflateConfig config_;
     DeflateStreamingOptions options_;
-
-    std::string temp_a_path() const;
 };
 
 }  // namespace compressor::algorithm::pipeline

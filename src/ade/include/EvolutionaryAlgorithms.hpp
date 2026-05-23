@@ -25,7 +25,7 @@ struct ParameterBounds {
     size_t lookahead_min{16};
     size_t lookahead_max{512};
     size_t dp_range_min{1};
-    size_t dp_range_max{8};
+    size_t dp_range_max{8};//有点小了，后面再调整
 
     auto clamp(AlgorithmParams& params) const -> void;
     auto random_params(std::mt19937& rng) const -> AlgorithmParams;
@@ -33,20 +33,21 @@ struct ParameterBounds {
     auto from_vector(const std::vector<double>& v) const -> AlgorithmParams;
 };
 
-using FitnessFunction = std::function<double(const AlgorithmParams&)>;
+using FitnessFunction = std::function<double(const AlgorithmParams&)>;//适应度函数类型，用于评估个体的适应度值
 
 struct OptimizationResult {
     AlgorithmParams best_params;
-    double best_fitness{std::numeric_limits<double>::max()};
-    size_t generations_completed{0};
-    size_t total_evaluations{0};
-    double elapsed_ms{0.0};
-    bool converged{false};
-    std::string algorithm_name;
+    double best_fitness{std::numeric_limits<double>::max()};// 最佳适应度值
+    size_t generations_completed{0};// 完成的代数
+    size_t total_evaluations{0};// 总评估次数
+    double elapsed_ms{0.0};// 花费的时间，单位毫秒
+    bool converged{false};// 是否收敛
+    std::string algorithm_name;// 算法名称
 
     auto to_string() const -> std::ostringstream;
 };
 
+// 算法的配置结构体
 struct GAConfig {
     size_t population_size{50};
     size_t max_generations{100};

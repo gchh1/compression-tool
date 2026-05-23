@@ -399,16 +399,16 @@ src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/pybind_module_new.cpp.obj
  D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/EncodingTriple.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Deflate.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman_3HfMTree.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/HuffmanTree3HM.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/HuffmanTree.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/queue \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_queue.h \
- D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman_Inflate.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/Dpflate.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/LZSS.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/InflateCoding.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/Inflate3HMCoding.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/MatchEngine.hpp \
  D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/Dpflate.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/LZSS.hpp \
  D:/AAA_C/compression-tool/src/core_new/include/GzipCompressor.hpp \
  D:/AAA_C/compression-tool/src/api_new/include/api.hpp

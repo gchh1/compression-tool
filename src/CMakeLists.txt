@@ -3,7 +3,7 @@ add_subdirectory(algorithm)
 add_subdirectory(algorithm_new)
 add_subdirectory(core_new)
 add_subdirectory(api_new)
-add_subdirectory(api)
+add_subdirectory(api)  # kept for legacy test compatibility only
 add_subdirectory(core)
 add_subdirectory(archiver)
 add_subdirectory(processor)

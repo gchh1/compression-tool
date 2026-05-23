@@ -10,8 +10,8 @@ rem Prefer ``build_py`` (algorithm_new / GUI stack); fall back to ``build`` then
 set "CMAKE_BUILD_DIR=%PROJECT_DIR%\build_py"
 if not exist "%CMAKE_BUILD_DIR%\CMakeCache.txt" set "CMAKE_BUILD_DIR=%PROJECT_DIR%\build"
 if not exist "%CMAKE_BUILD_DIR%\CMakeCache.txt" set "CMAKE_BUILD_DIR=%PROJECT_DIR%\build_debug"
-set "CORE_ENGINE_DIR=%CMAKE_BUILD_DIR%\src\bindings\pybind"
-set "CORE_ENGINE_PYD=%CORE_ENGINE_DIR%\core_engine.cp312-win_amd64.pyd"
+set "CORE_ENGINE_DIR=%CMAKE_BUILD_DIR%\src\bindings\pybind_new"
+set "CORE_ENGINE_PYD=%CORE_ENGINE_DIR%\core_engine_new.cp312-win_amd64.pyd"
 set "PYI_WORK=%PROJECT_DIR%\build\PyInstaller"
 set "PYI_SPEC=%PROJECT_DIR%\build"
 set "PYI_CACHE=%LOCALAPPDATA%\pyinstaller"
@@ -26,19 +26,19 @@ if exist "%PYI_CACHE%" (
   rmdir /s /q "%PYI_CACHE%" 2>nul
 )
 
-echo Building core_engine (skips if no CMake build dir)...
+echo Building core_engine_new (skips if no CMake build dir)...
 if exist "%CMAKE_BUILD_DIR%\CMakeCache.txt" (
   echo   Using CMake build dir: "%CMAKE_BUILD_DIR%"
-  echo   Forcing relink of core_engine.pyd ...
+  echo   Forcing relink of core_engine_new.pyd ...
   if exist "%CORE_ENGINE_PYD%" (
     del /f /q "%CORE_ENGINE_PYD%" 2>nul
   )
-  cmake --build "%CMAKE_BUILD_DIR%" --target core_engine --parallel
+  cmake --build "%CMAKE_BUILD_DIR%" --target core_engine_new --parallel
   if errorlevel 1 (
-    echo WARNING: core_engine build failed; PyInstaller may copy an old .pyd
+    echo WARNING: core_engine_new build failed; PyInstaller may copy an old .pyd
   ) else (
     if not exist "%CORE_ENGINE_PYD%" (
-      echo ERROR: core_engine.pyd was not generated after build!
+      echo ERROR: core_engine_new.pyd was not generated after build!
       pause
       exit /b 1
     )
@@ -49,7 +49,7 @@ if exist "%CMAKE_BUILD_DIR%\CMakeCache.txt" (
 )
 
 if not exist "%CORE_ENGINE_PYD%" (
-  echo ERROR: Missing core_engine.pyd: "%CORE_ENGINE_PYD%"
+  echo ERROR: Missing core_engine_new.pyd: "%CORE_ENGINE_PYD%"
   pause
   exit /b 1
 )
@@ -64,10 +64,10 @@ pyinstaller --noconfirm --onefile --windowed --name "WebCompress" --icon "%PROJE
   --add-data "%PROJECT_DIR%\assets\ade\default_model.bin;ade" ^
   --add-data "%PROJECT_DIR%\assets\ade\training_data_v3.json;ade" ^
   --add-data "%PROJECT_DIR%\resources\dict\web_phrases.txt;resources/dict" ^
-  --add-data "%CORE_ENGINE_PYD%;core_engine" ^
-  --add-data "%CORE_ENGINE_DIR%\libgcc_s_seh-1.dll;core_engine" ^
-  --add-data "%CORE_ENGINE_DIR%\libstdc++-6.dll;core_engine" ^
-  --add-data "%CORE_ENGINE_DIR%\libwinpthread-1.dll;core_engine" ^
+  --add-data "%CORE_ENGINE_PYD%;core_engine_new" ^
+  --add-data "%CORE_ENGINE_DIR%\libgcc_s_seh-1.dll;core_engine_new" ^
+  --add-data "%CORE_ENGINE_DIR%\libstdc++-6.dll;core_engine_new" ^
+  --add-data "%CORE_ENGINE_DIR%\libwinpthread-1.dll;core_engine_new" ^
   "%PROJECT_DIR%\src\gui\main.py"
 
 if %errorlevel% neq 0 (

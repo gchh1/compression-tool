@@ -69,6 +69,8 @@ enum class AlgorithmID {
     LZDP_New,
     LZDPDecompress_New,
     DPFlate_New,
+    Deflate_New,
+    DeflateDecompress_New,
     LZSS_New,
     LZSSDecompress_New,
 };
@@ -84,6 +86,8 @@ inline AlgorithmID getDecompressorID(AlgorithmID comp) {
         {AlgorithmID::Zstd, AlgorithmID::ZstdDecompress},
         {AlgorithmID::LZDP_New, AlgorithmID::LZDPDecompress_New},
         {AlgorithmID::DPFlate_New, AlgorithmID::Inflate},
+        {AlgorithmID::Deflate_New, AlgorithmID::Inflate},
+        {AlgorithmID::DeflateDecompress_New, AlgorithmID::Inflate},
         {AlgorithmID::LZSS_New, AlgorithmID::LZSSDecompress_New},
     };
     auto it = map.find(comp);

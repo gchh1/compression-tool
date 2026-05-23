@@ -8,9 +8,9 @@
 
 #include "AlgorithmFactory.hpp"
 
-namespace compressor::api {
+namespace compressor::api_new {
 
-using AlgorithmID = core::AlgorithmID;
+using AlgorithmID = compressor::core::AlgorithmID;
 
 struct CompressResult {
     std::vector<uint8_t> data;
@@ -38,18 +38,18 @@ struct WCXUnpackResult {
 
 auto compress(const std::vector<uint8_t>& data,
               std::span<const AlgorithmID> chain,
-              const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
-              const core::DpflatePipelineParams* dpflate_pipeline = nullptr,
-              const core::DeflatePipelineParams* deflate_pipeline = nullptr,
-              const core::LzssPipelineParams* lzss_pipeline = nullptr,
+              const compressor::core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
+              const compressor::core::DpflatePipelineParams* dpflate_pipeline = nullptr,
+              const compressor::core::DeflatePipelineParams* deflate_pipeline = nullptr,
+              const compressor::core::LzssPipelineParams* lzss_pipeline = nullptr,
               std::size_t streaming_compress_chunk_bytes = 0) -> CompressResult;
 
 auto decompress(const std::vector<uint8_t>& data,
                 std::span<const AlgorithmID> chain,
-                const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
-                const core::DpflatePipelineParams* dpflate_pipeline = nullptr,
-                const core::DeflatePipelineParams* deflate_pipeline = nullptr,
-                const core::LzssPipelineParams* lzss_pipeline = nullptr,
+                const compressor::core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
+                const compressor::core::DpflatePipelineParams* dpflate_pipeline = nullptr,
+                const compressor::core::DeflatePipelineParams* deflate_pipeline = nullptr,
+                const compressor::core::LzssPipelineParams* lzss_pipeline = nullptr,
                 std::size_t streaming_compress_chunk_bytes = 0) -> CompressResult;
 
 auto pack_wcx(const std::vector<uint8_t>& compressed_data,
@@ -68,21 +68,21 @@ auto compressFile(const std::string& input_path,
                   const std::string& output_path,
                   std::span<const AlgorithmID> chain,
                   size_t stream_chunk_bytes = 0,
-                  uint32_t file_compress_opts = core::kFileCompressOptsNone,
-                  const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
-                  const core::DpflatePipelineParams* dpflate_pipeline = nullptr,
-                  const core::DeflatePipelineParams* deflate_pipeline = nullptr,
-                  const core::LzssPipelineParams* lzss_pipeline = nullptr)
+                  uint32_t file_compress_opts = compressor::core::kFileCompressOptsNone,
+                  const compressor::core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
+                  const compressor::core::DpflatePipelineParams* dpflate_pipeline = nullptr,
+                  const compressor::core::DeflatePipelineParams* deflate_pipeline = nullptr,
+                  const compressor::core::LzssPipelineParams* lzss_pipeline = nullptr)
     -> CompressResult;
 
 auto decompressFile(const std::string& input_path,
                     const std::string& output_path,
                     std::span<const AlgorithmID> chain,
                     size_t stream_chunk_bytes = 0,
-                    const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
-                    const core::LzssPipelineParams* lzss_pipeline = nullptr,
-                    const core::DpflatePipelineParams* dpflate_pipeline = nullptr,
-                    const core::DeflatePipelineParams* deflate_pipeline = nullptr)
+                    const compressor::core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
+                    const compressor::core::LzssPipelineParams* lzss_pipeline = nullptr,
+                    const compressor::core::DpflatePipelineParams* dpflate_pipeline = nullptr,
+                    const compressor::core::DeflatePipelineParams* deflate_pipeline = nullptr)
     -> CompressResult;
 
 /// Directory WCX (not yet on algorithm_new streaming); returns ``success=false``.
@@ -90,12 +90,12 @@ auto compressDirectory(const std::string& dir_path,
                        const std::string& output_path,
                        std::span<const AlgorithmID> chain,
                        size_t stream_chunk_bytes = 0,
-                       uint32_t file_compress_opts = core::kFileCompressOptsNone,
-                       const core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
-                       const core::DpflatePipelineParams* dpflate_pipeline = nullptr,
-                       const core::DeflatePipelineParams* deflate_pipeline = nullptr,
-                       const core::LzssPipelineParams* lzss_pipeline = nullptr)
+                       uint32_t file_compress_opts = compressor::core::kFileCompressOptsNone,
+                       const compressor::core::LzdpWholeFileParams* lzdp_whole_file = nullptr,
+                       const compressor::core::DpflatePipelineParams* dpflate_pipeline = nullptr,
+                       const compressor::core::DeflatePipelineParams* deflate_pipeline = nullptr,
+                       const compressor::core::LzssPipelineParams* lzss_pipeline = nullptr)
     -> CompressResult;
 #endif
 
-}  // namespace compressor::api
+}  // namespace compressor::api_new

@@ -93,6 +93,11 @@ test_lzss_roundtrip_debug_EXTERNAL_OBJECTS =
 bin/test_lzss_roundtrip_debug.exe: tests/CMakeFiles/test_lzss_roundtrip_debug.dir/test_lzss_roundtrip_debug.cpp.obj
 bin/test_lzss_roundtrip_debug.exe: tests/CMakeFiles/test_lzss_roundtrip_debug.dir/build.make
 bin/test_lzss_roundtrip_debug.exe: src/algorithm_new/libalgorithm_new.a
+bin/test_lzss_roundtrip_debug.exe: src/core_new/libcore_new.a
+bin/test_lzss_roundtrip_debug.exe: src/algorithm_new/libalgorithm_new.a
+bin/test_lzss_roundtrip_debug.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_lzss_roundtrip_debug.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_lzss_roundtrip_debug.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_lzss_roundtrip_debug.exe: tests/CMakeFiles/test_lzss_roundtrip_debug.dir/linkLibs.rsp
 bin/test_lzss_roundtrip_debug.exe: tests/CMakeFiles/test_lzss_roundtrip_debug.dir/objects1.rsp
 bin/test_lzss_roundtrip_debug.exe: tests/CMakeFiles/test_lzss_roundtrip_debug.dir/link.txt

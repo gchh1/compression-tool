@@ -762,6 +762,34 @@ test_lzdp_debug/fast:
 	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_debug.dir\build.make tests/CMakeFiles/test_lzdp_debug.dir/build
 .PHONY : test_lzdp_debug/fast
 
+# Convenience name for target.
+tests/CMakeFiles/test_deflate_step_old.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_deflate_step_old.dir/rule
+.PHONY : tests/CMakeFiles/test_deflate_step_old.dir/rule
+
+# Convenience name for target.
+test_deflate_step_old: tests/CMakeFiles/test_deflate_step_old.dir/rule
+.PHONY : test_deflate_step_old
+
+# fast build rule for target.
+test_deflate_step_old/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_old.dir\build.make tests/CMakeFiles/test_deflate_step_old.dir/build
+.PHONY : test_deflate_step_old/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_deflate_step_new.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_deflate_step_new.dir/rule
+.PHONY : tests/CMakeFiles/test_deflate_step_new.dir/rule
+
+# Convenience name for target.
+test_deflate_step_new: tests/CMakeFiles/test_deflate_step_new.dir/rule
+.PHONY : test_deflate_step_new
+
+# fast build rule for target.
+test_deflate_step_new/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_new.dir\build.make tests/CMakeFiles/test_deflate_step_new.dir/build
+.PHONY : test_deflate_step_new/fast
+
 debug_dpflate.obj: debug_dpflate.cpp.obj
 .PHONY : debug_dpflate.obj
 
@@ -1148,6 +1176,54 @@ test_deflate_huffman_minimal.s: test_deflate_huffman_minimal.cpp.s
 test_deflate_huffman_minimal.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_huffman_minimal.dir\build.make tests/CMakeFiles/test_deflate_huffman_minimal.dir/test_deflate_huffman_minimal.cpp.s
 .PHONY : test_deflate_huffman_minimal.cpp.s
+
+test_deflate_step_new.obj: test_deflate_step_new.cpp.obj
+.PHONY : test_deflate_step_new.obj
+
+# target to build an object file
+test_deflate_step_new.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_new.dir\build.make tests/CMakeFiles/test_deflate_step_new.dir/test_deflate_step_new.cpp.obj
+.PHONY : test_deflate_step_new.cpp.obj
+
+test_deflate_step_new.i: test_deflate_step_new.cpp.i
+.PHONY : test_deflate_step_new.i
+
+# target to preprocess a source file
+test_deflate_step_new.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_new.dir\build.make tests/CMakeFiles/test_deflate_step_new.dir/test_deflate_step_new.cpp.i
+.PHONY : test_deflate_step_new.cpp.i
+
+test_deflate_step_new.s: test_deflate_step_new.cpp.s
+.PHONY : test_deflate_step_new.s
+
+# target to generate assembly for a file
+test_deflate_step_new.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_new.dir\build.make tests/CMakeFiles/test_deflate_step_new.dir/test_deflate_step_new.cpp.s
+.PHONY : test_deflate_step_new.cpp.s
+
+test_deflate_step_old.obj: test_deflate_step_old.cpp.obj
+.PHONY : test_deflate_step_old.obj
+
+# target to build an object file
+test_deflate_step_old.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_old.dir\build.make tests/CMakeFiles/test_deflate_step_old.dir/test_deflate_step_old.cpp.obj
+.PHONY : test_deflate_step_old.cpp.obj
+
+test_deflate_step_old.i: test_deflate_step_old.cpp.i
+.PHONY : test_deflate_step_old.i
+
+# target to preprocess a source file
+test_deflate_step_old.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_old.dir\build.make tests/CMakeFiles/test_deflate_step_old.dir/test_deflate_step_old.cpp.i
+.PHONY : test_deflate_step_old.cpp.i
+
+test_deflate_step_old.s: test_deflate_step_old.cpp.s
+.PHONY : test_deflate_step_old.s
+
+# target to generate assembly for a file
+test_deflate_step_old.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_old.dir\build.make tests/CMakeFiles/test_deflate_step_old.dir/test_deflate_step_old.cpp.s
+.PHONY : test_deflate_step_old.cpp.s
 
 test_dpflate_3hm_stream.obj: test_dpflate_3hm_stream.cpp.obj
 .PHONY : test_dpflate_3hm_stream.obj
@@ -1802,6 +1878,8 @@ help:
 	@echo ... test_deflate
 	@echo ... test_deflate_3hm_large
 	@echo ... test_deflate_huffman_minimal
+	@echo ... test_deflate_step_new
+	@echo ... test_deflate_step_old
 	@echo ... test_dpflate_3hm_stream
 	@echo ... test_dpflate_bin64k_3k_stream
 	@echo ... test_dpflate_stream_trace
@@ -1876,6 +1954,12 @@ help:
 	@echo ... test_deflate_huffman_minimal.obj
 	@echo ... test_deflate_huffman_minimal.i
 	@echo ... test_deflate_huffman_minimal.s
+	@echo ... test_deflate_step_new.obj
+	@echo ... test_deflate_step_new.i
+	@echo ... test_deflate_step_new.s
+	@echo ... test_deflate_step_old.obj
+	@echo ... test_deflate_step_old.i
+	@echo ... test_deflate_step_old.s
 	@echo ... test_dpflate_3hm_stream.obj
 	@echo ... test_dpflate_3hm_stream.i
 	@echo ... test_dpflate_3hm_stream.s

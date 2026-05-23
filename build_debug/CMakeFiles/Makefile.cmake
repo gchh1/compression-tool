@@ -178,4 +178,6 @@ set(CMAKE_DEPEND_INFO_FILES
   "tests/CMakeFiles/test_deflate_huffman_minimal.dir/DependInfo.cmake"
   "tests/CMakeFiles/test_deflate_3hm_large.dir/DependInfo.cmake"
   "tests/CMakeFiles/test_lzdp_debug.dir/DependInfo.cmake"
+  "tests/CMakeFiles/test_deflate_step_old.dir/DependInfo.cmake"
+  "tests/CMakeFiles/test_deflate_step_new.dir/DependInfo.cmake"
   )

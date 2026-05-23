@@ -46,16 +46,20 @@ class Deflate : public AlgorithmBase {
     void set_use_flag_encoding(bool v) { use_flag_encoding_ = v; }
     bool get_use_flag_encoding() const { return use_flag_encoding_; }
 
-   protected:
-    auto handle(AlgorithmStatus& algorithm_status, bool is_last_chunk)
-        -> void override;
-
-   private:
     // ===================================
     // State machine
     // ===================================
     enum class DeflateState { FIND_MATCHES, BUILD_TREE, FLUSH_TOKENS };
 
+    DeflateState state() const { return deflate_state_; }
+    const std::vector<Token>& tokens() const { return token_buffer_; }
+    const utils::BitWriter& writer() const { return writer_; }
+
+   protected:
+    auto handle(AlgorithmStatus& algorithm_status, bool is_last_chunk)
+        -> void override;
+
+   private:
     DeflateState deflate_state_{DeflateState::FIND_MATCHES};
 
     auto handleFindMatches(AlgorithmStatus& status, bool is_last_chunk) -> void;

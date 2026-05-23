@@ -132,7 +132,7 @@ public:
     size_t get_huffman_length_chunk_bits() const;
 
 private:
-    algorithm::DPflateConfig dpflate_;
+    algorithm::DPFlateConfig dpflate_;
 };
 
 }  // namespace compressor::core

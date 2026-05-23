@@ -10,6 +10,8 @@
 namespace compressor {
 namespace ade {
 
+//这个类似python的截断函数，用于将参数限制在指定范围内
+// 如果参数超出范围，将其设置为边界值
 auto ParameterBounds::clamp(AlgorithmParams& params) const -> void {
     params.window_size = std::clamp(params.window_size, window_size_min, window_size_max);
     params.min_match = std::clamp(params.min_match, min_match_min, min_match_max);
@@ -18,9 +20,13 @@ auto ParameterBounds::clamp(AlgorithmParams& params) const -> void {
     params.dp_range = std::clamp(params.dp_range, dp_range_min, dp_range_max);
 }
 
+//这个函数用于生成随机参数
+// 它使用随机数生成器 rng 来生成随机整数
+// 并将这些整数转换为算法参数
+// 最后，它调用 clamp 函数来确保参数在指定范围内
 auto ParameterBounds::random_params(std::mt19937& rng) const -> AlgorithmParams {
     AlgorithmParams p;
-    std::uniform_int_distribution<size_t> ws(window_size_min, window_size_max);
+    std::uniform_int_distribution<size_t> ws(window_size_min, window_size_max);//生成随机窗口大小
     std::uniform_int_distribution<size_t> mm(min_match_min, min_match_max);
     std::uniform_int_distribution<size_t> mc(max_chain_min, max_chain_max);
     std::uniform_int_distribution<size_t> la(lookahead_min, lookahead_max);
@@ -33,6 +39,9 @@ auto ParameterBounds::random_params(std::mt19937& rng) const -> AlgorithmParams 
     return p;
 }
 
+//这个函数用于将算法参数转换为向量
+// 它将参数的每个组件转换为 double 类型
+// 并返回一个包含这些值的向量
 auto ParameterBounds::to_vector(const AlgorithmParams& params) const -> std::vector<double> {
     return {static_cast<double>(params.window_size),
             static_cast<double>(params.min_match),
@@ -41,10 +50,14 @@ auto ParameterBounds::to_vector(const AlgorithmParams& params) const -> std::vec
             static_cast<double>(params.dp_range)};
 }
 
+//这个函数用于将向量转换为算法参数
+// 它将向量中的每个元素转换为 size_t 类型
+// 并将这些值赋值给参数的每个组件
+// 最后，它调用 clamp 函数来确保参数在指定范围内
 auto ParameterBounds::from_vector(const std::vector<double>& v) const -> AlgorithmParams {
     AlgorithmParams p;
     if (v.size() >= 5) {
-        p.window_size = static_cast<size_t>(std::round(v[0]));
+        p.window_size = static_cast<size_t>(std::round(v[0]));//将向量的第一个元素四舍五入为 size_t 类型
         p.min_match = static_cast<size_t>(std::round(v[1]));
         p.max_chain_length = static_cast<size_t>(std::round(v[2]));
         p.lookahead_size = static_cast<size_t>(std::round(v[3]));
@@ -54,6 +67,9 @@ auto ParameterBounds::from_vector(const std::vector<double>& v) const -> Algorit
     return p;
 }
 
+//这个函数用于将优化结果转换为字符串
+// 它将优化结果的每个组件转换为字符串
+// 并返回一个包含这些值的字符串
 auto OptimizationResult::to_string() const -> std::ostringstream {
     std::ostringstream s;
     s << "OptimizationResult {\n";
@@ -68,6 +84,9 @@ auto OptimizationResult::to_string() const -> std::ostringstream {
     return s;
 }
 
+//这个函数用于优化算法
+// 它使用遗传算法来搜索最优参数
+// 并返回一个包含优化结果的结构体
 auto GeneticAlgorithm::optimize(FitnessFunction fitness,
                                 const ParameterBounds& bounds,
                                 const GAConfig& config) -> OptimizationResult {
@@ -75,17 +94,17 @@ auto GeneticAlgorithm::optimize(FitnessFunction fitness,
     result.algorithm_name = "GeneticAlgorithm";
     auto start_time = std::chrono::high_resolution_clock::now();
 
-    rng_.seed(config.random_seed);
-    evaluation_count_ = 0;
+    rng_.seed(config.random_seed);//设置随机数种子器的种子
+    evaluation_count_ = 0;//初始化评估次数为 0
 
     size_t elite_count =
-        std::max(size_t(1), static_cast<size_t>(config.population_size * config.elitism_ratio));
+        std::max(size_t(1), static_cast<size_t>(config.population_size * config.elitism_ratio));//计算精英数量
 
     auto population = initialize_population(config.population_size, bounds);
-    evaluate_population(population, fitness, bounds);
+    evaluate_population(population, fitness, bounds);//评估种群中的每个个体
 
     size_t stagnation_counter = 0;
-    double prev_best = population[0].fitness;
+    double prev_best = population[0].fitness;//
 
     for (size_t gen = 0; gen < config.max_generations; ++gen) {
         auto now = std::chrono::high_resolution_clock::now();
@@ -170,9 +189,9 @@ auto GeneticAlgorithm::evaluate_population(std::vector<Individual>& population,
                                            size_t start_from) -> void {
     for (size_t i = start_from; i < population.size(); ++i) {
         bounds.clamp(population[i].params);
-        population[i].fitness = fitness(population[i].params);
-        population[i].evaluated = true;
-        evaluation_count_++;
+        population[i].fitness = fitness(population[i].params);//评估个体的适应度
+        population[i].evaluated = true;//标记个体为已评估
+        evaluation_count_++;//增加评估次数
     }
 }
 

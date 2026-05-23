@@ -166,6 +166,8 @@ D:/AAA_C/compression-tool/build_debug/tests/CMakeFiles/test_lzss_noflag_sizes.di
 D:/AAA_C/compression-tool/build_debug/tests/CMakeFiles/test_deflate_huffman_minimal.dir
 D:/AAA_C/compression-tool/build_debug/tests/CMakeFiles/test_deflate_3hm_large.dir
 D:/AAA_C/compression-tool/build_debug/tests/CMakeFiles/test_lzdp_debug.dir
+D:/AAA_C/compression-tool/build_debug/tests/CMakeFiles/test_deflate_step_old.dir
+D:/AAA_C/compression-tool/build_debug/tests/CMakeFiles/test_deflate_step_new.dir
 D:/AAA_C/compression-tool/build_debug/tests/CMakeFiles/edit_cache.dir
 D:/AAA_C/compression-tool/build_debug/tests/CMakeFiles/rebuild_cache.dir
 D:/AAA_C/compression-tool/build_debug/tests/CMakeFiles/list_install_components.dir

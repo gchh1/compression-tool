@@ -1,0 +1,2 @@
+D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc libold_dpflate_bridge.a CMakeFiles/old_dpflate_bridge.dir/old_dpflate_bridge.cpp.obj
+D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe libold_dpflate_bridge.a

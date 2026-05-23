@@ -53,10 +53,15 @@ namespace ade {
  */
 struct StatsAccumulator {
     uint64_t count{0};           /// Total bytes processed
-    double sum{0.0};             /// Sum of byte values
-    double sum_sq{0.0};          /// Sum of squared byte values
+    // double sum{0.0};             /// Sum of byte values
+    // double sum_sq{0.0};          /// Sum of squared byte values
     uint8_t min_val{255};        /// Minimum byte value seen
     uint8_t max_val{0};          /// Maximum byte value seen
+
+    double _mean{0.0};//直接计算避免数值溢出
+    double _sq_mean{0.0};
+    double _cube_mean{0.0}; // 用于计算偏度
+    double _quad_mean{0.0}; // 用于计算峰度
 
     size_t printable_count{0};   /// ASCII printable character count
     size_t zero_count{0};        /// Zero byte (0x00) count
@@ -70,14 +75,20 @@ struct StatsAccumulator {
     // Block boundary detection
     size_t block_count{0};
     size_t boundary_count{0};
+    
 
     /**
      * @brief Update accumulator with a single byte value
      */
     auto update(uint8_t byte) -> void {
         ++count;
-        sum += byte;
-        sum_sq += static_cast<double>(byte) * byte;
+        // sum += byte;
+        // sum_sq += static_cast<double>(byte) * byte;
+        // 这样累计计算均值避免数值溢出
+        _mean += (byte - _mean) / count;
+        _sq_mean += (byte * byte - _sq_mean) / count;
+        _cube_mean += (byte * byte * byte - _cube_mean) / count;
+        _quad_mean += (byte * byte * byte * byte - _quad_mean) / count;
 
         if (byte < min_val) min_val = byte;
         if (byte > max_val) max_val = byte;
@@ -121,7 +132,7 @@ struct StatsAccumulator {
      * @brief Compute mean of byte values
      */
     auto mean() const -> double {
-        return (count > 0) ? sum / count : 0.0;
+        return _mean;
     }
 
     /**
@@ -129,14 +140,13 @@ struct StatsAccumulator {
      */
     auto variance() const -> double {
         if (count == 0) return 0.0;
-        double m = mean();
-        return (sum_sq / count) - (m * m);  // E[X²] - (E[X])²
+        return _sq_mean - (_mean * _mean);// E[X^2] - (E[X])^2
     }
 
     /**
      * @brief Compute standard deviation
      */
-    auto stddev() const -> double {
+    auto std() const -> double {
         return std::sqrt(variance());
     }
 };
@@ -316,15 +326,25 @@ class BaseFeatureExtractor {
                 mutable_cms_.update(static_cast<uint32_t>(bigram));
             }
 
-            // Check for block boundary (every effective_block_size bytes)
+            // // Check for block boundary (every effective_block_size bytes)
+            // if (window_pos >= effective_block_size) {
+            //     // Record local entropy for this window
+            //     local_entropy.add_window(window_hist, window_pos);
+
+            //     // Detect block boundaries (zero-run heuristic)
+            //     detect_block_boundary(data, i, size, stats);
+
+            //     // Reset window
+            //     window_hist.fill(0);
+            //     window_pos = 0;
+            // }
+
             if (window_pos >= effective_block_size) {
-                // Record local entropy for this window
                 local_entropy.add_window(window_hist, window_pos);
-
-                // Detect block boundaries (zero-run heuristic)
-                detect_block_boundary(data, i, size, stats);
-
-                // Reset window
+                
+                // 检测块边界（边界位置 = 当前窗口结束索引 + 1）
+                detect_block_boundary(data, i + 1, stats);
+                
                 window_hist.fill(0);
                 window_pos = 0;
             }
@@ -415,7 +435,7 @@ class BaseFeatureExtractor {
         base.mean_byte_norm = static_cast<float>(stats.mean()) / 255.0f;
 
         // [7] Standard deviation normalized (max theoretical ≈115)
-        base.std_byte_norm = static_cast<float>(stats.stddev()) / 115.0f;
+        base.std_byte_norm = static_cast<float>(stats.std()) / 115.0f;
 
         // [8] Longest run length (log₂ normalized)
         base.longest_run_log2 = std::log2(
@@ -451,11 +471,11 @@ class BaseFeatureExtractor {
         // [14] Skewness (normalized to [-1, 1])
         // 🔑 KEY FEATURE: Distinguishes encrypted/compressed vs random data
         base.skewness = static_cast<float>(
-            compute_skewness(stats.sum, stats.sum_sq, stats.count));
+            compute_skewness(stats._mean, stats._sq_mean, stats._cube_mean));
 
         // [15] Kurtosis (excess kurtosis)
         base.kurtosis = static_cast<float>(
-            compute_kurtosis(histogram, stats.mean(), stats.variance()));
+            compute_kurtosis(stats._mean, stats._sq_mean, stats._cube_mean, stats._quad_mean));
 
         // === N-GRAM AGGREGATION FEATURES [16-19] ===
 
@@ -536,24 +556,18 @@ class BaseFeatureExtractor {
      * - Compressed data: slight negative skew (Huffman bias toward small codes)
      * - Text/data: positive skew (ASCII printable chars cluster in lower range)
      */
-    static auto compute_skewness(double sum, double sum_sq, size_t count)
-        -> double {
-        if (count < 3) return 0.0;
-
-        double mean = sum / count;
-        double var = (sum_sq / count) - (mean * mean);
-
-        if (var < 1e-10) return 0.0;  // Avoid division by zero
-
-        // For byte values [0, 255], we can compute third central moment
-        // using E[X³] - 3μE[X²] + 2μ³
-        // Note: We don't track sum of cubes, so approximate from histogram shape
-        // For now, return normalized deviation from symmetry
-
-        // Simplified approximation: how far is mean from center (127.5)?
-        double center_deviation = (mean - 127.5) / 127.5;  // Range [-1, 1]
-
-        return center_deviation;  // Placeholder - needs sum_cubed for exact calc
+    static auto compute_skewness(double mean, double sq_mean, double cubed_mean) -> double {
+        // 方差 = E[X²] - μ²
+        double variance = sq_mean - mean * mean;
+        
+        if (variance < 1e-10) return 0.0;
+        double sigma = std::sqrt(variance);
+        
+        // 三阶中心矩 = E[X³] - 3μ·E[X²] + 2μ³
+        double third_moment = cubed_mean - 3.0 * mean * sq_mean + 2.0 * mean * mean * mean;
+        
+        // 偏度 = 三阶中心矩 / σ³
+        return third_moment / (sigma * sigma * sigma);
     }
 
     /**
@@ -569,26 +583,16 @@ class BaseFeatureExtractor {
      * - Compressed: kurtosis slightly negative
      * - Text: kurtosis positive (peaked at common chars like space, 'e', etc.)
      */
-    static auto compute_kurtosis(const std::array<uint64_t, 256>& histogram,
-                                 double mean, double variance) -> double {
-        if (variance < 1e-10) return 0.0;
+    static auto compute_kurtosis(double mean, double sq_mean, double cubed_mean, double quad_mean) -> double {
+        // 计算四阶中心矩
+        double fourth_moment = quad_mean - 4.0 * mean * cubed_mean + 6.0 * mean * mean * sq_mean - 3.0 * mean * mean * mean * mean;
 
-        double fourth_moment = 0.0;
-        for (size_t i = 0; i < 256; ++i) {
-            if (histogram[i] > 0) {
-                double dev = static_cast<double>(i) - mean;
-                double p = static_cast<double>(histogram[i]);  // Not normalized yet
-                fourth_moment += p * dev * dev * dev * dev;
-            }
-        }
-
-        // Normalize by total count (approximate)
-        // For exact kurtosis, need to divide by count and subtract 3
-        double sigma4 = variance * variance;
+        // 计算方差的四次方
+        double sigma4 = std::pow(sq_mean - mean * mean, 2);
         if (sigma4 < 1e-10) return 0.0;
 
-        // Return simplified metric (not fully normalized due to missing normalization)
-        return (fourth_moment / sigma4) / 256.0 - 3.0;  // Rough approximation
+        // 返回超额峰度
+        return (fourth_moment / sigma4) - 3.0;
     }
 
     // ================================================================
@@ -601,25 +605,61 @@ class BaseFeatureExtractor {
      * Looks for runs of ≥8 consecutive zero bytes as indicators of
      * padding/alignment boundaries between logical sections.
      */
-    auto detect_block_boundary(const uint8_t* data, size_t current_pos,
-                               size_t total_size, StatsAccumulator& stats) const
-        -> void {
+    // auto detect_block_boundary(const uint8_t* data, size_t current_pos,
+    //                            size_t total_size, StatsAccumulator& stats) const
+    //     -> void {
+    //     ++stats.block_count;
+
+    //     // Look back for zero run
+    //     size_t lookback = std::min(current_pos, constants::MIN_ZERO_RUN_FOR_BOUNDARY);
+    //     bool found_boundary = true;
+
+    //     for (size_t i = 0; i < lookback; ++i) {
+    //         if (data[current_pos - lookback + i] != 0x00) {
+    //             found_boundary = false;
+    //             break;
+    //         }
+    //     }
+
+    //     if (found_boundary && lookback >= constants::MIN_ZERO_RUN_FOR_BOUNDARY) {
+    //         ++stats.boundary_count;
+    //     }
+    // }
+    /**
+     * @brief 使用零游程启发式检测块边界
+     *
+     * 检查边界位置之前（前一个块的最后 N 个字节）是否全为零，
+     * 用于识别填充/对齐区域。
+     *
+     * @param data         数据缓冲区指针
+     * @param boundary_pos 边界位置（下一个块的起始索引）
+     * @param stats        统计累加器（用于更新计数）
+     */
+    auto detect_block_boundary(const uint8_t* data, size_t boundary_pos,
+                            StatsAccumulator& stats) const -> void {
+        // 检查边界前是否有足够的字节形成完整的零游程
+        if (boundary_pos < constants::MIN_ZERO_RUN_FOR_BOUNDARY) {
+            ++stats.block_count;
+            return;  // 数据不足，无法构成完整零游程
+        }
+        
         ++stats.block_count;
-
-        // Look back for zero run
-        size_t lookback = std::min(current_pos, constants::MIN_ZERO_RUN_FOR_BOUNDARY);
-        bool found_boundary = true;
-
-        for (size_t i = 0; i < lookback; ++i) {
-            if (data[current_pos - lookback + i] != 0x00) {
-                found_boundary = false;
-                break;
+        
+        // 检查边界前紧邻的 MIN_ZERO_RUN_FOR_BOUNDARY 个字节
+        size_t start_pos = boundary_pos - constants::MIN_ZERO_RUN_FOR_BOUNDARY;
+        // bool is_boundary = true;
+        
+        for (size_t i = 0; i < constants::MIN_ZERO_RUN_FOR_BOUNDARY; ++i) {
+            if (data[start_pos + i] != 0x00) {
+                // is_boundary = false;
+                // break;
+                return;
             }
         }
-
-        if (found_boundary && lookback >= constants::MIN_ZERO_RUN_FOR_BOUNDARY) {
-            ++stats.boundary_count;
-        }
+        stats.boundary_count++;
+        // if (is_boundary) {
+        //     ++stats.boundary_count;
+        // }
     }
 };
 

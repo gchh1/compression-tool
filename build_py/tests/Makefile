@@ -762,6 +762,62 @@ test_lzdp_debug/fast:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_debug.dir\build.make tests/CMakeFiles/test_lzdp_debug.dir/build
 .PHONY : test_lzdp_debug/fast
 
+# Convenience name for target.
+tests/CMakeFiles/test_deflate_step_old.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_deflate_step_old.dir/rule
+.PHONY : tests/CMakeFiles/test_deflate_step_old.dir/rule
+
+# Convenience name for target.
+test_deflate_step_old: tests/CMakeFiles/test_deflate_step_old.dir/rule
+.PHONY : test_deflate_step_old
+
+# fast build rule for target.
+test_deflate_step_old/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_old.dir\build.make tests/CMakeFiles/test_deflate_step_old.dir/build
+.PHONY : test_deflate_step_old/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_deflate_step_new.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_deflate_step_new.dir/rule
+.PHONY : tests/CMakeFiles/test_deflate_step_new.dir/rule
+
+# Convenience name for target.
+test_deflate_step_new: tests/CMakeFiles/test_deflate_step_new.dir/rule
+.PHONY : test_deflate_step_new
+
+# fast build rule for target.
+test_deflate_step_new/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_new.dir\build.make tests/CMakeFiles/test_deflate_step_new.dir/build
+.PHONY : test_deflate_step_new/fast
+
+# Convenience name for target.
+tests/CMakeFiles/test_deflate_dpflate_cartesian.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_deflate_dpflate_cartesian.dir/rule
+.PHONY : tests/CMakeFiles/test_deflate_dpflate_cartesian.dir/rule
+
+# Convenience name for target.
+test_deflate_dpflate_cartesian: tests/CMakeFiles/test_deflate_dpflate_cartesian.dir/rule
+.PHONY : test_deflate_dpflate_cartesian
+
+# fast build rule for target.
+test_deflate_dpflate_cartesian/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_dpflate_cartesian.dir\build.make tests/CMakeFiles/test_deflate_dpflate_cartesian.dir/build
+.PHONY : test_deflate_dpflate_cartesian/fast
+
+# Convenience name for target.
+tests/CMakeFiles/old_dpflate_tool.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/old_dpflate_tool.dir/rule
+.PHONY : tests/CMakeFiles/old_dpflate_tool.dir/rule
+
+# Convenience name for target.
+old_dpflate_tool: tests/CMakeFiles/old_dpflate_tool.dir/rule
+.PHONY : old_dpflate_tool
+
+# fast build rule for target.
+old_dpflate_tool/fast:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\old_dpflate_tool.dir\build.make tests/CMakeFiles/old_dpflate_tool.dir/build
+.PHONY : old_dpflate_tool/fast
+
 debug_dpflate.obj: debug_dpflate.cpp.obj
 .PHONY : debug_dpflate.obj
 
@@ -809,6 +865,54 @@ debug_token_trace.s: debug_token_trace.cpp.s
 debug_token_trace.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_token_trace.dir\build.make tests/CMakeFiles/debug_token_trace.dir/debug_token_trace.cpp.s
 .PHONY : debug_token_trace.cpp.s
+
+old_dpflate_bridge.obj: old_dpflate_bridge.cpp.obj
+.PHONY : old_dpflate_bridge.obj
+
+# target to build an object file
+old_dpflate_bridge.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_dpflate_cartesian.dir\build.make tests/CMakeFiles/test_deflate_dpflate_cartesian.dir/old_dpflate_bridge.cpp.obj
+.PHONY : old_dpflate_bridge.cpp.obj
+
+old_dpflate_bridge.i: old_dpflate_bridge.cpp.i
+.PHONY : old_dpflate_bridge.i
+
+# target to preprocess a source file
+old_dpflate_bridge.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_dpflate_cartesian.dir\build.make tests/CMakeFiles/test_deflate_dpflate_cartesian.dir/old_dpflate_bridge.cpp.i
+.PHONY : old_dpflate_bridge.cpp.i
+
+old_dpflate_bridge.s: old_dpflate_bridge.cpp.s
+.PHONY : old_dpflate_bridge.s
+
+# target to generate assembly for a file
+old_dpflate_bridge.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_dpflate_cartesian.dir\build.make tests/CMakeFiles/test_deflate_dpflate_cartesian.dir/old_dpflate_bridge.cpp.s
+.PHONY : old_dpflate_bridge.cpp.s
+
+old_dpflate_tool.obj: old_dpflate_tool.cpp.obj
+.PHONY : old_dpflate_tool.obj
+
+# target to build an object file
+old_dpflate_tool.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\old_dpflate_tool.dir\build.make tests/CMakeFiles/old_dpflate_tool.dir/old_dpflate_tool.cpp.obj
+.PHONY : old_dpflate_tool.cpp.obj
+
+old_dpflate_tool.i: old_dpflate_tool.cpp.i
+.PHONY : old_dpflate_tool.i
+
+# target to preprocess a source file
+old_dpflate_tool.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\old_dpflate_tool.dir\build.make tests/CMakeFiles/old_dpflate_tool.dir/old_dpflate_tool.cpp.i
+.PHONY : old_dpflate_tool.cpp.i
+
+old_dpflate_tool.s: old_dpflate_tool.cpp.s
+.PHONY : old_dpflate_tool.s
+
+# target to generate assembly for a file
+old_dpflate_tool.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\old_dpflate_tool.dir\build.make tests/CMakeFiles/old_dpflate_tool.dir/old_dpflate_tool.cpp.s
+.PHONY : old_dpflate_tool.cpp.s
 
 test_3hm_all.obj: test_3hm_all.cpp.obj
 .PHONY : test_3hm_all.obj
@@ -1125,6 +1229,30 @@ test_deflate_3hm_large.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_3hm_large.dir\build.make tests/CMakeFiles/test_deflate_3hm_large.dir/test_deflate_3hm_large.cpp.s
 .PHONY : test_deflate_3hm_large.cpp.s
 
+test_deflate_dpflate_cartesian.obj: test_deflate_dpflate_cartesian.cpp.obj
+.PHONY : test_deflate_dpflate_cartesian.obj
+
+# target to build an object file
+test_deflate_dpflate_cartesian.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_dpflate_cartesian.dir\build.make tests/CMakeFiles/test_deflate_dpflate_cartesian.dir/test_deflate_dpflate_cartesian.cpp.obj
+.PHONY : test_deflate_dpflate_cartesian.cpp.obj
+
+test_deflate_dpflate_cartesian.i: test_deflate_dpflate_cartesian.cpp.i
+.PHONY : test_deflate_dpflate_cartesian.i
+
+# target to preprocess a source file
+test_deflate_dpflate_cartesian.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_dpflate_cartesian.dir\build.make tests/CMakeFiles/test_deflate_dpflate_cartesian.dir/test_deflate_dpflate_cartesian.cpp.i
+.PHONY : test_deflate_dpflate_cartesian.cpp.i
+
+test_deflate_dpflate_cartesian.s: test_deflate_dpflate_cartesian.cpp.s
+.PHONY : test_deflate_dpflate_cartesian.s
+
+# target to generate assembly for a file
+test_deflate_dpflate_cartesian.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_dpflate_cartesian.dir\build.make tests/CMakeFiles/test_deflate_dpflate_cartesian.dir/test_deflate_dpflate_cartesian.cpp.s
+.PHONY : test_deflate_dpflate_cartesian.cpp.s
+
 test_deflate_huffman_minimal.obj: test_deflate_huffman_minimal.cpp.obj
 .PHONY : test_deflate_huffman_minimal.obj
 
@@ -1148,6 +1276,54 @@ test_deflate_huffman_minimal.s: test_deflate_huffman_minimal.cpp.s
 test_deflate_huffman_minimal.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_huffman_minimal.dir\build.make tests/CMakeFiles/test_deflate_huffman_minimal.dir/test_deflate_huffman_minimal.cpp.s
 .PHONY : test_deflate_huffman_minimal.cpp.s
+
+test_deflate_step_new.obj: test_deflate_step_new.cpp.obj
+.PHONY : test_deflate_step_new.obj
+
+# target to build an object file
+test_deflate_step_new.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_new.dir\build.make tests/CMakeFiles/test_deflate_step_new.dir/test_deflate_step_new.cpp.obj
+.PHONY : test_deflate_step_new.cpp.obj
+
+test_deflate_step_new.i: test_deflate_step_new.cpp.i
+.PHONY : test_deflate_step_new.i
+
+# target to preprocess a source file
+test_deflate_step_new.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_new.dir\build.make tests/CMakeFiles/test_deflate_step_new.dir/test_deflate_step_new.cpp.i
+.PHONY : test_deflate_step_new.cpp.i
+
+test_deflate_step_new.s: test_deflate_step_new.cpp.s
+.PHONY : test_deflate_step_new.s
+
+# target to generate assembly for a file
+test_deflate_step_new.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_new.dir\build.make tests/CMakeFiles/test_deflate_step_new.dir/test_deflate_step_new.cpp.s
+.PHONY : test_deflate_step_new.cpp.s
+
+test_deflate_step_old.obj: test_deflate_step_old.cpp.obj
+.PHONY : test_deflate_step_old.obj
+
+# target to build an object file
+test_deflate_step_old.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_old.dir\build.make tests/CMakeFiles/test_deflate_step_old.dir/test_deflate_step_old.cpp.obj
+.PHONY : test_deflate_step_old.cpp.obj
+
+test_deflate_step_old.i: test_deflate_step_old.cpp.i
+.PHONY : test_deflate_step_old.i
+
+# target to preprocess a source file
+test_deflate_step_old.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_old.dir\build.make tests/CMakeFiles/test_deflate_step_old.dir/test_deflate_step_old.cpp.i
+.PHONY : test_deflate_step_old.cpp.i
+
+test_deflate_step_old.s: test_deflate_step_old.cpp.s
+.PHONY : test_deflate_step_old.s
+
+# target to generate assembly for a file
+test_deflate_step_old.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_old.dir\build.make tests/CMakeFiles/test_deflate_step_old.dir/test_deflate_step_old.cpp.s
+.PHONY : test_deflate_step_old.cpp.s
 
 test_dpflate_3hm_stream.obj: test_dpflate_3hm_stream.cpp.obj
 .PHONY : test_dpflate_3hm_stream.obj
@@ -1787,6 +1963,7 @@ help:
 	@echo ... rebuild_cache
 	@echo ... debug_dpflate
 	@echo ... debug_token_trace
+	@echo ... old_dpflate_tool
 	@echo ... test_3hm_all
 	@echo ... test_3hm_binary
 	@echo ... test_Deflate
@@ -1801,7 +1978,10 @@ help:
 	@echo ... test_cartesian_stream_matrix
 	@echo ... test_deflate
 	@echo ... test_deflate_3hm_large
+	@echo ... test_deflate_dpflate_cartesian
 	@echo ... test_deflate_huffman_minimal
+	@echo ... test_deflate_step_new
+	@echo ... test_deflate_step_old
 	@echo ... test_dpflate_3hm_stream
 	@echo ... test_dpflate_bin64k_3k_stream
 	@echo ... test_dpflate_stream_trace
@@ -1834,6 +2014,12 @@ help:
 	@echo ... debug_token_trace.obj
 	@echo ... debug_token_trace.i
 	@echo ... debug_token_trace.s
+	@echo ... old_dpflate_bridge.obj
+	@echo ... old_dpflate_bridge.i
+	@echo ... old_dpflate_bridge.s
+	@echo ... old_dpflate_tool.obj
+	@echo ... old_dpflate_tool.i
+	@echo ... old_dpflate_tool.s
 	@echo ... test_3hm_all.obj
 	@echo ... test_3hm_all.i
 	@echo ... test_3hm_all.s
@@ -1873,9 +2059,18 @@ help:
 	@echo ... test_deflate_3hm_large.obj
 	@echo ... test_deflate_3hm_large.i
 	@echo ... test_deflate_3hm_large.s
+	@echo ... test_deflate_dpflate_cartesian.obj
+	@echo ... test_deflate_dpflate_cartesian.i
+	@echo ... test_deflate_dpflate_cartesian.s
 	@echo ... test_deflate_huffman_minimal.obj
 	@echo ... test_deflate_huffman_minimal.i
 	@echo ... test_deflate_huffman_minimal.s
+	@echo ... test_deflate_step_new.obj
+	@echo ... test_deflate_step_new.i
+	@echo ... test_deflate_step_new.s
+	@echo ... test_deflate_step_old.obj
+	@echo ... test_deflate_step_old.i
+	@echo ... test_deflate_step_old.s
 	@echo ... test_dpflate_3hm_stream.obj
 	@echo ... test_dpflate_3hm_stream.i
 	@echo ... test_dpflate_3hm_stream.s

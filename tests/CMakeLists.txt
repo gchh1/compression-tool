@@ -553,3 +553,52 @@ target_link_libraries(
     PRIVATE
     algorithm_new
 )
+
+# ──── 新旧 Deflate 分步对比测试（独立进程，避免静态库符号冲突）────
+# 旧版：链接 algorithm (旧)
+add_executable(
+    test_deflate_step_old
+    test_deflate_step_old.cpp
+)
+target_link_libraries(test_deflate_step_old PRIVATE algorithm)
+target_compile_features(test_deflate_step_old PRIVATE cxx_std_17)
+
+# 新版：链接 algorithm_new
+add_executable(
+    test_deflate_step_new
+    test_deflate_step_new.cpp
+)
+target_link_libraries(test_deflate_step_new PRIVATE algorithm_new core_new)
+target_compile_features(test_deflate_step_new PRIVATE cxx_std_20)
+
+add_executable(
+    test_deflate_dpflate_cartesian
+    test_deflate_dpflate_cartesian.cpp
+    old_dpflate_bridge.cpp
+    old_dpflate_bridge.h
+)
+
+add_executable(
+    old_dpflate_tool
+    old_dpflate_tool.cpp
+)
+target_include_directories(old_dpflate_tool PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/algorithm/include
+)
+target_link_libraries(old_dpflate_tool PRIVATE algorithm)
+
+target_include_directories(
+    test_deflate_dpflate_cartesian
+    PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/algorithm_new/include
+    ${CMAKE_SOURCE_DIR}/src/core_new/include
+    ${CMAKE_SOURCE_DIR}/src/api_new/include
+)
+
+target_link_libraries(
+    test_deflate_dpflate_cartesian
+    PRIVATE
+    algorithm_new
+    core_new
+    api_new
+)

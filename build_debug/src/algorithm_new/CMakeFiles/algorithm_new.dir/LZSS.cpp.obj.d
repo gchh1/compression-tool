@@ -223,5 +223,4 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/align.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_dir.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_ops.h \
- D:/AAA_C/compression-tool/src/algorithm_new/include/EncodingTriple.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/RecordIO.hpp

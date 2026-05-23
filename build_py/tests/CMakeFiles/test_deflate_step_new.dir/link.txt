@@ -1,0 +1,3 @@
+D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E rm -f CMakeFiles\test_deflate_step_new.dir/objects.a
+D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc CMakeFiles\test_deflate_step_new.dir/objects.a @CMakeFiles\test_deflate_step_new.dir\objects1.rsp
+D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe -O3 -DNDEBUG -Wl,--whole-archive CMakeFiles\test_deflate_step_new.dir/objects.a -Wl,--no-whole-archive -o ..\bin\test_deflate_step_new.exe -Wl,--out-implib,libtest_deflate_step_new.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\test_deflate_step_new.dir\linkLibs.rsp

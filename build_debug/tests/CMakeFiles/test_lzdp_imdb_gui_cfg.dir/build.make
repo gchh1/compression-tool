@@ -93,8 +93,12 @@ test_lzdp_imdb_gui_cfg_EXTERNAL_OBJECTS =
 bin/test_lzdp_imdb_gui_cfg.exe: tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/test_lzdp_imdb_gui_cfg.cpp.obj
 bin/test_lzdp_imdb_gui_cfg.exe: tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/build.make
 bin/test_lzdp_imdb_gui_cfg.exe: src/api_new/libapi_new.a
+bin/test_lzdp_imdb_gui_cfg.exe: src/algorithm_new/libalgorithm_new.a
 bin/test_lzdp_imdb_gui_cfg.exe: src/core_new/libcore_new.a
 bin/test_lzdp_imdb_gui_cfg.exe: src/algorithm_new/libalgorithm_new.a
+bin/test_lzdp_imdb_gui_cfg.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_lzdp_imdb_gui_cfg.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_lzdp_imdb_gui_cfg.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_lzdp_imdb_gui_cfg.exe: tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/linkLibs.rsp
 bin/test_lzdp_imdb_gui_cfg.exe: tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/objects1.rsp
 bin/test_lzdp_imdb_gui_cfg.exe: tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/link.txt

@@ -71,7 +71,8 @@ void LZDP::dpforward(
         } else if (config_.dp.match_engine == models::MatchEngine::HashChain) {
             match_results = LZMatcher::hashChainSearch(
                 search_view, search_len, look_view, look_len,
-                config_.dp.dp_top, config_.window.min_match_len);
+                config_.dp.dp_top, config_.window.min_match_len,
+                static_cast<uint32_t>(config_.window.max_chain_length));
         }
 
         for (const Triple& kr : match_results) {
@@ -108,8 +109,12 @@ std::vector<Triple> LZDP::dpbacktrack(
     if (cur_pos == 0){
         cur_pos = static_cast<int>(dp.size() - 1);
     }
+    fprintf(stderr, "[DP-backtrack] start cur_pos=%d dp_size=%zu dp_last.pre_pos=%d\n",
+            cur_pos, dp.size(), dp[cur_pos].pre_pos);
+    fflush(stderr);
 
     models::DPNode cur = dp[cur_pos];
+    int steps = 0;
 
     while(cur.pre_pos != -2){
         if (core_new::is_streaming_cancel_requested()) {
@@ -117,10 +122,18 @@ std::vector<Triple> LZDP::dpbacktrack(
         }
         triples.push_back(cur.triple);
         if (cur.pre_pos < 0) break;
+        steps++;
+        if (steps <= 5) {
+            fprintf(stderr, "[DP-backtrack] step %d: cur_pre_pos=%d cur_offset=%u cur_length=%u\n",
+                    steps, cur.pre_pos, cur.triple.offset, cur.triple.length);
+            fflush(stderr);
+        }
         cur = dp[cur.pre_pos];
         cur_pos = cur.pre_pos;
     }
     std::reverse(triples.begin(), triples.end());
+    fprintf(stderr, "[DP-backtrack] done: total_steps=%d n_triples=%zu\n", steps, triples.size());
+    fflush(stderr);
     if (!triples.empty() && triples[0].offset == 0 && triples[0].length == 0 && triples[0].literal == 0) {
         triples.erase(triples.begin());
     }
@@ -187,7 +200,7 @@ template void LZDP::dpforward<VbByteInput, RelativeDpStore>(
 
 #include "BitProcessor.hpp"
 #include "ByteView.hpp"
-#include "EncodingTriple.hpp"
+#include "LZencoding.hpp"
 #include "RecordIO.hpp"
 #include "Streaming.hpp"
 
@@ -391,7 +404,13 @@ Phase1Result run_phase1_dpforward(
     shrink_dp_after_flush(dp_store, dp_base, proc_end);
     try_release_front_u8(vb_base, data_vb, proc_end, config.window.search_size);
 
+    fprintf(stderr, "[PHASE1] before while: proc_end=%zu is_end=%d data_vb.size=%zu\n",
+            proc_end, reader.is_end() ? 1 : 0, data_vb.size());
+    fflush(stderr);
+
     while (!reader.is_end()) {
+        fprintf(stderr, "[PHASE1] while loop iteration: reading next chunk...\n");
+        fflush(stderr);
         if (core_new::is_streaming_cancel_requested()) {
             throw std::runtime_error("cancelled");
         }
@@ -408,9 +427,17 @@ Phase1Result run_phase1_dpforward(
         try_release_front_u8(vb_base, data_vb, proc_end, config.window.search_size);
     }
 
+    fprintf(stderr, "[PHASE1] after while: proc_end=%zu\n", proc_end);
+    fflush(stderr);
+
     proc_end = vb_base + data_vb.size();
+    fprintf(stderr, "[PHASE1] final forward: next_abs=%zu proc_end=%zu\n", next_abs, proc_end);
+    fflush(stderr);
     run_forward(next_abs, proc_end);
     flush_dp_range(writer, dp_store, dp_base, flushed_dp_end, proc_end, write_pending);
+
+    fprintf(stderr, "[PHASE1] done: total_input=%zu\n", proc_end);
+    fflush(stderr);
 
     result.total_input_bytes = proc_end;
     if (proc_end >= dp_base && proc_end - dp_base < dp_store.size()) {

@@ -1,1 +1,1 @@
- ../src/api_new/libapi_new.a ../src/core_new/libcore_new.a -lz ../src/algorithm_new/libalgorithm_new.a -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+ ../src/api_new/libapi_new.a ../src/core_new/libcore_new.a -lz ../src/algorithm_new/libalgorithm_new.a "../_deps/google_brotli-build/libbrotlienc.a" "../_deps/google_brotli-build/libbrotlidec.a" "../_deps/google_brotli-build/libbrotlicommon.a" -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 

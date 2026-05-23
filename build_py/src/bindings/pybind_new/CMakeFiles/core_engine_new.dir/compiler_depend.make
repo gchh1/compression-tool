@@ -299,11 +299,11 @@ src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/pybind_module_new.cpp.obj
   D:/AAA_C/compression-tool/src/algorithm_new/include/ByteView.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Deflate.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Dpflate.hpp \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/EncodingTriple.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman.hpp \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman_3HfMTree.hpp \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman_Inflate.hpp \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/HuffmanTree.hpp \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/HuffmanTree3HM.hpp \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/Inflate3HMCoding.hpp \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/InflateCoding.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/LZDP.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/LZSS.hpp \
@@ -317,6 +317,7 @@ src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/pybind_module_new.cpp.obj
   D:/AAA_C/compression-tool/src/api_new/include/api.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/AlgorithmFactory.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/GuiCompressors.hpp \
+  D:/AAA_C/compression-tool/src/core_new/include/GzipCompressor.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/ICompressor.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp \
   D:/Python/Lib/site-packages/pybind11/include/pybind11/attr.h \
@@ -467,8 +468,6 @@ D:/Python/include/weakrefobject.h:
 D:/Python/include/warnings.h:
 
 D:/Python/include/tupleobject.h:
-
-D:/Python/include/tracemalloc.h:
 
 D:/Python/include/traceback.h:
 
@@ -658,9 +657,13 @@ D:/Python/include/cpython/classobject.h:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/LZDP.hpp:
 
-D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman_Inflate.hpp:
+D:/AAA_C/compression-tool/src/algorithm_new/include/InflateCoding.hpp:
 
-D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman.hpp:
+D:/Python/include/tracemalloc.h:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/Inflate3HMCoding.hpp:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/HuffmanTree.hpp:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp:
 
@@ -723,8 +726,6 @@ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_unistd.h:
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_time.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_compat.h:
-
-D:/AAA_C/compression-tool/src/algorithm_new/include/Huffman_3HfMTree.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread.h:
 
@@ -812,8 +813,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator.h:
 
 D:/Python/include/cpython/dictobject.h:
 
-D:/AAA_C/compression-tool/src/algorithm_new/include/EncodingTriple.hpp:
-
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/sstream.tcc:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_uninitialized.h:
@@ -895,6 +894,8 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_memory_defs.h:
 D:/Python/include/cpython/funcobject.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functexcept.h:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/HuffmanTree3HM.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h:
 
@@ -1287,6 +1288,8 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stdexcept:
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/string_view:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/thread:
+
+D:/AAA_C/compression-tool/src/core_new/include/GzipCompressor.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/align.h:
 

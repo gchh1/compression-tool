@@ -658,7 +658,6 @@ class CompressionEngine:
             lzdp_wf,
             dpflate_p,
             deflate_p,
-            lzss_p,
         )
 
     def _python_decompress_wcx_file_to_disk(

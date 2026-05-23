@@ -19,7 +19,7 @@
       "search_size": 32767,
       "lookahead_size": 255,
       "min_match": 0,
-      "dp_sub_match_max": 6,
+      "dp_sub_match_max": 8,
       "max_chain_length": 256,
       "match_engine": 1,
       "use_flag_encoding": 1,
@@ -32,10 +32,10 @@
       "lookahead_size": 255,
       "min_match": 0,
       "max_chain_length": 256,
-      "use_flag_encoding": 1,
-      "use_3hfmtree": 0,
-      "huffman_offset_chunk_bits": 8,
-      "huffman_length_chunk_bits": 8
+      "use_flag_encoding": 0,
+      "use_3hfmtree": 1,
+      "huffman_offset_chunk_bits": 6,
+      "huffman_length_chunk_bits": 6
     },
     "gzip": {
       "compression_level": 6

@@ -1331,17 +1331,56 @@ test_lzdp_debug/fast:
 .PHONY : test_lzdp_debug/fast
 
 #=============================================================================
-# Target rules for targets named core_engine
+# Target rules for targets named test_deflate_step_old
 
 # Build rule for target.
-core_engine: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 core_engine
-.PHONY : core_engine
+test_deflate_step_old: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_deflate_step_old
+.PHONY : test_deflate_step_old
 
 # fast build rule for target.
-core_engine/fast:
-	$(MAKE) $(MAKESILENT) -f src\bindings\pybind\CMakeFiles\core_engine.dir\build.make src/bindings/pybind/CMakeFiles/core_engine.dir/build
-.PHONY : core_engine/fast
+test_deflate_step_old/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_old.dir\build.make tests/CMakeFiles/test_deflate_step_old.dir/build
+.PHONY : test_deflate_step_old/fast
+
+#=============================================================================
+# Target rules for targets named test_deflate_step_new
+
+# Build rule for target.
+test_deflate_step_new: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_deflate_step_new
+.PHONY : test_deflate_step_new
+
+# fast build rule for target.
+test_deflate_step_new/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_new.dir\build.make tests/CMakeFiles/test_deflate_step_new.dir/build
+.PHONY : test_deflate_step_new/fast
+
+#=============================================================================
+# Target rules for targets named test_deflate_dpflate_cartesian
+
+# Build rule for target.
+test_deflate_dpflate_cartesian: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 test_deflate_dpflate_cartesian
+.PHONY : test_deflate_dpflate_cartesian
+
+# fast build rule for target.
+test_deflate_dpflate_cartesian/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_dpflate_cartesian.dir\build.make tests/CMakeFiles/test_deflate_dpflate_cartesian.dir/build
+.PHONY : test_deflate_dpflate_cartesian/fast
+
+#=============================================================================
+# Target rules for targets named old_dpflate_tool
+
+# Build rule for target.
+old_dpflate_tool: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 old_dpflate_tool
+.PHONY : old_dpflate_tool
+
+# fast build rule for target.
+old_dpflate_tool/fast:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\old_dpflate_tool.dir\build.make tests/CMakeFiles/old_dpflate_tool.dir/build
+.PHONY : old_dpflate_tool/fast
 
 #=============================================================================
 # Target rules for targets named core_engine_new
@@ -1408,12 +1447,12 @@ help:
 	@echo ... brotlidec
 	@echo ... brotlienc
 	@echo ... core
-	@echo ... core_engine
 	@echo ... core_engine_new
 	@echo ... core_new
 	@echo ... debug_dpflate
 	@echo ... debug_token_trace
 	@echo ... generate_ade_dataset
+	@echo ... old_dpflate_tool
 	@echo ... processor
 	@echo ... test_3hm_all
 	@echo ... test_3hm_binary
@@ -1432,7 +1471,10 @@ help:
 	@echo ... test_cartesian_stream_matrix
 	@echo ... test_deflate
 	@echo ... test_deflate_3hm_large
+	@echo ... test_deflate_dpflate_cartesian
 	@echo ... test_deflate_huffman_minimal
+	@echo ... test_deflate_step_new
+	@echo ... test_deflate_step_old
 	@echo ... test_dpflate_3hm_stream
 	@echo ... test_dpflate_bin64k_3k_stream
 	@echo ... test_dpflate_stream_trace

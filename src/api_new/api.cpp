@@ -18,7 +18,7 @@
 namespace fs = std::filesystem;
 #endif
 
-namespace compressor::api {
+namespace compressor::api_new {
 
 namespace {
 
@@ -43,7 +43,7 @@ std::string spill_workspace_dir(const fs::path& staged_output) {
     return fs::temp_directory_path().string();
 }
 
-LZDPConfig lzdp_from_params(const core::LzdpWholeFileParams* p) {
+LZDPConfig lzdp_from_params(const compressor::core::LzdpWholeFileParams* p) {
     LZDPConfig cfg;
     if (!p) {
         return cfg;
@@ -68,7 +68,7 @@ LZDPConfig lzdp_from_params(const core::LzdpWholeFileParams* p) {
 
 LZSSConfig lzss_from_defaults() { return LZSSConfig{}; }
 
-LZSSConfig lzss_from_params(const core::LzssPipelineParams* p, AlgorithmID id) {
+LZSSConfig lzss_from_params(const compressor::core::LzssPipelineParams* p, AlgorithmID id) {
     LZSSConfig cfg;
     if (p) {
         cfg.window.search_size = p->search_size;
@@ -90,7 +90,7 @@ LZSSConfig lzss_from_params(const core::LzssPipelineParams* p, AlgorithmID id) {
     return cfg;
 }
 
-DeflateConfig deflate_from_params(const core::DeflatePipelineParams* p) {
+DeflateConfig deflate_from_params(const compressor::core::DeflatePipelineParams* p) {
     DeflateConfig cfg;
     if (!p) {
         return cfg;
@@ -102,33 +102,41 @@ DeflateConfig deflate_from_params(const core::DeflatePipelineParams* p) {
     cfg.encoding.length_bits =
         static_cast<uint8_t>(algorithm::utils::calcBitWidth(p->lookahead_size));
     cfg.window.min_match_len = p->min_match;
+    cfg.window.max_chain_length = p->max_chain_length;
     if (cfg.window.min_match_len == 0) {
         cfg.window.min_match_len = algorithm::utils::getMinMatch(
             cfg.encoding.offset_bits, cfg.encoding.length_bits);
     }
     cfg.encoding.use_flag_encoding = p->use_flag_encoding;
-    cfg.huffman.use_3hfmtree = p->use_3hfmtree;
-    cfg.huffman.huffman_offset_bitwidth =
-        static_cast<uint8_t>(p->huffman_offset_chunk_bits);
-    cfg.huffman.huffman_length_bitwidth =
-        static_cast<uint8_t>(p->huffman_length_chunk_bits);
+    cfg.use_3hfmtree = p->use_3hfmtree;
+    cfg.huffman_3hm.chunk_bits = static_cast<uint32_t>(p->huffman_offset_chunk_bits);
     return cfg;
 }
 
-DPflateConfig dpflate_from_params(const core::DpflatePipelineParams* p) {
+DPFlateConfig dpflate_from_params(const compressor::core::DpflatePipelineParams* p) {
+    DPFlateConfig cfg;
     if (!p) {
-        return DPflateConfig{};
+        return cfg;
     }
-    return DPflateConfig(
-        p->search_size,
-        p->lookahead_size,
-        static_cast<uint8_t>(p->dp_sub_match_max),
-        p->match_engine == 0 ? models::MatchEngine::KMP : models::MatchEngine::HashChain,
-        p->use_flag_encoding,
-        p->use_3hfmtree,
-        static_cast<uint8_t>(p->huffman_offset_chunk_bits),
-        static_cast<uint8_t>(p->huffman_length_chunk_bits),
-        p->min_match);
+    cfg.lzdp.window.search_size = p->search_size;
+    cfg.lzdp.window.look_size = p->lookahead_size;
+    cfg.lzdp.window.min_match_len = p->min_match;
+    cfg.lzdp.window.max_chain_length = p->max_chain_length;
+    cfg.lzdp.dp.dp_top = 3;
+    cfg.lzdp.dp.match_engine =
+        p->match_engine == 0 ? models::MatchEngine::KMP : models::MatchEngine::HashChain;
+    cfg.encoding = EncodingConfig{
+        static_cast<uint8_t>(algorithm::utils::calcBitWidth(p->search_size)),
+        static_cast<uint8_t>(algorithm::utils::calcBitWidth(p->lookahead_size)),
+        p->use_flag_encoding
+    };
+    cfg.use_3hfmtree = p->use_3hfmtree;
+    cfg.huffman_3hm.chunk_bits = static_cast<uint32_t>(p->huffman_offset_chunk_bits);
+    if (cfg.lzdp.window.min_match_len == 0) {
+        cfg.lzdp.window.min_match_len = algorithm::utils::getMinMatch(
+            cfg.encoding.offset_bits, cfg.encoding.length_bits);
+    }
+    return cfg;
 }
 
 bool is_lzdp(AlgorithmID id) {
@@ -141,7 +149,7 @@ bool is_lzss(AlgorithmID id) {
 }
 
 bool is_deflate(AlgorithmID id) {
-    return id == AlgorithmID::Deflate;
+    return id == AlgorithmID::Deflate || id == AlgorithmID::Deflate_New;
 }
 
 bool is_dpflate(AlgorithmID id) {
@@ -198,10 +206,10 @@ bool commit_staged(const fs::path& part, const fs::path& final_path, std::string
 
 auto compress(const std::vector<uint8_t>& data,
               std::span<const AlgorithmID> chain,
-              const core::LzdpWholeFileParams* lzdp_whole_file,
-              const core::DpflatePipelineParams* dpflate_pipeline,
-              const core::DeflatePipelineParams* deflate_pipeline,
-              const core::LzssPipelineParams* lzss_pipeline,
+              const compressor::core::LzdpWholeFileParams* lzdp_whole_file,
+              const compressor::core::DpflatePipelineParams* dpflate_pipeline,
+              const compressor::core::DeflatePipelineParams* deflate_pipeline,
+              const compressor::core::LzssPipelineParams* lzss_pipeline,
               std::size_t) -> CompressResult {
     CompressResult result;
     result.original_size = data.size();
@@ -243,7 +251,7 @@ auto compress(const std::vector<uint8_t>& data,
             if (core_new::is_streaming_cancel_requested()) {
                 throw std::runtime_error("cancelled");
             }
-            auto r = compress_bytes_deflate(data, deflate_from_params(deflate_pipeline));
+            auto r = deflate_compress(data, deflate_from_params(deflate_pipeline));
             if (core_new::is_streaming_cancel_requested()) {
                 throw std::runtime_error("cancelled");
             }
@@ -252,7 +260,7 @@ auto compress(const std::vector<uint8_t>& data,
             if (core_new::is_streaming_cancel_requested()) {
                 throw std::runtime_error("cancelled");
             }
-            auto r = compress_bytes_dpflate(data, dpflate_from_params(dpflate_pipeline));
+            auto r = dpflate_compress(data, dpflate_from_params(dpflate_pipeline));
             if (core_new::is_streaming_cancel_requested()) {
                 throw std::runtime_error("cancelled");
             }
@@ -281,10 +289,10 @@ auto compress(const std::vector<uint8_t>& data,
 
 auto decompress(const std::vector<uint8_t>& data,
                 std::span<const AlgorithmID> chain,
-                const core::LzdpWholeFileParams* lzdp_whole_file,
-                const core::DpflatePipelineParams* dpflate_pipeline,
-                const core::DeflatePipelineParams* deflate_pipeline,
-                const core::LzssPipelineParams* lzss_pipeline,
+                const compressor::core::LzdpWholeFileParams* lzdp_whole_file,
+                const compressor::core::DpflatePipelineParams* dpflate_pipeline,
+                const compressor::core::DeflatePipelineParams* deflate_pipeline,
+                const compressor::core::LzssPipelineParams* lzss_pipeline,
                 std::size_t) -> CompressResult {
     CompressResult result;
     result.original_size = data.size();
@@ -309,9 +317,9 @@ auto decompress(const std::vector<uint8_t>& data,
         } else if (is_lzss_decompress(id) || is_lzss(id)) {
             result.data = decompress_bytes_lzss(data, lzss_from_params(lzss_pipeline, id));
         } else if (id == AlgorithmID::Inflate || is_deflate(id)) {
-            result.data = decompress_bytes_deflate(data, deflate_from_params(deflate_pipeline));
+            result.data = deflate_decompress(data, deflate_from_params(deflate_pipeline));
         } else if (is_dpflate(id)) {
-            result.data = decompress_bytes_dpflate(data, dpflate_from_params(dpflate_pipeline));
+            result.data = dpflate_decompress(data, dpflate_from_params(dpflate_pipeline));
         } else {
             return fail("unsupported decompress algorithm");
         }
@@ -394,10 +402,10 @@ auto compressFile(const std::string& input_path,
                   std::span<const AlgorithmID> chain,
                   size_t stream_chunk_bytes,
                   uint32_t file_compress_opts,
-                  const core::LzdpWholeFileParams* lzdp_whole_file,
-                  const core::DpflatePipelineParams* dpflate_pipeline,
-                  const core::DeflatePipelineParams* deflate_pipeline,
-                  const core::LzssPipelineParams* lzss_pipeline) -> CompressResult {
+                  const compressor::core::LzdpWholeFileParams* lzdp_whole_file,
+                  const compressor::core::DpflatePipelineParams* dpflate_pipeline,
+                  const compressor::core::DeflatePipelineParams* deflate_pipeline,
+                  const compressor::core::LzssPipelineParams* lzss_pipeline) -> CompressResult {
     CompressResult result;
     if (chain.empty()) {
         return fail("Empty algorithm chain");
@@ -435,7 +443,7 @@ auto compressFile(const std::string& input_path,
         // ``LZDPCompressor`` (algorithm_new), not chunked ``LZDPStreamingPipeline``.
         const bool lzdp_use_chunked_stream =
             use_streaming &&
-            ((file_compress_opts & core::kFileCompressLzdpWholeFileFramed) == 0);
+            ((file_compress_opts & compressor::core::kFileCompressLzdpWholeFileFramed) == 0);
 
         if (is_lzdp(id)) {
             const auto cfg = lzdp_from_params(lzdp_whole_file);
@@ -479,44 +487,26 @@ auto compressFile(const std::string& input_path,
             }
         } else if (is_deflate(id)) {
             const auto cfg = deflate_from_params(deflate_pipeline);
-            if (use_streaming) {
-                DeflateStreamingOptions opts;
-                opts.chunk_size = chunk;
-                opts.workspace_dir = spill_workspace_dir(part);
-                active_workspace = opts.workspace_dir;
-                DeflateStreamingPipeline pipe(cfg, opts);
-                pipe.compress_file(input_path, payload_tmp);
-            } else {
-                const auto input = core_new::io::read_file_bytes(input_path);
-                if (core_new::is_streaming_cancel_requested()) {
-                    throw std::runtime_error("cancelled");
-                }
-                auto r = compress_bytes_deflate(input, cfg);
-                if (core_new::is_streaming_cancel_requested()) {
-                    throw std::runtime_error("cancelled");
-                }
-                core_new::io::write_file_bytes(payload_tmp, r.compressed);
+            const auto input = core_new::io::read_file_bytes(input_path);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
             }
+            auto r = deflate_compress(input, cfg);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            core_new::io::write_file_bytes(payload_tmp, r.compressed);
         } else if (is_dpflate(id)) {
             const auto cfg = dpflate_from_params(dpflate_pipeline);
-            if (use_streaming) {
-                DPFlateStreamingOptions opts;
-                opts.chunk_size = chunk;
-                opts.workspace_dir = spill_workspace_dir(part);
-                active_workspace = opts.workspace_dir;
-                DPFlateStreamingPipeline pipe(cfg, opts);
-                pipe.compress_file(input_path, payload_tmp);
-            } else {
-                const auto input = core_new::io::read_file_bytes(input_path);
-                if (core_new::is_streaming_cancel_requested()) {
-                    throw std::runtime_error("cancelled");
-                }
-                auto r = compress_bytes_dpflate(input, cfg);
-                if (core_new::is_streaming_cancel_requested()) {
-                    throw std::runtime_error("cancelled");
-                }
-                core_new::io::write_file_bytes(payload_tmp, r.compressed);
+            const auto input = core_new::io::read_file_bytes(input_path);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
             }
+            auto r = dpflate_compress(input, cfg);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            core_new::io::write_file_bytes(payload_tmp, r.compressed);
         } else {
             return fail("unsupported algorithm for compressFile");
         }
@@ -594,10 +584,10 @@ auto decompressFile(const std::string& input_path,
                     const std::string& output_path,
                     std::span<const AlgorithmID> chain,
                     size_t,
-                    const core::LzdpWholeFileParams* lzdp_whole_file,
-                    const core::LzssPipelineParams* lzss_pipeline,
-                    const core::DpflatePipelineParams* dpflate_pipeline,
-                    const core::DeflatePipelineParams* deflate_pipeline) -> CompressResult {
+                    const compressor::core::LzdpWholeFileParams* lzdp_whole_file,
+                    const compressor::core::LzssPipelineParams* lzss_pipeline,
+                    const compressor::core::DpflatePipelineParams* dpflate_pipeline,
+                    const compressor::core::DeflatePipelineParams* deflate_pipeline) -> CompressResult {
     CompressResult result;
     if (chain.empty()) {
         return fail("Empty algorithm chain");
@@ -663,7 +653,7 @@ auto decompressFile(const std::string& input_path,
             if (core_new::is_streaming_cancel_requested()) {
                 throw std::runtime_error("cancelled");
             }
-            plain = decompress_bytes_deflate(unpacked.payload,
+            plain = deflate_decompress(unpacked.payload,
                                                deflate_from_params(deflate_pipeline));
             if (core_new::is_streaming_cancel_requested()) {
                 throw std::runtime_error("cancelled");
@@ -672,7 +662,7 @@ auto decompressFile(const std::string& input_path,
             if (core_new::is_streaming_cancel_requested()) {
                 throw std::runtime_error("cancelled");
             }
-            plain = decompress_bytes_dpflate(unpacked.payload,
+            plain = dpflate_decompress(unpacked.payload,
                                              dpflate_from_params(dpflate_pipeline));
             if (core_new::is_streaming_cancel_requested()) {
                 throw std::runtime_error("cancelled");
@@ -704,13 +694,13 @@ auto compressDirectory(const std::string&,
                        std::span<const AlgorithmID>,
                        size_t,
                        uint32_t,
-                       const core::LzdpWholeFileParams*,
-                       const core::DpflatePipelineParams*,
-                       const core::DeflatePipelineParams*,
-                       const core::LzssPipelineParams*) -> CompressResult {
+                       const compressor::core::LzdpWholeFileParams*,
+                       const compressor::core::DpflatePipelineParams*,
+                       const compressor::core::DeflatePipelineParams*,
+                       const compressor::core::LzssPipelineParams*) -> CompressResult {
     return fail("compressDirectory not implemented for algorithm_new api stack");
 }
 
 #endif
 
-}  // namespace compressor::api
+}  // namespace compressor::api_new

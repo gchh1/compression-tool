@@ -378,6 +378,8 @@ tests/all: tests/CMakeFiles/test_lzss_noflag_sizes.dir/all
 tests/all: tests/CMakeFiles/test_deflate_huffman_minimal.dir/all
 tests/all: tests/CMakeFiles/test_deflate_3hm_large.dir/all
 tests/all: tests/CMakeFiles/test_lzdp_debug.dir/all
+tests/all: tests/CMakeFiles/test_deflate_step_old.dir/all
+tests/all: tests/CMakeFiles/test_deflate_step_new.dir/all
 .PHONY : tests/all
 
 # Recursive "preinstall" directory target.
@@ -428,15 +430,17 @@ tests/clean: tests/CMakeFiles/test_lzss_noflag_sizes.dir/clean
 tests/clean: tests/CMakeFiles/test_deflate_huffman_minimal.dir/clean
 tests/clean: tests/CMakeFiles/test_deflate_3hm_large.dir/clean
 tests/clean: tests/CMakeFiles/test_lzdp_debug.dir/clean
+tests/clean: tests/CMakeFiles/test_deflate_step_old.dir/clean
+tests/clean: tests/CMakeFiles/test_deflate_step_new.dir/clean
 .PHONY : tests/clean
 
 #=============================================================================
 # Target rules for target src/algorithm/CMakeFiles/algorithm.dir
 
 # All Build rule for target.
+src/algorithm/CMakeFiles/algorithm.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 src/algorithm/CMakeFiles/algorithm.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 src/algorithm/CMakeFiles/algorithm.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-src/algorithm/CMakeFiles/algorithm.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 	$(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=5,6,7,8,9,10,11,12 "Built target algorithm"
@@ -540,9 +544,9 @@ _deps/google_brotli-build/CMakeFiles/brotlienc.dir/clean:
 # Target rules for target _deps/google_brotli-build/CMakeFiles/brotli.dir
 
 # All Build rule for target.
+_deps/google_brotli-build/CMakeFiles/brotli.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 _deps/google_brotli-build/CMakeFiles/brotli.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 _deps/google_brotli-build/CMakeFiles/brotli.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-_deps/google_brotli-build/CMakeFiles/brotli.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\brotli.dir\build.make _deps/google_brotli-build/CMakeFiles/brotli.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps\google_brotli-build\CMakeFiles\brotli.dir\build.make _deps/google_brotli-build/CMakeFiles/brotli.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=23 "Built target brotli"
@@ -1296,15 +1300,17 @@ _deps/google_brotli-build/CMakeFiles/ContinuousSubmit.dir/clean:
 # Target rules for target src/algorithm_new/CMakeFiles/algorithm_new.dir
 
 # All Build rule for target.
-src/algorithm_new/CMakeFiles/algorithm_new.dir/all:
+src/algorithm_new/CMakeFiles/algorithm_new.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+src/algorithm_new/CMakeFiles/algorithm_new.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+src/algorithm_new/CMakeFiles/algorithm_new.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
 	$(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=13,14,15 "Built target algorithm_new"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=13,14,15,16 "Built target algorithm_new"
 .PHONY : src/algorithm_new/CMakeFiles/algorithm_new.dir/all
 
 # Build rule for subdir invocation for target.
 src/algorithm_new/CMakeFiles/algorithm_new.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 3
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 21
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/algorithm_new/CMakeFiles/algorithm_new.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : src/algorithm_new/CMakeFiles/algorithm_new.dir/rule
@@ -1322,6 +1328,9 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/clean:
 # Target rules for target src/core_new/CMakeFiles/core_new.dir
 
 # All Build rule for target.
+src/core_new/CMakeFiles/core_new.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+src/core_new/CMakeFiles/core_new.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+src/core_new/CMakeFiles/core_new.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
 src/core_new/CMakeFiles/core_new.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
 	$(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\core_new\CMakeFiles\core_new.dir\build.make src/core_new/CMakeFiles/core_new.dir/build
@@ -1330,7 +1339,7 @@ src/core_new/CMakeFiles/core_new.dir/all: src/algorithm_new/CMakeFiles/algorithm
 
 # Build rule for subdir invocation for target.
 src/core_new/CMakeFiles/core_new.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 7
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 25
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/core_new/CMakeFiles/core_new.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : src/core_new/CMakeFiles/core_new.dir/rule
@@ -1348,16 +1357,19 @@ src/core_new/CMakeFiles/core_new.dir/clean:
 # Target rules for target src/api_new/CMakeFiles/api_new.dir
 
 # All Build rule for target.
+src/api_new/CMakeFiles/api_new.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+src/api_new/CMakeFiles/api_new.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+src/api_new/CMakeFiles/api_new.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
 src/api_new/CMakeFiles/api_new.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
 src/api_new/CMakeFiles/api_new.dir/all: src/core_new/CMakeFiles/core_new.dir/all
 	$(MAKE) $(MAKESILENT) -f src\api_new\CMakeFiles\api_new.dir\build.make src/api_new/CMakeFiles/api_new.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\api_new\CMakeFiles\api_new.dir\build.make src/api_new/CMakeFiles/api_new.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=18,19 "Built target api_new"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=19 "Built target api_new"
 .PHONY : src/api_new/CMakeFiles/api_new.dir/all
 
 # Build rule for subdir invocation for target.
 src/api_new/CMakeFiles/api_new.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 9
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 26
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/api_new/CMakeFiles/api_new.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : src/api_new/CMakeFiles/api_new.dir/rule
@@ -1376,15 +1388,15 @@ src/api_new/CMakeFiles/api_new.dir/clean:
 
 # All Build rule for target.
 src/api/CMakeFiles/api.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+src/api/CMakeFiles/api.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 src/api/CMakeFiles/api.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 src/api/CMakeFiles/api.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-src/api/CMakeFiles/api.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 src/api/CMakeFiles/api.dir/all: src/core/CMakeFiles/core.dir/all
 src/api/CMakeFiles/api.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 src/api/CMakeFiles/api.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f src\api\CMakeFiles\api.dir\build.make src/api/CMakeFiles/api.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\api\CMakeFiles\api.dir\build.make src/api/CMakeFiles/api.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=16,17 "Built target api"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=17,18 "Built target api"
 .PHONY : src/api/CMakeFiles/api.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1408,9 +1420,9 @@ src/api/CMakeFiles/api.dir/clean:
 
 # All Build rule for target.
 src/core/CMakeFiles/core.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+src/core/CMakeFiles/core.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 src/core/CMakeFiles/core.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 src/core/CMakeFiles/core.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-src/core/CMakeFiles/core.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 	$(MAKE) $(MAKESILENT) -f src\core\CMakeFiles\core.dir\build.make src/core/CMakeFiles/core.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\core\CMakeFiles\core.dir\build.make src/core/CMakeFiles/core.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=41,42,43,44,45 "Built target core"
@@ -1437,9 +1449,9 @@ src/core/CMakeFiles/core.dir/clean:
 
 # All Build rule for target.
 src/archiver/CMakeFiles/archiver.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+src/archiver/CMakeFiles/archiver.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 src/archiver/CMakeFiles/archiver.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 src/archiver/CMakeFiles/archiver.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-src/archiver/CMakeFiles/archiver.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 src/archiver/CMakeFiles/archiver.dir/all: src/core/CMakeFiles/core.dir/all
 src/archiver/CMakeFiles/archiver.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f src\archiver\CMakeFiles\archiver.dir\build.make src/archiver/CMakeFiles/archiver.dir/depend
@@ -1468,13 +1480,13 @@ src/archiver/CMakeFiles/archiver.dir/clean:
 
 # All Build rule for target.
 src/processor/CMakeFiles/processor.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+src/processor/CMakeFiles/processor.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 src/processor/CMakeFiles/processor.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 src/processor/CMakeFiles/processor.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-src/processor/CMakeFiles/processor.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 src/processor/CMakeFiles/processor.dir/all: src/core/CMakeFiles/core.dir/all
 	$(MAKE) $(MAKESILENT) -f src\processor\CMakeFiles\processor.dir\build.make src/processor/CMakeFiles/processor.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\processor\CMakeFiles\processor.dir\build.make src/processor/CMakeFiles/processor.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=53,54 "Built target processor"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=52,53 "Built target processor"
 .PHONY : src/processor/CMakeFiles/processor.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1526,7 +1538,7 @@ src/ade/CMakeFiles/ade.dir/clean:
 src/ade/CMakeFiles/test_ade_feature_extractor.dir/all: src/ade/CMakeFiles/ade.dir/all
 	$(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\test_ade_feature_extractor.dir\build.make src/ade/CMakeFiles/test_ade_feature_extractor.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\test_ade_feature_extractor.dir\build.make src/ade/CMakeFiles/test_ade_feature_extractor.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=63 "Built target test_ade_feature_extractor"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=62 "Built target test_ade_feature_extractor"
 .PHONY : src/ade/CMakeFiles/test_ade_feature_extractor.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1552,7 +1564,7 @@ src/ade/CMakeFiles/test_ade_feature_extractor.dir/clean:
 src/ade/CMakeFiles/test_ade_decision_engine.dir/all: src/ade/CMakeFiles/ade.dir/all
 	$(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\test_ade_decision_engine.dir\build.make src/ade/CMakeFiles/test_ade_decision_engine.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\test_ade_decision_engine.dir\build.make src/ade/CMakeFiles/test_ade_decision_engine.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=61 "Built target test_ade_decision_engine"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=60 "Built target test_ade_decision_engine"
 .PHONY : src/ade/CMakeFiles/test_ade_decision_engine.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1578,7 +1590,7 @@ src/ade/CMakeFiles/test_ade_decision_engine.dir/clean:
 src/ade/CMakeFiles/test_ade_evolutionary.dir/all: src/ade/CMakeFiles/ade.dir/all
 	$(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\test_ade_evolutionary.dir\build.make src/ade/CMakeFiles/test_ade_evolutionary.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\test_ade_evolutionary.dir\build.make src/ade/CMakeFiles/test_ade_evolutionary.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=62 "Built target test_ade_evolutionary"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=61 "Built target test_ade_evolutionary"
 .PHONY : src/ade/CMakeFiles/test_ade_evolutionary.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1630,12 +1642,12 @@ src/ade/CMakeFiles/bench_ade_extractor.dir/clean:
 src/ade/CMakeFiles/train_ade_model.dir/all: src/ade/CMakeFiles/ade.dir/all
 	$(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\train_ade_model.dir\build.make src/ade/CMakeFiles/train_ade_model.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\train_ade_model.dir\build.make src/ade/CMakeFiles/train_ade_model.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=99,100 "Built target train_ade_model"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=100 "Built target train_ade_model"
 .PHONY : src/ade/CMakeFiles/train_ade_model.dir/all
 
 # Build rule for subdir invocation for target.
 src/ade/CMakeFiles/train_ade_model.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 5
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/ade/CMakeFiles/train_ade_model.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : src/ade/CMakeFiles/train_ade_model.dir/rule
@@ -1656,7 +1668,7 @@ src/ade/CMakeFiles/train_ade_model.dir/clean:
 src/ade/CMakeFiles/generate_ade_dataset.dir/all: src/ade/CMakeFiles/ade.dir/all
 	$(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\generate_ade_dataset.dir\build.make src/ade/CMakeFiles/generate_ade_dataset.dir/depend
 	$(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\generate_ade_dataset.dir\build.make src/ade/CMakeFiles/generate_ade_dataset.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=52 "Built target generate_ade_dataset"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=51 "Built target generate_ade_dataset"
 .PHONY : src/ade/CMakeFiles/generate_ade_dataset.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1680,12 +1692,12 @@ src/ade/CMakeFiles/generate_ade_dataset.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_Deflate.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_Deflate.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_Deflate.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_Deflate.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_Deflate.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_Deflate.dir\build.make tests/CMakeFiles/test_Deflate.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_Deflate.dir\build.make tests/CMakeFiles/test_Deflate.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=57 "Built target test_Deflate"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=56 "Built target test_Deflate"
 .PHONY : tests/CMakeFiles/test_Deflate.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1709,12 +1721,12 @@ tests/CMakeFiles/test_Deflate.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_roundtrip.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_roundtrip.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_roundtrip.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_roundtrip.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_roundtrip.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_roundtrip.dir\build.make tests/CMakeFiles/test_roundtrip.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_roundtrip.dir\build.make tests/CMakeFiles/test_roundtrip.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=93 "Built target test_roundtrip"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=94 "Built target test_roundtrip"
 .PHONY : tests/CMakeFiles/test_roundtrip.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1738,16 +1750,16 @@ tests/CMakeFiles/test_roundtrip.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_wcx_directory_archive.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_wcx_directory_archive.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_wcx_directory_archive.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_wcx_directory_archive.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_wcx_directory_archive.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_wcx_directory_archive.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/test_wcx_directory_archive.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_wcx_directory_archive.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_wcx_directory_archive.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_wcx_directory_archive.dir\build.make tests/CMakeFiles/test_wcx_directory_archive.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_wcx_directory_archive.dir\build.make tests/CMakeFiles/test_wcx_directory_archive.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=96 "Built target test_wcx_directory_archive"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=97 "Built target test_wcx_directory_archive"
 .PHONY : tests/CMakeFiles/test_wcx_directory_archive.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1771,16 +1783,16 @@ tests/CMakeFiles/test_wcx_directory_archive.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_PackWriter_RoundTrip.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_PackWriter_RoundTrip.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_PackWriter_RoundTrip.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_PackWriter_RoundTrip.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_PackWriter_RoundTrip.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_PackWriter_RoundTrip.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/test_PackWriter_RoundTrip.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_PackWriter_RoundTrip.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_PackWriter_RoundTrip.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_PackWriter_RoundTrip.dir\build.make tests/CMakeFiles/test_PackWriter_RoundTrip.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_PackWriter_RoundTrip.dir\build.make tests/CMakeFiles/test_PackWriter_RoundTrip.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=60 "Built target test_PackWriter_RoundTrip"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=59 "Built target test_PackWriter_RoundTrip"
 .PHONY : tests/CMakeFiles/test_PackWriter_RoundTrip.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1804,15 +1816,15 @@ tests/CMakeFiles/test_PackWriter_RoundTrip.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_PackWriter.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_PackWriter.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_PackWriter.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_PackWriter.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_PackWriter.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_PackWriter.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_PackWriter.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_PackWriter.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_PackWriter.dir\build.make tests/CMakeFiles/test_PackWriter.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_PackWriter.dir\build.make tests/CMakeFiles/test_PackWriter.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=59 "Built target test_PackWriter"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=58 "Built target test_PackWriter"
 .PHONY : tests/CMakeFiles/test_PackWriter.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1836,16 +1848,16 @@ tests/CMakeFiles/test_PackWriter.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_wcx_file_strict.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_wcx_file_strict.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_wcx_file_strict.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_wcx_file_strict.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_wcx_file_strict.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_wcx_file_strict.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/test_wcx_file_strict.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_wcx_file_strict.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_wcx_file_strict.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_wcx_file_strict.dir\build.make tests/CMakeFiles/test_wcx_file_strict.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_wcx_file_strict.dir\build.make tests/CMakeFiles/test_wcx_file_strict.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=97 "Built target test_wcx_file_strict"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=98 "Built target test_wcx_file_strict"
 .PHONY : tests/CMakeFiles/test_wcx_file_strict.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1869,16 +1881,16 @@ tests/CMakeFiles/test_wcx_file_strict.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_wcx_strict_no_compat.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_wcx_strict_no_compat.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_wcx_strict_no_compat.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_wcx_strict_no_compat.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_wcx_strict_no_compat.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_wcx_strict_no_compat.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/test_wcx_strict_no_compat.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_wcx_strict_no_compat.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_wcx_strict_no_compat.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_wcx_strict_no_compat.dir\build.make tests/CMakeFiles/test_wcx_strict_no_compat.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_wcx_strict_no_compat.dir\build.make tests/CMakeFiles/test_wcx_strict_no_compat.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=98 "Built target test_wcx_strict_no_compat"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=99 "Built target test_wcx_strict_no_compat"
 .PHONY : tests/CMakeFiles/test_wcx_strict_no_compat.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1902,16 +1914,16 @@ tests/CMakeFiles/test_wcx_strict_no_compat.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_wcx_corrupt.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_wcx_corrupt.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_wcx_corrupt.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_wcx_corrupt.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_wcx_corrupt.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_wcx_corrupt.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/test_wcx_corrupt.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_wcx_corrupt.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_wcx_corrupt.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_wcx_corrupt.dir\build.make tests/CMakeFiles/test_wcx_corrupt.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_wcx_corrupt.dir\build.make tests/CMakeFiles/test_wcx_corrupt.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=95 "Built target test_wcx_corrupt"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=96 "Built target test_wcx_corrupt"
 .PHONY : tests/CMakeFiles/test_wcx_corrupt.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1935,16 +1947,16 @@ tests/CMakeFiles/test_wcx_corrupt.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_lzss_noflag.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_lzss_noflag.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_lzss_noflag.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_lzss_noflag.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_lzss_noflag.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_lzss_noflag.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/test_lzss_noflag.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_lzss_noflag.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_lzss_noflag.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag.dir\build.make tests/CMakeFiles/test_lzss_noflag.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag.dir\build.make tests/CMakeFiles/test_lzss_noflag.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=85 "Built target test_lzss_noflag"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=86 "Built target test_lzss_noflag"
 .PHONY : tests/CMakeFiles/test_lzss_noflag.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1967,17 +1979,20 @@ tests/CMakeFiles/test_lzss_noflag.dir/clean:
 # Target rules for target tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir
 
 # All Build rule for target.
+tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
 tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
 tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/all: src/core_new/CMakeFiles/core_new.dir/all
 tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/all: src/api_new/CMakeFiles/api_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_algorithm_new_matrix.dir\build.make tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_algorithm_new_matrix.dir\build.make tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=84 "Built target test_lzss_algorithm_new_matrix"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=85 "Built target test_lzss_algorithm_new_matrix"
 .PHONY : tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 10
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 27
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/rule
@@ -1996,16 +2011,16 @@ tests/CMakeFiles/test_lzss_algorithm_new_matrix.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_deflate.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_deflate.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_deflate.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_deflate.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_deflate.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_deflate.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/test_deflate.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_deflate.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_deflate.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate.dir\build.make tests/CMakeFiles/test_deflate.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate.dir\build.make tests/CMakeFiles/test_deflate.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=70 "Built target test_deflate"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=69 "Built target test_deflate"
 .PHONY : tests/CMakeFiles/test_deflate.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2029,16 +2044,16 @@ tests/CMakeFiles/test_deflate.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_memory_streaming_parity.dir\build.make tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_memory_streaming_parity.dir\build.make tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=83 "Built target test_lzdp_memory_streaming_parity"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=84 "Built target test_lzdp_memory_streaming_parity"
 .PHONY : tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2062,12 +2077,12 @@ tests/CMakeFiles/test_lzdp_memory_streaming_parity.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_lzdp_dpflate_regression.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_lzdp_dpflate_regression.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_lzdp_dpflate_regression.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_lzdp_dpflate_regression.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_lzdp_dpflate_regression.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_dpflate_regression.dir\build.make tests/CMakeFiles/test_lzdp_dpflate_regression.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_dpflate_regression.dir\build.make tests/CMakeFiles/test_lzdp_dpflate_regression.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=79 "Built target test_lzdp_dpflate_regression"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=80 "Built target test_lzdp_dpflate_regression"
 .PHONY : tests/CMakeFiles/test_lzdp_dpflate_regression.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2091,16 +2106,16 @@ tests/CMakeFiles/test_lzdp_dpflate_regression.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_lzdp_dpflate_stream.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_lzdp_dpflate_stream.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_lzdp_dpflate_stream.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_lzdp_dpflate_stream.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_lzdp_dpflate_stream.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_lzdp_dpflate_stream.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/test_lzdp_dpflate_stream.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_lzdp_dpflate_stream.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_lzdp_dpflate_stream.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_dpflate_stream.dir\build.make tests/CMakeFiles/test_lzdp_dpflate_stream.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_dpflate_stream.dir\build.make tests/CMakeFiles/test_lzdp_dpflate_stream.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=80 "Built target test_lzdp_dpflate_stream"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=81 "Built target test_lzdp_dpflate_stream"
 .PHONY : tests/CMakeFiles/test_lzdp_dpflate_stream.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2124,12 +2139,12 @@ tests/CMakeFiles/test_lzdp_dpflate_stream.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_HuffmanTree3HM.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_HuffmanTree3HM.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_HuffmanTree3HM.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_HuffmanTree3HM.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_HuffmanTree3HM.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_HuffmanTree3HM.dir\build.make tests/CMakeFiles/test_HuffmanTree3HM.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_HuffmanTree3HM.dir\build.make tests/CMakeFiles/test_HuffmanTree3HM.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=58 "Built target test_HuffmanTree3HM"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=57 "Built target test_HuffmanTree3HM"
 .PHONY : tests/CMakeFiles/test_HuffmanTree3HM.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2153,16 +2168,16 @@ tests/CMakeFiles/test_HuffmanTree3HM.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_algorithm_comparison.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_algorithm_comparison.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_algorithm_comparison.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_algorithm_comparison.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_algorithm_comparison.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_algorithm_comparison.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/test_algorithm_comparison.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_algorithm_comparison.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_algorithm_comparison.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_comparison.dir\build.make tests/CMakeFiles/test_algorithm_comparison.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_comparison.dir\build.make tests/CMakeFiles/test_algorithm_comparison.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=64 "Built target test_algorithm_comparison"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=63 "Built target test_algorithm_comparison"
 .PHONY : tests/CMakeFiles/test_algorithm_comparison.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2186,13 +2201,13 @@ tests/CMakeFiles/test_algorithm_comparison.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_mixed_dpflate_only.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_mixed_dpflate_only.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_mixed_dpflate_only.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_mixed_dpflate_only.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_mixed_dpflate_only.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_mixed_dpflate_only.dir/all: src/core/CMakeFiles/core.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_mixed_dpflate_only.dir\build.make tests/CMakeFiles/test_mixed_dpflate_only.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_mixed_dpflate_only.dir\build.make tests/CMakeFiles/test_mixed_dpflate_only.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=91 "Built target test_mixed_dpflate_only"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=92 "Built target test_mixed_dpflate_only"
 .PHONY : tests/CMakeFiles/test_mixed_dpflate_only.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2216,13 +2231,13 @@ tests/CMakeFiles/test_mixed_dpflate_only.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_lzdp_memory_flag.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_lzdp_memory_flag.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_lzdp_memory_flag.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_lzdp_memory_flag.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_lzdp_memory_flag.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_lzdp_memory_flag.dir/all: src/core/CMakeFiles/core.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_memory_flag.dir\build.make tests/CMakeFiles/test_lzdp_memory_flag.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_memory_flag.dir\build.make tests/CMakeFiles/test_lzdp_memory_flag.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=82 "Built target test_lzdp_memory_flag"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=83 "Built target test_lzdp_memory_flag"
 .PHONY : tests/CMakeFiles/test_lzdp_memory_flag.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2246,16 +2261,16 @@ tests/CMakeFiles/test_lzdp_memory_flag.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_dpflate_3hm_stream.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_dpflate_3hm_stream.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_dpflate_3hm_stream.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_dpflate_3hm_stream.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_dpflate_3hm_stream.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_dpflate_3hm_stream.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/test_dpflate_3hm_stream.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_dpflate_3hm_stream.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_dpflate_3hm_stream.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_3hm_stream.dir\build.make tests/CMakeFiles/test_dpflate_3hm_stream.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_3hm_stream.dir\build.make tests/CMakeFiles/test_dpflate_3hm_stream.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=73 "Built target test_dpflate_3hm_stream"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=74 "Built target test_dpflate_3hm_stream"
 .PHONY : tests/CMakeFiles/test_dpflate_3hm_stream.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2279,14 +2294,14 @@ tests/CMakeFiles/test_dpflate_3hm_stream.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_bin64k_3k_stream.dir\build.make tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_bin64k_3k_stream.dir\build.make tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=74 "Built target test_dpflate_bin64k_3k_stream"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=75 "Built target test_dpflate_bin64k_3k_stream"
 .PHONY : tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2310,14 +2325,14 @@ tests/CMakeFiles/test_dpflate_bin64k_3k_stream.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_dpflate_stream_trace.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_dpflate_stream_trace.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_dpflate_stream_trace.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_dpflate_stream_trace.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_dpflate_stream_trace.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_dpflate_stream_trace.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_dpflate_stream_trace.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_stream_trace.dir\build.make tests/CMakeFiles/test_dpflate_stream_trace.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_dpflate_stream_trace.dir\build.make tests/CMakeFiles/test_dpflate_stream_trace.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=75 "Built target test_dpflate_stream_trace"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=76 "Built target test_dpflate_stream_trace"
 .PHONY : tests/CMakeFiles/test_dpflate_stream_trace.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2341,16 +2356,16 @@ tests/CMakeFiles/test_dpflate_stream_trace.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_cartesian_stream_matrix.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_cartesian_stream_matrix.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_cartesian_stream_matrix.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_cartesian_stream_matrix.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_cartesian_stream_matrix.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_cartesian_stream_matrix.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/test_cartesian_stream_matrix.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_cartesian_stream_matrix.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_cartesian_stream_matrix.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_cartesian_stream_matrix.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_cartesian_stream_matrix.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=69 "Built target test_cartesian_stream_matrix"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=68 "Built target test_cartesian_stream_matrix"
 .PHONY : tests/CMakeFiles/test_cartesian_stream_matrix.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2374,16 +2389,16 @@ tests/CMakeFiles/test_cartesian_stream_matrix.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_small_stream_7k_67k.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_small_stream_7k_67k.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_small_stream_7k_67k.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_small_stream_7k_67k.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_small_stream_7k_67k.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_small_stream_7k_67k.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/test_small_stream_7k_67k.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_small_stream_7k_67k.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_small_stream_7k_67k.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_small_stream_7k_67k.dir\build.make tests/CMakeFiles/test_small_stream_7k_67k.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_small_stream_7k_67k.dir\build.make tests/CMakeFiles/test_small_stream_7k_67k.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=94 "Built target test_small_stream_7k_67k"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=95 "Built target test_small_stream_7k_67k"
 .PHONY : tests/CMakeFiles/test_small_stream_7k_67k.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2407,16 +2422,16 @@ tests/CMakeFiles/test_small_stream_7k_67k.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_cartesian_stream_matrix.dir\build.make tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=77 "Built target test_lzdp_cartesian_stream_matrix"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=78 "Built target test_lzdp_cartesian_stream_matrix"
 .PHONY : tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2440,16 +2455,16 @@ tests/CMakeFiles/test_lzdp_cartesian_stream_matrix.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_3hm_binary.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_3hm_binary.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_3hm_binary.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_3hm_binary.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_3hm_binary.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_3hm_binary.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/test_3hm_binary.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_3hm_binary.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_3hm_binary.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_3hm_binary.dir\build.make tests/CMakeFiles/test_3hm_binary.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_3hm_binary.dir\build.make tests/CMakeFiles/test_3hm_binary.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=56 "Built target test_3hm_binary"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=55 "Built target test_3hm_binary"
 .PHONY : tests/CMakeFiles/test_3hm_binary.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2473,16 +2488,16 @@ tests/CMakeFiles/test_3hm_binary.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_lzdp_binary.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_lzdp_binary.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_lzdp_binary.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_lzdp_binary.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_lzdp_binary.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_lzdp_binary.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/test_lzdp_binary.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_lzdp_binary.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_lzdp_binary.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_binary.dir\build.make tests/CMakeFiles/test_lzdp_binary.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_binary.dir\build.make tests/CMakeFiles/test_lzdp_binary.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=76 "Built target test_lzdp_binary"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=77 "Built target test_lzdp_binary"
 .PHONY : tests/CMakeFiles/test_lzdp_binary.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2506,16 +2521,16 @@ tests/CMakeFiles/test_lzdp_binary.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_3hm_all.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_3hm_all.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_3hm_all.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_3hm_all.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_3hm_all.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_3hm_all.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/test_3hm_all.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_3hm_all.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_3hm_all.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_3hm_all.dir\build.make tests/CMakeFiles/test_3hm_all.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_3hm_all.dir\build.make tests/CMakeFiles/test_3hm_all.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=55 "Built target test_3hm_all"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=54 "Built target test_3hm_all"
 .PHONY : tests/CMakeFiles/test_3hm_all.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2539,16 +2554,16 @@ tests/CMakeFiles/test_3hm_all.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/test_regression_baseline.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_regression_baseline.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_regression_baseline.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/test_regression_baseline.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/test_regression_baseline.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/test_regression_baseline.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/test_regression_baseline.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/test_regression_baseline.dir/all: src/archiver/CMakeFiles/archiver.dir/all
 tests/CMakeFiles/test_regression_baseline.dir/all: src/processor/CMakeFiles/processor.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_regression_baseline.dir\build.make tests/CMakeFiles/test_regression_baseline.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_regression_baseline.dir\build.make tests/CMakeFiles/test_regression_baseline.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=92 "Built target test_regression_baseline"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=93 "Built target test_regression_baseline"
 .PHONY : tests/CMakeFiles/test_regression_baseline.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2572,9 +2587,9 @@ tests/CMakeFiles/test_regression_baseline.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/debug_dpflate.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/debug_dpflate.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/debug_dpflate.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/debug_dpflate.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/debug_dpflate.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/debug_dpflate.dir/all: src/api/CMakeFiles/api.dir/all
 tests/CMakeFiles/debug_dpflate.dir/all: src/core/CMakeFiles/core.dir/all
 tests/CMakeFiles/debug_dpflate.dir/all: src/archiver/CMakeFiles/archiver.dir/all
@@ -2605,17 +2620,17 @@ tests/CMakeFiles/debug_dpflate.dir/clean:
 
 # All Build rule for target.
 tests/CMakeFiles/debug_token_trace.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/debug_token_trace.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 tests/CMakeFiles/debug_token_trace.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
 tests/CMakeFiles/debug_token_trace.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
-tests/CMakeFiles/debug_token_trace.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_token_trace.dir\build.make tests/CMakeFiles/debug_token_trace.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\debug_token_trace.dir\build.make tests/CMakeFiles/debug_token_trace.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=51 "Built target debug_token_trace"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num= "Built target debug_token_trace"
 .PHONY : tests/CMakeFiles/debug_token_trace.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/debug_token_trace.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 26
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 25
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/debug_token_trace.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : tests/CMakeFiles/debug_token_trace.dir/rule
@@ -2633,16 +2648,19 @@ tests/CMakeFiles/debug_token_trace.dir/clean:
 # Target rules for target tests/CMakeFiles/test_algorithm_new_lzdp.dir
 
 # All Build rule for target.
+tests/CMakeFiles/test_algorithm_new_lzdp.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+tests/CMakeFiles/test_algorithm_new_lzdp.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+tests/CMakeFiles/test_algorithm_new_lzdp.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
 tests/CMakeFiles/test_algorithm_new_lzdp.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
 tests/CMakeFiles/test_algorithm_new_lzdp.dir/all: src/core_new/CMakeFiles/core_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzdp.dir\build.make tests/CMakeFiles/test_algorithm_new_lzdp.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzdp.dir\build.make tests/CMakeFiles/test_algorithm_new_lzdp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=65 "Built target test_algorithm_new_lzdp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=64 "Built target test_algorithm_new_lzdp"
 .PHONY : tests/CMakeFiles/test_algorithm_new_lzdp.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/test_algorithm_new_lzdp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 8
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 26
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_algorithm_new_lzdp.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : tests/CMakeFiles/test_algorithm_new_lzdp.dir/rule
@@ -2660,17 +2678,20 @@ tests/CMakeFiles/test_algorithm_new_lzdp.dir/clean:
 # Target rules for target tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir
 
 # All Build rule for target.
+tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
 tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
 tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/all: src/core_new/CMakeFiles/core_new.dir/all
 tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/all: src/api_new/CMakeFiles/api_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_imdb_gui_cfg.dir\build.make tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_imdb_gui_cfg.dir\build.make tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=81 "Built target test_lzdp_imdb_gui_cfg"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=82 "Built target test_lzdp_imdb_gui_cfg"
 .PHONY : tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 10
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 27
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/rule
@@ -2688,15 +2709,19 @@ tests/CMakeFiles/test_lzdp_imdb_gui_cfg.dir/clean:
 # Target rules for target tests/CMakeFiles/test_algorithm_new_phase1.dir
 
 # All Build rule for target.
+tests/CMakeFiles/test_algorithm_new_phase1.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+tests/CMakeFiles/test_algorithm_new_phase1.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+tests/CMakeFiles/test_algorithm_new_phase1.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
 tests/CMakeFiles/test_algorithm_new_phase1.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
+tests/CMakeFiles/test_algorithm_new_phase1.dir/all: src/core_new/CMakeFiles/core_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase1.dir\build.make tests/CMakeFiles/test_algorithm_new_phase1.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase1.dir\build.make tests/CMakeFiles/test_algorithm_new_phase1.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=67 "Built target test_algorithm_new_phase1"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=66 "Built target test_algorithm_new_phase1"
 .PHONY : tests/CMakeFiles/test_algorithm_new_phase1.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/test_algorithm_new_phase1.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 26
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_algorithm_new_phase1.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : tests/CMakeFiles/test_algorithm_new_phase1.dir/rule
@@ -2714,15 +2739,19 @@ tests/CMakeFiles/test_algorithm_new_phase1.dir/clean:
 # Target rules for target tests/CMakeFiles/test_algorithm_new_phase2.dir
 
 # All Build rule for target.
+tests/CMakeFiles/test_algorithm_new_phase2.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+tests/CMakeFiles/test_algorithm_new_phase2.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+tests/CMakeFiles/test_algorithm_new_phase2.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
 tests/CMakeFiles/test_algorithm_new_phase2.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
+tests/CMakeFiles/test_algorithm_new_phase2.dir/all: src/core_new/CMakeFiles/core_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase2.dir\build.make tests/CMakeFiles/test_algorithm_new_phase2.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_phase2.dir\build.make tests/CMakeFiles/test_algorithm_new_phase2.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=68 "Built target test_algorithm_new_phase2"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=67 "Built target test_algorithm_new_phase2"
 .PHONY : tests/CMakeFiles/test_algorithm_new_phase2.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/test_algorithm_new_phase2.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 26
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_algorithm_new_phase2.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : tests/CMakeFiles/test_algorithm_new_phase2.dir/rule
@@ -2740,16 +2769,19 @@ tests/CMakeFiles/test_algorithm_new_phase2.dir/clean:
 # Target rules for target tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir
 
 # All Build rule for target.
+tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
 tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
 tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/all: src/core_new/CMakeFiles/core_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzss_deflate.dir\build.make tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_algorithm_new_lzss_deflate.dir\build.make tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=66 "Built target test_algorithm_new_lzss_deflate"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=65 "Built target test_algorithm_new_lzss_deflate"
 .PHONY : tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 8
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 26
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/rule
@@ -2767,15 +2799,19 @@ tests/CMakeFiles/test_algorithm_new_lzss_deflate.dir/clean:
 # Target rules for target tests/CMakeFiles/test_lzss_roundtrip_debug.dir
 
 # All Build rule for target.
+tests/CMakeFiles/test_lzss_roundtrip_debug.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+tests/CMakeFiles/test_lzss_roundtrip_debug.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+tests/CMakeFiles/test_lzss_roundtrip_debug.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
 tests/CMakeFiles/test_lzss_roundtrip_debug.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
+tests/CMakeFiles/test_lzss_roundtrip_debug.dir/all: src/core_new/CMakeFiles/core_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_roundtrip_debug.dir\build.make tests/CMakeFiles/test_lzss_roundtrip_debug.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_roundtrip_debug.dir\build.make tests/CMakeFiles/test_lzss_roundtrip_debug.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=90 "Built target test_lzss_roundtrip_debug"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=91 "Built target test_lzss_roundtrip_debug"
 .PHONY : tests/CMakeFiles/test_lzss_roundtrip_debug.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/test_lzss_roundtrip_debug.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 26
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzss_roundtrip_debug.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : tests/CMakeFiles/test_lzss_roundtrip_debug.dir/rule
@@ -2793,15 +2829,19 @@ tests/CMakeFiles/test_lzss_roundtrip_debug.dir/clean:
 # Target rules for target tests/CMakeFiles/test_lzss_noflag_debug.dir
 
 # All Build rule for target.
+tests/CMakeFiles/test_lzss_noflag_debug.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+tests/CMakeFiles/test_lzss_noflag_debug.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+tests/CMakeFiles/test_lzss_noflag_debug.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
 tests/CMakeFiles/test_lzss_noflag_debug.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
+tests/CMakeFiles/test_lzss_noflag_debug.dir/all: src/core_new/CMakeFiles/core_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_debug.dir\build.make tests/CMakeFiles/test_lzss_noflag_debug.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_debug.dir\build.make tests/CMakeFiles/test_lzss_noflag_debug.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=86 "Built target test_lzss_noflag_debug"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=87 "Built target test_lzss_noflag_debug"
 .PHONY : tests/CMakeFiles/test_lzss_noflag_debug.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/test_lzss_noflag_debug.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 26
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzss_noflag_debug.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : tests/CMakeFiles/test_lzss_noflag_debug.dir/rule
@@ -2819,15 +2859,19 @@ tests/CMakeFiles/test_lzss_noflag_debug.dir/clean:
 # Target rules for target tests/CMakeFiles/test_lzss_noflag_text10k.dir
 
 # All Build rule for target.
+tests/CMakeFiles/test_lzss_noflag_text10k.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+tests/CMakeFiles/test_lzss_noflag_text10k.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+tests/CMakeFiles/test_lzss_noflag_text10k.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
 tests/CMakeFiles/test_lzss_noflag_text10k.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
+tests/CMakeFiles/test_lzss_noflag_text10k.dir/all: src/core_new/CMakeFiles/core_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_text10k.dir\build.make tests/CMakeFiles/test_lzss_noflag_text10k.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_text10k.dir\build.make tests/CMakeFiles/test_lzss_noflag_text10k.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=89 "Built target test_lzss_noflag_text10k"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=90 "Built target test_lzss_noflag_text10k"
 .PHONY : tests/CMakeFiles/test_lzss_noflag_text10k.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/test_lzss_noflag_text10k.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 26
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzss_noflag_text10k.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : tests/CMakeFiles/test_lzss_noflag_text10k.dir/rule
@@ -2845,15 +2889,19 @@ tests/CMakeFiles/test_lzss_noflag_text10k.dir/clean:
 # Target rules for target tests/CMakeFiles/test_lzss_noflag_minimal.dir
 
 # All Build rule for target.
+tests/CMakeFiles/test_lzss_noflag_minimal.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+tests/CMakeFiles/test_lzss_noflag_minimal.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+tests/CMakeFiles/test_lzss_noflag_minimal.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
 tests/CMakeFiles/test_lzss_noflag_minimal.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
+tests/CMakeFiles/test_lzss_noflag_minimal.dir/all: src/core_new/CMakeFiles/core_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_minimal.dir\build.make tests/CMakeFiles/test_lzss_noflag_minimal.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_minimal.dir\build.make tests/CMakeFiles/test_lzss_noflag_minimal.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=87 "Built target test_lzss_noflag_minimal"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=88 "Built target test_lzss_noflag_minimal"
 .PHONY : tests/CMakeFiles/test_lzss_noflag_minimal.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/test_lzss_noflag_minimal.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 26
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzss_noflag_minimal.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : tests/CMakeFiles/test_lzss_noflag_minimal.dir/rule
@@ -2871,15 +2919,19 @@ tests/CMakeFiles/test_lzss_noflag_minimal.dir/clean:
 # Target rules for target tests/CMakeFiles/test_lzss_noflag_sizes.dir
 
 # All Build rule for target.
+tests/CMakeFiles/test_lzss_noflag_sizes.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+tests/CMakeFiles/test_lzss_noflag_sizes.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+tests/CMakeFiles/test_lzss_noflag_sizes.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
 tests/CMakeFiles/test_lzss_noflag_sizes.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
+tests/CMakeFiles/test_lzss_noflag_sizes.dir/all: src/core_new/CMakeFiles/core_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_sizes.dir\build.make tests/CMakeFiles/test_lzss_noflag_sizes.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzss_noflag_sizes.dir\build.make tests/CMakeFiles/test_lzss_noflag_sizes.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=88 "Built target test_lzss_noflag_sizes"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=89 "Built target test_lzss_noflag_sizes"
 .PHONY : tests/CMakeFiles/test_lzss_noflag_sizes.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/test_lzss_noflag_sizes.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 26
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzss_noflag_sizes.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : tests/CMakeFiles/test_lzss_noflag_sizes.dir/rule
@@ -2897,15 +2949,19 @@ tests/CMakeFiles/test_lzss_noflag_sizes.dir/clean:
 # Target rules for target tests/CMakeFiles/test_deflate_huffman_minimal.dir
 
 # All Build rule for target.
+tests/CMakeFiles/test_deflate_huffman_minimal.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+tests/CMakeFiles/test_deflate_huffman_minimal.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+tests/CMakeFiles/test_deflate_huffman_minimal.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
 tests/CMakeFiles/test_deflate_huffman_minimal.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
+tests/CMakeFiles/test_deflate_huffman_minimal.dir/all: src/core_new/CMakeFiles/core_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_huffman_minimal.dir\build.make tests/CMakeFiles/test_deflate_huffman_minimal.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_huffman_minimal.dir\build.make tests/CMakeFiles/test_deflate_huffman_minimal.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=72 "Built target test_deflate_huffman_minimal"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=71 "Built target test_deflate_huffman_minimal"
 .PHONY : tests/CMakeFiles/test_deflate_huffman_minimal.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/test_deflate_huffman_minimal.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 26
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_deflate_huffman_minimal.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : tests/CMakeFiles/test_deflate_huffman_minimal.dir/rule
@@ -2923,15 +2979,19 @@ tests/CMakeFiles/test_deflate_huffman_minimal.dir/clean:
 # Target rules for target tests/CMakeFiles/test_deflate_3hm_large.dir
 
 # All Build rule for target.
+tests/CMakeFiles/test_deflate_3hm_large.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+tests/CMakeFiles/test_deflate_3hm_large.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+tests/CMakeFiles/test_deflate_3hm_large.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
 tests/CMakeFiles/test_deflate_3hm_large.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
+tests/CMakeFiles/test_deflate_3hm_large.dir/all: src/core_new/CMakeFiles/core_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_3hm_large.dir\build.make tests/CMakeFiles/test_deflate_3hm_large.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_3hm_large.dir\build.make tests/CMakeFiles/test_deflate_3hm_large.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=71 "Built target test_deflate_3hm_large"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=70 "Built target test_deflate_3hm_large"
 .PHONY : tests/CMakeFiles/test_deflate_3hm_large.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/test_deflate_3hm_large.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 26
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_deflate_3hm_large.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : tests/CMakeFiles/test_deflate_3hm_large.dir/rule
@@ -2949,15 +3009,18 @@ tests/CMakeFiles/test_deflate_3hm_large.dir/clean:
 # Target rules for target tests/CMakeFiles/test_lzdp_debug.dir
 
 # All Build rule for target.
+tests/CMakeFiles/test_lzdp_debug.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+tests/CMakeFiles/test_lzdp_debug.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+tests/CMakeFiles/test_lzdp_debug.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
 tests/CMakeFiles/test_lzdp_debug.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_debug.dir\build.make tests/CMakeFiles/test_lzdp_debug.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_debug.dir\build.make tests/CMakeFiles/test_lzdp_debug.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=78 "Built target test_lzdp_debug"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=79 "Built target test_lzdp_debug"
 .PHONY : tests/CMakeFiles/test_lzdp_debug.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/test_lzdp_debug.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 22
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_lzdp_debug.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
 .PHONY : tests/CMakeFiles/test_lzdp_debug.dir/rule
@@ -2970,6 +3033,65 @@ test_lzdp_debug: tests/CMakeFiles/test_lzdp_debug.dir/rule
 tests/CMakeFiles/test_lzdp_debug.dir/clean:
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_lzdp_debug.dir\build.make tests/CMakeFiles/test_lzdp_debug.dir/clean
 .PHONY : tests/CMakeFiles/test_lzdp_debug.dir/clean
+
+#=============================================================================
+# Target rules for target tests/CMakeFiles/test_deflate_step_old.dir
+
+# All Build rule for target.
+tests/CMakeFiles/test_deflate_step_old.dir/all: src/algorithm/CMakeFiles/algorithm.dir/all
+tests/CMakeFiles/test_deflate_step_old.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+tests/CMakeFiles/test_deflate_step_old.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+tests/CMakeFiles/test_deflate_step_old.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_old.dir\build.make tests/CMakeFiles/test_deflate_step_old.dir/depend
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_old.dir\build.make tests/CMakeFiles/test_deflate_step_old.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=73 "Built target test_deflate_step_old"
+.PHONY : tests/CMakeFiles/test_deflate_step_old.dir/all
+
+# Build rule for subdir invocation for target.
+tests/CMakeFiles/test_deflate_step_old.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 26
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_deflate_step_old.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
+.PHONY : tests/CMakeFiles/test_deflate_step_old.dir/rule
+
+# Convenience name for target.
+test_deflate_step_old: tests/CMakeFiles/test_deflate_step_old.dir/rule
+.PHONY : test_deflate_step_old
+
+# clean rule for target.
+tests/CMakeFiles/test_deflate_step_old.dir/clean:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_old.dir\build.make tests/CMakeFiles/test_deflate_step_old.dir/clean
+.PHONY : tests/CMakeFiles/test_deflate_step_old.dir/clean
+
+#=============================================================================
+# Target rules for target tests/CMakeFiles/test_deflate_step_new.dir
+
+# All Build rule for target.
+tests/CMakeFiles/test_deflate_step_new.dir/all: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/all
+tests/CMakeFiles/test_deflate_step_new.dir/all: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/all
+tests/CMakeFiles/test_deflate_step_new.dir/all: _deps/google_brotli-build/CMakeFiles/brotlidec.dir/all
+tests/CMakeFiles/test_deflate_step_new.dir/all: src/algorithm_new/CMakeFiles/algorithm_new.dir/all
+tests/CMakeFiles/test_deflate_step_new.dir/all: src/core_new/CMakeFiles/core_new.dir/all
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_new.dir\build.make tests/CMakeFiles/test_deflate_step_new.dir/depend
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_new.dir\build.make tests/CMakeFiles/test_deflate_step_new.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=72 "Built target test_deflate_step_new"
+.PHONY : tests/CMakeFiles/test_deflate_step_new.dir/all
+
+# Build rule for subdir invocation for target.
+tests/CMakeFiles/test_deflate_step_new.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 26
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 tests/CMakeFiles/test_deflate_step_new.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles 0
+.PHONY : tests/CMakeFiles/test_deflate_step_new.dir/rule
+
+# Convenience name for target.
+test_deflate_step_new: tests/CMakeFiles/test_deflate_step_new.dir/rule
+.PHONY : test_deflate_step_new
+
+# clean rule for target.
+tests/CMakeFiles/test_deflate_step_new.dir/clean:
+	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\test_deflate_step_new.dir\build.make tests/CMakeFiles/test_deflate_step_new.dir/clean
+.PHONY : tests/CMakeFiles/test_deflate_step_new.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

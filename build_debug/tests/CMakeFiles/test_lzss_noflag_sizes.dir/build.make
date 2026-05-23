@@ -93,6 +93,11 @@ test_lzss_noflag_sizes_EXTERNAL_OBJECTS =
 bin/test_lzss_noflag_sizes.exe: tests/CMakeFiles/test_lzss_noflag_sizes.dir/test_lzss_noflag_sizes.cpp.obj
 bin/test_lzss_noflag_sizes.exe: tests/CMakeFiles/test_lzss_noflag_sizes.dir/build.make
 bin/test_lzss_noflag_sizes.exe: src/algorithm_new/libalgorithm_new.a
+bin/test_lzss_noflag_sizes.exe: src/core_new/libcore_new.a
+bin/test_lzss_noflag_sizes.exe: src/algorithm_new/libalgorithm_new.a
+bin/test_lzss_noflag_sizes.exe: _deps/google_brotli-build/libbrotlienc.a
+bin/test_lzss_noflag_sizes.exe: _deps/google_brotli-build/libbrotlidec.a
+bin/test_lzss_noflag_sizes.exe: _deps/google_brotli-build/libbrotlicommon.a
 bin/test_lzss_noflag_sizes.exe: tests/CMakeFiles/test_lzss_noflag_sizes.dir/linkLibs.rsp
 bin/test_lzss_noflag_sizes.exe: tests/CMakeFiles/test_lzss_noflag_sizes.dir/objects1.rsp
 bin/test_lzss_noflag_sizes.exe: tests/CMakeFiles/test_lzss_noflag_sizes.dir/link.txt

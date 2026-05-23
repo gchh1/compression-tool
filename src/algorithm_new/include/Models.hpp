@@ -14,7 +14,7 @@ enum class MatchEngine : int {
     HashChain = 1,
 };
 
-class TopMatch {
+class TopMatch {//是否应该改成固定大小的优先队列呢？优先队列可以忽略有序性，实现一些时间更优，但是对于k很小是否有必要？
     uint8_t size;
     std::vector<Triple> triples;
 
