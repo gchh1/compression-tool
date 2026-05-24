@@ -72,6 +72,7 @@ def run_gui():
 
     sys.excepthook = handle_exception
 
+    import PyQt6.QtWebEngineWidgets  # noqa: F401 — must precede QApplication
     from PyQt6.QtWidgets import QApplication
     from PyQt6.QtGui import QIcon
     from gui.ui.main_window import MainWindow

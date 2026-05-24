@@ -387,6 +387,10 @@ auto compressFile(const std::string& input_path,
     uint64_t bytes_read = 0;
     uint64_t total_written = 0;
 
+    // Per-chunk compressed output sizes (for .heat v3).
+    // Collected during the read loop and flushed after finish.
+    std::vector<uint64_t> chunk_outputs;
+
     while (bytes_read < result.original_size) {
         if (detail_stream_cancel::is_cancel_requested()) {
             output.close();
@@ -412,25 +416,43 @@ auto compressFile(const std::string& input_path,
         pipeline.push(std::span<const uint8_t>(buf.data(), actual), is_last);
         bytes_read += actual;
 
+        uint64_t chunk_out = 0;
         while (true) {
             auto out_chunk = pipeline.pull();
             if (out_chunk.empty()) break;
             auto v = out_chunk.view();
             output.write(reinterpret_cast<const char*>(v.data()),
                          static_cast<std::streamsize>(v.size()));
-            total_written += v.size();
+            uint64_t sz = v.size();
+            total_written += sz;
+            chunk_out += sz;
         }
+        chunk_outputs.push_back(chunk_out);
     }
 
     pipeline.finish();
 
-    while (true) {
-        auto out_chunk = pipeline.pull();
-        if (out_chunk.empty()) break;
-        auto v = out_chunk.view();
-        output.write(reinterpret_cast<const char*>(v.data()),
-                     static_cast<std::streamsize>(v.size()));
-        total_written += v.size();
+    // Finish drain — attribute to the last chunk
+    {
+        uint64_t finish_out = 0;
+        while (true) {
+            auto out_chunk = pipeline.pull();
+            if (out_chunk.empty()) break;
+            auto v = out_chunk.view();
+            output.write(reinterpret_cast<const char*>(v.data()),
+                         static_cast<std::streamsize>(v.size()));
+            uint64_t sz = v.size();
+            total_written += sz;
+            finish_out += sz;
+        }
+        if (!chunk_outputs.empty() && finish_out > 0)
+            chunk_outputs.back() += finish_out;
+    }
+
+    // Flush per-chunk output sizes to entropy collector (.heat v3)
+    if (entropy_collector) {
+        for (auto co : chunk_outputs)
+            entropy_collector->onChunkOutput(static_cast<size_t>(co));
     }
 
     // Flush entropy collector

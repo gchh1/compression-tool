@@ -35,8 +35,8 @@ constexpr uint16_t NULL_PTR = 0xffff;
 
 class Deflate : public AlgorithmBase {
    public:
-    /// ``lookahead_max`` caps LZ77 match length (clamped to 258 for valid DEFLATE length codes).
-    /// Pass 0 for 258 (full deflate match limit).
+    /// ``lookahead_max`` caps LZ77 match length (clamped to 258 for valid
+    /// DEFLATE length codes). Pass 0 for 258 (full deflate match limit).
     Deflate(size_t slide_size = 4096, size_t min_match = 3,
             size_t max_chain_length = 256, size_t lookahead_max = 258,
             bool use_flag_encoding = true);
@@ -79,7 +79,7 @@ class Deflate : public AlgorithmBase {
     static constexpr size_t DISTANCE_DICTIONARY_SIZE = 30;
     static constexpr size_t DISTANCE_SYMBOL_BITS = 5;
 
-    static constexpr size_t MAX_BLOCK_TOKENS = 1 << 20;  // 1M tokens
+    static constexpr size_t MAX_BLOCK_TOKENS = 1 << 10;  // 1M tokens
 
     // ===================================
     // Deflate state

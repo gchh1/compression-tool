@@ -2463,9 +2463,42 @@ class MainWindow(QMainWindow):
             QMessageBox.information(self, "提示", "文件夹中没有文件")
             return
 
+        # Reconcile: the worker updates tree items with real FileRecords
+        # (carrying heat_path / viz_path / compression_ratio), but the
+        # folder's flat ``files`` list still holds the original objects
+        # created by ``ensure_files_loaded()``.  Collect the real records
+        # from the tree so ``from_folder`` sees all compressed files.
+        fresh = self._collect_file_records(record)
+        if fresh:
+            record.files = fresh
+
         from gui.ui.dialogs.three_tier_heatmap_dialog import ThreeTierHeatmapDialog
         dlg = ThreeTierHeatmapDialog.from_folder(record, parent=self)
         dlg.exec()
+
+    def _collect_file_records(self, folder: FolderRecord) -> list[FileRecord]:
+        """Walk the tree-item subtree for *folder* and return all FileRecords.
+
+        Tree items hold the worker-updated FileRecords (with heat_path,
+        viz_path, compression_ratio), whereas ``folder.files`` may still
+        reference the original placeholder objects from
+        ``ensure_files_loaded()``.
+        """
+        item = self._table.row_for_record(folder)
+        if item is None:
+            return []
+
+        result: list[FileRecord] = []
+
+        def walk(tree_item):
+            rec = self._table.get_record(tree_item)
+            if isinstance(rec, FileRecord):
+                result.append(rec)
+            for i in range(tree_item.childCount()):
+                walk(tree_item.child(i))
+
+        walk(item)
+        return result
 
     # def _on_view_heatmap(self) -> None:
     #     logger.info("[view] heatmap from menu")
@@ -2498,9 +2531,12 @@ class MainWindow(QMainWindow):
         if not viz_path or not Path(viz_path).is_file():
             QMessageBox.information(self, "提示", "该文件没有关联的 .viz 可视化数据")
             return
-        from gui.ui.dialogs.viz_dialog import VizDialog
-        dlg = VizDialog(viz_path, source_path=getattr(record, "path", ""), parent=self)
-        dlg.exec()
+        from gui.ui.views.viz_dashboard import VizDashboard
+        dlg = VizDashboard(viz_path, source_path=getattr(record, "path", ""), parent=self)
+        dlg.setWindowFlag(Qt.WindowType.Window, True)
+        dlg.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
+        dlg.resize(1400, 820)
+        dlg.show()
 
     def _open_heatmap(self, record: FileRecord) -> None:
         logger.info("[view] opening heatmap for %s (%d bytes, algo=%s)",

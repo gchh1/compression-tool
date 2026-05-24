@@ -250,7 +250,7 @@ class CompressionWorker(QThread):
             record.compression_ratio = compressed_size / original_size if original_size > 0 else 0
             record.is_stored = False
             record.compression_config_snapshot = algo_config
-            # [VIZ] Store viz_path for later viewing via VizDialog
+            # [VIZ] Store viz_path for later viewing via VizDashboard
             record.viz_path = _viz_path
             # [HEAT] Store heat_path for 3-tier entropy heatmap
             record.heat_path = _heat_path

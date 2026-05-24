@@ -1,16 +1,23 @@
-"""Lazy mmap-based reader for .heat v2 entropy files.
+"""Lazy mmap-based reader for .heat entropy / compression-ratio files.
 
-Format::
-
+Format v2 (entropy only):
     Header (20 bytes):
       magic:         u32 = 0x54414548 ("HEAT" LE)
       version:       u32 = 2
       total_chunks:  u32
       chunk_bytes:   u32
-      avg_entropy:    f32
+      avg_entropy:   f32
+    Chunk Data: [total_chunks × f32 entropy]
 
-    Chunk Data Array:
-      [total_chunks × f32 entropy]
+Format v3 (per-chunk compression ratio):
+    Header (28 bytes):
+      magic:         u32 = 0x54414548 ("HEAT" LE)
+      version:       u32 = 3
+      total_chunks:  u32
+      chunk_bytes:   u32
+      total_input:   u64
+      total_output:  u64
+    Chunk Data: [total_chunks × f32 compression_ratio]
 """
 
 from __future__ import annotations
@@ -25,19 +32,22 @@ from typing import BinaryIO
 logger = logging.getLogger(__name__)
 
 HEAT_MAGIC = 0x54414548  # "HEAT" LE
-HEAT_VERSION = 2
+HEAT_VERSION_V2 = 2
+HEAT_VERSION_V3 = 3
 
-_HEADER_FMT = struct.Struct("<I I I I f")   # magic, version, total_chunks, chunk_bytes, avg_entropy
-_CHUNK_FMT = struct.Struct("<f")             # single entropy float
-_HEADER_SIZE = _HEADER_FMT.size              # 20 bytes
+_V2_HEADER_FMT = struct.Struct("<I I I I f")   # magic, version, total_chunks, chunk_bytes, avg_entropy
+_V3_HEADER_FMT = struct.Struct("<I I I I Q Q")  # magic, version, total_chunks, chunk_bytes, total_input, total_output
+_CHUNK_FMT = struct.Struct("<f")                 # single f32 (entropy in v2, ratio in v3)
+_V2_HEADER_SIZE = _V2_HEADER_FMT.size            # 20 bytes
+_V3_HEADER_SIZE = _V3_HEADER_FMT.size            # 28 bytes
 
 
 class HeatmapController:
-    """Lazy mmap-based reader for .heat v2 files (single-file entropy data).
+    """Lazy mmap-based reader for .heat v2 / v3 files.
 
     - Opens .heat via mmap on first access (``_ensure_mmap``).
-    - Header parsed immediately (20 bytes) — O(1).
-    - Chunk entropy values accessed via O(1) mmap slice.
+    - Header parsed immediately — O(1).
+    - Chunk values accessed via O(1) mmap slice.
     - Byte-level heatmap slices from the original file via transient mmap.
     """
 
@@ -45,9 +55,13 @@ class HeatmapController:
         self._heat_path = heat_path
         self._mm: mmap.mmap | None = None
         self._f: BinaryIO | None = None
+        self._version: int = 0
         self._total_chunks: int = 0
         self._chunk_bytes: int = 0
         self._avg_entropy: float = 0.0
+        self._total_input: int = 0
+        self._total_output: int = 0
+        self._data_offset: int = 0
         self._parse_header()
 
     # ── internal ─────────────────────────────────────────────────
@@ -61,24 +75,42 @@ class HeatmapController:
 
     def _parse_header(self) -> None:
         mm = self._ensure_mmap()
-        if len(mm) < _HEADER_SIZE:
+        if len(mm) < _V2_HEADER_SIZE:
             raise ValueError(
-                f"{self._heat_path}: file too small for .heat v2 header "
-                f"({len(mm)} < {_HEADER_SIZE})"
+                f"{self._heat_path}: file too small for .heat header "
+                f"({len(mm)} < {_V2_HEADER_SIZE})"
             )
 
-        magic, version, self._total_chunks, self._chunk_bytes, self._avg_entropy = \
-            _HEADER_FMT.unpack(mm[0:_HEADER_SIZE])
+        # Read common prefix (magic + version + total_chunks + chunk_bytes)
+        magic, version, self._total_chunks, self._chunk_bytes = \
+            struct.unpack("<I I I I", mm[0:16])
 
         if magic != HEAT_MAGIC:
             raise ValueError(
                 f"{self._heat_path}: bad magic 0x{magic:08X}, "
                 f"expected 0x{HEAT_MAGIC:08X}"
             )
-        if version != HEAT_VERSION:
+
+        self._version = version
+
+        if version == HEAT_VERSION_V3:
+            if len(mm) < _V3_HEADER_SIZE:
+                raise ValueError(
+                    f"{self._heat_path}: file too small for .heat v3 header"
+                )
+            _, _, _, _, self._total_input, self._total_output = \
+                _V3_HEADER_FMT.unpack(mm[0:_V3_HEADER_SIZE])
+            self._data_offset = _V3_HEADER_SIZE
+            self._avg_entropy = 0.0
+        elif version == HEAT_VERSION_V2:
+            self._avg_entropy = struct.unpack("<f", mm[16:_V2_HEADER_SIZE])[0]
+            self._total_input = self._chunk_bytes * self._total_chunks
+            self._total_output = 0
+            self._data_offset = _V2_HEADER_SIZE
+        else:
             raise ValueError(
                 f"{self._heat_path}: unsupported version {version} "
-                f"(expected {HEAT_VERSION})"
+                f"(expected {HEAT_VERSION_V2} or {HEAT_VERSION_V3})"
             )
 
     def close(self) -> None:
@@ -90,6 +122,10 @@ class HeatmapController:
             self._f = None
 
     # ── Properties ───────────────────────────────────────────────
+
+    @property
+    def version(self) -> int:
+        return self._version
 
     @property
     def total_chunks(self) -> int:
@@ -104,43 +140,83 @@ class HeatmapController:
         return self._avg_entropy
 
     @property
+    def total_input(self) -> int:
+        """Actual total input bytes (v3: from header; v2: estimated)."""
+        return self._total_input
+
+    @property
+    def total_output(self) -> int:
+        """Total compressed output bytes (v3 only; 0 for v2)."""
+        return self._total_output
+
+    @property
     def estimated_input_bytes(self) -> int:
         """Nominal input size (chunk_bytes × total_chunks)."""
         return self._chunk_bytes * self._total_chunks
 
     @property
-    def entropy_array(self) -> list[float]:
-        """Lazy mmap read of all chunk entropy values."""
+    def is_v3(self) -> bool:
+        return self._version >= HEAT_VERSION_V3
+
+    @property
+    def chunk_array(self) -> list[float]:
+        """Lazy mmap read of all per-chunk values.
+
+        v3: compression_ratio per chunk (output/input bytes).
+        v2: Shannon entropy per chunk.
+        """
         if self._total_chunks == 0:
             return []
         mm = self._ensure_mmap()
-        off = _HEADER_SIZE
         count = self._total_chunks
-        entropy_bytes = mm[off:off + count * 4]
+        data = mm[self._data_offset:self._data_offset + count * 4]
         return [
-            _CHUNK_FMT.unpack(entropy_bytes[i:i + 4])[0]
-            for i in range(0, len(entropy_bytes), 4)
+            _CHUNK_FMT.unpack(data[i:i + 4])[0]
+            for i in range(0, len(data), 4)
         ]
 
     @property
-    def macro_data(self) -> dict:
-        """Return macro data payload compatible with ThreeTierHeatmapDialog.
+    def ratio_array(self) -> list[float]:
+        """Per-chunk compression ratios.
 
-        v2 is single-file, so ``files`` is always a single-element list.
+        v3: directly from file.  v2: approximated from entropy (entropy/8).
         """
+        if self.is_v3:
+            return self.chunk_array
+        # Approximate: lower entropy → better compression
+        return [min(1.0, max(0.01, e / 8.0)) for e in self.chunk_array]
+
+    @property
+    def entropy_array(self) -> list[float]:
+        """Per-chunk Shannon entropy values.
+
+        v3: not stored (returns empty).  v2: directly from file.
+        """
+        if self.is_v3:
+            return []
+        return self.chunk_array
+
+    @property
+    def macro_data(self) -> dict:
+        """Return macro data payload compatible with ThreeTierHeatmapDialog."""
         name = Path(self._heat_path).stem
-        entropy = self.entropy_array
+        ratios = self.ratio_array
+        input_bytes = self._total_input if self.is_v3 else self.estimated_input_bytes
         return {
-            "total_input_bytes": self.estimated_input_bytes,
+            "total_input_bytes": input_bytes,
             "chunk_bytes": self._chunk_bytes,
             "total_chunks": self._total_chunks,
+            "version": self._version,
+            "is_v3": self.is_v3,
             "files": [{
                 "name": name,
                 "global_start": 0,
-                "global_end": self.estimated_input_bytes,
-                "input_bytes": self.estimated_input_bytes,
+                "global_end": input_bytes,
+                "input_bytes": input_bytes,
                 "chunk_count": self._total_chunks,
-                "entropy_array": entropy,
+                "entropy_array": self.entropy_array,
+                "ratio_array": ratios,
+                "is_v3": self.is_v3,
             }],
         }
 
