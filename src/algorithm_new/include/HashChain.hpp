@@ -6,6 +6,7 @@
 
 #include "LZencoding.hpp"
 #include "Models.hpp"
+#include "StreamingCancel.hpp"
 
 namespace compressor::algorithm::LZMatcher {
 
@@ -53,6 +54,9 @@ std::vector<Triple> hashChainSearch(
         : static_cast<uint32_t>(dp_top) * 8;
 
     while (match_pos != UINT32_MAX && chain_length-- > 0) {
+        if ((chain_length & 0x7F) == 0 && core_new::is_streaming_cancel_requested()) {
+            throw std::runtime_error("cancelled");
+        }
         const uint32_t offset = pos - match_pos;
         if (offset > search_len || offset == 0) {
             break;

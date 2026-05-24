@@ -3,10 +3,12 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <stdexcept>
 #include <vector>
 
 #include "LZencoding.hpp"
 #include "Models.hpp"
+#include "StreamingCancel.hpp"
 
 namespace compressor::algorithm::LZMatcher {
 
@@ -40,6 +42,9 @@ std::vector<Triple> kmpSearch(
 
 
     for (size_t i = 0; i < search_len+lookahead_len-1; i++) {
+        if ((i & 0xFFF) == 0 && core_new::is_streaming_cancel_requested()) {
+            throw std::runtime_error("cancelled");
+        }
         auto current_char = (i < search_len) ? search_begin[i] : lookahead_begin[i - search_len];
         while (current_char != lookahead_begin[j] && j != 0) {
             j = next[j - 1];

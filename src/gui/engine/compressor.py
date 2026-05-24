@@ -452,36 +452,16 @@ class CompressionEngine:
         if algorithm == AlgorithmType.TRANSFORMER:
             return self.compress(data, algorithm)
 
+        if algorithm == AlgorithmType.GZIP:
+            return self.compress(data, algorithm)
+
         if not self.available:
             raise RuntimeError("C++ core_engine not available")
 
         if force_memory_codec:
-            return self.compress(data, algorithm)
+            return self.pipeline_compress(data, algorithm)
 
-        if self.should_use_streaming(len(data), algorithm):
-            from gui.config.settings import get_effective_streaming_threshold_mb
-
-            eff_mb = get_effective_streaming_threshold_mb(algorithm, _load_app_config())
-            logger.info(
-                "[smart_compress] using streaming mode for %d bytes (threshold=%.1f MB)",
-                len(data),
-                eff_mb,
-            )
-            if algorithm == AlgorithmType.GZIP:
-                r = self._gzip_bytes_compress(data)
-                if r.success:
-                    return r
-                logger.warning(
-                    "[smart_compress] gzip streaming failed: %s, fallback to normal",
-                    r.error_message,
-                )
-            else:
-                try:
-                    return self.pipeline_compress(data, algorithm)
-                except Exception as e:
-                    logger.warning("[smart_compress] streaming failed, fallback to normal: %s", e)
-
-        return self.compress(data, algorithm)
+        return self.pipeline_compress(data, algorithm)
 
     def smart_decompress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE):
         from gui.engine.decompress_log import log_decompress, summarize_result

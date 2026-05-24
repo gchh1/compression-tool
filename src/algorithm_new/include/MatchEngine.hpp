@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <cstdio>
 #include <vector>
 
 #include "ByteView.hpp"
@@ -155,6 +156,8 @@ inline std::vector<Triple> greedyWholeInput(
         size_t cursor = 0;
         while (cursor < n) {
             if (core_new::is_streaming_cancel_requested()) {
+                fprintf(stderr, "[CANCEL_TRACE] greedyWholeInput KMP: cancelled at cursor=%zu\n", cursor);
+                fflush(stderr);
                 throw std::runtime_error("cancelled");
             }
             const size_t search_len = std::min(cursor, search_size);
@@ -192,6 +195,8 @@ inline std::vector<Triple> greedyWholeInput(
     size_t cursor = 0;
     while (cursor < n) {
         if (core_new::is_streaming_cancel_requested()) {
+            fprintf(stderr, "[CANCEL_TRACE] greedyWholeInput HashChain: cancelled at cursor=%zu\n", cursor);
+            fflush(stderr);
             throw std::runtime_error("cancelled");
         }
         Triple t = greedyHashChainStep(input, cursor, search_size, max_match,

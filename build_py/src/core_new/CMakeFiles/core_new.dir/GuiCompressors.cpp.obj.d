@@ -174,6 +174,12 @@ src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array \
  D:/AAA_C/compression-tool/src/algorithm_new/include/BitProcessor.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/LZencoding.hpp \
+ D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_base.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_wait.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_mutex.h \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Models.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp \
@@ -202,12 +208,6 @@ src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.obj: \
  D:/AAA_C/compression-tool/src/algorithm_new/include/InflateCoding.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Inflate3HMCoding.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/MatchEngine.hpp \
- D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_base.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_wait.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_mutex.h \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Dpflate.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/LZSS.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/chrono \

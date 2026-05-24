@@ -878,11 +878,15 @@ src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.obj: D:/AAA_C/compressio
 src/core_new/CMakeFiles/core_new.dir/LZDPcompressor.cpp.obj: D:/AAA_C/compression-tool/src/core_new/LZDPcompressor.cpp \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array \
+  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/backward/binders.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bit \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/alloc_traits.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocator.h \
+  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_base.h \
+  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h \
+  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_wait.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_ios.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_ios.tcc \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_string.h \
@@ -930,6 +934,7 @@ src/core_new/CMakeFiles/core_new.dir/LZDPcompressor.cpp.obj: D:/AAA_C/compressio
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/refwrap.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/requires_hosted.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_abs.h \
+  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_mutex.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algobase.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h \
@@ -1063,6 +1068,7 @@ src/core_new/CMakeFiles/core_new.dir/LZDPcompressor.cpp.obj: D:/AAA_C/compressio
   D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/LZDPcompressor.hpp \
+  D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/io/FileIO.hpp
 
 src/core_new/CMakeFiles/core_new.dir/LZSScompressor.cpp.obj: D:/AAA_C/compression-tool/src/core_new/LZSScompressor.cpp \
@@ -1279,6 +1285,7 @@ src/core_new/CMakeFiles/core_new.dir/StreamingCancel.cpp.obj: D:/AAA_C/compressi
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_mutex.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/version.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdint \
+  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdio \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/numeric_traits.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/type_traits.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/new \
@@ -1300,6 +1307,7 @@ src/core_new/CMakeFiles/core_new.dir/StreamingCancel.cpp.obj: D:/AAA_C/compressi
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_timeval.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_startup.h \
+  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_stdio_config.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/crtdefs.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/errno.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/limits.h \
@@ -1310,10 +1318,13 @@ src/core_new/CMakeFiles/core_new.dir/StreamingCancel.cpp.obj: D:/AAA_C/compressi
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_time.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_unistd.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h \
+  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/stdio_s.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/signal.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stddef.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdint.h \
+  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdio.h \
+  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/swprintf.inl \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sys/timeb.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sys/types.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/time.h \

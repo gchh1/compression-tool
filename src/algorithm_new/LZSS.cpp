@@ -1,5 +1,6 @@
 #include "LZSS.hpp"
 
+#include <cstdio>
 #include <filesystem>
 #include <utility>
 
@@ -20,7 +21,12 @@ LZSSNonStreamingResult compress_bytes_lzss(
     LZSSNonStreamingResult result;
     if (input.empty()) return result;
 
+    fprintf(stderr, "[CANCEL_TRACE] compress_bytes_lzss: entry, input_size=%zu\n", input.size());
+    fflush(stderr);
+
     if (core_new::is_streaming_cancel_requested()) {
+        fprintf(stderr, "[CANCEL_TRACE] compress_bytes_lzss: cancelled at entry\n");
+        fflush(stderr);
         throw std::runtime_error("cancelled");
     }
 
@@ -59,7 +65,12 @@ void LZSSStreamingPipeline::compress_file(const std::string& input_path,
                                            const std::string& output_path) {
     fs::create_directories(options_.workspace_dir);
 
+    fprintf(stderr, "[CANCEL_TRACE] LZSSStreamingPipeline::compress_file: entry\n");
+    fflush(stderr);
+
     if (core_new::is_streaming_cancel_requested()) {
+        fprintf(stderr, "[CANCEL_TRACE] LZSSStreamingPipeline::compress_file: cancelled at entry\n");
+        fflush(stderr);
         throw std::runtime_error("cancelled");
     }
 
@@ -68,6 +79,8 @@ void LZSSStreamingPipeline::compress_file(const std::string& input_path,
         streaming::File_Chunk_Reader reader(input_path, options_.chunk_size);
         while (!reader.is_end()) {
             if (core_new::is_streaming_cancel_requested()) {
+                fprintf(stderr, "[CANCEL_TRACE] LZSSStreamingPipeline::compress_file: cancelled during chunk read\n");
+                fflush(stderr);
                 throw std::runtime_error("cancelled");
             }
             auto chunk = reader.read_chunk();
@@ -78,8 +91,13 @@ void LZSSStreamingPipeline::compress_file(const std::string& input_path,
     }
 
     if (core_new::is_streaming_cancel_requested()) {
+        fprintf(stderr, "[CANCEL_TRACE] LZSSStreamingPipeline::compress_file: cancelled after chunk read\n");
+        fflush(stderr);
         throw std::runtime_error("cancelled");
     }
+
+    fprintf(stderr, "[CANCEL_TRACE] LZSSStreamingPipeline::compress_file: calling greedyMatch, input_size=%zu\n", full_input.size());
+    fflush(stderr);
 
     auto triples = lzss_.greedyMatch(full_input);
     if (!config_.encoding.use_flag_encoding) {
@@ -89,6 +107,8 @@ void LZSSStreamingPipeline::compress_file(const std::string& input_path,
     full_input.clear();
 
     if (core_new::is_streaming_cancel_requested()) {
+        fprintf(stderr, "[CANCEL_TRACE] LZSSStreamingPipeline::compress_file: cancelled after greedyMatch\n");
+        fflush(stderr);
         throw std::runtime_error("cancelled");
     }
 

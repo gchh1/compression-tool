@@ -394,6 +394,7 @@ src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/pybind_module_new.cpp.obj
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fstream.tcc \
  D:/AAA_C/compression-tool/src/algorithm_new/include/BitProcessor.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/LZencoding.hpp \
+ D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Models.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp \
@@ -407,7 +408,6 @@ src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/pybind_module_new.cpp.obj
  D:/AAA_C/compression-tool/src/algorithm_new/include/InflateCoding.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Inflate3HMCoding.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/MatchEngine.hpp \
- D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Dpflate.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/LZSS.hpp \
  D:/AAA_C/compression-tool/src/core_new/include/GzipCompressor.hpp \

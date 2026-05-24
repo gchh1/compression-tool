@@ -1,19 +1,19 @@
 {
-  "total_samples": 30,
-  "valid_samples": 30,
+  "total_samples": 73,
+  "valid_samples": 73,
   "invalid_samples": 0,
-  "last_save_time": 1779422659.3014345,
+  "last_save_time": 1779581322.9571598,
   "last_retrain_total_samples": 0,
   "last_retrain_time": 0.0,
   "data_version": "3.0",
   "algorithm_distribution": {
     "brotli": 1,
-    "lzdp": 16,
-    "dpflate": 7,
-    "deflate": 5,
-    "lzss": 1
+    "lzdp": 21,
+    "dpflate": 9,
+    "deflate": 23,
+    "lzss": 19
   },
   "type_distribution": {
-    "UNKNOWN": 30
+    "UNKNOWN": 73
   }
 }

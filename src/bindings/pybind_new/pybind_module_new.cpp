@@ -409,9 +409,15 @@ void bind_pipeline(py::module_& m) {
         "pack_wcx",
         [](py::buffer buf, compressor::core::AlgorithmID algorithm, size_t original_size,
            const std::string& original_filename, bool is_folder, bool web_dict_preprocess) -> py::bytes {
-            return vector_to_pybytes(compressor::api_new::pack_wcx(
-                buffer_to_u8vec(buf), algorithm, original_size, original_filename, is_folder,
-                web_dict_preprocess));
+            auto data = buffer_to_u8vec(buf);
+            std::vector<uint8_t> result;
+            {
+                py::gil_scoped_release release;
+                result = compressor::api_new::pack_wcx(
+                    data, algorithm, original_size, original_filename, is_folder,
+                    web_dict_preprocess);
+            }
+            return vector_to_pybytes(result);
         },
         py::arg("compressed_data"), py::arg("algorithm"), py::arg("original_size"),
         py::arg("original_filename") = "", py::arg("is_folder") = false,
@@ -419,7 +425,11 @@ void bind_pipeline(py::module_& m) {
 
     m.def(
         "unpack_wcx",
-        [](py::buffer buf) -> compressor::api_new::WCXUnpackResult { return compressor::api_new::unpack_wcx(buffer_to_u8vec(buf)); },
+        [](py::buffer buf) -> compressor::api_new::WCXUnpackResult {
+            auto data = buffer_to_u8vec(buf);
+            py::gil_scoped_release release;
+            return compressor::api_new::unpack_wcx(data);
+        },
         py::arg("data"));
 
     m.def(
@@ -428,6 +438,7 @@ void bind_pipeline(py::module_& m) {
            const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
            const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p,
            const std::optional<compressor::core::DeflatePipelineParams>& deflate_p,
+           const std::optional<compressor::core::LzssPipelineParams>& lzss_p,
            size_t stream_chunk_bytes) -> compressor::api_new::CompressResult {
             const compressor::core::LzdpWholeFileParams* p =
                 lzdp_wf.has_value() ? &lzdp_wf.value() : nullptr;
@@ -435,11 +446,16 @@ void bind_pipeline(py::module_& m) {
                 dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
             const compressor::core::DeflatePipelineParams* df =
                 deflate_p.has_value() ? &deflate_p.value() : nullptr;
-            return compressor::api_new::compress(buffer_to_u8vec(buf), chain, p, d, df, nullptr,
+            const compressor::core::LzssPipelineParams* ls =
+                lzss_p.has_value() ? &lzss_p.value() : nullptr;
+            auto data = buffer_to_u8vec(buf);
+            py::gil_scoped_release release;
+            return compressor::api_new::compress(data, chain, p, d, df, ls,
                                                  stream_chunk_bytes);
         },
         py::arg("data"), py::arg("chain"), py::arg("lzdp_whole_file") = std::nullopt,
         py::arg("dpflate_pipeline") = std::nullopt, py::arg("deflate_pipeline") = std::nullopt,
+        py::arg("lzss_pipeline") = std::nullopt,
         py::arg("stream_chunk_bytes") = size_t{0});
 
     m.def(
@@ -448,6 +464,7 @@ void bind_pipeline(py::module_& m) {
            const std::optional<compressor::core::LzdpWholeFileParams>& lzdp_wf,
            const std::optional<compressor::core::DpflatePipelineParams>& dpflate_p,
            const std::optional<compressor::core::DeflatePipelineParams>& deflate_p,
+           const std::optional<compressor::core::LzssPipelineParams>& lzss_p,
            size_t stream_chunk_bytes) -> compressor::api_new::CompressResult {
             const compressor::core::LzdpWholeFileParams* p =
                 lzdp_wf.has_value() ? &lzdp_wf.value() : nullptr;
@@ -455,11 +472,16 @@ void bind_pipeline(py::module_& m) {
                 dpflate_p.has_value() ? &dpflate_p.value() : nullptr;
             const compressor::core::DeflatePipelineParams* df =
                 deflate_p.has_value() ? &deflate_p.value() : nullptr;
-            return compressor::api_new::decompress(buffer_to_u8vec(buf), chain, p, d, df, nullptr,
+            const compressor::core::LzssPipelineParams* ls =
+                lzss_p.has_value() ? &lzss_p.value() : nullptr;
+            auto data = buffer_to_u8vec(buf);
+            py::gil_scoped_release release;
+            return compressor::api_new::decompress(data, chain, p, d, df, ls,
                                                    stream_chunk_bytes);
         },
         py::arg("data"), py::arg("chain"), py::arg("lzdp_whole_file") = std::nullopt,
         py::arg("dpflate_pipeline") = std::nullopt, py::arg("deflate_pipeline") = std::nullopt,
+        py::arg("lzss_pipeline") = std::nullopt,
         py::arg("stream_chunk_bytes") = size_t{0});
 
     m.def(
@@ -479,6 +501,7 @@ void bind_pipeline(py::module_& m) {
                 deflate_p.has_value() ? &deflate_p.value() : nullptr;
             const compressor::core::LzssPipelineParams* ls =
                 lzss_p.has_value() ? &lzss_p.value() : nullptr;
+            py::gil_scoped_release release;
             return compressor::api_new::compressFile(input_path, output_path, chain,
                                                      stream_chunk_bytes, file_compress_opts, p,
                                                      d, df, ls);
@@ -492,6 +515,7 @@ void bind_pipeline(py::module_& m) {
         "pipeline_decompress_file",
         [](const std::string& input_path, const std::string& output_path,
            const std::vector<compressor::core::AlgorithmID>& chain, size_t stream_chunk_bytes) -> compressor::api_new::CompressResult {
+            py::gil_scoped_release release;
             return compressor::api_new::decompressFile(input_path, output_path, chain,
                                                        stream_chunk_bytes);
         },
@@ -501,6 +525,8 @@ void bind_pipeline(py::module_& m) {
     m.def(
         "set_streaming_compress_cancel_requested",
         [](bool requested) -> void {
+            fprintf(stderr, "[CANCEL_TRACE] pybind::set_streaming_compress_cancel_requested(%d)\n", requested);
+            fflush(stderr);
             compressor::api_new::set_streaming_compress_cancel_requested(requested);
         },
         py::arg("requested"));

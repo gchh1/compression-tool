@@ -151,8 +151,8 @@ auto DecisionTree::build_tree(const std::vector<TrainingSample>& samples,
     if (indices.size() <= config_.min_samples_split || depth >= config_.max_depth ||
         is_pure(indices)) {
         node->is_leaf = true;
-        node->predicted_class = majority_class(indices);
-        node->class_distribution = compute_distribution(indices);
+        node->predicted_class = majority_class(indices);//多数类标签
+        node->class_distribution = compute_distribution(indices);//类别分布（比例）
         return node;
     }
 
@@ -185,6 +185,7 @@ auto DecisionTree::is_pure(const std::vector<size_t>& indices) const -> bool {
     return true;
 }
 
+// 统计给定样本索引集合中每个类别的数量，并返回出现最多的类别标签
 auto DecisionTree::majority_class(const std::vector<size_t>& indices) const -> int {
     std::vector<size_t> counts(num_classes_, 0);
     for (auto idx : indices) {
@@ -192,6 +193,7 @@ auto DecisionTree::majority_class(const std::vector<size_t>& indices) const -> i
             counts[labels_[idx]]++;
         }
     }
+    //std::max_element返回迭代器，std::distance计算迭代器Iterator之间的距离，即索引位置
     return static_cast<int>(
         std::distance(counts.begin(), std::max_element(counts.begin(), counts.end())));
 }
@@ -216,20 +218,20 @@ auto DecisionTree::find_best_split(const std::vector<TrainingSample>& samples,
     SplitResult best;
     best.gain = -1.0;
 
-    double parent_impurity = gini_impurity(indices);
+    double parent_impurity = gini_impurity(indices);//计算当前节点的基尼不纯度，和标签分布有关
 
     std::vector<size_t> feature_indices(num_features_);
     std::iota(feature_indices.begin(), feature_indices.end(), 0);
-    std::shuffle(feature_indices.begin(), feature_indices.end(), rng_);
+    std::shuffle(feature_indices.begin(), feature_indices.end(), rng_);//随机打乱特征索引顺序
 
-    size_t features_to_try = std::min(max_features_, num_features_);
+    size_t features_to_try = std::min(max_features_, num_features_);//实际尝试的特征数量，不能超过总特征数
 
     for (size_t f = 0; f < features_to_try; ++f) {
         size_t fi = feature_indices[f];
 
         std::vector<std::pair<float, size_t>> sorted;
         sorted.reserve(indices.size());
-        for (auto idx : indices) {
+        for (auto idx : indices) {// 将当前节点的样本按照当前特征值进行排序，得到一个特征值和样本索引的对列表
             sorted.emplace_back(samples[idx].features[fi], idx);
         }
         std::sort(sorted.begin(), sorted.end());
@@ -239,7 +241,7 @@ auto DecisionTree::find_best_split(const std::vector<TrainingSample>& samples,
         size_t left_total = 0;
         size_t right_total = indices.size();
 
-        for (auto idx : indices) {
+        for (auto idx : indices) {// 初始化右侧类别计数器，统计当前节点所有样本的类别分布
             if (labels_[idx] >= 0 && static_cast<size_t>(labels_[idx]) < num_classes_) {
                 right_counts[labels_[idx]]++;
             }
@@ -296,7 +298,7 @@ auto DecisionTree::gini_impurity(const std::vector<size_t>& indices) const -> do
     std::vector<size_t> counts(num_classes_, 0);
     for (auto idx : indices) {
         if (labels_[idx] >= 0 && static_cast<size_t>(labels_[idx]) < num_classes_) {
-            counts[labels_[idx]]++;
+            counts[labels_[idx]]++;//统计每个类别的数量
         }
     }
 
@@ -304,7 +306,7 @@ auto DecisionTree::gini_impurity(const std::vector<size_t>& indices) const -> do
     double n = static_cast<double>(indices.size());
     for (auto c : counts) {
         if (c > 0) {
-            double p = static_cast<double>(c) / n;
+            double p = static_cast<double>(c) / n;//计算类别比例
             gini -= p * p;
         }
     }

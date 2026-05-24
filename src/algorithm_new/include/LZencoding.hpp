@@ -1,9 +1,11 @@
 #pragma once
 
 #include <cstdint>
+#include <stdexcept>
 #include <vector>
 
 #include "BitProcessor.hpp"
+#include "StreamingCancel.hpp"
 
 namespace compressor::algorithm {
 
@@ -127,7 +129,11 @@ inline std::vector<Triple> readtriple(
 
     size_t literal_size = 0;
 
+    size_t rd_iter = 0;
     while (reader.ensureBits(8)) {
+        if ((rd_iter++ & 0xFFF) == 0 && core_new::is_streaming_cancel_requested()) {
+            throw std::runtime_error("cancelled");
+        }
         if (config.use_flag_encoding){
            uint32_t offset;
            uint32_t length;
@@ -195,7 +201,11 @@ inline std::vector<Triple> readtriple(
 inline std::vector<uint8_t> decode_triple(const std::vector<Triple>& triples, const EncodingConfig& config, compressor::utils::_buffer& buffer){
     std::vector<uint8_t> result;
     size_t idx = 0;
+    size_t dec_iter = 0;
     while (idx < triples.size()) {
+        if ((dec_iter++ & 0xFFF) == 0 && core_new::is_streaming_cancel_requested()) {
+            throw std::runtime_error("cancelled");
+        }
         const Triple& triple = triples[idx];
         if (triple.offset == 0 && triple.length == 0) {
             result.push_back(triple.literal);

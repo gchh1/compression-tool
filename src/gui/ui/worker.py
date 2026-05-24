@@ -92,6 +92,9 @@ def _heuristic_params_for_record(record: FileRecord, algo) -> dict[str, int] | N
 
 def _core_set_streaming_compress_cancel(requested: bool) -> None:
     """Toggle C++ compressFile cooperative cancel (checked between read chunks)."""
+    import threading
+    logger.info("[CANCEL_TRACE] _core_set_streaming_compress_cancel(%s) thread=%s tid=%s",
+                requested, threading.current_thread().name, threading.get_ident())
     try:
         from gui.engine.bridge import get_core_engine
 

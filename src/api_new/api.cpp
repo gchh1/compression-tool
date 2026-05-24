@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <chrono>
 #include <cstdint>
+#include <cstdio>
 #include <filesystem>
 #include <fstream>
 
@@ -221,6 +222,8 @@ auto compress(const std::vector<uint8_t>& data,
     }
 
     if (core_new::is_streaming_cancel_requested()) {
+        fprintf(stderr, "[CANCEL_TRACE] compress: cancelled at entry\n");
+        fflush(stderr);
         result.cancelled = true;
         return fail("cancelled");
     }
@@ -239,11 +242,17 @@ auto compress(const std::vector<uint8_t>& data,
             }
             result.data = std::move(r.compressed);
         } else if (is_lzss(id)) {
+            fprintf(stderr, "[CANCEL_TRACE] compress LZSS memory path\n");
+            fflush(stderr);
             if (core_new::is_streaming_cancel_requested()) {
+                fprintf(stderr, "[CANCEL_TRACE] compress LZSS: cancelled before compress\n");
+                fflush(stderr);
                 throw std::runtime_error("cancelled");
             }
             auto r = compress_bytes_lzss(data, lzss_from_params(lzss_pipeline, id));
             if (core_new::is_streaming_cancel_requested()) {
+                fprintf(stderr, "[CANCEL_TRACE] compress LZSS: cancelled after compress\n");
+                fflush(stderr);
                 throw std::runtime_error("cancelled");
             }
             result.data = std::move(r.compressed);
@@ -394,6 +403,8 @@ auto unpack_wcx(const std::vector<uint8_t>& data) -> WCXUnpackResult {
 #ifndef __EMSCRIPTEN__
 
 void set_streaming_compress_cancel_requested(bool requested) {
+    fprintf(stderr, "[CANCEL_TRACE] api_new::set_streaming_compress_cancel_requested(%d)\n", requested);
+    fflush(stderr);
     core_new::set_streaming_cancel_requested(requested);
 }
 
@@ -407,6 +418,11 @@ auto compressFile(const std::string& input_path,
                   const compressor::core::DeflatePipelineParams* deflate_pipeline,
                   const compressor::core::LzssPipelineParams* lzss_pipeline) -> CompressResult {
     CompressResult result;
+
+    fprintf(stderr, "[CANCEL_TRACE] compressFile: entry, input=%s, id=%d\n",
+            input_path.c_str(), chain.empty() ? -1 : static_cast<int>(chain.front()));
+    fflush(stderr);
+
     if (chain.empty()) {
         return fail("Empty algorithm chain");
     }
@@ -466,8 +482,12 @@ auto compressFile(const std::string& input_path,
                 core_new::io::write_file_bytes(payload_tmp, r.compressed);
             }
         } else if (is_lzss(id)) {
+            fprintf(stderr, "[CANCEL_TRACE] compressFile LZSS path, use_streaming=%d\n", use_streaming);
+            fflush(stderr);
             const auto cfg = lzss_from_params(lzss_pipeline, id);
             if (use_streaming) {
+                fprintf(stderr, "[CANCEL_TRACE] compressFile LZSS → LZSSStreamingPipeline::compress_file\n");
+                fflush(stderr);
                 LZSSStreamingOptions opts;
                 opts.chunk_size = chunk;
                 opts.workspace_dir = spill_workspace_dir(part);
@@ -475,12 +495,18 @@ auto compressFile(const std::string& input_path,
                 LZSSStreamingPipeline pipe(cfg, opts);
                 pipe.compress_file(input_path, payload_tmp);
             } else {
+                fprintf(stderr, "[CANCEL_TRACE] compressFile LZSS → compress_bytes_lzss (memory path)\n");
+                fflush(stderr);
                 const auto input = core_new::io::read_file_bytes(input_path);
                 if (core_new::is_streaming_cancel_requested()) {
+                    fprintf(stderr, "[CANCEL_TRACE] compressFile LZSS memory: cancelled after read\n");
+                    fflush(stderr);
                     throw std::runtime_error("cancelled");
                 }
                 auto r = compress_bytes_lzss(input, cfg);
                 if (core_new::is_streaming_cancel_requested()) {
+                    fprintf(stderr, "[CANCEL_TRACE] compressFile LZSS memory: cancelled after compress\n");
+                    fflush(stderr);
                     throw std::runtime_error("cancelled");
                 }
                 core_new::io::write_file_bytes(payload_tmp, r.compressed);
@@ -681,7 +707,11 @@ auto decompressFile(const std::string& input_path,
         result.compressed_size = plain.size();
         result.success = true;
     } catch (const std::exception& e) {
-        return fail(e.what());
+        CompressResult r = fail(e.what());
+        if (std::string(e.what()) == "cancelled") {
+            r.cancelled = true;
+        }
+        return r;
     }
 
     auto t1 = std::chrono::high_resolution_clock::now();
