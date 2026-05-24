@@ -1,21 +1,3 @@
-add_library(
-    processor
-    STATIC
-    Pipeline.cpp
-    PipelineBuilder.cpp
-    StreamProcessor.cpp
-)
-
-target_include_directories(
-    processor
-    PUBLIC
-    include
-)
-
-target_link_libraries(
-    processor
-    PUBLIC
-    algorithm
-    core
-    utils
-)
+add_library(processor INTERFACE)
+target_include_directories(processor INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_compile_features(processor INTERFACE cxx_std_20)

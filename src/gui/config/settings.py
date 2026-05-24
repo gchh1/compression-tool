@@ -381,6 +381,21 @@ def set_use_web_resource_dict(enabled: bool, config: dict | None = None) -> None
         save_config(target)
 
 
+def get_use_media_compression(config: dict | None = None) -> bool:
+    cfg = config if config is not None else load_config()
+    comp = cfg.get("compression") or {}
+    return bool(comp.get("use_media_compression", False))
+
+
+def set_use_media_compression(enabled: bool, config: dict | None = None) -> None:
+    target = config if config is not None else load_config()
+    comp = dict(target.get("compression") or {})
+    comp["use_media_compression"] = bool(enabled)
+    target["compression"] = comp
+    if config is None:
+        save_config(target)
+
+
 def get_streaming_threshold(config: dict | None = None) -> float:
     if config is None:
         config = load_config()

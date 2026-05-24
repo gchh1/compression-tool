@@ -2,6 +2,4 @@
 
 __all__ = [
     "info_panel",
-    "property_panel",
-    "resource_tree",
 ]

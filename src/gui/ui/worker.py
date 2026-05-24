@@ -4,6 +4,7 @@ import logging
 import os
 import math
 import time
+import uuid
 from pathlib import Path
 
 from PyQt6.QtCore import QThread, pyqtSignal
@@ -18,6 +19,13 @@ from gui.models import (
 )
 
 logger = logging.getLogger('gui.worker')
+
+IMAGE_ALGORITHMS = frozenset({AlgorithmType.JPEG, AlgorithmType.PNG})
+
+_MEDIA_EXT_MAP = {
+    ".jpg": AlgorithmType.JPEG, ".jpeg": AlgorithmType.JPEG, ".jpe": AlgorithmType.JPEG,
+    ".png": AlgorithmType.PNG,
+}
 
 
 COMPARISON_ALGORITHMS = (
@@ -376,6 +384,7 @@ class CompressionWorker(QThread):
                     and hasattr(record, "size")
                     and bool(getattr(record, "path", None))
                     and record.algorithm != AlgorithmType.NONE
+                    and (folder_ref is not None or record.algorithm not in IMAGE_ALGORITHMS)
                     and engine.should_use_streaming(record.size, record.algorithm)
                 )
             else:
@@ -395,6 +404,7 @@ class CompressionWorker(QThread):
                     and isinstance(record, FileRecord)
                     and bool(getattr(record, "path", None))
                     and record.algorithm != AlgorithmType.NONE
+                    and (folder_ref is not None or record.algorithm not in IMAGE_ALGORITHMS)
                     and engine.should_use_streaming(record.size, record.algorithm)
                 ):
                     logger.info(
@@ -439,6 +449,7 @@ class CompressionWorker(QThread):
                     isinstance(record, FileRecord)
                     and bool(getattr(record, "path", None))
                     and record.algorithm != AlgorithmType.NONE
+                    and (folder_ref is not None or record.algorithm not in IMAGE_ALGORITHMS)
                 )
                 self._compress_phase_notify(
                     record,
@@ -530,7 +541,28 @@ class CompressionWorker(QThread):
                     else record.raw_data
                 )
 
-                if compressed_size >= original_size:
+                is_img_algo = record.algorithm in IMAGE_ALGORITHMS and folder_ref is None
+                if is_img_algo:
+                    img_ext = ".jpg" if record.algorithm == AlgorithmType.JPEG else ".png"
+                    from gui.utils.workspace import compressed_dir
+                    uid = uuid.uuid4().hex[:12]
+                    stem = Path(record.path).stem if hasattr(record, "path") and record.path else "image"
+                    img_path = str(compressed_dir() / f"{uid}_{stem}{img_ext}")
+                    if compressed_size >= original_size:
+                        Path(img_path).write_bytes(stored_plain)
+                        record.compression_ratio = 1.0
+                        record.is_stored = True
+                        logger.info("[compress] %s EXPANSION, stored as %s (no WCX)", record.name, img_path)
+                    else:
+                        Path(img_path).write_bytes(coerced)
+                        record.compression_ratio = compressed_size / original_size if original_size > 0 else 0
+                        record.is_stored = False
+                        logger.info("[compress] %s compressed saved as %s (no WCX)", record.name, img_path)
+                    record.compressed_path = img_path
+                    record.compressed_data = None
+                    record.compression_time_ms = result.time_ms
+                    record.compression_config_snapshot = snap
+                elif compressed_size >= original_size:
                     logger.info("[compress] EXPANSION detected: %d >= %d, falling back to stored (raw)",
                                  compressed_size, original_size)
                     record.compressed_data = stored_plain
@@ -637,6 +669,14 @@ class CompressionWorker(QThread):
                 for filerecord in record.files:
                     if self._is_cancelled:
                         break
+                    if self.algorithm != AlgorithmType.AUTO:
+                        from gui.config.settings import get_use_media_compression
+                        if get_use_media_compression():
+                            fext = Path(filerecord.path).suffix.lower() if hasattr(filerecord, "path") else ""
+                            media_algo = _MEDIA_EXT_MAP.get(fext)
+                            if media_algo is not None:
+                                filerecord._original_algo = filerecord.algorithm
+                                filerecord.algorithm = media_algo
                     self.single_compress(row_idx, filerecord, folder_ref=record)
             elif isinstance(record, FileRecord):
                 record.status = CompressionStatus.PENDING

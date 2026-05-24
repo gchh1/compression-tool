@@ -1,50 +1,36 @@
-"""Structured UI / interaction logging (no algorithm or codec paths).
-
-Use for menu actions, add/remove files, dialogs, and other Qt workflow steps.
-Messages go to ``gui.ui`` with a stable ``[ui]`` prefix for grep in ``gui.log``.
-"""
-
 from __future__ import annotations
 
+import json
 import logging
+from pathlib import Path
 from typing import Any
 
-from gui.utils.logging import flush_logging
-
-logger = logging.getLogger("gui.ui")
+_event_logger = logging.getLogger("interaction")
 
 
-def _truncate(s: str, max_len: int = 200) -> str:
-    s = s.replace("\n", "\\n")
-    if len(s) <= max_len:
-        return s
-    return s[: max_len - 3] + "..."
+def log_ui(event: str, **kwargs: Any) -> None:
+    extra = {k: v for k, v in kwargs.items() if v is not None}
+    if extra:
+        _event_logger.info("%s %s", event, json.dumps(extra, default=str, ensure_ascii=False))
+    else:
+        _event_logger.info("%s", event)
 
 
-def log_ui(event: str, *, level: int = logging.INFO, **fields: Any) -> None:
-    """Emit one line: ``[ui] <event> k=v ...`` (sorted keys)."""
-    parts: list[str] = [event]
-    for key in sorted(fields):
-        val = fields[key]
-        if val is None:
-            continue
-        parts.append(f"{key}={_truncate(str(val), 800)}")
-    msg = " ".join(parts)
-    logger.log(level, "[ui] %s", msg)
+def log_ui_flush(event: str = "", **kwargs: Any) -> None:
+    if event:
+        log_ui(event, **kwargs)
+    for handler in logging.getLogger().handlers:
+        if hasattr(handler, "flush"):
+            try:
+                handler.flush()
+            except Exception:
+                pass
 
 
-def log_ui_flush(event: str, **fields: Any) -> None:
-    """``log_ui`` then flush all log handlers (disk + stderr)."""
-    log_ui(event, **fields)
-    flush_logging()
-
-
-def preview_paths(paths: list[str], *, max_items: int = 5, each_max: int = 120) -> str:
-    """Short human-readable list for logs."""
+def preview_paths(paths: list[str | Path]) -> str:
     if not paths:
-        return ""
-    shown = [_truncate(p, each_max) for p in paths[:max_items]]
-    extra = len(paths) - max_items
-    if extra > 0:
-        shown.append(f"(+{extra} more)")
-    return " | ".join(shown)
+        return "[]"
+    if len(paths) <= 5:
+        return json.dumps([str(Path(p).name) for p in paths], ensure_ascii=False)
+    first = [str(Path(p).name) for p in paths[:3]]
+    return json.dumps(first + [f"... ({len(paths)} total)"], ensure_ascii=False)

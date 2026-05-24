@@ -211,6 +211,10 @@ class CompressionEngine:
             comp = self._engine.BrotliCompressor()
         elif algorithm == AlgorithmType.ZSTD:
             comp = self._engine.ZstdCompressor()
+        elif algorithm == AlgorithmType.JPEG:
+            comp = self._engine.ImageJpegCompressor()
+        elif algorithm == AlgorithmType.PNG:
+            comp = self._engine.ImagePngCompressor()
         else:
             raise ValueError(f"Unsupported algorithm: {algorithm.value}")
 
@@ -799,6 +803,40 @@ class CompressionEngine:
             log_decompress("smart_decompress_file_end", **f)
             return r
 
+        if algorithm in (AlgorithmType.JPEG, AlgorithmType.PNG):
+            from gui.engine.decompress_log import log_decompress, summarize_result
+
+            in_sz = os.path.getsize(input_path) if os.path.isfile(input_path) else -1
+            log_decompress(
+                "smart_decompress_file_begin",
+                algo=algorithm.value,
+                input=input_path,
+                output=output_path,
+                input_file_bytes=in_sz,
+                mode="raw_image_no_wcx",
+            )
+            t0 = time.perf_counter()
+            try:
+                data = Path(input_path).read_bytes()
+                dr = self.pipeline_decompress(data, algorithm)
+            except Exception as e:
+                ms = (time.perf_counter() - t0) * 1000.0
+                r = self._make_pipeline_result(False, 0, 0, ms, f"image decompress: {e}", None)
+                log_decompress("smart_decompress_file_end", **summarize_result(r))
+                return r
+            if not dr.success:
+                ms = (time.perf_counter() - t0) * 1000.0
+                em = getattr(dr, "error_message", "") or "decode failed"
+                r = self._make_pipeline_result(False, 0, 0, ms, em, None)
+                log_decompress("smart_decompress_file_end", **summarize_result(r))
+                return r
+            out_bytes = dr.data if isinstance(dr.data, (bytes, bytearray)) else bytes(dr.data)
+            Path(output_path).write_bytes(out_bytes)
+            ms = (time.perf_counter() - t0) * 1000.0
+            r = self._make_pipeline_result(True, in_sz, len(out_bytes), ms, "", None)
+            log_decompress("smart_decompress_file_end", **summarize_result(r))
+            return r
+
         decomp_id = self._get_decompress_pipeline_id(algorithm)
         if decomp_id is None:
             raise ValueError(f"Algorithm {algorithm.value} not supported in pipeline decompress mode")
@@ -892,6 +930,8 @@ class CompressionEngine:
                 AlgorithmType.DPFLATE: eng.AlgorithmID.DPFLATE,
                 AlgorithmType.BROTLI: eng.AlgorithmID.BROTLI,
                 AlgorithmType.ZSTD: eng.AlgorithmID.ZSTD,
+                AlgorithmType.JPEG: eng.AlgorithmID.IMAGE_JPEG,
+                AlgorithmType.PNG: eng.AlgorithmID.IMAGE_PNG,
             }
         return CompressionEngine._ALGO_TO_PIPELINE_ID.get(algorithm)
 
@@ -903,6 +943,8 @@ class CompressionEngine:
             AlgorithmType.DPFLATE: self._engine.AlgorithmID.DPFLATE,
             AlgorithmType.BROTLI: self._engine.AlgorithmID.BROTLI_DECOMPRESS,
             AlgorithmType.ZSTD: self._engine.AlgorithmID.ZSTD_DECOMPRESS,
+            AlgorithmType.JPEG: self._engine.AlgorithmID.IMAGE_JPEG_DECOMPRESS,
+            AlgorithmType.PNG: self._engine.AlgorithmID.IMAGE_PNG_DECOMPRESS,
         }
         return mapping.get(algorithm)
 

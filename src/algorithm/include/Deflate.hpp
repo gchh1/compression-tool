@@ -82,6 +82,8 @@ class Deflate : public AlgorithmBase {
     size_t MAX_CHAIN_LENGTH;
     static constexpr size_t DISTANCE_DICTIONARY_SIZE = 30;
     static constexpr size_t DISTANCE_SYMBOL_BITS = 5;
+    static constexpr size_t DEFLATE_ALPHABET_SIZE = 286;
+    static constexpr size_t DEFLATE_SYMBOL_BITS = 9;
 
     static constexpr size_t MAX_BLOCK_TOKENS = 16384;
 

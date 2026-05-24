@@ -72,6 +72,12 @@ auto toAlgoCode(compressor::core::AlgorithmID id) -> uint8_t {
         case compressor::core::AlgorithmID::Zstd:
         case compressor::core::AlgorithmID::ZstdDecompress:
             return 8;
+        case compressor::core::AlgorithmID::ImageJpeg:
+        case compressor::core::AlgorithmID::ImageJpegDecompress:
+            return 10;
+        case compressor::core::AlgorithmID::ImagePng:
+        case compressor::core::AlgorithmID::ImagePngDecompress:
+            return 11;
         default:
             return 0;
     }

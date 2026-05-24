@@ -138,3 +138,112 @@ class TokenInfoPanel(QWidget):
         if token.huffman_bits > 0:
             lines.append(f"Huffman: {token.huffman_bits:.1f} bit | {token.huffman_detail}")
         self._label.setText("\n".join(lines))
+
+
+class BitstreamWidget(QWidget):
+    TOOLTIP_REQUESTED = pyqtSignal(int)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._bits: list[int] = []
+        self._colors: list[QColor] = []
+        self._bit_count: int = 0
+        self._hovered_bit: int = -1
+        self._cell_w: int = 10
+        self._cell_h: int = 20
+        self._cols: int = 64
+        self._gap_px: int = 4
+        self.setMouseTracking(True)
+        self.setMinimumHeight(60)
+
+    def set_data(self, bitstream_bytes: bytes, tokens: list[Token]) -> None:
+        total_bits = len(bitstream_bytes) * 8
+        self._bits = []
+        self._colors = []
+        self._bit_count = total_bits
+        for b in bitstream_bytes:
+            for bit_i in range(7, -1, -1):
+                self._bits.append((b >> bit_i) & 1)
+
+        self._colors = [QColor(220, 220, 220) for _ in range(total_bits)]
+        for t in tokens:
+            if t.bit_length <= 0:
+                continue
+            color = ratio_to_qcolor(t.compression_ratio)
+            color.setAlpha(180)
+            for bi in range(t.bit_offset, min(t.bit_offset + t.bit_length, total_bits)):
+                self._colors[bi] = color
+
+        self._update_size()
+
+    def _update_size(self) -> None:
+        rows = max(1, (self._bit_count + self._cols - 1) // self._cols)
+        byte_gaps = (self._cols // 8) * self._gap_px
+        w = self._cols * self._cell_w + byte_gaps + 2
+        h = rows * (self._cell_h + 1) + 2
+        self.setMinimumSize(w, h)
+        self.setFixedSize(w, h)
+        self.update()
+
+    def paintEvent(self, event) -> None:
+        from PyQt6.QtGui import QPainter
+
+        if self._bit_count == 0:
+            return
+        p = QPainter(self)
+        p.setRenderHint(QPainter.RenderHint.Antialiasing, False)
+        rows = (self._bit_count + self._cols - 1) // self._cols
+        for row in range(rows):
+            y = row * (self._cell_h + 1) + 1
+            for col in range(self._cols):
+                bi = row * self._cols + col
+                if bi >= self._bit_count:
+                    continue
+                gap_count = col // 8
+                x = col * self._cell_w + gap_count * self._gap_px + 1
+                p.fillRect(int(x), int(y), int(self._cell_w), int(self._cell_h), self._colors[bi])
+                val = self._bits[bi]
+                p.setPen(QColor(40, 40, 40))
+                from PyQt6.QtGui import QFont
+                font = QFont("Consolas", 7)
+                p.setFont(font)
+                p.drawText(int(x), int(y), int(self._cell_w), int(self._cell_h),
+                           Qt.AlignmentFlag.AlignCenter, str(val))
+        p.end()
+
+    def _bit_at(self, pos) -> int:
+        px = pos.x()
+        py = pos.y()
+        for row in range((self._bit_count + self._cols - 1) // self._cols):
+            y = row * (self._cell_h + 1) + 1
+            if py < y or py > y + self._cell_h:
+                continue
+            for col in range(self._cols):
+                bi = row * self._cols + col
+                if bi >= self._bit_count:
+                    return -1
+                gap_count = col // 8
+                x = col * self._cell_w + gap_count * self._gap_px + 1
+                if x <= px <= x + self._cell_w:
+                    return bi
+        return -1
+
+    def mouseMoveEvent(self, event) -> None:
+        bi = self._bit_at(event.pos())
+        if bi != self._hovered_bit:
+            self._hovered_bit = bi
+            self.TOOLTIP_REQUESTED.emit(bi)
+            self.setToolTip(self._tooltip_for(bi))
+
+    def _tooltip_for(self, bi: int) -> str:
+        if bi < 0:
+            return ""
+        byte_idx = bi // 8
+        bit_in_byte = 7 - (bi % 8)
+        byte_val = 0
+        if byte_idx < len(self._bits) // 8:
+            for i in range(8):
+                bit_pos = byte_idx * 8 + i
+                if bit_pos < len(self._bits):
+                    byte_val = (byte_val << 1) | self._bits[bit_pos]
+        return f"Bit {bi}  Byte {byte_idx}  bit#{bit_in_byte}  hex=0x{byte_val:02X}"

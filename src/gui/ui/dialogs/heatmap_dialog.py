@@ -6,13 +6,14 @@ import logging
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QSplitter, QWidget,
+    QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QSplitter, QWidget, QTabWidget,
+    QScrollArea,
 )
 
 from gui.config.theme import ThemeManager
 from gui.engine.token_parser import Token
 from gui.ui.helpers import create_styled_label
-from gui.ui.views.visualizers.token_heatmap import TokenHeatmapWidget, TokenInfoPanel
+from gui.ui.views.visualizers.token_heatmap import TokenHeatmapWidget, TokenInfoPanel, BitstreamWidget
 
 logger = logging.getLogger(__name__)
 
@@ -20,9 +21,13 @@ logger = logging.getLogger(__name__)
 class HeatmapDialog(QDialog):
     def __init__(self, text: str, tokens: list[Token], byte_to_char: list[int],
                  filename: str, algorithm: str, stats: dict,
-                 huffman_trees=None, parent=None):
+                 huffman_trees=None, bitstream_bytes: bytes | None = None,
+                 bitstream_tokens: list[Token] | None = None,
+                 parent=None):
         super().__init__(parent)
         self._huffman_trees = huffman_trees
+        self._bitstream_bytes = bitstream_bytes
+        self._bitstream_tokens = bitstream_tokens or []
         self.setWindowTitle(f"压缩热力图 - {filename}")
         self.resize(1200, 800)
         self._setup_ui(text, tokens, byte_to_char, filename, algorithm, stats)
@@ -73,6 +78,14 @@ class HeatmapDialog(QDialog):
             legend.setTextFormat(Qt.TextFormat.RichText)
             layout.addWidget(legend)
 
+            has_bitstream = self._bitstream_bytes is not None and len(self._bitstream_bytes) > 0
+
+            if has_bitstream:
+                tabs = QTabWidget()
+                lz_container = QWidget()
+                lz_lo = QVBoxLayout(lz_container)
+                lz_lo.setContentsMargins(0, 0, 0, 0)
+
             splitter = QSplitter(Qt.Orientation.Horizontal)
             self._heatmap = TokenHeatmapWidget()
             self._heatmap.set_data(text, tokens, byte_to_char)
@@ -83,7 +96,28 @@ class HeatmapDialog(QDialog):
             splitter.addWidget(self._info)
             splitter.setSizes([900, 260])
             self._heatmap.token_hovered.connect(self._on_token_hovered)
-            layout.addWidget(splitter, stretch=1)
+
+            if has_bitstream:
+                lz_lo.addWidget(splitter)
+                tabs.addTab(lz_container, "第一层: LZ 编码")
+
+                bs_container = QWidget()
+                bs_lo = QVBoxLayout(bs_container)
+                bs_lo.setContentsMargins(0, 0, 0, 0)
+                bs_label = QLabel("Huffman 编码比特流（每8位=1字节，空格分隔）")
+                bs_label.setTextFormat(Qt.TextFormat.RichText)
+                bs_lo.addWidget(bs_label)
+                bs_scroll = QScrollArea()
+                bs_scroll.setWidgetResizable(True)
+                self._bitstream_widget = BitstreamWidget()
+                self._bitstream_widget.set_data(self._bitstream_bytes, self._bitstream_tokens)
+                bs_scroll.setWidget(self._bitstream_widget)
+                bs_lo.addWidget(bs_scroll)
+                tabs.addTab(bs_container, "第二层: Huffman 比特流")
+
+                layout.addWidget(tabs, stretch=1)
+            else:
+                layout.addWidget(splitter, stretch=1)
 
             btn_layout = QHBoxLayout()
             btn_layout.addStretch()

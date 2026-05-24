@@ -180,6 +180,21 @@ CompressorResult DeflateCompressor::compress(std::vector<uint8_t> data) {
     });
 }
 
+CompressorResult DeflateCompressor::compress_for_demo(std::vector<uint8_t> data) {
+    return run_compress_job(std::move(data), [&](const std::vector<uint8_t>& in) {
+        auto triples = algorithm::LZMatcher::greedyWholeInput(
+            in, deflate_.window,
+            deflate_.encoding.offset_bits,
+            deflate_.encoding.length_bits);
+        return algorithm::encode_demo_huffman(
+            triples,
+            deflate_.encoding.offset_bits,
+            deflate_.encoding.length_bits,
+            deflate_.huffman_3hm.chunk_bits,
+            deflate_.huffman_3hm.chunk_bits);
+    });
+}
+
 CompressorResult DeflateCompressor::decompress(std::vector<uint8_t> data) {
     auto t0 = std::chrono::high_resolution_clock::now();
     auto out = algorithm::deflate_decompress(data, deflate_);
@@ -241,6 +256,18 @@ DPFlateCompressor::DPFlateCompressor() = default;
 CompressorResult DPFlateCompressor::compress(std::vector<uint8_t> data) {
     return run_compress_job(std::move(data), [&](const std::vector<uint8_t>& in) {
         return algorithm::dpflate_compress(in, dpflate_).compressed;
+    });
+}
+
+CompressorResult DPFlateCompressor::compress_for_demo(std::vector<uint8_t> data) {
+    return run_compress_job(std::move(data), [&](const std::vector<uint8_t>& in) {
+        auto result = algorithm::dpflate_compress(in, dpflate_);
+        return algorithm::encode_demo_huffman(
+            result.triples,
+            dpflate_.encoding.offset_bits,
+            dpflate_.encoding.length_bits,
+            dpflate_.huffman_3hm.chunk_bits,
+            dpflate_.huffman_3hm.chunk_bits);
     });
 }
 

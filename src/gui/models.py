@@ -83,6 +83,8 @@ class AlgorithmType(Enum):
     GZIP = "gzip"
     BROTLI = "brotli"
     ZSTD = "zstd"
+    JPEG = "jpeg"
+    PNG = "png"
     TRANSFORMER = "transformer (beta)"
     NONE = "none"
 
@@ -188,6 +190,10 @@ ALGORITHM_PARAMS: dict[AlgorithmType, list[AlgorithmParamDef]] = {
     AlgorithmType.ZSTD: [
         AlgorithmParamDef("compression_level", "压缩级别", 3, 1, 22, 1, ""),
     ],
+    AlgorithmType.JPEG: [
+        AlgorithmParamDef("quality", "JPEG 质量", 85, 1, 100, 1, ""),
+    ],
+    AlgorithmType.PNG: [],
 }
 
 STREAMING_THRESHOLD_MB = 10

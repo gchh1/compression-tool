@@ -10,6 +10,7 @@
 #include "AlgorithmFactory.hpp"
 #include "GuiCompressors.hpp"
 #include "GzipCompressor.hpp"
+#include "ImageCompressorBindings.hpp"
 #include "Visualization.hpp"
 #include "api.hpp"
 
@@ -204,6 +205,11 @@ void bind_compressors(py::module_& m) {
                 return self.compress(buffer_to_u8vec(buf));
             })
         .def(
+            "compress_for_demo",
+            [](DeflateCompressor& self, py::buffer buf) {
+                return self.compress_for_demo(buffer_to_u8vec(buf));
+            })
+        .def(
             "decompress",
             [](DeflateCompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
@@ -238,6 +244,11 @@ void bind_compressors(py::module_& m) {
             "compress",
             [](DPFlateCompressor& self, py::buffer buf) {
                 return self.compress(buffer_to_u8vec(buf));
+            })
+        .def(
+            "compress_for_demo",
+            [](DPFlateCompressor& self, py::buffer buf) {
+                return self.compress_for_demo(buffer_to_u8vec(buf));
             })
         .def(
             "decompress",
@@ -295,6 +306,36 @@ void bind_compressors(py::module_& m) {
             [](ZstdCompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
             });
+
+    py::class_<ImageJpegCompressor, ICompressor, std::shared_ptr<ImageJpegCompressor>>(
+        m, "ImageJpegCompressor")
+        .def(py::init<>())
+        .def("set_quality", &ImageJpegCompressor::set_quality)
+        .def("get_quality", &ImageJpegCompressor::get_quality)
+        .def(
+            "compress",
+            [](ImageJpegCompressor& self, py::buffer buf) {
+                return self.compress(buffer_to_u8vec(buf));
+            })
+        .def(
+            "decompress",
+            [](ImageJpegCompressor& self, py::buffer buf) {
+                return self.decompress(buffer_to_u8vec(buf));
+            });
+
+    py::class_<ImagePngCompressor, ICompressor, std::shared_ptr<ImagePngCompressor>>(
+        m, "ImagePngCompressor")
+        .def(py::init<>())
+        .def(
+            "compress",
+            [](ImagePngCompressor& self, py::buffer buf) {
+                return self.compress(buffer_to_u8vec(buf));
+            })
+        .def(
+            "decompress",
+            [](ImagePngCompressor& self, py::buffer buf) {
+                return self.decompress(buffer_to_u8vec(buf));
+            });
 }
 
 void bind_pipeline(py::module_& m) {
@@ -313,6 +354,10 @@ void bind_pipeline(py::module_& m) {
         .value("BROTLI_DECOMPRESS", compressor::core::AlgorithmID::BrotliDecompress)
         .value("ZSTD", compressor::core::AlgorithmID::Zstd)
         .value("ZSTD_DECOMPRESS", compressor::core::AlgorithmID::ZstdDecompress)
+        .value("IMAGE_JPEG", compressor::core::AlgorithmID::ImageJpeg)
+        .value("IMAGE_PNG", compressor::core::AlgorithmID::ImagePng)
+        .value("IMAGE_JPEG_DECOMPRESS", compressor::core::AlgorithmID::ImageJpegDecompress)
+        .value("IMAGE_PNG_DECOMPRESS", compressor::core::AlgorithmID::ImagePngDecompress)
         .export_values();
 
     py::class_<compressor::core::LzdpWholeFileParams>(m, "LzdpWholeFileParams")

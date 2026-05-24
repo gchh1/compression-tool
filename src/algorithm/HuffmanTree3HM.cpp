@@ -184,7 +184,7 @@ uint16_t HuffmanTree3HM::decodeMatchLength(utils::BitReader& reader) const {
 }
 
 size_t HuffmanTree3HM::getTreeSize() const {
-    size_t total = 32;  // 4-byte header
+    size_t total = 32;
     if (literal_tree_) total += literal_tree_->getTreeSize();
     if (offset_tree_) total += offset_tree_->getTreeSize();
     if (length_tree_) total += length_tree_->getTreeSize();

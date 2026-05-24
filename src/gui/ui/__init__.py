@@ -15,7 +15,6 @@ __all__ = [
     "worker",
     "table",
     "dialogs",
-    "visualization_windows",
     "views",
     "panels",
     "helpers",

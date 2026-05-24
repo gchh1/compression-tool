@@ -1,71 +1,65 @@
-"""GUI logging setup (file + stderr)."""
-
-from __future__ import annotations
-
 import logging
+import logging.handlers
 import sys
-import time
 from pathlib import Path
 
-
-class _FlushingStreamHandler(logging.StreamHandler):
-    """Flush stderr after each record so console captures survive abrupt exits."""
-
-    def emit(self, record: logging.LogRecord) -> None:
-        super().emit(record)
-        self.flush()
+_log_file: Path | None = None
 
 
-class _FlushingFileHandler(logging.FileHandler):
-    """Flush the log file after each record (helps diagnose native crashes)."""
-
-    def emit(self, record: logging.LogRecord) -> None:
-        super().emit(record)
-        self.flush()
-
-
-def flush_logging() -> None:
-    """Push all root handlers to disk/stderr (call after critical UI steps)."""
-    for h in logging.root.handlers:
-        try:
-            h.flush()
-        except Exception:
-            pass
-
-
-def get_log_dir() -> Path:
+def get_log_path() -> Path:
     if getattr(sys, "frozen", False):
         base = Path(sys.executable).parent.parent / "logs"
     else:
-        base = Path(__file__).resolve().parent.parent.parent.parent / "logs"
+        repo = Path(__file__).resolve().parent.parent.parent.parent
+        pkg_logs = repo / "Package" / "logs"
+        if pkg_logs.exists():
+            base = pkg_logs
+        else:
+            base = repo / "logs"
     base.mkdir(parents=True, exist_ok=True)
-    return base
+    return base / "gui.log"
 
 
-def setup_logging(level: int = logging.INFO) -> None:
-    log_dir = get_log_dir()
-    log_file = log_dir / "gui.log"
+def setup_logging(log_path: Path | None = None):
+    global _log_file
 
-    root_logger = logging.getLogger()
-    root_logger.handlers.clear()
-    root_logger.setLevel(logging.DEBUG)
+    root = logging.getLogger()
+    root.setLevel(logging.DEBUG)
 
-    fmt = logging.Formatter(
-        "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-        datefmt="%H:%M:%S",
+    for handler in root.handlers[:]:
+        root.removeHandler(handler)
+
+    _log_file = log_path if log_path is not None else get_log_path()
+
+    if _log_file:
+        _log_file.parent.mkdir(parents=True, exist_ok=True)
+        file_handler = logging.handlers.RotatingFileHandler(
+            _log_file,
+            maxBytes=10 * 1024 * 1024,
+            backupCount=5,
+            encoding="utf-8",
+        )
+        file_handler.setLevel(logging.DEBUG)
+        file_formatter = logging.Formatter(
+            "%(asctime)s %(name)-20s %(levelname)-5s %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+        file_handler.setFormatter(file_formatter)
+        root.addHandler(file_handler)
+
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(logging.INFO)
+    console_formatter = logging.Formatter(
+        "%(asctime)s %(name)s: %(levelname)s %(message)s"
     )
+    console_handler.setFormatter(console_formatter)
+    root.addHandler(console_handler)
 
-    console_handler = _FlushingStreamHandler(sys.stderr)
-    console_handler.setLevel(level)
-    console_handler.setFormatter(fmt)
-    root_logger.addHandler(console_handler)
 
-    file_handler = _FlushingFileHandler(log_file, encoding="utf-8", mode="a")
-    file_handler.setLevel(logging.DEBUG)
-    file_handler.setFormatter(fmt)
-    root_logger.addHandler(file_handler)
-
-    session = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    logging.info("==== gui session start %s ====", session)
-    logging.info("Logging initialized, file: %s (append mode, per-line flush)", log_file.resolve())
-    flush_logging()
+def flush_logging():
+    for handler in logging.getLogger().handlers:
+        if hasattr(handler, "flush"):
+            try:
+                handler.flush()
+            except Exception:
+                pass

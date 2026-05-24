@@ -502,10 +502,147 @@ std::vector<uint8_t> decode_3hm_huffman_old_impl(const std::vector<uint8_t>& com
 
 }  // namespace
 
+namespace {
+
+std::vector<uint8_t> encode_canonical_tree(const compressor::algorithm::HuffmanTree& tree, size_t dict_size) {
+    auto dict = tree.buildDictionary();
+    std::vector<std::pair<uint16_t, uint8_t>> entries;
+    for (size_t i = 0; i < dict_size && i < dict.size(); ++i) {
+        if (dict[i].length > 0) {
+            entries.push_back({static_cast<uint16_t>(i), static_cast<uint8_t>(dict[i].length)});
+        }
+    }
+    std::sort(entries.begin(), entries.end(),
+        [](const auto& a, const auto& b) {
+            if (a.second != b.second) return a.second < b.second;
+            return a.first < b.first;
+        });
+
+    uint16_t count = static_cast<uint16_t>(entries.size());
+    std::vector<uint8_t> result;
+    result.reserve(2 + entries.size() * 3);
+    result.push_back(static_cast<uint8_t>(count >> 8));
+    result.push_back(static_cast<uint8_t>(count & 0xFF));
+    for (auto& [sym, len] : entries) {
+        result.push_back(static_cast<uint8_t>(sym >> 8));
+        result.push_back(static_cast<uint8_t>(sym & 0xFF));
+        result.push_back(len);
+    }
+    return result;
+}
+
+std::vector<uint8_t> encode_demo_format_impl(
+    const std::vector<compressor::algorithm::Triple>& triples,
+    uint32_t offset_bits, uint32_t length_bits,
+    uint32_t offset_chunk_bits, uint32_t length_chunk_bits) {
+
+    using namespace compressor::algorithm;
+
+    const auto ocb = offset_chunk_bits > 0 ? offset_chunk_bits : 8;
+    const auto lcb = length_chunk_bits > 0 ? length_chunk_bits : 8;
+    const auto oc = (offset_bits + ocb - 1) / ocb;
+    const auto lc = (length_bits + lcb - 1) / lcb;
+    const auto off_mask = (1u << ocb) - 1;
+    const auto len_mask = (1u << lcb) - 1;
+    const auto off_dict_size = size_t{1} << ocb;
+    const auto len_dict_size = size_t{1} << lcb;
+
+    std::vector<uint32_t> lit_freq(256, 0);
+    std::vector<uint32_t> off_freq(off_dict_size, 0);
+    std::vector<uint32_t> len_freq(len_dict_size, 0);
+
+    for (const auto& t : triples) {
+        if (t.offset == 0) {
+            lit_freq[t.literal]++;
+        } else {
+            for (uint32_t i = 0; i < oc; ++i) {
+                auto chunk = (t.offset >> (i * ocb)) & off_mask;
+                off_freq[chunk]++;
+            }
+            for (uint32_t i = 0; i < lc; ++i) {
+                auto chunk = (t.length >> (i * lcb)) & len_mask;
+                len_freq[chunk]++;
+            }
+        }
+    }
+
+    for (size_t i = 0; i < off_dict_size; ++i) {
+        if (off_freq[i] == 0) off_freq[i] = 1;
+    }
+    for (size_t i = 0; i < len_dict_size; ++i) {
+        if (len_freq[i] == 0) len_freq[i] = 1;
+    }
+
+    HuffmanTree lit_tree(lit_freq, 256, 8);
+    HuffmanTree off_tree(off_freq, off_dict_size, static_cast<int>(ocb));
+    HuffmanTree len_tree(len_freq, len_dict_size, static_cast<int>(lcb));
+
+    auto lit_dict = lit_tree.buildDictionary();
+    auto off_dict = off_tree.buildDictionary();
+    auto len_dict = len_tree.buildDictionary();
+
+    auto lit_canon = encode_canonical_tree(lit_tree, 256);
+    auto off_canon = encode_canonical_tree(off_tree, off_dict_size);
+    auto len_canon = encode_canonical_tree(len_tree, len_dict_size);
+
+    std::vector<uint8_t> out;
+
+    uint32_t triple_count = static_cast<uint32_t>(triples.size());
+    out.push_back(static_cast<uint8_t>(triple_count & 0xFF));
+    out.push_back(static_cast<uint8_t>((triple_count >> 8) & 0xFF));
+    out.push_back(static_cast<uint8_t>((triple_count >> 16) & 0xFF));
+    out.push_back(static_cast<uint8_t>((triple_count >> 24) & 0xFF));
+
+    uint16_t lit_sz = static_cast<uint16_t>(lit_canon.size());
+    uint16_t off_sz = static_cast<uint16_t>(off_canon.size());
+    uint16_t len_sz = static_cast<uint16_t>(len_canon.size());
+    out.push_back(static_cast<uint8_t>(lit_sz & 0xFF));
+    out.push_back(static_cast<uint8_t>((lit_sz >> 8) & 0xFF));
+    out.push_back(static_cast<uint8_t>(off_sz & 0xFF));
+    out.push_back(static_cast<uint8_t>((off_sz >> 8) & 0xFF));
+    out.push_back(static_cast<uint8_t>(len_sz & 0xFF));
+    out.push_back(static_cast<uint8_t>((len_sz >> 8) & 0xFF));
+
+    out.insert(out.end(), lit_canon.begin(), lit_canon.end());
+    out.insert(out.end(), off_canon.begin(), off_canon.end());
+    out.insert(out.end(), len_canon.begin(), len_canon.end());
+
+    LSBWriter w{out};
+
+    for (const auto& t : triples) {
+        if (t.offset == 0) {
+            w.writeBit(1);
+            writeHuffCodeLSB(w, lit_dict[t.literal]);
+        } else {
+            w.writeBit(0);
+            for (uint32_t i = 0; i < oc; ++i) {
+                auto chunk = (t.offset >> (i * ocb)) & off_mask;
+                writeHuffCodeLSB(w, off_dict[chunk]);
+            }
+            for (uint32_t i = 0; i < lc; ++i) {
+                auto chunk = (t.length >> (i * lcb)) & len_mask;
+                writeHuffCodeLSB(w, len_dict[chunk]);
+            }
+        }
+    }
+
+    w.flush();
+    return out;
+}
+
+}  // namespace
+
 namespace compressor::algorithm {
 
 std::vector<uint8_t> encode_flate_huffman(const std::vector<Triple>& triples) {
     return encode_flate_huffman_old_impl(triples);
+}
+
+std::vector<uint8_t> encode_demo_huffman(const std::vector<Triple>& triples,
+                                          uint32_t offset_bits, uint32_t length_bits,
+                                          uint32_t offset_chunk_bits, uint32_t length_chunk_bits) {
+    return encode_demo_format_impl(triples, offset_bits, length_bits,
+                                   offset_chunk_bits, length_chunk_bits);
 }
 
 std::vector<uint8_t> decode_flate_huffman(const std::vector<uint8_t>& compressed) {

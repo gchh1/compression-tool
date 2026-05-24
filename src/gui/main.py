@@ -15,7 +15,7 @@ from gui.utils.logging import setup_logging, flush_logging
 from gui.utils.resources import resolve_icon_path
 
 
-def run_cli():
+def run_cli(): # 在命令行模式下运行，压缩指定目录下的文件并输出结果
     setup_logging()
     logger = logging.getLogger("gui")
 

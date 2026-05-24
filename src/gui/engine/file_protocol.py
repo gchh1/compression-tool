@@ -26,6 +26,8 @@ ALGO_CODE_MAP: dict[AlgorithmType, int] = {
     AlgorithmType.GZIP: 6,
     AlgorithmType.BROTLI: 7,
     AlgorithmType.ZSTD: 8,
+    AlgorithmType.JPEG: 10,
+    AlgorithmType.PNG: 11,
 }
 
 CODE_TO_ALGO: dict[int, AlgorithmType] = {v: k for k, v in ALGO_CODE_MAP.items()}
@@ -180,6 +182,8 @@ def pack_compressed_file(
             AlgorithmType.DPFLATE: engine.AlgorithmID.DPFLATE,
             AlgorithmType.BROTLI: engine.AlgorithmID.BROTLI,
             AlgorithmType.ZSTD: engine.AlgorithmID.ZSTD,
+            AlgorithmType.JPEG: engine.AlgorithmID.IMAGE_JPEG,
+            AlgorithmType.PNG: engine.AlgorithmID.IMAGE_PNG,
         }
         algo_id = algo_map.get(algorithm)
         if algo_id is None:
@@ -238,6 +242,8 @@ def wcx_bytes_for_file_record(record: object) -> bytes | None:
     if len(blob) >= 4 and blob[:4] == MAGIC:
         return blob
     algo = getattr(record, "algorithm", AlgorithmType.NONE)
+    if algo in (AlgorithmType.JPEG, AlgorithmType.PNG):
+        return blob
     if getattr(record, "is_stored", False):
         algo = AlgorithmType.NONE
     name = getattr(record, "name", "") or ""
@@ -381,6 +387,10 @@ def detect_algorithm_from_file(path: str | Path) -> AlgorithmType | None:
 
 
 def make_export_filename(original_name: str, algorithm: AlgorithmType | None = None) -> str:
+    if algorithm == AlgorithmType.JPEG:
+        return Path(original_name).stem + ".jpg"
+    if algorithm == AlgorithmType.PNG:
+        return Path(original_name).stem + ".png"
     base = original_name
     for ext in ('.wcl', '.wcm', '.wcs', '.wch', '.wcf', '.wcd', '.wcg', '.wcx', '.archive'):
         if base.lower().endswith(ext):

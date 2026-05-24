@@ -1,112 +1,44 @@
-/**
- * @file RingBuffer.hpp
- * @author yhc
- * @brief
- * @version 0.1
- * @date 2026-04-27
- *
- * @copyright Copyright (c) 2026
- *
- */
-
 #pragma once
 
 #include <cstddef>
 #include <cstdint>
-#include <span>
-#include <vector>
+
+namespace compressor::utils {
+
 class RingBuffer {
-   public:
-    /** @brief Construct the `ring buffer` with given capacity */
+public:
+    RingBuffer() = default;
+
     explicit RingBuffer(size_t capacity)
-        : ring_(capacity), capacity_(capacity) {}
+        : data_(capacity), head_(0), size_(0) {}
 
-    /** @brief Append data to the `ring buffer` */
-    auto append(std::span<const uint8_t> data) -> void {
-        if (data.size() == 0) return;
-
-        ensureCapacity(size_ + data.size());
-
-        size_t tail = (head_ + size_) % capacity_;
-        size_t first_part = std::min(data.size(), capacity_ - tail);
-
-        std::memcpy(ring_.data() + tail, data.data(), first_part);
-        if (first_part < data.size()) {
-            std::memcpy(ring_.data(), data.data() + first_part,
-                        data.size() - first_part);
+    void push(uint8_t byte) {
+        if (size_ < data_.size()) {
+            data_[(head_ + size_) % data_.size()] = byte;
+            size_++;
+        } else {
+            data_[head_] = byte;
+            head_ = (head_ + 1) % data_.size();
         }
-        size_ += data.size();
     }
 
-    /** @brief Consume `n` byte from head */
-    auto consume(size_t n) -> void {
-        if (n > size_) n = size_;
-        head_ = (head_ + n) % capacity_;
-        size_ -= n;
+    uint8_t operator[](size_t index) const {
+        return data_[(head_ + index) % data_.size()];
     }
 
-    /** @brief Return the available span of the data in the `ring buffer` */
-    auto readSpan(void) -> std::span<const uint8_t> {
-        if (size_ == 0) return {};
+    size_t size() const { return size_; }
+    size_t capacity() const { return data_.size(); }
+    bool empty() const { return size_ == 0; }
 
-        if (head_ + size_ > capacity_) {
-            compact();
-        }
-        return {ring_.data() + head_, size_};
-    }
-
-    /** @brief Return the size */
-    auto size(void) const -> size_t { return size_; }
-
-    auto empty(void) const -> bool { return size_ == 0; }
-
-    /** @brief Reset */
-    auto reset(void) -> void {
+    void clear() {
         head_ = 0;
         size_ = 0;
-    };
-
-   private:
-    std::vector<uint8_t> ring_;
-
-    size_t head_{0};
-
-    size_t size_{0};
-
-    size_t capacity_;
-
-    /** @brief When append new data to the `ring buffer`, ensure we have enough
-     *        capacity, otherwise, enlarge the `ring buffer`*/
-    auto ensureCapacity(size_t total_size) -> void {
-        if (total_size <= capacity_) return;
-
-        size_t new_cap = capacity_ * 2;
-        while (new_cap < total_size) new_cap *= 2;
-
-        std::vector<uint8_t> new_buf(new_cap);
-        size_t first_part = std::min(size_, capacity_ - head_);
-        std::memcpy(new_buf.data(), ring_.data() + head_, first_part);
-        if (first_part < size_) {
-            std::memcpy(new_buf.data() + first_part, ring_.data(),
-                        size_ - first_part);
-        }
-
-        ring_ = std::move(new_buf);
-        capacity_ = new_cap;
-        head_ = 0;
     }
 
-    /** @brief Compact head to 0 */
-    auto compact(void) -> void {
-        if (head_ == 0) return;
-
-        size_t first_part =
-            size_ < (capacity_ - head_) ? size_ : (capacity_ - head_);
-        std::memmove(ring_.data(), ring_.data() + head_, first_part);
-        if (first_part < size_) {
-            std::memmove(ring_.data() + first_part, ring_.data(),
-                         size_ - first_part);
-        }
-        head_ = 0;
-    };
+private:
+    std::vector<uint8_t> data_;
+    size_t head_{0};
+    size_t size_{0};
 };
+
+}  // namespace compressor::utils

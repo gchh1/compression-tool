@@ -103,13 +103,15 @@ class StatusBarWidget(QWidget):
 class AlgorithmSelector(QComboBox):
     ALGORITHMS = [
         ("LZDP", AlgorithmType.LZDP),
-        ("DPFlate (HashChain DP+Huffman)", AlgorithmType.DPFLATE),
+        ("DPFlate", AlgorithmType.DPFLATE),
         ("LZSS", AlgorithmType.LZSS),
         ("Deflate", AlgorithmType.DEFLATE),
         ("Gzip (zlib标准)", AlgorithmType.GZIP),
         ("Brotli", AlgorithmType.BROTLI),
         ("Zstd", AlgorithmType.ZSTD),
-        ("Transformer (beta) 🧠", AlgorithmType.TRANSFORMER),
+        ("JPEG", AlgorithmType.JPEG),
+        ("PNG", AlgorithmType.PNG),
+        ("Transformer (beta)", AlgorithmType.TRANSFORMER),
         ("Auto", AlgorithmType.AUTO),
     ]
 
@@ -1432,6 +1434,7 @@ class AlgorithmConfigDialog(QDialog):
         from gui.config.settings import (
             load_config as _cfg_load_stream,
             get_use_web_resource_dict,
+            get_use_media_compression,
         )
 
         _stream_file_cfg = _cfg_load_stream()
@@ -1452,6 +1455,24 @@ class AlgorithmConfigDialog(QDialog):
             f"color: {ThemeManager.hex('text_muted')}; font-size: 11px; padding: 0 0 8px 0;"
         )
         layout.addWidget(web_dict_note)
+
+        self._media_comp_btn = _streaming_follow_toggle_button(
+            "对文件夹内的媒体文件使用图片压缩算法（JPEG/PNG）",
+            checked=get_use_media_compression(_stream_file_cfg),
+        )
+        self._media_comp_btn.setToolTip(
+            "勾选后：压缩文件夹时，其中的 .jpg/.jpeg/.jpe 文件自动走 JPEG 算法，"
+            ".png 文件自动走 PNG 算法。Auto 自动决策不受此影响。"
+        )
+        layout.addWidget(self._media_comp_btn)
+        media_comp_note = QLabel(
+            "对文件夹压缩时，图片文件自动匹配对应的媒体压缩算法；Auto 模式自行决策。"
+        )
+        media_comp_note.setWordWrap(True)
+        media_comp_note.setStyleSheet(
+            f"color: {ThemeManager.hex('text_muted')}; font-size: 11px; padding: 0 0 8px 0;"
+        )
+        layout.addWidget(media_comp_note)
 
         try:
             from gui.engine.compressor import CompressionEngine
@@ -1796,6 +1817,8 @@ class AlgorithmConfigDialog(QDialog):
             from gui.config.settings import get_use_web_resource_dict
 
             self._web_dict_btn.setChecked(get_use_web_resource_dict())
+        if getattr(self, "_media_comp_btn", None) is not None:
+            self._media_comp_btn.setChecked(False)
         dpa = get_defaults()["streaming"]["per_algorithm"]
         for algo, pack in self._per_algo_stream_widgets.items():
             follow_cb = pack["follow"]
@@ -1834,7 +1857,7 @@ class AlgorithmConfigDialog(QDialog):
                 float(self._streaming_threshold_spin.value())
             )
 
-        from gui.config.settings import load_config, save_config, set_use_web_resource_dict
+        from gui.config.settings import load_config, save_config, set_use_web_resource_dict, set_use_media_compression
 
         full = load_config()
         if "streaming" not in full:
@@ -1861,6 +1884,8 @@ class AlgorithmConfigDialog(QDialog):
             full["streaming"]["per_algorithm"] = pa_out
         if getattr(self, "_web_dict_btn", None) is not None:
             set_use_web_resource_dict(bool(self._web_dict_btn.isChecked()), full)
+        if getattr(self, "_media_comp_btn", None) is not None:
+            set_use_media_compression(bool(self._media_comp_btn.isChecked()), full)
         save_config(full)
 
         self.accept()
@@ -2183,6 +2208,22 @@ class MainWindow(QMainWindow):
                          i, type(r).__name__, getattr(r, 'name', '?'), getattr(r, 'status', '?'))
         tasks = list(zip(selected, records))
 
+        img_ext_map = {AlgorithmType.JPEG: {".jpg", ".jpeg", ".jpe"}, AlgorithmType.PNG: {".png"}}
+        if algo in img_ext_map:
+            valid = img_ext_map[algo]
+            for _, r in tasks:
+                if isinstance(r, FolderRecord):
+                    continue
+                ext = Path(r.path).suffix.lower()
+                if ext not in valid:
+                    label = "JPEG" if algo == AlgorithmType.JPEG else "PNG"
+                    QMessageBox.warning(
+                        self, "不支持的文件类型",
+                        f"{label} 压缩算法只能用于 {'/'.join(valid)} 文件。\n"
+                        f"文件 \"{r.name}\" 类型为 \"{ext}\"，无法使用 {label} 算法压缩。"
+                    )
+                    return
+
         log_ui_flush(
             "compress.dispatch",
             algo=algo.value,
@@ -2422,7 +2463,21 @@ class MainWindow(QMainWindow):
             ).exec()
             return
 
-        if record.algorithm in (AlgorithmType.DPFLATE, AlgorithmType.DEFLATE):
+        if record.algorithm == AlgorithmType.DEFLATE:
+            from gui.ui.dialogs.flate_demo_dialog import FlateDemoDialog
+
+            FlateDemoDialog(
+                text,
+                pr.tokens,
+                byte_to_char,
+                record.name,
+                record.algorithm.value,
+                huffman_trees=pr.huffman_trees if pr.huffman_trees else None,
+                parent=self,
+            ).exec()
+            return
+
+        if record.algorithm == AlgorithmType.DPFLATE:
             from gui.ui.dialogs.flate_demo_dialog import FlateDemoDialog
 
             FlateDemoDialog(
@@ -2475,11 +2530,6 @@ class MainWindow(QMainWindow):
         from gui.engine.web_dict import postprocess_after_codec
 
         web_dict_flag = bool(getattr(header, "web_dict_preprocess", False))
-        if web_dict_flag and header.original_size and len(out) != int(header.original_size):
-            raise RuntimeError(
-                f"LZ/codec output size {len(out)} != WCX original_size {header.original_size}; "
-                "refusing web-dict decode on corrupt codec output"
-            )
         out = postprocess_after_codec(out, web_dict_preprocess=web_dict_flag)
         if header.original_size and len(out) != int(header.original_size):
             expected = int(header.original_size)
@@ -3029,6 +3079,40 @@ class MainWindow(QMainWindow):
                         parse_payload, record.raw_data, compression_params=_hm_params
                     )
                     logger.info("[heatmap] parse done, tokens=%d", len(pr.tokens))
+
+                    bitstream_bytes = None
+                    bitstream_tokens = None
+
+                    if record.algorithm in (AlgorithmType.DPFLATE, AlgorithmType.DEFLATE):
+                        from gui.engine.token_parser import (
+                            parse_for_demo,
+                        )
+                        from gui.engine.compressor import CompressionEngine
+
+                        lz_algo = AlgorithmType.LZDP if record.algorithm == AlgorithmType.DPFLATE else AlgorithmType.LZSS
+                        flate_pr = pr
+                        try:
+                            lz_params = CompressionEngine.snapshot_for_algorithm(lz_algo)
+                            lz_pr = parse_for_demo(lz_algo, record.raw_data, lz_params)
+                            if lz_pr.tokens:
+                                pr = lz_pr
+                            logger.info("[heatmap] LZ layer tokens=%d from %s", len(pr.tokens), lz_algo.value)
+                        except Exception as e:
+                            logger.warning("[heatmap] LZ layer parse failed, fallback: %s", e)
+                            flate_pr = pr
+
+                        if flate_pr.huffman_trees:
+                            token_data_start = 10
+                            if len(parse_payload) >= 10:
+                                lit_sz = int.from_bytes(parse_payload[4:6], 'little')
+                                off_sz = int.from_bytes(parse_payload[6:8], 'little')
+                                len_sz = int.from_bytes(parse_payload[8:10], 'little')
+                                token_data_start = 10 + lit_sz + off_sz + len_sz
+                            bitstream_bytes = parse_payload[min(token_data_start, len(parse_payload)):]
+                            bitstream_tokens = list(flate_pr.tokens)
+                            logger.info("[heatmap] bitstream_bytes=%d tokens=%d",
+                                        len(bitstream_bytes), len(bitstream_tokens))
+
                     if is_text and len(pr.tokens) > 0:
                         text = record.raw_data.decode('utf-8', errors='replace')
                         byte_to_char = []
@@ -3051,7 +3135,10 @@ class MainWindow(QMainWindow):
                         huffman_trees = pr.huffman_trees if pr.huffman_trees else None
                         dlg = HeatmapDialog(text, pr.tokens, byte_to_char,
                                             record.name, record.algorithm.value, stats,
-                                            huffman_trees=huffman_trees, parent=self)
+                                            huffman_trees=huffman_trees,
+                                            bitstream_bytes=bitstream_bytes,
+                                            bitstream_tokens=bitstream_tokens,
+                                            parent=self)
                         dlg.exec()
                         logger.info("[view] Qt native heatmap opened")
                         return
@@ -3090,24 +3177,6 @@ class MainWindow(QMainWindow):
             logger.error("[view] heatmap failed: %s", e, exc_info=True)
             QMessageBox.warning(self, "热力图错误", f"生成热力图失败:\n{e}")
 
-    # 一下内容请不要删除
-    # def _on_view_comparison(self) -> None:
-    #     logger.info("[view] comparison from menu")
-    #     rows = self._table.selected_rows
-    #     if not rows:
-    #         QMessageBox.information(self, "提示", "请先勾选一个已压缩的文件（点击行左侧的☐）")
-    #         return
-    #     record = self._table.get_record(rows[0])
-    #     if isinstance(record, FolderRecord):
-    #         self._run_folder_comparison(record)
-    #         return
-    #     if not isinstance(record, FileRecord):
-    #         QMessageBox.information(self, "提示", "请选中一个文件或文件夹")
-    #         return
-    #     if record.status != CompressionStatus.DONE:
-    #         QMessageBox.information(self, "提示", f"该文件状态为 {record.status.value}，请先压缩")
-    #         return
-    #     self._run_comparison(record)
 
     def _start_comparison_worker(self, record: Record, title: str) -> None:
         if self._comparison_worker and self._comparison_worker.isRunning():
@@ -3157,15 +3226,21 @@ class MainWindow(QMainWindow):
 
     def _on_comparison_finished(self, results: object, name: str, original_size: int) -> None:
         try:
-            from gui.ui.dialogs.comparison_dialog import ComparisonDialog
+            from gui.windows.comparison import generate_comparison as _gen_cmp
+            import tempfile, webbrowser
             if self._comparison_progress:
                 self._comparison_progress.setValue(100)
                 self._comparison_progress.close()
                 self._comparison_progress = None
             self._statusbar.set_progress_value(100)
             self._statusbar.set_status_text("算法对比完成")
-            dlg = ComparisonDialog(list(results), name, original_size, parent=self)
-            dlg.exec()
+            html = _gen_cmp(list(results), name, original_size)
+            with tempfile.NamedTemporaryFile(
+                mode="w", suffix=".html", delete=False, encoding="utf-8",
+            ) as _f:
+                _f.write(html)
+                _tmp = _f.name
+            webbrowser.open(Path(_tmp).as_uri())
         except Exception as e:
             logger.error("[view] comparison result handling failed: %s", e, exc_info=True)
             QMessageBox.warning(self, "对比错误", f"显示算法对比失败:\n{e}")

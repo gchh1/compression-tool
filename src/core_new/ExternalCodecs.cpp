@@ -1,4 +1,5 @@
 #include "GzipCompressor.hpp"
+#include "ImageCompressorBindings.hpp"
 
 #include <chrono>
 #include <cstring>
@@ -6,6 +7,7 @@
 
 #include <zlib.h>
 #include "Brotli.hpp"
+#include "ImageCompressor.hpp"
 #include "Zstd.hpp"
 
 namespace compressor::core {
@@ -194,5 +196,61 @@ CompressorResult ZstdCompressor::decompress(std::vector<uint8_t> data) {
 }
 
 std::string ZstdCompressor::get_algorithm_name() { return "Zstd"; }
+
+CompressorResult ImageJpegCompressor::compress(std::vector<uint8_t> data) {
+    const auto t0 = std::chrono::high_resolution_clock::now();
+
+    auto result = algorithm::image_compress(data, algorithm::ImageFormat::JPEG, quality_);
+    if (result.empty() && !data.empty()) {
+        return fail_codec("JPEG compress failed", data.size());
+    }
+
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    return ok_codec(std::move(result), data.size(),
+                    std::chrono::duration<double, std::milli>(t1 - t0).count());
+}
+
+CompressorResult ImageJpegCompressor::decompress(std::vector<uint8_t> data) {
+    const auto t0 = std::chrono::high_resolution_clock::now();
+
+    auto result = algorithm::image_decompress(data);
+    if (result.empty() && !data.empty()) {
+        return fail_codec("JPEG decompress failed", data.size());
+    }
+
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    return ok_codec(std::move(result), data.size(),
+                    std::chrono::duration<double, std::milli>(t1 - t0).count());
+}
+
+std::string ImageJpegCompressor::get_algorithm_name() { return "JPEG"; }
+
+CompressorResult ImagePngCompressor::compress(std::vector<uint8_t> data) {
+    const auto t0 = std::chrono::high_resolution_clock::now();
+
+    auto result = algorithm::image_compress(data, algorithm::ImageFormat::PNG);
+    if (result.empty() && !data.empty()) {
+        return fail_codec("PNG compress failed", data.size());
+    }
+
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    return ok_codec(std::move(result), data.size(),
+                    std::chrono::duration<double, std::milli>(t1 - t0).count());
+}
+
+CompressorResult ImagePngCompressor::decompress(std::vector<uint8_t> data) {
+    const auto t0 = std::chrono::high_resolution_clock::now();
+
+    auto result = algorithm::image_decompress(data);
+    if (result.empty() && !data.empty()) {
+        return fail_codec("PNG decompress failed", data.size());
+    }
+
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    return ok_codec(std::move(result), data.size(),
+                    std::chrono::duration<double, std::milli>(t1 - t0).count());
+}
+
+std::string ImagePngCompressor::get_algorithm_name() { return "PNG"; }
 
 }  // namespace compressor::core

@@ -70,6 +70,7 @@ public:
     DeflateCompressor();
 
     CompressorResult compress(std::vector<uint8_t> data) override;
+    CompressorResult compress_for_demo(std::vector<uint8_t> data);
     CompressorResult decompress(std::vector<uint8_t> data) override;
     std::string get_algorithm_name() override;
 
@@ -105,6 +106,7 @@ public:
     DPFlateCompressor();
 
     CompressorResult compress(std::vector<uint8_t> data) override;
+    CompressorResult compress_for_demo(std::vector<uint8_t> data);
     CompressorResult decompress(std::vector<uint8_t> data) override;
     std::string get_algorithm_name() override;
 

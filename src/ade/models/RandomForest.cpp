@@ -247,10 +247,11 @@ auto DecisionTree::find_best_split(const std::vector<TrainingSample>& samples,
             }
         }
 
-        for (size_t i = 0; i < sorted.size() - 1; ++i) {
+        for (size_t i = 0; i < sorted.size() - 1; ++i) {//每次在排好特征值序的容器移动一个样本，每次尝试更新best划分结果
             size_t idx = sorted[i].second;
             int lbl = labels_[idx];
 
+            //将当前样本从右侧移动到左侧，更新类别计数器和总样本数
             if (lbl >= 0 && static_cast<size_t>(lbl) < num_classes_) {
                 left_counts[lbl]++;
                 right_counts[lbl]--;
@@ -258,12 +259,15 @@ auto DecisionTree::find_best_split(const std::vector<TrainingSample>& samples,
             left_total++;
             right_total--;
 
+            //如果左右两侧的样本数都小于最小叶子样本数要求，则跳过这个分割点
             if (left_total < config_.min_samples_leaf || right_total < config_.min_samples_leaf) {
                 continue;
             }
 
+            //如果当前特征值和下一个特征值相同，则跳过这个分割点，避免在相同值上切分导致过拟合
             if (sorted[i].first == sorted[i + 1].first) continue;
 
+            //计算左右两侧的基尼不纯度，并根据样本数量加权计算分割后的基尼不纯度，得到信息增益
             double left_gini = gini_from_counts(left_counts, left_total);
             double right_gini = gini_from_counts(right_counts, right_total);
 
@@ -272,6 +276,7 @@ auto DecisionTree::find_best_split(const std::vector<TrainingSample>& samples,
 
             double gain = parent_impurity - weighted_gini;
 
+            //如果这个分割点的信息增益比当前最好的分割点更好，则更新最佳分割结果，包括特征索引、分割阈值和左右子节点的样本索引列表
             if (gain > best.gain) {
                 best.gain = gain;
                 best.feature_index = fi;
@@ -335,6 +340,7 @@ auto DecisionTree::predict_node(const Node& node, const std::vector<float>& feat
     return predict_node(*node.right, features);
 }
 
+// 预测每个类的概率分布，通过递归遍历树节点找到对应叶子节点的类别分布
 auto DecisionTree::predict_proba_node(const Node& node, const std::vector<float>& features) const
     -> std::vector<float> {
     if (node.is_leaf) return node.class_distribution;
@@ -344,6 +350,7 @@ auto DecisionTree::predict_proba_node(const Node& node, const std::vector<float>
     return predict_proba_node(*node.right, features);
 }
 
+// 递归遍历树节点，累积每个特征的分割增益到重要性向量中
 auto DecisionTree::accumulate_importance(const Node& node, std::vector<float>& importance) const
     -> void {
     if (node.is_leaf) return;
@@ -630,7 +637,7 @@ auto RandomForest::load(const std::string& filepath) -> bool {
 }
 
 auto RandomForest::bootstrap_sample(const std::vector<TrainingSample>& samples,
-                                    std::mt19937& rng,
+                                    std::mt19937& rng,//随机数生成器引用mersenna twister
                                     const RandomForestConfig& config) const
     -> std::vector<TrainingSample> {
     if (!config.bootstrap) return samples;

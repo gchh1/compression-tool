@@ -31,9 +31,9 @@
       "search_size": 32767,
       "lookahead_size": 255,
       "min_match": 0,
-      "max_chain_length": 256,
-      "use_flag_encoding": 0,
-      "use_3hfmtree": 1,
+      "max_chain_length": 232,
+      "use_flag_encoding": 1,
+      "use_3hfmtree": 0,
       "huffman_offset_chunk_bits": 6,
       "huffman_length_chunk_bits": 6
     },
@@ -47,7 +47,11 @@
     },
     "zstd": {
       "compression_level": 3
-    }
+    },
+    "jpeg": {
+      "quality": 85
+    },
+    "png": {}
   },
   "ade": {
     "silent_explore_enabled": true,
@@ -76,7 +80,8 @@
     }
   },
   "compression": {
-    "use_web_resource_dict": true
+    "use_web_resource_dict": true,
+    "use_media_compression": true
   },
   "streaming": {
     "threshold_mb": 1.0,

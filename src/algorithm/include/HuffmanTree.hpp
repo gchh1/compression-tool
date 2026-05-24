@@ -1,10 +1,9 @@
 #pragma once
 
-// Include lib here
-#include <array>
 #include <cstddef>
 #include <cstdint>
-#include <span>
+#include <queue>
+#include <utility>
 #include <vector>
 
 #include "BitReader.hpp"
@@ -12,128 +11,102 @@
 
 namespace compressor::algorithm {
 
-/** @brief 256(literal) + 1(EOF) + 29(Length) = 286 */
-constexpr size_t DEFLATE_ALPHABET_SIZE = 286;
+struct HuffmanCode {
+    uint64_t code;
+    uint16_t length;
+    std::vector<uint8_t> bits;
 
-/** @brief How many bits to store the size */
-constexpr uint8_t DEFLATE_SYMBOL_BITS = 9;
+    HuffmanCode(uint64_t c = 0, uint16_t len = 0, std::vector<uint8_t> b = {})
+        : code(c), length(len), bits(std::move(b)) {}
+};
 
-/** @brief Node struct */
 struct node {
     uint16_t symbol;
-    uint32_t frequency;
-    node* left = nullptr;
-    node* right = nullptr;
+    uint32_t freq;
+    node* left;
+    node* right;
 
-    /* Constructor */
-    node(uint16_t d, uint32_t f) : symbol(d), frequency(f) {}
-    // Construct with left node and right node
+    node(uint16_t sym = 0, uint32_t f = 0)
+        : symbol(sym), freq(f), left(nullptr), right(nullptr) {}
     node(node* l, node* r)
-        : frequency(l->frequency + r->frequency), left(l), right(r) {}
-
-    /* Return true if the node is leaf */
-    bool isLeaf(void) const { return left == nullptr && right == nullptr; }
+        : symbol(0), freq(l->freq + r->freq), left(l), right(r) {}
+    bool isLeaf() const { return left == nullptr && right == nullptr; }
 };
 
-/** @brief Compare class for node */
-class Compare {
-   public:
-    bool operator()(node* a, node* b) { return a->frequency > b->frequency; }
-};
-
-/** @brief  */
-struct HuffmanCode {
-    uint64_t code{0};
-    uint16_t length{0};
-    std::vector<uint8_t> bits{};
-};
-
-inline auto writeHuffmanCode(utils::BitWriter& writer, const HuffmanCode& code)
-    -> void {
-    if (!code.bits.empty()) {
-        for (uint8_t bit : code.bits) {
-            writer.writeBit(bit);
-        }
-        return;
+struct Compare {
+    bool operator()(const node* a, const node* b) const {
+        return a->freq > b->freq;
     }
+};
 
-    for (int i = code.length - 1; i >= 0; --i) {
-        writer.writeBit(static_cast<uint8_t>((code.code >> i) & 1));
-    }
-}
-
-/**
- * @brief Helpful class to build and manage `HuffmanTree`. As for constructor,
- *        the class can receive `freq_map`, `symbols` and `BitReader`. Then
- *        build a `dictionary`, which is an `array` of size `256`, each element
- * is a `Huffman Code` stand for the `ASCII` index.
- *
- */
 class HuffmanTree {
-   public:
-    /** @brief Delete default constructor, copy constructor and copy assian */
-    HuffmanTree() = delete;
-    HuffmanTree(const HuffmanTree&) = delete;
-    HuffmanTree& operator=(const HuffmanTree&) = delete;
+public:
+    HuffmanTree();
 
-    /** @brief Recieve byte stream, and init the Huffman Tree */
-    HuffmanTree(const std::vector<uint32_t>& freq_map, size_t dictionary_size,
+    HuffmanTree(std::span<const uint8_t> symbols);
+
+    HuffmanTree(const std::vector<uint32_t>& freq_map,
+                size_t dictionary_size,
                 size_t symbol_bits);
 
-    explicit HuffmanTree(std::span<const uint8_t> symbols);
     HuffmanTree(node* root, size_t dictionary_size, size_t symbol_bits);
 
-    /** @brief Deserialize Huffman tree from BitReader */
     HuffmanTree(utils::BitReader& reader, size_t dictionary_size,
                 size_t symbol_bits);
 
-    /** @brief Obey RAII (Resources Acqusition is Initialization) */
-    ~HuffmanTree() {
-        auto destory = [](auto& self, node* n) -> void {
-            if (n == nullptr) {
-                return;
-            }
-            self(self, n->left);
-            self(self, n->right);
-            delete n;
-        };
-        destory(destory, root_);
-    }
+    explicit HuffmanTree(utils::BitReader& reader);
 
-    /** @brief Build and return the dictionary */
-    auto buildDictionary(void) const -> std::vector<HuffmanCode>;
+    ~HuffmanTree();
 
-    /** @brief Return the Huffman Tree we build */
-    auto serializeTree(utils::BitWriter& writer) const -> void;
+    HuffmanTree(const HuffmanTree&) = delete;
+    HuffmanTree& operator=(const HuffmanTree&) = delete;
+    HuffmanTree(HuffmanTree&& other) noexcept;
+    HuffmanTree& operator=(HuffmanTree&& other) noexcept;
 
-    /** @brief Return the root of the Huffman Tree */
-    auto getRoot(void) const -> node* { return root_; }
+    node* getRoot() const { return root_; }
+    size_t getDictionarySize() const { return dictionary_size_; }
+    size_t getSymbolBits() const { return symbol_bits_; }
+    size_t getTreeSize() const { return tree_size_; }
 
-    auto getTreeSize(void) -> size_t const { return tree_size_; }
+    void buildTree(const std::vector<uint32_t>& freq_map);
 
-   private:
-    /** @brief Build the huffman tree */
-    auto buildTree(const std::vector<uint32_t>& freqMap) -> void;
+    std::vector<HuffmanCode> buildDictionary() const;
 
-    /** @brief Travel the Huffman Tree by preorder to get the code */
-    auto generateCodes(node* n, uint64_t current_code, uint16_t current_length,
-                       std::vector<uint8_t>& current_bits,
-                       std::vector<HuffmanCode>& dict) const -> void;
+    void serializeTree(utils::BitWriter& writer) const;
 
-    /** @brief  */
-    auto serializeNode(utils::BitWriter& writer, node* n) const -> void;
+    void serialize(utils::BitWriter& writer) const { serializeTree(writer); }
 
-    /** @brief  */
-    auto calcSerializedBits(const node* n) -> size_t const;
+    void deserialize(utils::BitReader& reader);
 
-    /** @brief root of the Huffman Tree */
+private:
     node* root_{nullptr};
-
+    size_t dictionary_size_{256};
+    size_t symbol_bits_{8};
     size_t tree_size_{0};
 
-    /** @brief  */
-    size_t dictionary_size_{DEFLATE_ALPHABET_SIZE};
-    size_t symbol_bits_{DEFLATE_SYMBOL_BITS};
+    size_t calcSerializedBits(const node* n) const;
+
+    void generateCodes(node* n, uint64_t current_code,
+                       uint16_t current_length,
+                       std::vector<uint8_t>& current_bits,
+                       std::vector<HuffmanCode>& dict) const;
+
+    void serializeNode(utils::BitWriter& writer, node* n) const;
 };
+
+inline void writeHuffmanCode(utils::BitWriter& writer, const HuffmanCode& code) {
+    for (uint8_t bit : code.bits) {
+        writer.writeBit(bit);
+    }
+}
+
+inline uint16_t readHuffmanSymbol(utils::BitReader& reader, node* root) {
+    node* cursor = root;
+    while (cursor && !cursor->isLeaf()) {
+        uint8_t bit = reader.readBit();
+        cursor = (bit == 0) ? cursor->left : cursor->right;
+    }
+    return cursor ? cursor->symbol : 0;
+}
 
 }  // namespace compressor::algorithm

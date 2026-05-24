@@ -26,6 +26,8 @@ class Token:
     match_offset: int = 0
     huffman_bits: float = 0.0
     huffman_detail: str = ""
+    bit_offset: int = 0
+    bit_length: int = 0
 
     @property
     def compression_ratio(self) -> float:
@@ -624,6 +626,8 @@ class DeflateTokenParser(TokenParser):
                         huffman_bits=float(lit_bits),
                         huffman_detail="LIT(%d)=%.1fbit" % (
                             sym, float(lit_bits)),
+                        bit_offset=bit_start,
+                        bit_length=reader.bit_position() - bit_start,
                     ))
                     cursor += 1
                 else:
@@ -654,6 +658,8 @@ class DeflateTokenParser(TokenParser):
                         huffman_detail=(
                             "MATCH(off=%d len=%d %.1fbit)" % (
                                 offset, length, float(token_bits))),
+                        bit_offset=bit_start,
+                        bit_length=token_bits,
                     ))
                     cursor += length
         except Exception as e:
@@ -707,7 +713,10 @@ def _memory_compress_bytes_for_demo(
         raise RuntimeError("C++ core_engine 不可用，无法运行压缩演示")
     with SilentExplorer.user_compression_priority():
         comp = eng.create_compressor_for_visualization(algorithm, compression_params)
-        cr = comp.compress(raw_data)
+        if algorithm in (AlgorithmType.DPFLATE, AlgorithmType.DEFLATE):
+            cr = comp.compress_for_demo(raw_data)
+        else:
+            cr = comp.compress(raw_data)
     if getattr(cr, "success", True) is False:
         em = (getattr(cr, "error_message", None) or "").strip() or "内存压缩失败"
         raise RuntimeError(em)
@@ -738,10 +747,17 @@ def parse_for_demo(
 
         compression_params = CompressionEngine.snapshot_for_algorithm(algorithm)
 
-    compressed = _memory_compress_bytes_for_demo(algorithm, raw_data, compression_params)
-    from gui.engine.file_protocol import prepare_token_parse_payload
+    if algorithm in (AlgorithmType.DPFLATE, AlgorithmType.DEFLATE):
+        compression_params = dict(compression_params)
+        compression_params['use_3hfmtree'] = 0
 
-    payload = prepare_token_parse_payload(compressed, algorithm)
+    compressed = _memory_compress_bytes_for_demo(algorithm, raw_data, compression_params)
+
+    if algorithm in (AlgorithmType.DPFLATE, AlgorithmType.DEFLATE):
+        payload = compressed
+    else:
+        from gui.engine.file_protocol import prepare_token_parse_payload
+        payload = prepare_token_parse_payload(compressed, algorithm)
     return parser.parse(payload, raw_data, compression_params=compression_params)
 
 

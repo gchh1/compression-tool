@@ -53,6 +53,10 @@ std::vector<uint8_t> encode_3hm_huffman(const std::vector<Triple>& triples,
                                           const HuffmanTree3HMConfig& cfg);
 std::vector<uint8_t> decode_3hm_huffman(const std::vector<uint8_t>& compressed);
 
+std::vector<uint8_t> encode_demo_huffman(const std::vector<Triple>& triples,
+                                          uint32_t offset_bits, uint32_t length_bits,
+                                          uint32_t offset_chunk_bits, uint32_t length_chunk_bits);
+
 inline DPFlateResult dpflate_compress(
     const std::vector<uint8_t>& input,
     const DPFlateConfig& config) {

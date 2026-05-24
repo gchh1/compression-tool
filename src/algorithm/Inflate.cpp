@@ -88,10 +88,8 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
     while (true) {
         ++inner_iter;
         if (inner_iter > 100000000) {
-            // === DEBUG_BLOCK_BEGIN (可删除) ===
             DEBUG_LOG("[Inflate] SAFETY BREAK: inner_iter=%d out_abs=%llu state=%d",
                       inner_iter, (unsigned long long)out_abs_, (int)decode_state_);
-            // === DEBUG_BLOCK_END ===
             status.done = true;
             return;
         }
@@ -206,13 +204,8 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
             uint16_t symbol = lit_cursor_->symbol;
             lit_cursor_ = lit_root_;
 
-            // === DEBUG_BLOCK_BEGIN (可删除) ===
-            static int dbg_dec_tok_cnt = 0;
-            if (++dbg_dec_tok_cnt <= 50) {
-                DEBUG_LOG("[Inflate] DECODE_TOKENS: symbol=%u out_abs=%llu",
-                          symbol, (unsigned long long)out_abs_);
-            }
-            // === DEBUG_BLOCK_END ===
+            DEBUG_LOG("[Inflate] DECODE_TOKENS: symbol=%u out_abs=%llu",
+                      symbol, (unsigned long long)out_abs_);
 
             if (symbol < 256) {
                 appendDecodedByte(static_cast<uint8_t>(symbol));
@@ -285,18 +278,11 @@ auto Inflate::handle(AlgorithmStatus& status, bool is_last_chunk) -> void {
         }
 
         if (decode_state_ == DecodeState::COPY_MATCH) {
-            // === DEBUG_BLOCK_BEGIN (可删除) ===
-            static int dbg_copy_match_cnt = 0;
-            if (++dbg_copy_match_cnt <= 50) {
-                DEBUG_LOG("[Inflate] COPY_MATCH: dist=%u len=%u out_abs=%llu",
-                          pending_dist_, pending_length_, (unsigned long long)out_abs_);
-            }
-            // === DEBUG_BLOCK_END ===
+            DEBUG_LOG("[Inflate] COPY_MATCH: dist=%u len=%u out_abs=%llu",
+                      pending_dist_, pending_length_, (unsigned long long)out_abs_);
             if (pending_dist_ == 0 || pending_dist_ > out_abs_) {
-                // === DEBUG_BLOCK_BEGIN (可删除) ===
                 DEBUG_LOG("[Inflate] COPY_MATCH invalid: dist=%u out_abs=%llu len=%u",
                           pending_dist_, (unsigned long long)out_abs_, pending_length_);
-                // === DEBUG_BLOCK_END ===
                 status.done = true;
                 return;
             }

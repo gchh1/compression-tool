@@ -1,20 +1,3 @@
-add_library(
-    archiver
-    STATIC
-    FileReader.cpp
-    PackReader.cpp
-    PackWriter.cpp
-)
-
-target_include_directories(
-    archiver
-    PUBLIC
-    include
-)
-
-target_link_libraries(
-    archiver
-    PUBLIC
-    core
-    processor
-)
+add_library(archiver INTERFACE)
+target_include_directories(archiver INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_compile_features(archiver INTERFACE cxx_std_20)

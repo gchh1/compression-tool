@@ -7,10 +7,13 @@
 #include <filesystem>
 #include <fstream>
 
+#include "Brotli.hpp"
 #include "Deflate.hpp"
 #include "Dpflate.hpp"
+#include "ImageCompressor.hpp"
 #include "LZDP.hpp"
 #include "LZSS.hpp"
+#include "Zstd.hpp"
 #include "StreamingCancel.hpp"
 #include "WCXProtocol.hpp"
 #include "io/FileIO.hpp"
@@ -166,6 +169,38 @@ bool is_lzss_decompress(AlgorithmID id) {
            id == AlgorithmID::LZSSDecompress_NoFlag;
 }
 
+bool is_brotli(AlgorithmID id) {
+    return id == AlgorithmID::Brotli;
+}
+
+bool is_brotli_decompress(AlgorithmID id) {
+    return id == AlgorithmID::BrotliDecompress;
+}
+
+bool is_zstd(AlgorithmID id) {
+    return id == AlgorithmID::Zstd;
+}
+
+bool is_zstd_decompress(AlgorithmID id) {
+    return id == AlgorithmID::ZstdDecompress;
+}
+
+bool is_image_jpeg(AlgorithmID id) {
+    return id == AlgorithmID::ImageJpeg;
+}
+
+bool is_image_jpeg_decompress(AlgorithmID id) {
+    return id == AlgorithmID::ImageJpegDecompress;
+}
+
+bool is_image_png(AlgorithmID id) {
+    return id == AlgorithmID::ImagePng;
+}
+
+bool is_image_png_decompress(AlgorithmID id) {
+    return id == AlgorithmID::ImagePngDecompress;
+}
+
 CompressResult fail(const std::string& msg) {
     CompressResult r;
     r.error_message = msg;
@@ -274,6 +309,42 @@ auto compress(const std::vector<uint8_t>& data,
                 throw std::runtime_error("cancelled");
             }
             result.data = std::move(r.compressed);
+        } else if (is_brotli(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            auto encoded = brotli_encode(data, BrotliParams{});
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            result.data = std::move(encoded);
+        } else if (is_zstd(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            auto compressed = zstd_compress(data);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            result.data = std::move(compressed);
+        } else if (is_image_jpeg(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            auto compressed = image_compress(data, ImageFormat::JPEG);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            result.data = std::move(compressed);
+        } else if (is_image_png(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            auto compressed = image_compress(data, ImageFormat::PNG);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            result.data = std::move(compressed);
         } else {
             return fail("unsupported algorithm in chain");
         }
@@ -329,6 +400,32 @@ auto decompress(const std::vector<uint8_t>& data,
             result.data = deflate_decompress(data, deflate_from_params(deflate_pipeline));
         } else if (is_dpflate(id)) {
             result.data = dpflate_decompress(data, dpflate_from_params(dpflate_pipeline));
+        } else if (is_brotli_decompress(id) || is_brotli(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            result.data = brotli_decode(data);
+        } else if (is_zstd_decompress(id) || is_zstd(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            result.data = zstd_decompress(data);
+        } else if (is_image_jpeg_decompress(id) || is_image_jpeg(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            result.data = image_decompress(data);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+        } else if (is_image_png_decompress(id) || is_image_png(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            result.data = image_decompress(data);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
         } else {
             return fail("unsupported decompress algorithm");
         }
@@ -533,6 +630,46 @@ auto compressFile(const std::string& input_path,
                 throw std::runtime_error("cancelled");
             }
             core_new::io::write_file_bytes(payload_tmp, r.compressed);
+        } else if (is_brotli(id)) {
+            const auto input = core_new::io::read_file_bytes(input_path);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            auto encoded = brotli_encode(input, BrotliParams{});
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            core_new::io::write_file_bytes(payload_tmp, encoded);
+        } else if (is_zstd(id)) {
+            const auto input = core_new::io::read_file_bytes(input_path);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            auto compressed = zstd_compress(input);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            core_new::io::write_file_bytes(payload_tmp, compressed);
+        } else if (is_image_jpeg(id)) {
+            const auto input = core_new::io::read_file_bytes(input_path);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            auto compressed = image_compress(input, ImageFormat::JPEG);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            core_new::io::write_file_bytes(payload_tmp, compressed);
+        } else if (is_image_png(id)) {
+            const auto input = core_new::io::read_file_bytes(input_path);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            auto compressed = image_compress(input, ImageFormat::PNG);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            core_new::io::write_file_bytes(payload_tmp, compressed);
         } else {
             return fail("unsupported algorithm for compressFile");
         }
@@ -651,6 +788,18 @@ auto decompressFile(const std::string& input_path,
                 case 5:
                     id = AlgorithmID::DPFlate;
                     break;
+                case 7:
+                    id = AlgorithmID::BrotliDecompress;
+                    break;
+                case 8:
+                    id = AlgorithmID::ZstdDecompress;
+                    break;
+                case 10:
+                    id = AlgorithmID::ImageJpegDecompress;
+                    break;
+                case 11:
+                    id = AlgorithmID::ImagePngDecompress;
+                    break;
                 default:
                     return fail("Unknown WCX algo code");
             }
@@ -690,6 +839,38 @@ auto decompressFile(const std::string& input_path,
             }
             plain = dpflate_decompress(unpacked.payload,
                                              dpflate_from_params(dpflate_pipeline));
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+        } else if (is_brotli_decompress(id) || is_brotli(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            plain = brotli_decode(unpacked.payload);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+        } else if (is_zstd_decompress(id) || is_zstd(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            plain = zstd_decompress(unpacked.payload);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+        } else if (is_image_jpeg_decompress(id) || is_image_jpeg(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            plain = image_decompress(unpacked.payload);
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+        } else if (is_image_png_decompress(id) || is_image_png(id)) {
+            if (core_new::is_streaming_cancel_requested()) {
+                throw std::runtime_error("cancelled");
+            }
+            plain = image_decompress(unpacked.payload);
             if (core_new::is_streaming_cancel_requested()) {
                 throw std::runtime_error("cancelled");
             }

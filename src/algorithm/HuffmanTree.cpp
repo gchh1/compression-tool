@@ -1,4 +1,3 @@
-// Include lib here
 #include "HuffmanTree.hpp"
 
 #include <cstddef>
@@ -12,30 +11,49 @@
 
 namespace compressor::algorithm {
 
-/**
- * @brief Construct a new Huffman Tree:: Huffman Tree object
- *
- * @param symbols
- */
+static void destroyNode(node* n) {
+    if (!n) return;
+    destroyNode(n->left);
+    destroyNode(n->right);
+    delete n;
+}
+
+HuffmanTree::HuffmanTree() = default;
+
+HuffmanTree::~HuffmanTree() {
+    destroyNode(root_);
+    root_ = nullptr;
+}
+
+HuffmanTree::HuffmanTree(HuffmanTree&& other) noexcept
+    : root_(std::exchange(other.root_, nullptr)),
+      dictionary_size_(other.dictionary_size_),
+      symbol_bits_(other.symbol_bits_),
+      tree_size_(other.tree_size_) {}
+
+HuffmanTree& HuffmanTree::operator=(HuffmanTree&& other) noexcept {
+    if (this != &other) {
+        destroyNode(root_);
+        root_ = std::exchange(other.root_, nullptr);
+        dictionary_size_ = other.dictionary_size_;
+        symbol_bits_ = other.symbol_bits_;
+        tree_size_ = other.tree_size_;
+    }
+    return *this;
+}
+
 HuffmanTree::HuffmanTree(std::span<const uint8_t> symbols) {
     if (symbols.empty()) {
         return;
     }
-    /* 1. Count the frequency of each symbol */
     std::vector<uint32_t> freq_map(256, 0);
     for (const uint8_t& item : symbols) {
         freq_map[item]++;
     }
 
-    /* 2. Build the tree*/
     buildTree(freq_map);
 }
 
-/**
- * @brief Construct a new Huffman Tree:: Huffman Tree object
- *
- * @param freq_map
- */
 HuffmanTree::HuffmanTree(const std::vector<uint32_t>& freq_map,
                          size_t dictionary_size, size_t symbol_bits)
     : dictionary_size_(dictionary_size), symbol_bits_(symbol_bits) {
@@ -47,11 +65,6 @@ HuffmanTree::HuffmanTree(node* root, size_t dictionary_size, size_t symbol_bits)
     tree_size_ = calcSerializedBits(root_);
 }
 
-/**
- * @brief Construct a new Huffman Tree:: Huffman Tree object
- *
- * @param reader
- */
 HuffmanTree::HuffmanTree(utils::BitReader& reader, size_t dictionary_size,
                          size_t symbol_bits)
     : dictionary_size_(dictionary_size), symbol_bits_(symbol_bits) {
@@ -65,11 +78,15 @@ HuffmanTree::HuffmanTree(utils::BitReader& reader, size_t dictionary_size,
         }
         if (bit == 0) {
             node* left = self(self);
+            if (!left) return nullptr;
             node* right = self(self);
+            if (!right) return nullptr;
             return new node(left, right);
         } else {
+            if (!reader.ensureBits(static_cast<uint8_t>(symbol_bits)))
+                return nullptr;
             uint16_t symbol =
-                static_cast<uint16_t>(reader.readBits(symbol_bits));
+                static_cast<uint16_t>(reader.readBits(static_cast<uint8_t>(symbol_bits)));
             return new node(symbol, 0);
         }
     };
@@ -78,23 +95,21 @@ HuffmanTree::HuffmanTree(utils::BitReader& reader, size_t dictionary_size,
     tree_size_ = calcSerializedBits(root_);
 }
 
-/**
- * @brief Helper function to build Huffman Tree
- *
- * @param freq_map
- */
+HuffmanTree::HuffmanTree(utils::BitReader& reader)
+    : HuffmanTree(reader, 256, 8) {}
+
 auto HuffmanTree::buildTree(const std::vector<uint32_t>& freq_map) -> void {
-    /* 2. Initialize the Huffman tree */
+    destroyNode(root_);
+    root_ = nullptr;
+
     std::priority_queue<node*, std::vector<node*>, Compare> pq;
 
-    for (int i = 0; i < dictionary_size_; ++i) {
+    for (size_t i = 0; i < static_cast<size_t>(dictionary_size_); ++i) {
         if (freq_map[i] > 0) {
             pq.push(new node(static_cast<uint16_t>(i), freq_map[i]));
         }
     }
 
-    /* 3. Construct the Huffman Tree */
-    // Handle if size == 0
     if (pq.empty()) {
         root_ = new node(
             new node(static_cast<uint16_t>(0), static_cast<uint32_t>(0)),
@@ -102,7 +117,6 @@ auto HuffmanTree::buildTree(const std::vector<uint32_t>& freq_map) -> void {
         tree_size_ = calcSerializedBits(root_);
         return;
     }
-    // Handle if size == 1
     if (pq.size() == 1) {
         node* temp = pq.top();
         pq.pop();
@@ -113,31 +127,24 @@ auto HuffmanTree::buildTree(const std::vector<uint32_t>& freq_map) -> void {
     }
 
     while (pq.size() >= 2) {
-        // Push the top two node
         node* left = pq.top();
         pq.pop();
         node* right = pq.top();
         pq.pop();
 
-        // Conbine the top two node to a new node
         pq.push(new node(left, right));
     }
 
-    /* 4. Assign the top */
     root_ = pq.top();
     tree_size_ = calcSerializedBits(root_);
 }
-auto HuffmanTree::calcSerializedBits(const node* n) -> size_t const {
+
+auto HuffmanTree::calcSerializedBits(const node* n) const -> size_t {
     if (!n) return 0;
     if (n->isLeaf()) return 1 + symbol_bits_;
     return 1 + calcSerializedBits(n->left) + calcSerializedBits(n->right);
 }
 
-/**
- * @brief
- *
- * @return std::array<HuffmanCode, 256>
- */
 auto HuffmanTree::buildDictionary() const -> std::vector<HuffmanCode> {
     std::vector<HuffmanCode> dict(dictionary_size_);
     std::vector<uint8_t> bits;
@@ -187,6 +194,37 @@ auto HuffmanTree::serializeNode(utils::BitWriter& writer, node* n) const
         serializeNode(writer, n->left);
         serializeNode(writer, n->right);
     }
+}
+
+void HuffmanTree::deserialize(utils::BitReader& reader) {
+    destroyNode(root_);
+    root_ = nullptr;
+
+    auto buildTreeRecursive = [&reader, this](auto& self) -> node* {
+        if (reader.getRemainingBits() == 0) {
+            return nullptr;
+        }
+        uint8_t bit = static_cast<uint8_t>(reader.readBit());
+        if (reader.getRemainingBits() == 0 && bit == 0) {
+            return nullptr;
+        }
+        if (bit == 0) {
+            node* left = self(self);
+            if (!left) return nullptr;
+            node* right = self(self);
+            if (!right) return nullptr;
+            return new node(left, right);
+        } else {
+            if (!reader.ensureBits(static_cast<uint8_t>(symbol_bits_)))
+                return nullptr;
+            uint16_t symbol =
+                static_cast<uint16_t>(reader.readBits(static_cast<uint8_t>(symbol_bits_)));
+            return new node(symbol, 0);
+        }
+    };
+
+    root_ = buildTreeRecursive(buildTreeRecursive);
+    tree_size_ = calcSerializedBits(root_);
 }
 
 }  // namespace compressor::algorithm
