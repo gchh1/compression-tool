@@ -28,6 +28,9 @@ ALGO_CODE_MAP: dict[AlgorithmType, int] = {
     AlgorithmType.ZSTD: 8,
     AlgorithmType.JPEG: 10,
     AlgorithmType.PNG: 11,
+    AlgorithmType.FLAC: 12,
+    AlgorithmType.AAC_LC: 13,
+    AlgorithmType.H264: 14,
 }
 
 CODE_TO_ALGO: dict[int, AlgorithmType] = {v: k for k, v in ALGO_CODE_MAP.items()}
@@ -184,6 +187,9 @@ def pack_compressed_file(
             AlgorithmType.ZSTD: engine.AlgorithmID.ZSTD,
             AlgorithmType.JPEG: engine.AlgorithmID.IMAGE_JPEG,
             AlgorithmType.PNG: engine.AlgorithmID.IMAGE_PNG,
+            AlgorithmType.FLAC: engine.AlgorithmID.AUDIO_FLAC,
+            AlgorithmType.AAC_LC: engine.AlgorithmID.AUDIO_AAC_LC,
+            AlgorithmType.H264: engine.AlgorithmID.VIDEO_H264,
         }
         algo_id = algo_map.get(algorithm)
         if algo_id is None:
@@ -401,15 +407,16 @@ def make_export_filename(original_name: str, algorithm: AlgorithmType | None = N
 
 def pack_folder_archive(
     folder_name: str,
-    files: list[tuple[str, bytes, AlgorithmType, int]],
+    files: list[tuple[str, bytes, AlgorithmType, int, bool]],
 ) -> bytes:
     buf = io.BytesIO()
     buf.write(struct.pack('<I', len(files)))
-    for relative_path, comp_data, algo, orig_size in files:
+    for relative_path, comp_data, algo, orig_size, web_dict in files:
         inner_packed = pack_compressed_file(
             comp_data, algo, orig_size,
             original_filename=relative_path,
             is_folder=False,
+            web_dict_preprocess=web_dict,
         )
         chunk_size = len(inner_packed)
         buf.write(struct.pack('<I', chunk_size))

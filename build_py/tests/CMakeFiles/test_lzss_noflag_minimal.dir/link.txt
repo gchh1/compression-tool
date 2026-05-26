@@ -1,3 +1,0 @@
-D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E rm -f CMakeFiles\test_lzss_noflag_minimal.dir/objects.a
-D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc CMakeFiles\test_lzss_noflag_minimal.dir/objects.a @CMakeFiles\test_lzss_noflag_minimal.dir\objects1.rsp
-D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe -O3 -DNDEBUG -Wl,--whole-archive CMakeFiles\test_lzss_noflag_minimal.dir/objects.a -Wl,--no-whole-archive -o ..\bin\test_lzss_noflag_minimal.exe -Wl,--out-implib,libtest_lzss_noflag_minimal.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\test_lzss_noflag_minimal.dir\linkLibs.rsp

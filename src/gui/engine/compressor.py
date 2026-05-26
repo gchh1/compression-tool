@@ -215,6 +215,12 @@ class CompressionEngine:
             comp = self._engine.ImageJpegCompressor()
         elif algorithm == AlgorithmType.PNG:
             comp = self._engine.ImagePngCompressor()
+        elif algorithm == AlgorithmType.FLAC:
+            comp = self._engine.AudioFlacCompressor()
+        elif algorithm == AlgorithmType.AAC_LC:
+            comp = self._engine.AudioAacCompressor()
+        elif algorithm == AlgorithmType.H264:
+            comp = self._engine.VideoH264Compressor()
         else:
             raise ValueError(f"Unsupported algorithm: {algorithm.value}")
 
@@ -459,6 +465,9 @@ class CompressionEngine:
         if algorithm == AlgorithmType.GZIP:
             return self.compress(data, algorithm)
 
+        if algorithm in (AlgorithmType.FLAC, AlgorithmType.AAC_LC, AlgorithmType.H264):
+            return self.compress(data, algorithm)
+
         if not self.available:
             raise RuntimeError("C++ core_engine not available")
 
@@ -477,6 +486,11 @@ class CompressionEngine:
         )
 
         if algorithm == AlgorithmType.TRANSFORMER:
+            r = self.decompress(data, algorithm)
+            log_decompress("smart_decompress_end", **summarize_result(r))
+            return r
+
+        if algorithm in (AlgorithmType.FLAC, AlgorithmType.AAC_LC, AlgorithmType.H264):
             r = self.decompress(data, algorithm)
             log_decompress("smart_decompress_end", **summarize_result(r))
             return r
@@ -932,6 +946,9 @@ class CompressionEngine:
                 AlgorithmType.ZSTD: eng.AlgorithmID.ZSTD,
                 AlgorithmType.JPEG: eng.AlgorithmID.IMAGE_JPEG,
                 AlgorithmType.PNG: eng.AlgorithmID.IMAGE_PNG,
+                AlgorithmType.FLAC: eng.AlgorithmID.AUDIO_FLAC,
+                AlgorithmType.AAC_LC: eng.AlgorithmID.AUDIO_AAC_LC,
+                AlgorithmType.H264: eng.AlgorithmID.VIDEO_H264,
             }
         return CompressionEngine._ALGO_TO_PIPELINE_ID.get(algorithm)
 
@@ -945,6 +962,9 @@ class CompressionEngine:
             AlgorithmType.ZSTD: self._engine.AlgorithmID.ZSTD_DECOMPRESS,
             AlgorithmType.JPEG: self._engine.AlgorithmID.IMAGE_JPEG_DECOMPRESS,
             AlgorithmType.PNG: self._engine.AlgorithmID.IMAGE_PNG_DECOMPRESS,
+            AlgorithmType.FLAC: self._engine.AlgorithmID.AUDIO_FLAC_DECOMPRESS,
+            AlgorithmType.AAC_LC: self._engine.AlgorithmID.AUDIO_AAC_LC_DECOMPRESS,
+            AlgorithmType.H264: self._engine.AlgorithmID.VIDEO_H264_DECOMPRESS,
         }
         return mapping.get(algorithm)
 

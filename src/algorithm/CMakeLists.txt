@@ -14,7 +14,6 @@ else()
 endif()
 set(BROTLI_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
 set(BROTLI_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-# Static libbrotli so core_engine does not need libbrotlienc.dll beside the .pyd.
 set(_brotli_saved_shared "${BUILD_SHARED_LIBS}")
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(google_brotli)
@@ -25,26 +24,20 @@ unset(_BROTLI_LOCAL)
 add_library(
     algorithm
     STATIC
-    Delta.cpp
-    AlgorithmBase.cpp
     Brotli.cpp
     Deflate.cpp
-
-    # Huffman.cpp (pre-existing compile errors)
+    Huffman.cpp
     HuffmanTree.cpp
     HuffmanTree3HM.cpp
-
+    Inflate.cpp
+    KMPMatcher.cpp
     LZDP.cpp
     LZSS.cpp
     DPFlate.cpp
     DPFlateBin64kDebug.cpp
     LZDPStreamDebug.cpp
     DPFlateTrace.cpp
-    Inflate.cpp
-    Inflate3HM.cpp
     Zstd.cpp
-
-    # LZ77.cpp
 )
 
 target_include_directories(

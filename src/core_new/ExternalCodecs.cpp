@@ -1,13 +1,17 @@
 #include "GzipCompressor.hpp"
 #include "ImageCompressorBindings.hpp"
+#include "AudioCompressorBindings.hpp"
+#include "VideoCompressorBindings.hpp"
 
 #include <chrono>
 #include <cstring>
 #include <vector>
 
 #include <zlib.h>
+#include "AudioCodec.hpp"
 #include "Brotli.hpp"
 #include "ImageCompressor.hpp"
+#include "VideoCodec.hpp"
 #include "Zstd.hpp"
 
 namespace compressor::core {
@@ -252,5 +256,171 @@ CompressorResult ImagePngCompressor::decompress(std::vector<uint8_t> data) {
 }
 
 std::string ImagePngCompressor::get_algorithm_name() { return "PNG"; }
+
+// ── Audio FLAC ──
+
+CompressorResult AudioFlacCompressor::compress(std::vector<uint8_t> data) {
+    auto t0 = std::chrono::high_resolution_clock::now();
+
+    // Detect WAV data: check for "RIFF" header
+    bool is_wav = (data.size() > 12 && data[0] == 'R' && data[1] == 'I' && data[2] == 'F' && data[3] == 'F');
+
+    std::vector<uint8_t> result;
+    if (is_wav) {
+        // Parse WAV and re-encode as FLAC
+        auto wav = algorithm::parse_wav(data);
+        if (wav.sample_rate == 0)
+            return fail_codec("Failed to parse WAV file", 0);
+
+        // Extract raw PCM samples from WAV data
+        size_t sample_count = wav.data_size / (wav.bits_per_sample / 8);
+        std::vector<int16_t> samples(sample_count);
+        for (size_t i = 0; i < sample_count; ++i) {
+            if (wav.bits_per_sample == 16) {
+                int16_t val;
+                std::memcpy(&val, data.data() + wav.data_offset + i * 2, 2);
+                samples[i] = val;
+            } else if (wav.bits_per_sample == 8) {
+                samples[i] = static_cast<int16_t>(
+                    (static_cast<int>(data[wav.data_offset + i]) - 128) << 8);
+            }
+        }
+
+        result = algorithm::flac::encode(samples, wav.sample_rate,
+                                          wav.num_channels, wav.bits_per_sample,
+                                          quality_);
+    } else {
+        // Raw audio: assume 44.1kHz 16-bit stereo
+        size_t sample_count = data.size() / 2;
+        std::vector<int16_t> samples(sample_count);
+        for (size_t i = 0; i < sample_count; ++i) {
+            int16_t val;
+            std::memcpy(&val, data.data() + i * 2, 2);
+            samples[i] = val;
+        }
+        result = algorithm::flac::encode(samples, 44100, 2, 16, quality_);
+    }
+
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    return ok_codec(std::move(result), data.size(),
+                    std::chrono::duration<double, std::milli>(t1 - t0).count());
+}
+
+CompressorResult AudioFlacCompressor::decompress(std::vector<uint8_t> data) {
+    auto t0 = std::chrono::high_resolution_clock::now();
+    // FLAC decode not yet implemented
+    (void)data;
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    return fail_codec("FLAC decode not implemented",
+                       0);
+}
+
+std::string AudioFlacCompressor::get_algorithm_name() { return "FLAC"; }
+
+// ── Audio AAC ──
+
+CompressorResult AudioAacCompressor::compress(std::vector<uint8_t> data) {
+    auto t0 = std::chrono::high_resolution_clock::now();
+
+    // Detect WAV data: check for "RIFF" header
+    bool is_wav = (data.size() > 12 && data[0] == 'R' && data[1] == 'I' && data[2] == 'F' && data[3] == 'F');
+
+    std::vector<uint8_t> result;
+    if (is_wav) {
+        auto wav = algorithm::parse_wav(data);
+        if (wav.sample_rate == 0)
+            return fail_codec("Failed to parse WAV file", 0);
+
+        size_t sample_count = wav.data_size / (wav.bits_per_sample / 8);
+        std::vector<int16_t> samples(sample_count);
+        for (size_t i = 0; i < sample_count; ++i) {
+            if (wav.bits_per_sample == 16) {
+                int16_t val;
+                std::memcpy(&val, data.data() + wav.data_offset + i * 2, 2);
+                samples[i] = val;
+            } else if (wav.bits_per_sample == 8) {
+                samples[i] = static_cast<int16_t>(
+                    (static_cast<int>(data[wav.data_offset + i]) - 128) << 8);
+            }
+        }
+
+        int bitrate = 64 + quality_ * 32; // quality 0-8 → 64-320 kbps
+        result = algorithm::aac::encode(samples, wav.sample_rate,
+                                         wav.num_channels, wav.bits_per_sample,
+                                         bitrate);
+    } else {
+        size_t sample_count = data.size() / 2;
+        std::vector<int16_t> samples(sample_count);
+        if (!samples.empty())
+            std::memcpy(samples.data(), data.data(), data.size());
+
+        int bitrate = 64 + quality_ * 32;
+        result = algorithm::aac::encode(samples, 44100, 2, 16, bitrate);
+    }
+
+    if (result.empty())
+        return fail_codec("AAC encode failed", data.size());
+
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    return ok_codec(std::move(result), data.size(),
+                    std::chrono::duration<double, std::milli>(t1 - t0).count());
+}
+
+CompressorResult AudioAacCompressor::decompress(std::vector<uint8_t> data) {
+    auto t0 = std::chrono::high_resolution_clock::now();
+    auto result = algorithm::aac::decode(data);
+    if (result.empty())
+        return fail_codec("AAC decode not yet implemented", data.size());
+    const auto t1 = std::chrono::high_resolution_clock::now();
+
+    int sample_rate = 44100;
+    int num_channels = 2;
+    if (data.size() >= 7) {
+        int sr_idx = (data[2] >> 2) & 0x0F;
+        sample_rate = [](int idx) -> int {
+            switch (idx) {
+                case 0:  return 96000; case 1:  return 88200;
+                case 2:  return 64000; case 3:  return 48000;
+                case 4:  return 44100; case 5:  return 32000;
+                case 6:  return 24000; case 7:  return 22050;
+                case 8:  return 16000; case 9:  return 12000;
+                case 10: return 11025; case 11: return 8000;
+                default: return 44100;
+            }
+        }(sr_idx);
+        num_channels = ((data[2] & 0x01) << 2) | ((data[3] >> 6) & 0x03);
+        if (num_channels == 0) num_channels = 1;
+    }
+
+    auto wav = algorithm::build_wav(result, sample_rate, num_channels, 16);
+    return ok_codec(std::move(wav), data.size(),
+                    std::chrono::duration<double, std::milli>(t1 - t0).count());
+}
+
+std::string AudioAacCompressor::get_algorithm_name() { return "AAC-LC"; }
+
+// ── Video H.264 ──
+
+CompressorResult VideoH264Compressor::compress(std::vector<uint8_t> data) {
+    auto t0 = std::chrono::high_resolution_clock::now();
+    auto result = algorithm::video_compress(data, algorithm::VideoFormat::H264, quality_);
+    if (result.empty())
+        return fail_codec("H.264 encode failed: invalid video data", data.size());
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    return ok_codec(std::move(result), data.size(),
+                    std::chrono::duration<double, std::milli>(t1 - t0).count());
+}
+
+CompressorResult VideoH264Compressor::decompress(std::vector<uint8_t> data) {
+    auto t0 = std::chrono::high_resolution_clock::now();
+    auto result = algorithm::video_decompress(data);
+    if (result.empty())
+        return fail_codec("H.264 decode not yet implemented", data.size());
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    return ok_codec(std::move(result), data.size(),
+                    std::chrono::duration<double, std::milli>(t1 - t0).count());
+}
+
+std::string VideoH264Compressor::get_algorithm_name() { return "H.264"; }
 
 }  // namespace compressor::core

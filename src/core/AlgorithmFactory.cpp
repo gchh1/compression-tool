@@ -4,7 +4,7 @@
 
 #include "Brotli.hpp"
 #include "Deflate.hpp"
-#include "Delta.hpp"
+// #include "Delta.hpp"
 #include "Inflate.hpp"
 #include "LZDP.hpp"
 #include "LZSS.hpp"
@@ -49,10 +49,10 @@ auto createAlgorithm(AlgorithmID id,
         }
         case AlgorithmID::Inflate:
             return std::make_unique<algorithm::Inflate>();
-        case AlgorithmID::DeltaEncode:
-            return std::make_unique<algorithm::DeltaEncode>();
-        case AlgorithmID::DeltaDecode:
-            return std::make_unique<algorithm::DeltaDecode>();
+        //case AlgorithmID::DeltaEncode:
+        //    return std::make_unique<algorithm::DeltaEncode>();
+        //case AlgorithmID::DeltaDecode:
+        //    return std::make_unique<algorithm::DeltaDecode>();
         case AlgorithmID::DPFlate: {
             const DpflatePipelineParams df_fallback{};
             const DpflatePipelineParams& df =

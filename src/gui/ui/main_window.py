@@ -47,7 +47,7 @@ from gui.engine.file_protocol import (
 from gui.config.settings import load_config, get_defaults
 from gui.config.theme import ThemeManager
 from gui.ui.table import FileTableWidget
-from gui.ui.worker import CompressionWorker, ComparisonWorker, COMPARISON_ALGORITHMS
+from gui.ui.worker import CompressionWorker, ComparisonWorker, get_comparison_algorithms_for_file
 from gui.utils.interaction_log import log_ui, log_ui_flush, preview_paths
 from gui.utils.logging import flush_logging
 
@@ -111,6 +111,8 @@ class AlgorithmSelector(QComboBox):
         ("Zstd", AlgorithmType.ZSTD),
         ("JPEG", AlgorithmType.JPEG),
         ("PNG", AlgorithmType.PNG),
+        ("FLAC (音频无损)", AlgorithmType.FLAC),
+        ("AAC-LC (音频有损)", AlgorithmType.AAC_LC),
         ("Transformer (beta)", AlgorithmType.TRANSFORMER),
         ("Auto", AlgorithmType.AUTO),
     ]
@@ -1457,16 +1459,20 @@ class AlgorithmConfigDialog(QDialog):
         layout.addWidget(web_dict_note)
 
         self._media_comp_btn = _streaming_follow_toggle_button(
-            "对文件夹内的媒体文件使用图片压缩算法（JPEG/PNG）",
+            "对文件夹内的媒体文件自动使用专用压缩算法",
             checked=get_use_media_compression(_stream_file_cfg),
         )
         self._media_comp_btn.setToolTip(
             "勾选后：压缩文件夹时，其中的 .jpg/.jpeg/.jpe 文件自动走 JPEG 算法，"
-            ".png 文件自动走 PNG 算法。Auto 自动决策不受此影响。"
+            ".png 文件自动走 PNG 算法，.wav/.flac 自动走 FLAC 算法，"
+            ".mp4/.avi/.mkv/.mov 自动走 H.264 算法。"
+            "如需对 .wav 使用 AAC-LC 有损压缩，请手动选择 AAC-LC 算法。"
+            "Auto 自动决策不受此影响。"
         )
         layout.addWidget(self._media_comp_btn)
         media_comp_note = QLabel(
-            "对文件夹压缩时，图片文件自动匹配对应的媒体压缩算法；Auto 模式自行决策。"
+            "对文件夹压缩时，图片/音频/视频文件自动匹配对应的专用压缩算法；"
+            "也可在算法下拉框中手动选择 FLAC 或 AAC-LC。Auto 模式自行决策。"
         )
         media_comp_note.setWordWrap(True)
         media_comp_note.setStyleSheet(
@@ -2208,22 +2214,6 @@ class MainWindow(QMainWindow):
                          i, type(r).__name__, getattr(r, 'name', '?'), getattr(r, 'status', '?'))
         tasks = list(zip(selected, records))
 
-        img_ext_map = {AlgorithmType.JPEG: {".jpg", ".jpeg", ".jpe"}, AlgorithmType.PNG: {".png"}}
-        if algo in img_ext_map:
-            valid = img_ext_map[algo]
-            for _, r in tasks:
-                if isinstance(r, FolderRecord):
-                    continue
-                ext = Path(r.path).suffix.lower()
-                if ext not in valid:
-                    label = "JPEG" if algo == AlgorithmType.JPEG else "PNG"
-                    QMessageBox.warning(
-                        self, "不支持的文件类型",
-                        f"{label} 压缩算法只能用于 {'/'.join(valid)} 文件。\n"
-                        f"文件 \"{r.name}\" 类型为 \"{ext}\"，无法使用 {label} 算法压缩。"
-                    )
-                    return
-
         log_ui_flush(
             "compress.dispatch",
             algo=algo.value,
@@ -2615,7 +2605,7 @@ class MainWindow(QMainWindow):
                         rel = str(P(f.path).relative_to(folder_root))
                     except ValueError:
                         rel = f.name
-                    file_list.append((rel, blob, f.algorithm, f.size))
+                    file_list.append((rel, blob, f.algorithm, f.size, bool(getattr(f, 'web_dict_preprocess', False))))
                 if not file_list:
                     continue
                 archive_data = pack_folder_archive(record.name, file_list)
@@ -2756,7 +2746,7 @@ class MainWindow(QMainWindow):
                                 rel = str(P(f.path).relative_to(folder_root))
                             except ValueError:
                                 rel = f.name
-                            file_list.append((rel, blob, f.algorithm, f.size))
+                            file_list.append((rel, blob, f.algorithm, f.size, bool(getattr(f, 'web_dict_preprocess', False))))
                         archive_data = pack_folder_archive(record.name, file_list)
                         inner_files = unpack_folder_archive(archive_data)
                         for inner_hdr, inner_payload in inner_files:
@@ -2778,6 +2768,7 @@ class MainWindow(QMainWindow):
                             compressed_size=_compressed_size(record),
                             original_filename=record.name,
                             is_folder=False,
+                            web_dict_preprocess=bool(getattr(record, 'web_dict_preprocess', False)),
                         )
 
                         if hasattr(record, 'compressed_path') and record.compressed_path:
@@ -3194,7 +3185,7 @@ class MainWindow(QMainWindow):
         progress.setValue(0)
 
         self._comparison_progress = progress
-        self._comparison_worker = ComparisonWorker(record, COMPARISON_ALGORITHMS, self)
+        self._comparison_worker = ComparisonWorker(record, get_comparison_algorithms_for_file(record.path), self)
         self._comparison_worker.progress.connect(self._on_comparison_progress)
         self._comparison_worker.comparison_finished.connect(self._on_comparison_finished)
         self._comparison_worker.failed.connect(self._on_comparison_failed)
@@ -3226,21 +3217,15 @@ class MainWindow(QMainWindow):
 
     def _on_comparison_finished(self, results: object, name: str, original_size: int) -> None:
         try:
-            from gui.windows.comparison import generate_comparison as _gen_cmp
-            import tempfile, webbrowser
+            from gui.windows.comparison import ComparisonDialog
             if self._comparison_progress:
                 self._comparison_progress.setValue(100)
                 self._comparison_progress.close()
                 self._comparison_progress = None
             self._statusbar.set_progress_value(100)
             self._statusbar.set_status_text("算法对比完成")
-            html = _gen_cmp(list(results), name, original_size)
-            with tempfile.NamedTemporaryFile(
-                mode="w", suffix=".html", delete=False, encoding="utf-8",
-            ) as _f:
-                _f.write(html)
-                _tmp = _f.name
-            webbrowser.open(Path(_tmp).as_uri())
+            dialog = ComparisonDialog(list(results), name, original_size, parent=self)
+            dialog.exec()
         except Exception as e:
             logger.error("[view] comparison result handling failed: %s", e, exc_info=True)
             QMessageBox.warning(self, "对比错误", f"显示算法对比失败:\n{e}")

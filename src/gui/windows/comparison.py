@@ -1,12 +1,202 @@
 from __future__ import annotations
 
-import json
 import logging
-import tempfile
-import webbrowser
-from pathlib import Path
+
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QColor, QFont
+from PyQt6.QtWidgets import (
+    QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QWidget,
+    QTableWidget, QTableWidgetItem, QHeaderView,
+)
+
+from gui.config.theme import ThemeManager
 
 logger = logging.getLogger(__name__)
+
+
+def _bar_color(ratio: float) -> str:
+    t = max(0.0, min(1.0, ratio))
+    r = int(0x22 + t * (0xef - 0x22))
+    g = int(0xc5 * (1.0 - t) + 0x44 * t)
+    b = int(0x5e * (1.0 - t) + 0x44 * t)
+    return f"#{r:02x}{g:02x}{b:02x}"
+
+
+class ComparisonDialog(QDialog):
+    def __init__(self, results: list[dict], filename: str, original_size: int, parent=None):
+        super().__init__(parent)
+        self._results = results
+        self._filename = filename
+        self._original_size = original_size
+        self.setWindowTitle(f"算法对比 - {filename}")
+        self.setMinimumWidth(640)
+        self.setMinimumHeight(400)
+        self.resize(720, 520)
+        self._setup_ui()
+
+    def _setup_ui(self) -> None:
+        self.setStyleSheet(ThemeManager.full_dialog_sheet())
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 16, 20, 16)
+        layout.setSpacing(12)
+
+        header = QLabel(f"算法压缩对比")
+        header_font = QFont()
+        header_font.setPointSize(16)
+        header_font.setBold(True)
+        header.setFont(header_font)
+        layout.addWidget(header)
+
+        meta = QLabel(f"文件: {self._filename}  |  原始大小: {self._original_size:,} B")
+        meta.setStyleSheet("color: #94a3b8; font-size: 13px;")
+        layout.addWidget(meta)
+
+        layout.addSpacing(8)
+
+        chart_widget = QWidget()
+        chart_layout = QVBoxLayout(chart_widget)
+        chart_layout.setContentsMargins(0, 0, 0, 0)
+        chart_layout.setSpacing(8)
+
+        for idx, r in enumerate(self._results):
+            row = QWidget()
+            row_layout = QHBoxLayout(row)
+            row_layout.setContentsMargins(0, 0, 0, 0)
+            row_layout.setSpacing(8)
+
+            label = QLabel(r.get("name", f"Algo {idx}"))
+            label.setFixedWidth(130)
+            label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+            label.setStyleSheet("color: #cbd5e1; font-size: 13px;")
+            row_layout.addWidget(label)
+
+            pct = min(100.0, max(0.0, r.get("ratio", 0) * 100))
+            color = _bar_color(r.get("ratio", 0))
+
+            track = QWidget()
+            track.setFixedHeight(26)
+            track.setStyleSheet(f"""
+                QWidget {{
+                    background: #1e293b;
+                    border-radius: 6px;
+                }}
+            """)
+            track_layout = QHBoxLayout(track)
+            track_layout.setContentsMargins(0, 0, 0, 0)
+
+            fill = QLabel(f" {pct:.1f}%")
+            fill.setStyleSheet(f"""
+                QLabel {{
+                    background: {color};
+                    color: #0f172a;
+                    font-size: 12px;
+                    font-weight: bold;
+                    border-radius: 6px;
+                    padding: 2px 0 0 8px;
+                }}
+            """)
+            fill.setFixedHeight(26)
+            fill_stretch = max(1, int(pct))
+            empty_stretch = max(1, int(100 - pct))
+            track_layout.addWidget(fill, fill_stretch)
+            track_layout.addStretch(empty_stretch)
+
+            row_layout.addWidget(track, 1)
+
+            time_label = QLabel(f"{r.get('time_ms', 0):.1f} ms")
+            time_label.setFixedWidth(72)
+            time_label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+            time_label.setStyleSheet("color: #94a3b8; font-size: 12px;")
+            row_layout.addWidget(time_label)
+
+            chart_layout.addWidget(row)
+
+        layout.addWidget(chart_widget)
+
+        legend = QWidget()
+        legend_layout = QHBoxLayout(legend)
+        legend_layout.setContentsMargins(0, 0, 0, 0)
+        legend_layout.setSpacing(16)
+        for color, text in [("#22c55e", "0%"), ("#eab308", "50%"), ("#ef4444", "100%")]:
+            item = QWidget()
+            item_layout = QHBoxLayout(item)
+            item_layout.setContentsMargins(0, 0, 0, 0)
+            item_layout.setSpacing(4)
+            dot = QLabel("●")
+            dot.setStyleSheet(f"color: {color}; font-size: 14px;")
+            item_layout.addWidget(dot)
+            txt = QLabel(text)
+            txt.setStyleSheet("color: #94a3b8; font-size: 12px;")
+            item_layout.addWidget(txt)
+            legend_layout.addWidget(item)
+        legend_layout.addStretch()
+        layout.addWidget(legend)
+
+        layout.addSpacing(8)
+
+        table = QTableWidget(len(self._results), 5)
+        table.setHorizontalHeaderLabels(["算法", "压缩后", "压缩率", "耗时", "节省"])
+        table.verticalHeader().setVisible(False)
+        table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        table.horizontalHeader().setStretchLastSection(True)
+        table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        table.setStyleSheet(ThemeManager.table_sheet())
+
+        for row_idx, r in enumerate(self._results):
+            algo_item = QTableWidgetItem(r.get("name", f"Algo {row_idx}"))
+            table.setItem(row_idx, 0, algo_item)
+
+            comp_item = QTableWidgetItem(f"{r.get('compressed_size', 0):,} B")
+            comp_item.setTextAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+            table.setItem(row_idx, 1, comp_item)
+
+            ratio_item = QTableWidgetItem(f"{r.get('ratio', 0) * 100:.2f}%")
+            ratio_item.setTextAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+            table.setItem(row_idx, 2, ratio_item)
+
+            time_item = QTableWidgetItem(f"{r.get('time_ms', 0):.1f} ms")
+            time_item.setTextAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+            table.setItem(row_idx, 3, time_item)
+
+            saving = self._original_size - r.get('compressed_size', 0)
+            save_text = f"-{saving:,} B" if saving > 0 else "+"
+            save_item = QTableWidgetItem(save_text)
+            save_item.setTextAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+            save_item.setForeground(QColor("#38bdf8"))
+            font = save_item.font()
+            font.setBold(True)
+            save_item.setFont(font)
+            table.setItem(row_idx, 4, save_item)
+
+        layout.addWidget(table)
+
+        btn_layout = QHBoxLayout()
+        btn_layout.addStretch()
+        close_btn = QPushButton("关闭")
+        close_btn.clicked.connect(self.accept)
+        close_btn.setStyleSheet(ThemeManager.button_sheet())
+        btn_layout.addWidget(close_btn)
+        layout.addLayout(btn_layout)
+
+
+def open_comparison_html(html: str) -> None:
+    import tempfile
+    import webbrowser
+    from pathlib import Path
+
+    with tempfile.NamedTemporaryFile(
+        mode="w",
+        suffix=".html",
+        delete=False,
+        encoding="utf-8",
+    ) as tmp_f:
+        tmp_f.write(html)
+        tmp_path = tmp_f.name
+    tmp = Path(tmp_path)
+    logger.info("[comparison] wrote HTML to %s, opening in browser", tmp)
+    webbrowser.open(tmp.as_uri())
 
 
 def generate_comparison(
@@ -14,6 +204,7 @@ def generate_comparison(
     filename: str = "unknown",
     original_size: int = 0,
 ) -> str:
+    import json
     logger.info("[comparison] generating for %s, original=%d, %d algorithms",
                  filename, original_size, len(results))
     results_json = json.dumps(results, ensure_ascii=False)
@@ -94,17 +285,3 @@ results.forEach(r => {{
 </body>
 </html>"""
     return html
-
-
-def open_comparison_html(html: str) -> None:
-    with tempfile.NamedTemporaryFile(
-        mode="w",
-        suffix=".html",
-        delete=False,
-        encoding="utf-8",
-    ) as tmp_f:
-        tmp_f.write(html)
-        tmp_path = tmp_f.name
-    tmp = Path(tmp_path)
-    logger.info("[comparison] wrote HTML to %s, opening in browser", tmp)
-    webbrowser.open(tmp.as_uri())

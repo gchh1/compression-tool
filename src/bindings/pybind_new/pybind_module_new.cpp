@@ -8,9 +8,11 @@
 #include <pybind11/stl.h>
 
 #include "AlgorithmFactory.hpp"
+#include "AudioCompressorBindings.hpp"
 #include "GuiCompressors.hpp"
 #include "GzipCompressor.hpp"
 #include "ImageCompressorBindings.hpp"
+#include "VideoCompressorBindings.hpp"
 #include "Visualization.hpp"
 #include "api.hpp"
 
@@ -336,6 +338,54 @@ void bind_compressors(py::module_& m) {
             [](ImagePngCompressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
             });
+
+    py::class_<AudioFlacCompressor, ICompressor, std::shared_ptr<AudioFlacCompressor>>(
+        m, "AudioFlacCompressor")
+        .def(py::init<>())
+        .def("set_quality", &AudioFlacCompressor::set_quality)
+        .def("get_quality", &AudioFlacCompressor::get_quality)
+        .def(
+            "compress",
+            [](AudioFlacCompressor& self, py::buffer buf) {
+                return self.compress(buffer_to_u8vec(buf));
+            })
+        .def(
+            "decompress",
+            [](AudioFlacCompressor& self, py::buffer buf) {
+                return self.decompress(buffer_to_u8vec(buf));
+            });
+
+    py::class_<AudioAacCompressor, ICompressor, std::shared_ptr<AudioAacCompressor>>(
+        m, "AudioAacCompressor")
+        .def(py::init<>())
+        .def("set_quality", &AudioAacCompressor::set_quality)
+        .def("get_quality", &AudioAacCompressor::get_quality)
+        .def(
+            "compress",
+            [](AudioAacCompressor& self, py::buffer buf) {
+                return self.compress(buffer_to_u8vec(buf));
+            })
+        .def(
+            "decompress",
+            [](AudioAacCompressor& self, py::buffer buf) {
+                return self.decompress(buffer_to_u8vec(buf));
+            });
+
+    py::class_<VideoH264Compressor, ICompressor, std::shared_ptr<VideoH264Compressor>>(
+        m, "VideoH264Compressor")
+        .def(py::init<>())
+        .def("set_quality", &VideoH264Compressor::set_quality)
+        .def("get_quality", &VideoH264Compressor::get_quality)
+        .def(
+            "compress",
+            [](VideoH264Compressor& self, py::buffer buf) {
+                return self.compress(buffer_to_u8vec(buf));
+            })
+        .def(
+            "decompress",
+            [](VideoH264Compressor& self, py::buffer buf) {
+                return self.decompress(buffer_to_u8vec(buf));
+            });
 }
 
 void bind_pipeline(py::module_& m) {
@@ -358,6 +408,12 @@ void bind_pipeline(py::module_& m) {
         .value("IMAGE_PNG", compressor::core::AlgorithmID::ImagePng)
         .value("IMAGE_JPEG_DECOMPRESS", compressor::core::AlgorithmID::ImageJpegDecompress)
         .value("IMAGE_PNG_DECOMPRESS", compressor::core::AlgorithmID::ImagePngDecompress)
+        .value("AUDIO_FLAC", compressor::core::AlgorithmID::AudioFlac)
+        .value("AUDIO_FLAC_DECOMPRESS", compressor::core::AlgorithmID::AudioFlacDecompress)
+        .value("AUDIO_AAC_LC", compressor::core::AlgorithmID::AudioAacLC)
+        .value("AUDIO_AAC_LC_DECOMPRESS", compressor::core::AlgorithmID::AudioAacLCDecompress)
+        .value("VIDEO_H264", compressor::core::AlgorithmID::VideoH264)
+        .value("VIDEO_H264_DECOMPRESS", compressor::core::AlgorithmID::VideoH264Decompress)
         .export_values();
 
     py::class_<compressor::core::LzdpWholeFileParams>(m, "LzdpWholeFileParams")

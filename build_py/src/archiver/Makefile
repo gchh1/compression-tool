@@ -84,51 +84,6 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
 
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-.PHONY : list_install_components/fast
-
-# Special rule for the target install
-install: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -P cmake_install.cmake
-.PHONY : install
-
-# Special rule for the target install
-install/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -P cmake_install.cmake
-.PHONY : install/fast
-
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
-
-# Special rule for the target install/local
-install/local/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local/fast
-
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip/fast
-
 # The main all target
 all: cmake_check_build_system
 	cd /d D:\AAA_C\compression-tool\build_py && $(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_py\CMakeFiles D:\AAA_C\compression-tool\build_py\src\archiver\\CMakeFiles\progress.marks
@@ -160,92 +115,6 @@ depend:
 	cd /d D:\AAA_C\compression-tool\build_py && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles\Makefile.cmake 1
 .PHONY : depend
 
-# Convenience name for target.
-src/archiver/CMakeFiles/archiver.dir/rule:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/archiver/CMakeFiles/archiver.dir/rule
-.PHONY : src/archiver/CMakeFiles/archiver.dir/rule
-
-# Convenience name for target.
-archiver: src/archiver/CMakeFiles/archiver.dir/rule
-.PHONY : archiver
-
-# fast build rule for target.
-archiver/fast:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\archiver\CMakeFiles\archiver.dir\build.make src/archiver/CMakeFiles/archiver.dir/build
-.PHONY : archiver/fast
-
-FileReader.obj: FileReader.cpp.obj
-.PHONY : FileReader.obj
-
-# target to build an object file
-FileReader.cpp.obj:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\archiver\CMakeFiles\archiver.dir\build.make src/archiver/CMakeFiles/archiver.dir/FileReader.cpp.obj
-.PHONY : FileReader.cpp.obj
-
-FileReader.i: FileReader.cpp.i
-.PHONY : FileReader.i
-
-# target to preprocess a source file
-FileReader.cpp.i:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\archiver\CMakeFiles\archiver.dir\build.make src/archiver/CMakeFiles/archiver.dir/FileReader.cpp.i
-.PHONY : FileReader.cpp.i
-
-FileReader.s: FileReader.cpp.s
-.PHONY : FileReader.s
-
-# target to generate assembly for a file
-FileReader.cpp.s:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\archiver\CMakeFiles\archiver.dir\build.make src/archiver/CMakeFiles/archiver.dir/FileReader.cpp.s
-.PHONY : FileReader.cpp.s
-
-PackReader.obj: PackReader.cpp.obj
-.PHONY : PackReader.obj
-
-# target to build an object file
-PackReader.cpp.obj:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\archiver\CMakeFiles\archiver.dir\build.make src/archiver/CMakeFiles/archiver.dir/PackReader.cpp.obj
-.PHONY : PackReader.cpp.obj
-
-PackReader.i: PackReader.cpp.i
-.PHONY : PackReader.i
-
-# target to preprocess a source file
-PackReader.cpp.i:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\archiver\CMakeFiles\archiver.dir\build.make src/archiver/CMakeFiles/archiver.dir/PackReader.cpp.i
-.PHONY : PackReader.cpp.i
-
-PackReader.s: PackReader.cpp.s
-.PHONY : PackReader.s
-
-# target to generate assembly for a file
-PackReader.cpp.s:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\archiver\CMakeFiles\archiver.dir\build.make src/archiver/CMakeFiles/archiver.dir/PackReader.cpp.s
-.PHONY : PackReader.cpp.s
-
-PackWriter.obj: PackWriter.cpp.obj
-.PHONY : PackWriter.obj
-
-# target to build an object file
-PackWriter.cpp.obj:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\archiver\CMakeFiles\archiver.dir\build.make src/archiver/CMakeFiles/archiver.dir/PackWriter.cpp.obj
-.PHONY : PackWriter.cpp.obj
-
-PackWriter.i: PackWriter.cpp.i
-.PHONY : PackWriter.i
-
-# target to preprocess a source file
-PackWriter.cpp.i:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\archiver\CMakeFiles\archiver.dir\build.make src/archiver/CMakeFiles/archiver.dir/PackWriter.cpp.i
-.PHONY : PackWriter.cpp.i
-
-PackWriter.s: PackWriter.cpp.s
-.PHONY : PackWriter.s
-
-# target to generate assembly for a file
-PackWriter.cpp.s:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\archiver\CMakeFiles\archiver.dir\build.make src/archiver/CMakeFiles/archiver.dir/PackWriter.cpp.s
-.PHONY : PackWriter.cpp.s
-
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -253,21 +122,7 @@ help:
 	@echo ... clean
 	@echo ... depend
 	@echo ... edit_cache
-	@echo ... install
-	@echo ... install/local
-	@echo ... install/strip
-	@echo ... list_install_components
 	@echo ... rebuild_cache
-	@echo ... archiver
-	@echo ... FileReader.obj
-	@echo ... FileReader.i
-	@echo ... FileReader.s
-	@echo ... PackReader.obj
-	@echo ... PackReader.i
-	@echo ... PackReader.s
-	@echo ... PackWriter.obj
-	@echo ... PackWriter.i
-	@echo ... PackWriter.s
 .PHONY : help
 
 

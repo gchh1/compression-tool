@@ -4,7 +4,7 @@
 
 
 # Configuration directories and files
-SourceDirectory: D:/AAA_C/compression-tool/third_party/brotli
+SourceDirectory: D:/AAA_C/compression-tool/build_py/_deps/google_brotli-src
 BuildDirectory: D:/AAA_C/compression-tool/build_py/_deps/google_brotli-build
 
 # Where to place the cost data store
@@ -27,7 +27,7 @@ SubmitInactivityTimeout:
 NightlyStartTime: 00:00:00 EDT
 
 # Commands for the build/test/submit cycle
-ConfigureCommand: "D:/AAA_C/AAA_MinGW/mingw64/bin/cmake.exe" "D:/AAA_C/compression-tool/third_party/brotli"
+ConfigureCommand: "D:/AAA_C/AAA_MinGW/mingw64/bin/cmake.exe" "D:/AAA_C/compression-tool/build_py/_deps/google_brotli-src"
 MakeCommand: D:/AAA_C/AAA_MinGW/mingw64/bin/cmake.exe --build . --config "${CTEST_CONFIGURATION_TYPE}"
 DefaultCTestConfigurationType: Release
 

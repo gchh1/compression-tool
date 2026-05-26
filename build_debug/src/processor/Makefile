@@ -84,51 +84,6 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
 
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-.PHONY : list_install_components/fast
-
-# Special rule for the target install
-install: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -P cmake_install.cmake
-.PHONY : install
-
-# Special rule for the target install
-install/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -P cmake_install.cmake
-.PHONY : install/fast
-
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
-
-# Special rule for the target install/local
-install/local/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local/fast
-
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip/fast
-
 # The main all target
 all: cmake_check_build_system
 	cd /d D:\AAA_C\compression-tool\build_debug && $(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_debug\CMakeFiles D:\AAA_C\compression-tool\build_debug\src\processor\\CMakeFiles\progress.marks
@@ -160,92 +115,6 @@ depend:
 	cd /d D:\AAA_C\compression-tool\build_debug && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles\Makefile.cmake 1
 .PHONY : depend
 
-# Convenience name for target.
-src/processor/CMakeFiles/processor.dir/rule:
-	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/processor/CMakeFiles/processor.dir/rule
-.PHONY : src/processor/CMakeFiles/processor.dir/rule
-
-# Convenience name for target.
-processor: src/processor/CMakeFiles/processor.dir/rule
-.PHONY : processor
-
-# fast build rule for target.
-processor/fast:
-	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\processor\CMakeFiles\processor.dir\build.make src/processor/CMakeFiles/processor.dir/build
-.PHONY : processor/fast
-
-Pipeline.obj: Pipeline.cpp.obj
-.PHONY : Pipeline.obj
-
-# target to build an object file
-Pipeline.cpp.obj:
-	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\processor\CMakeFiles\processor.dir\build.make src/processor/CMakeFiles/processor.dir/Pipeline.cpp.obj
-.PHONY : Pipeline.cpp.obj
-
-Pipeline.i: Pipeline.cpp.i
-.PHONY : Pipeline.i
-
-# target to preprocess a source file
-Pipeline.cpp.i:
-	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\processor\CMakeFiles\processor.dir\build.make src/processor/CMakeFiles/processor.dir/Pipeline.cpp.i
-.PHONY : Pipeline.cpp.i
-
-Pipeline.s: Pipeline.cpp.s
-.PHONY : Pipeline.s
-
-# target to generate assembly for a file
-Pipeline.cpp.s:
-	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\processor\CMakeFiles\processor.dir\build.make src/processor/CMakeFiles/processor.dir/Pipeline.cpp.s
-.PHONY : Pipeline.cpp.s
-
-PipelineBuilder.obj: PipelineBuilder.cpp.obj
-.PHONY : PipelineBuilder.obj
-
-# target to build an object file
-PipelineBuilder.cpp.obj:
-	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\processor\CMakeFiles\processor.dir\build.make src/processor/CMakeFiles/processor.dir/PipelineBuilder.cpp.obj
-.PHONY : PipelineBuilder.cpp.obj
-
-PipelineBuilder.i: PipelineBuilder.cpp.i
-.PHONY : PipelineBuilder.i
-
-# target to preprocess a source file
-PipelineBuilder.cpp.i:
-	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\processor\CMakeFiles\processor.dir\build.make src/processor/CMakeFiles/processor.dir/PipelineBuilder.cpp.i
-.PHONY : PipelineBuilder.cpp.i
-
-PipelineBuilder.s: PipelineBuilder.cpp.s
-.PHONY : PipelineBuilder.s
-
-# target to generate assembly for a file
-PipelineBuilder.cpp.s:
-	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\processor\CMakeFiles\processor.dir\build.make src/processor/CMakeFiles/processor.dir/PipelineBuilder.cpp.s
-.PHONY : PipelineBuilder.cpp.s
-
-StreamProcessor.obj: StreamProcessor.cpp.obj
-.PHONY : StreamProcessor.obj
-
-# target to build an object file
-StreamProcessor.cpp.obj:
-	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\processor\CMakeFiles\processor.dir\build.make src/processor/CMakeFiles/processor.dir/StreamProcessor.cpp.obj
-.PHONY : StreamProcessor.cpp.obj
-
-StreamProcessor.i: StreamProcessor.cpp.i
-.PHONY : StreamProcessor.i
-
-# target to preprocess a source file
-StreamProcessor.cpp.i:
-	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\processor\CMakeFiles\processor.dir\build.make src/processor/CMakeFiles/processor.dir/StreamProcessor.cpp.i
-.PHONY : StreamProcessor.cpp.i
-
-StreamProcessor.s: StreamProcessor.cpp.s
-.PHONY : StreamProcessor.s
-
-# target to generate assembly for a file
-StreamProcessor.cpp.s:
-	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\processor\CMakeFiles\processor.dir\build.make src/processor/CMakeFiles/processor.dir/StreamProcessor.cpp.s
-.PHONY : StreamProcessor.cpp.s
-
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -253,21 +122,7 @@ help:
 	@echo ... clean
 	@echo ... depend
 	@echo ... edit_cache
-	@echo ... install
-	@echo ... install/local
-	@echo ... install/strip
-	@echo ... list_install_components
 	@echo ... rebuild_cache
-	@echo ... processor
-	@echo ... Pipeline.obj
-	@echo ... Pipeline.i
-	@echo ... Pipeline.s
-	@echo ... PipelineBuilder.obj
-	@echo ... PipelineBuilder.i
-	@echo ... PipelineBuilder.s
-	@echo ... StreamProcessor.obj
-	@echo ... StreamProcessor.i
-	@echo ... StreamProcessor.s
 .PHONY : help
 
 

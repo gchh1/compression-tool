@@ -368,6 +368,9 @@ FETCHCONTENT_UPDATES_DISCONNECTED_GOOGLE_BROTLI:BOOL=OFF
 //Path to a program.
 GITCOMMAND:FILEPATH=D:/Git/cmd/git.exe
 
+//Git command line client
+GIT_EXECUTABLE:FILEPATH=D:/Git/cmd/git.exe
+
 //Command to build the project
 MAKECOMMAND:STRING=D:/AAA_C/AAA_MinGW/mingw64/bin/cmake.exe --build . --config "${CTEST_CONFIGURATION_TYPE}"
 
@@ -390,7 +393,7 @@ brotli_BINARY_DIR:STATIC=D:/AAA_C/compression-tool/build_py/_deps/google_brotli-
 brotli_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
-brotli_SOURCE_DIR:STATIC=D:/AAA_C/compression-tool/third_party/brotli
+brotli_SOURCE_DIR:STATIC=D:/AAA_C/compression-tool/build_py/_deps/google_brotli-src
 
 //Value Computed by CMake
 compression-tool_BINARY_DIR:STATIC=D:/AAA_C/compression-tool/build_py
@@ -612,6 +615,8 @@ DART_TESTING_TIMEOUT-ADVANCED:INTERNAL=1
 FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[D:/Python/python.exe][D:/Python/libs/python312.lib][D:/Python/include][cfound components: Interpreter Development Development.Module Development.Embed ][v3.12.4()]
 //ADVANCED property for variable: GITCOMMAND
 GITCOMMAND-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: GIT_EXECUTABLE
+GIT_EXECUTABLE-ADVANCED:INTERNAL=1
 //Have function log2
 LOG2_RES:INTERNAL=1
 //ADVANCED property for variable: MAKECOMMAND

@@ -70,93 +70,93 @@ include _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/flags.make
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/constants.c.obj: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/constants.c.obj: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/constants.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/common/constants.c
+_deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/constants.c.obj: _deps/google_brotli-src/c/common/constants.c
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/constants.c.obj: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/constants.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/constants.c.obj -MF CMakeFiles\brotlicommon.dir\c\common\constants.c.obj.d -o CMakeFiles\brotlicommon.dir\c\common\constants.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\common\constants.c
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/constants.c.obj -MF CMakeFiles\brotlicommon.dir\c\common\constants.c.obj.d -o CMakeFiles\brotlicommon.dir\c\common\constants.c.obj -c D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\constants.c
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/constants.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlicommon.dir/c/common/constants.c.i"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\common\constants.c > CMakeFiles\brotlicommon.dir\c\common\constants.c.i
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\constants.c > CMakeFiles\brotlicommon.dir\c\common\constants.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/constants.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlicommon.dir/c/common/constants.c.s"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\common\constants.c -o CMakeFiles\brotlicommon.dir\c\common\constants.c.s
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\constants.c -o CMakeFiles\brotlicommon.dir\c\common\constants.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/context.c.obj: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/context.c.obj: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/context.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/common/context.c
+_deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/context.c.obj: _deps/google_brotli-src/c/common/context.c
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/context.c.obj: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/context.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/context.c.obj -MF CMakeFiles\brotlicommon.dir\c\common\context.c.obj.d -o CMakeFiles\brotlicommon.dir\c\common\context.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\common\context.c
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/context.c.obj -MF CMakeFiles\brotlicommon.dir\c\common\context.c.obj.d -o CMakeFiles\brotlicommon.dir\c\common\context.c.obj -c D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\context.c
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/context.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlicommon.dir/c/common/context.c.i"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\common\context.c > CMakeFiles\brotlicommon.dir\c\common\context.c.i
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\context.c > CMakeFiles\brotlicommon.dir\c\common\context.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/context.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlicommon.dir/c/common/context.c.s"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\common\context.c -o CMakeFiles\brotlicommon.dir\c\common\context.c.s
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\context.c -o CMakeFiles\brotlicommon.dir\c\common\context.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/dictionary.c.obj: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/dictionary.c.obj: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/dictionary.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/common/dictionary.c
+_deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/dictionary.c.obj: _deps/google_brotli-src/c/common/dictionary.c
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/dictionary.c.obj: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/dictionary.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/dictionary.c.obj -MF CMakeFiles\brotlicommon.dir\c\common\dictionary.c.obj.d -o CMakeFiles\brotlicommon.dir\c\common\dictionary.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\common\dictionary.c
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/dictionary.c.obj -MF CMakeFiles\brotlicommon.dir\c\common\dictionary.c.obj.d -o CMakeFiles\brotlicommon.dir\c\common\dictionary.c.obj -c D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\dictionary.c
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/dictionary.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlicommon.dir/c/common/dictionary.c.i"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\common\dictionary.c > CMakeFiles\brotlicommon.dir\c\common\dictionary.c.i
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\dictionary.c > CMakeFiles\brotlicommon.dir\c\common\dictionary.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/dictionary.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlicommon.dir/c/common/dictionary.c.s"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\common\dictionary.c -o CMakeFiles\brotlicommon.dir\c\common\dictionary.c.s
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\dictionary.c -o CMakeFiles\brotlicommon.dir\c\common\dictionary.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/platform.c.obj: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/platform.c.obj: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/platform.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/common/platform.c
+_deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/platform.c.obj: _deps/google_brotli-src/c/common/platform.c
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/platform.c.obj: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/platform.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/platform.c.obj -MF CMakeFiles\brotlicommon.dir\c\common\platform.c.obj.d -o CMakeFiles\brotlicommon.dir\c\common\platform.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\common\platform.c
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/platform.c.obj -MF CMakeFiles\brotlicommon.dir\c\common\platform.c.obj.d -o CMakeFiles\brotlicommon.dir\c\common\platform.c.obj -c D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\platform.c
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/platform.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlicommon.dir/c/common/platform.c.i"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\common\platform.c > CMakeFiles\brotlicommon.dir\c\common\platform.c.i
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\platform.c > CMakeFiles\brotlicommon.dir\c\common\platform.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/platform.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlicommon.dir/c/common/platform.c.s"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\common\platform.c -o CMakeFiles\brotlicommon.dir\c\common\platform.c.s
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\platform.c -o CMakeFiles\brotlicommon.dir\c\common\platform.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/shared_dictionary.c.obj: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/shared_dictionary.c.obj: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/shared_dictionary.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/common/shared_dictionary.c
+_deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/shared_dictionary.c.obj: _deps/google_brotli-src/c/common/shared_dictionary.c
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/shared_dictionary.c.obj: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/shared_dictionary.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/shared_dictionary.c.obj -MF CMakeFiles\brotlicommon.dir\c\common\shared_dictionary.c.obj.d -o CMakeFiles\brotlicommon.dir\c\common\shared_dictionary.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\common\shared_dictionary.c
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/shared_dictionary.c.obj -MF CMakeFiles\brotlicommon.dir\c\common\shared_dictionary.c.obj.d -o CMakeFiles\brotlicommon.dir\c\common\shared_dictionary.c.obj -c D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\shared_dictionary.c
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/shared_dictionary.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlicommon.dir/c/common/shared_dictionary.c.i"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\common\shared_dictionary.c > CMakeFiles\brotlicommon.dir\c\common\shared_dictionary.c.i
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\shared_dictionary.c > CMakeFiles\brotlicommon.dir\c\common\shared_dictionary.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/shared_dictionary.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlicommon.dir/c/common/shared_dictionary.c.s"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\common\shared_dictionary.c -o CMakeFiles\brotlicommon.dir\c\common\shared_dictionary.c.s
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\shared_dictionary.c -o CMakeFiles\brotlicommon.dir\c\common\shared_dictionary.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/transform.c.obj: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/transform.c.obj: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/transform.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/common/transform.c
+_deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/transform.c.obj: _deps/google_brotli-src/c/common/transform.c
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/transform.c.obj: _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/transform.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/transform.c.obj -MF CMakeFiles\brotlicommon.dir\c\common\transform.c.obj.d -o CMakeFiles\brotlicommon.dir\c\common\transform.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\common\transform.c
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/transform.c.obj -MF CMakeFiles\brotlicommon.dir\c\common\transform.c.obj.d -o CMakeFiles\brotlicommon.dir\c\common\transform.c.obj -c D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\transform.c
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/transform.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlicommon.dir/c/common/transform.c.i"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\common\transform.c > CMakeFiles\brotlicommon.dir\c\common\transform.c.i
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\transform.c > CMakeFiles\brotlicommon.dir\c\common\transform.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/transform.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlicommon.dir/c/common/transform.c.s"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\common\transform.c -o CMakeFiles\brotlicommon.dir\c\common\transform.c.s
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\transform.c -o CMakeFiles\brotlicommon.dir\c\common\transform.c.s
 
 # Object files for target brotlicommon
 brotlicommon_OBJECTS = \
@@ -191,6 +191,6 @@ _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/clean:
 .PHONY : _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/clean
 
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/depend:
-	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" D:\AAA_C\compression-tool D:\AAA_C\compression-tool\third_party\brotli D:\AAA_C\compression-tool\build_py D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build\CMakeFiles\brotlicommon.dir\DependInfo.cmake "--color=$(COLOR)"
+	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" D:\AAA_C\compression-tool D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src D:\AAA_C\compression-tool\build_py D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build\CMakeFiles\brotlicommon.dir\DependInfo.cmake "--color=$(COLOR)"
 .PHONY : _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/depend
 

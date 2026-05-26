@@ -81,6 +81,9 @@ CMakeFiles/google_brotli-populate-complete: google_brotli-populate-prefix/src/go
 	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E touch D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-subbuild/CMakeFiles/google_brotli-populate-complete
 	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E touch D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-done
 
+google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-update:
+.PHONY : google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-update
+
 google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-build: google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-configure
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-subbuild\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "No build step for 'google_brotli-populate'"
 	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E echo_append
@@ -92,11 +95,11 @@ google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-pop
 	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E echo_append
 	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E touch D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-configure
 
-google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-download: google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-source_dirinfo.txt
+google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-download: google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-gitinfo.txt
 google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-download: google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-mkdir
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-subbuild\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "No download step for 'google_brotli-populate'"
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E echo_append
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E touch D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-download
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-subbuild\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Performing download step (git clone) for 'google_brotli-populate'"
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-subbuild/google_brotli-populate-prefix/tmp/google_brotli-populate-gitclone.cmake
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E touch D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-download
 
 google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-install: google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-subbuild\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "No install step for 'google_brotli-populate'"
@@ -114,16 +117,19 @@ google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-pop
 	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E echo_append
 	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E touch D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-patch
 
+google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-update:
+.PHONY : google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-update
+
 google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-test: google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-install
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-subbuild\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "No test step for 'google_brotli-populate'"
 	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E echo_append
 	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E touch D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-test
 
+google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-update: google_brotli-populate-prefix/tmp/google_brotli-populate-gitupdate.cmake
 google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-update: google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-update-info.txt
 google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-update: google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-download
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-subbuild\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "No update step for 'google_brotli-populate'"
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E echo_append
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E touch D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-subbuild/google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-update
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-subbuild\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Performing update step for 'google_brotli-populate'"
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -Dcan_fetch=YES -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-subbuild/google_brotli-populate-prefix/tmp/google_brotli-populate-gitupdate.cmake
 
 google_brotli-populate: CMakeFiles/google_brotli-populate
 google_brotli-populate: CMakeFiles/google_brotli-populate-complete

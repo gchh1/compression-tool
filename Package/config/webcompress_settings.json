@@ -51,7 +51,16 @@
     "jpeg": {
       "quality": 85
     },
-    "png": {}
+    "png": {},
+    "flac": {
+      "quality": 5
+    },
+    "aac_lc": {
+      "quality": 5
+    },
+    "h264": {
+      "quality": 26
+    }
   },
   "ade": {
     "silent_explore_enabled": true,
@@ -80,7 +89,7 @@
     }
   },
   "compression": {
-    "use_web_resource_dict": true,
+    "use_web_resource_dict": false,
     "use_media_compression": true
   },
   "streaming": {

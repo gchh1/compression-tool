@@ -180,14 +180,17 @@ src/algorithm/CMakeFiles/algorithm.dir/DPFlate.cpp.obj: \
  D:/AAA_C/compression-tool/src/utils/include/BitUtils.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/Deflate.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/HuffmanTree.hpp \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/span \
- D:/AAA_C/compression-tool/src/utils/include/BitReader.hpp \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstring \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/string.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/queue \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/deque \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_deque.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/deque.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_heap.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_queue.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/utility \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_relops.h \
+ D:/AAA_C/compression-tool/src/utils/include/BitReader.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/span \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array \
  D:/AAA_C/compression-tool/src/utils/include/BitWriter.hpp \
  D:/AAA_C/compression-tool/src/algorithm/include/IAlgorithm.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/optional \
@@ -199,7 +202,6 @@ src/algorithm/CMakeFiles/algorithm.dir/DPFlate.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_heap.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uniform_int_dist.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algo.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_algorithm_defs.h \
@@ -251,6 +253,8 @@ src/algorithm/CMakeFiles/algorithm.dir/DPFlate.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/psdk_inc/intrin-impl.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/basetsd.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/guiddef.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/string.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h \
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/x86intrin.h \
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/x86gprintrin.h \
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/ia32intrin.h \
@@ -481,7 +485,9 @@ src/algorithm/CMakeFiles/algorithm.dir/DPFlate.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/winsvc.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/mcx.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/imm.h \
- D:/AAA_C/compression-tool/src/utils/include/DebugLog.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstring \
+ D:/AAA_C/compression-tool/src/algorithm/include/DebugLog.hpp \
+ D:/AAA_C/compression-tool/src/algorithm/include/DPFlateTrace.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdarg \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/fstream \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/basic_file.h \
@@ -489,7 +495,6 @@ src/algorithm/CMakeFiles/algorithm.dir/DPFlate.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fstream.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/mutex \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unique_lock.h \
- D:/AAA_C/compression-tool/src/algorithm/include/DPFlateTrace.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/unordered_map \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unordered_map.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hashtable.h \

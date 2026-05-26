@@ -81,6 +81,6 @@ _deps/google_brotli-build/CMakeFiles/NightlyMemCheck.dir/clean:
 .PHONY : _deps/google_brotli-build/CMakeFiles/NightlyMemCheck.dir/clean
 
 _deps/google_brotli-build/CMakeFiles/NightlyMemCheck.dir/depend:
-	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" D:\AAA_C\compression-tool D:\AAA_C\compression-tool\third_party\brotli D:\AAA_C\compression-tool\build_py D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build\CMakeFiles\NightlyMemCheck.dir\DependInfo.cmake "--color=$(COLOR)"
+	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" D:\AAA_C\compression-tool D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src D:\AAA_C\compression-tool\build_py D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build\CMakeFiles\NightlyMemCheck.dir\DependInfo.cmake "--color=$(COLOR)"
 .PHONY : _deps/google_brotli-build/CMakeFiles/NightlyMemCheck.dir/depend
 

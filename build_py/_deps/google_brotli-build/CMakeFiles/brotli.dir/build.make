@@ -70,18 +70,18 @@ include _deps/google_brotli-build/CMakeFiles/brotli.dir/flags.make
 
 _deps/google_brotli-build/CMakeFiles/brotli.dir/c/tools/brotli.c.obj: _deps/google_brotli-build/CMakeFiles/brotli.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotli.dir/c/tools/brotli.c.obj: _deps/google_brotli-build/CMakeFiles/brotli.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotli.dir/c/tools/brotli.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/tools/brotli.c
+_deps/google_brotli-build/CMakeFiles/brotli.dir/c/tools/brotli.c.obj: _deps/google_brotli-src/c/tools/brotli.c
 _deps/google_brotli-build/CMakeFiles/brotli.dir/c/tools/brotli.c.obj: _deps/google_brotli-build/CMakeFiles/brotli.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object _deps/google_brotli-build/CMakeFiles/brotli.dir/c/tools/brotli.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotli.dir/c/tools/brotli.c.obj -MF CMakeFiles\brotli.dir\c\tools\brotli.c.obj.d -o CMakeFiles\brotli.dir\c\tools\brotli.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\tools\brotli.c
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotli.dir/c/tools/brotli.c.obj -MF CMakeFiles\brotli.dir\c\tools\brotli.c.obj.d -o CMakeFiles\brotli.dir\c\tools\brotli.c.obj -c D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\tools\brotli.c
 
 _deps/google_brotli-build/CMakeFiles/brotli.dir/c/tools/brotli.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotli.dir/c/tools/brotli.c.i"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\tools\brotli.c > CMakeFiles\brotli.dir\c\tools\brotli.c.i
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\tools\brotli.c > CMakeFiles\brotli.dir\c\tools\brotli.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotli.dir/c/tools/brotli.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotli.dir/c/tools/brotli.c.s"
-	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\tools\brotli.c -o CMakeFiles\brotli.dir\c\tools\brotli.c.s
+	cd /d D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\tools\brotli.c -o CMakeFiles\brotli.dir\c\tools\brotli.c.s
 
 # Object files for target brotli
 brotli_OBJECTS = \
@@ -110,6 +110,6 @@ _deps/google_brotli-build/CMakeFiles/brotli.dir/clean:
 .PHONY : _deps/google_brotli-build/CMakeFiles/brotli.dir/clean
 
 _deps/google_brotli-build/CMakeFiles/brotli.dir/depend:
-	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" D:\AAA_C\compression-tool D:\AAA_C\compression-tool\third_party\brotli D:\AAA_C\compression-tool\build_py D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build\CMakeFiles\brotli.dir\DependInfo.cmake "--color=$(COLOR)"
+	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" D:\AAA_C\compression-tool D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src D:\AAA_C\compression-tool\build_py D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build D:\AAA_C\compression-tool\build_py\_deps\google_brotli-build\CMakeFiles\brotli.dir\DependInfo.cmake "--color=$(COLOR)"
 .PHONY : _deps/google_brotli-build/CMakeFiles/brotli.dir/depend
 

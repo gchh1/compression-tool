@@ -16,6 +16,8 @@ set(CMAKE_MAKEFILE_DEPENDS
   "D:/AAA_C/AAA_MinGW/mingw64/share/cmake-3.30/Modules/ExternalProject/RepositoryInfo.txt.in"
   "D:/AAA_C/AAA_MinGW/mingw64/share/cmake-3.30/Modules/ExternalProject/UpdateInfo.txt.in"
   "D:/AAA_C/AAA_MinGW/mingw64/share/cmake-3.30/Modules/ExternalProject/cfgcmd.txt.in"
+  "D:/AAA_C/AAA_MinGW/mingw64/share/cmake-3.30/Modules/ExternalProject/gitclone.cmake.in"
+  "D:/AAA_C/AAA_MinGW/mingw64/share/cmake-3.30/Modules/ExternalProject/gitupdate.cmake.in"
   "D:/AAA_C/AAA_MinGW/mingw64/share/cmake-3.30/Modules/ExternalProject/mkdirs.cmake.in"
   "D:/AAA_C/AAA_MinGW/mingw64/share/cmake-3.30/Modules/ExternalProject/shared_internal_commands.cmake"
   "D:/AAA_C/AAA_MinGW/mingw64/share/cmake-3.30/Modules/Platform/Windows-Initialize.cmake"
@@ -35,7 +37,9 @@ set(CMAKE_MAKEFILE_OUTPUTS
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
   "google_brotli-populate-prefix/tmp/google_brotli-populate-mkdirs.cmake"
-  "google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-source_dirinfo.txt"
+  "google_brotli-populate-prefix/tmp/google_brotli-populate-gitclone.cmake"
+  "google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-gitinfo.txt"
+  "google_brotli-populate-prefix/tmp/google_brotli-populate-gitupdate.cmake"
   "google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-update-info.txt"
   "google_brotli-populate-prefix/src/google_brotli-populate-stamp/google_brotli-populate-patch-info.txt"
   "google_brotli-populate-prefix/tmp/google_brotli-populate-cfgcmd.txt"

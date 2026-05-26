@@ -1,5 +1,5 @@
 _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/platform.c.obj: \
- D:\AAA_C\compression-tool\third_party\brotli\c\common\platform.c \
+ D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\platform.c \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdlib.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw.h \
@@ -16,12 +16,12 @@ _deps/google_brotli-build/CMakeFiles/brotlicommon.dir/c/common/platform.c.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/malloc.h \
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/mm_malloc.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/errno.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/include/brotli/types.h \
+ D:/AAA_C/compression-tool/build_py/_deps/google_brotli-src/c/include/brotli/types.h \
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stddef.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stddef.h \
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdint.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdint.h \
- D:\AAA_C\compression-tool\third_party\brotli\c\common\platform.h \
+ D:\AAA_C\compression-tool\build_py\_deps\google_brotli-src\c\common\platform.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/string.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/include/brotli/port.h
+ D:/AAA_C/compression-tool/build_py/_deps/google_brotli-src/c/include/brotli/port.h

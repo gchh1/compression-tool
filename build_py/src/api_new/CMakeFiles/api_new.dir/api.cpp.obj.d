@@ -220,6 +220,7 @@ src/api_new/CMakeFiles/api_new.dir/api.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/basic_file.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++io.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fstream.tcc \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/Brotli.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Deflate.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/HuffmanTree3HM.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/BitProcessor.hpp \
@@ -251,6 +252,8 @@ src/api_new/CMakeFiles/api_new.dir/api.cpp.obj: \
  D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Dpflate.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/LZDP.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/ImageCompressor.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/LZSS.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp \
  D:/AAA_C/compression-tool/src/api_new/include/WCXProtocol.hpp \
  D:/AAA_C/compression-tool/src/core_new/include/io/FileIO.hpp

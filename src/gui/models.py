@@ -85,6 +85,9 @@ class AlgorithmType(Enum):
     ZSTD = "zstd"
     JPEG = "jpeg"
     PNG = "png"
+    FLAC = "flac"
+    AAC_LC = "aac_lc"
+    H264 = "h264"
     TRANSFORMER = "transformer (beta)"
     NONE = "none"
 
@@ -194,6 +197,15 @@ ALGORITHM_PARAMS: dict[AlgorithmType, list[AlgorithmParamDef]] = {
         AlgorithmParamDef("quality", "JPEG 质量", 85, 1, 100, 1, ""),
     ],
     AlgorithmType.PNG: [],
+    AlgorithmType.FLAC: [
+        AlgorithmParamDef("quality", "FLAC 压缩级别", 5, 0, 8, 1, ""),
+    ],
+    AlgorithmType.AAC_LC: [
+        AlgorithmParamDef("quality", "AAC-LC 编码质量", 5, 1, 10, 1, ""),
+    ],
+    AlgorithmType.H264: [
+        AlgorithmParamDef("quality", "H.264 QP 量化参数", 26, 0, 51, 1, " (0=无损, 51=最差)"),
+    ],
 }
 
 STREAMING_THRESHOLD_MB = 10
@@ -338,6 +350,39 @@ AUDIO_EXTENSIONS = frozenset({
 VIDEO_EXTENSIONS = frozenset({
     ".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".m4v", ".mpg", ".mpeg",
 })
+
+_IMAGE_ALGORITHMS = frozenset({AlgorithmType.JPEG, AlgorithmType.PNG})
+_AUDIO_ALGORITHMS = frozenset({AlgorithmType.FLAC, AlgorithmType.AAC_LC})
+_VIDEO_ALGORITHMS = frozenset({AlgorithmType.H264})
+_MEDIA_ALGORITHMS = _IMAGE_ALGORITHMS | _AUDIO_ALGORITHMS | _VIDEO_ALGORITHMS
+
+
+def validate_media_algorithm(file_ext: str, algorithm: AlgorithmType) -> tuple[bool, str]:
+    if algorithm not in _MEDIA_ALGORITHMS:
+        return True, ""
+    ext = file_ext.lower()
+    if algorithm in _IMAGE_ALGORITHMS:
+        if ext in IMAGE_EXTENSIONS:
+            return True, ""
+        return False, f"{algorithm.value} 仅适用于图片文件，不支持 {ext} 格式"
+    if algorithm in _AUDIO_ALGORITHMS:
+        if ext in AUDIO_EXTENSIONS:
+            return True, ""
+        return False, f"{algorithm.value} 仅适用于音频文件，不支持 {ext} 格式"
+    if algorithm in _VIDEO_ALGORITHMS:
+        if ext in VIDEO_EXTENSIONS:
+            return True, ""
+        return False, f"{algorithm.value} 仅适用于视频文件，不支持 {ext} 格式"
+    return True, ""
+
+
+def is_media_algorithm(algo: AlgorithmType) -> bool:
+    return algo in _MEDIA_ALGORITHMS
+
+
+def is_media_algorithm_suitable_for_file(file_ext: str, algorithm: AlgorithmType) -> bool:
+    ok, _ = validate_media_algorithm(file_ext, algorithm)
+    return ok
 
 BINARY_EXTENSIONS = frozenset({
     ".bin", ".dat", ".exe", ".dll", ".so", ".a", ".o", ".lib", ".pdb", ".obj",

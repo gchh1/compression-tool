@@ -84,51 +84,6 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
 
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-.PHONY : list_install_components/fast
-
-# Special rule for the target install
-install: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -P cmake_install.cmake
-.PHONY : install
-
-# Special rule for the target install
-install/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -P cmake_install.cmake
-.PHONY : install/fast
-
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
-
-# Special rule for the target install/local
-install/local/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local/fast
-
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip/fast
-
 # The main all target
 all: cmake_check_build_system
 	cd /d D:\AAA_C\compression-tool\build_py && $(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_py\CMakeFiles D:\AAA_C\compression-tool\build_py\src\algorithm_new\\CMakeFiles\progress.marks
@@ -173,6 +128,54 @@ algorithm_new: src/algorithm_new/CMakeFiles/algorithm_new.dir/rule
 algorithm_new/fast:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/build
 .PHONY : algorithm_new/fast
+
+AudioCodec.obj: AudioCodec.cpp.obj
+.PHONY : AudioCodec.obj
+
+# target to build an object file
+AudioCodec.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodec.cpp.obj
+.PHONY : AudioCodec.cpp.obj
+
+AudioCodec.i: AudioCodec.cpp.i
+.PHONY : AudioCodec.i
+
+# target to preprocess a source file
+AudioCodec.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodec.cpp.i
+.PHONY : AudioCodec.cpp.i
+
+AudioCodec.s: AudioCodec.cpp.s
+.PHONY : AudioCodec.s
+
+# target to generate assembly for a file
+AudioCodec.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodec.cpp.s
+.PHONY : AudioCodec.cpp.s
+
+AudioCodecAac.obj: AudioCodecAac.cpp.obj
+.PHONY : AudioCodecAac.obj
+
+# target to build an object file
+AudioCodecAac.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodecAac.cpp.obj
+.PHONY : AudioCodecAac.cpp.obj
+
+AudioCodecAac.i: AudioCodecAac.cpp.i
+.PHONY : AudioCodecAac.i
+
+# target to preprocess a source file
+AudioCodecAac.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodecAac.cpp.i
+.PHONY : AudioCodecAac.cpp.i
+
+AudioCodecAac.s: AudioCodecAac.cpp.s
+.PHONY : AudioCodecAac.s
+
+# target to generate assembly for a file
+AudioCodecAac.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodecAac.cpp.s
+.PHONY : AudioCodecAac.cpp.s
 
 Brotli.obj: Brotli.cpp.obj
 .PHONY : Brotli.obj
@@ -246,6 +249,30 @@ Dpflate.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.s
 .PHONY : Dpflate.cpp.s
 
+ImageCompressor.obj: ImageCompressor.cpp.obj
+.PHONY : ImageCompressor.obj
+
+# target to build an object file
+ImageCompressor.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.obj
+.PHONY : ImageCompressor.cpp.obj
+
+ImageCompressor.i: ImageCompressor.cpp.i
+.PHONY : ImageCompressor.i
+
+# target to preprocess a source file
+ImageCompressor.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.i
+.PHONY : ImageCompressor.cpp.i
+
+ImageCompressor.s: ImageCompressor.cpp.s
+.PHONY : ImageCompressor.s
+
+# target to generate assembly for a file
+ImageCompressor.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.s
+.PHONY : ImageCompressor.cpp.s
+
 LZDP.obj: LZDP.cpp.obj
 .PHONY : LZDP.obj
 
@@ -293,6 +320,30 @@ LZSS.s: LZSS.cpp.s
 LZSS.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.s
 .PHONY : LZSS.cpp.s
+
+VideoCodec.obj: VideoCodec.cpp.obj
+.PHONY : VideoCodec.obj
+
+# target to build an object file
+VideoCodec.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj
+.PHONY : VideoCodec.cpp.obj
+
+VideoCodec.i: VideoCodec.cpp.i
+.PHONY : VideoCodec.i
+
+# target to preprocess a source file
+VideoCodec.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.i
+.PHONY : VideoCodec.cpp.i
+
+VideoCodec.s: VideoCodec.cpp.s
+.PHONY : VideoCodec.s
+
+# target to generate assembly for a file
+VideoCodec.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.s
+.PHONY : VideoCodec.cpp.s
 
 Visualization.obj: Visualization.cpp.obj
 .PHONY : Visualization.obj
@@ -349,12 +400,14 @@ help:
 	@echo ... clean
 	@echo ... depend
 	@echo ... edit_cache
-	@echo ... install
-	@echo ... install/local
-	@echo ... install/strip
-	@echo ... list_install_components
 	@echo ... rebuild_cache
 	@echo ... algorithm_new
+	@echo ... AudioCodec.obj
+	@echo ... AudioCodec.i
+	@echo ... AudioCodec.s
+	@echo ... AudioCodecAac.obj
+	@echo ... AudioCodecAac.i
+	@echo ... AudioCodecAac.s
 	@echo ... Brotli.obj
 	@echo ... Brotli.i
 	@echo ... Brotli.s
@@ -364,12 +417,18 @@ help:
 	@echo ... Dpflate.obj
 	@echo ... Dpflate.i
 	@echo ... Dpflate.s
+	@echo ... ImageCompressor.obj
+	@echo ... ImageCompressor.i
+	@echo ... ImageCompressor.s
 	@echo ... LZDP.obj
 	@echo ... LZDP.i
 	@echo ... LZDP.s
 	@echo ... LZSS.obj
 	@echo ... LZSS.i
 	@echo ... LZSS.s
+	@echo ... VideoCodec.obj
+	@echo ... VideoCodec.i
+	@echo ... VideoCodec.s
 	@echo ... Visualization.obj
 	@echo ... Visualization.i
 	@echo ... Visualization.s

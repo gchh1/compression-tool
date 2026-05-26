@@ -424,12 +424,14 @@ src/api_new/CMakeFiles/api_new.dir/api.cpp.obj: D:/AAA_C/compression-tool/src/ap
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wchar.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wctype.h \
   D:/AAA_C/compression-tool/src/algorithm_new/include/BitProcessor.hpp \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/Brotli.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/ByteView.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Deflate.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Dpflate.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/HuffmanTree.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/HuffmanTree3HM.hpp \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/ImageCompressor.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Inflate3HMCoding.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/InflateCoding.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp \
@@ -440,6 +442,7 @@ src/api_new/CMakeFiles/api_new.dir/api.cpp.obj: D:/AAA_C/compression-tool/src/ap
   D:/AAA_C/compression-tool/src/algorithm_new/include/Models.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Streaming.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp \
   D:/AAA_C/compression-tool/src/api_new/include/WCXProtocol.hpp \
   D:/AAA_C/compression-tool/src/api_new/include/api.hpp \
@@ -451,6 +454,10 @@ src/api_new/CMakeFiles/api_new.dir/api.cpp.obj: D:/AAA_C/compression-tool/src/ap
 D:/AAA_C/compression-tool/src/core_new/include/io/FileIO.hpp:
 
 D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/string_view:
 
@@ -550,8 +557,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/Models.hpp:
 
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stdexcept:
-
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/string_view.tcc:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/chrono:
@@ -567,8 +572,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algobase.h:
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wctype.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_funcs.h:
-
-D:/AAA_C/compression-tool/src/algorithm_new/include/Deflate.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_tempbuf.h:
 
@@ -597,6 +600,10 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/istream:
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hashtable_policy.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fstream.tcc:
+
+D:/AAA_C/compression-tool/src/api_new/include/api.hpp:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/invoke.h:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp:
 
@@ -641,6 +648,10 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/erase_if.h:
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cwctype:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_string.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stdexcept:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/Brotli.hpp:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/LZencoding.hpp:
 
@@ -916,10 +927,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_queue.h:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp:
 
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/invoke.h:
-
-D:/AAA_C/compression-tool/src/api_new/include/api.hpp:
-
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/limits:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_relops.h:
@@ -954,6 +961,10 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/time_membe
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/HuffmanTree.hpp:
 
+D:/AAA_C/compression-tool/src/algorithm_new/include/Deflate.hpp:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/ImageCompressor.hpp:
+
 D:/AAA_C/compression-tool/src/algorithm_new/include/LZDP.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_vector.h:
@@ -963,5 +974,3 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h:
 D:/AAA_C/compression-tool/src/algorithm_new/include/LZSS.hpp:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/Streaming.hpp:
-
-D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp:

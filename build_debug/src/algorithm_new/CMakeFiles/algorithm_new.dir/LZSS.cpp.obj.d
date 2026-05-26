@@ -98,6 +98,12 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdint \
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdint.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdint.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdio \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdio.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_stdio_config.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_off_t.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/swprintf.inl \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/stdio_s.h \
  D:/AAA_C/compression-tool/src/algorithm_new/include/ByteView.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Streaming.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/fstream \
@@ -108,10 +114,7 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/postypes.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cwchar \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wchar.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_stdio_config.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_off_t.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stat64.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/swprintf.inl \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/wchar_s.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/exception \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_ptr.h \
@@ -123,8 +126,6 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++locale.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/clocale \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/locale.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdio.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/stdio_s.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cctype \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/ctype.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ios_base.h \
@@ -153,7 +154,6 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/string_view \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/string_view.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/string_conversions.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdio \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cerrno \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/charconv.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_string.tcc \
@@ -184,17 +184,17 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj: \
  D:/AAA_C/compression-tool/src/algorithm_new/include/BitProcessor.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/HashChain.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/LZencoding.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/Models.hpp \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/climits \
- D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp \
- D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp \
  D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_base.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_wait.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_mutex.h \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/Models.hpp \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/climits \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/filesystem \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_fwd.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/chrono.h \

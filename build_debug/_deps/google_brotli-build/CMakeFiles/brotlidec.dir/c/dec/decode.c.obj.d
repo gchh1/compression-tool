@@ -1,9 +1,9 @@
 _deps/google_brotli-build/CMakeFiles/brotlidec.dir/c/dec/decode.c.obj: \
- D:\AAA_C\compression-tool\third_party\brotli\c\dec\decode.c \
- D:/AAA_C/compression-tool/third_party/brotli/c/include/brotli/decode.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/include/brotli/port.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/include/brotli/shared_dictionary.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/include/brotli/types.h \
+ D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\dec\decode.c \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/include/brotli/decode.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/include/brotli/port.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/include/brotli/shared_dictionary.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/include/brotli/types.h \
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stddef.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stddef.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/crtdefs.h \
@@ -26,17 +26,17 @@ _deps/google_brotli-build/CMakeFiles/brotlidec.dir/c/dec/decode.c.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/errno.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/string.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/common/constants.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/common/platform.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/common/context.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/common/dictionary.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/common/platform.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/common/shared_dictionary_internal.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/common/dictionary.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/common/transform.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/common/transform.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/common/version.h \
- D:\AAA_C\compression-tool\third_party\brotli\c\dec\bit_reader.h \
- D:\AAA_C\compression-tool\third_party\brotli\c\dec\huffman.h \
- D:\AAA_C\compression-tool\third_party\brotli\c\dec\prefix.h \
- D:\AAA_C\compression-tool\third_party\brotli\c\dec\state.h
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/common/constants.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/common/platform.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/common/context.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/common/dictionary.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/common/platform.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/common/shared_dictionary_internal.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/common/dictionary.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/common/transform.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/common/transform.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/common/version.h \
+ D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\dec\bit_reader.h \
+ D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\dec\huffman.h \
+ D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\dec\prefix.h \
+ D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\dec\state.h

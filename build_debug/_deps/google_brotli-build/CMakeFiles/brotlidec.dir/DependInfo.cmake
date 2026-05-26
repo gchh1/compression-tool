@@ -8,10 +8,10 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "D:/AAA_C/compression-tool/third_party/brotli/c/dec/bit_reader.c" "_deps/google_brotli-build/CMakeFiles/brotlidec.dir/c/dec/bit_reader.c.obj" "gcc" "_deps/google_brotli-build/CMakeFiles/brotlidec.dir/c/dec/bit_reader.c.obj.d"
-  "D:/AAA_C/compression-tool/third_party/brotli/c/dec/decode.c" "_deps/google_brotli-build/CMakeFiles/brotlidec.dir/c/dec/decode.c.obj" "gcc" "_deps/google_brotli-build/CMakeFiles/brotlidec.dir/c/dec/decode.c.obj.d"
-  "D:/AAA_C/compression-tool/third_party/brotli/c/dec/huffman.c" "_deps/google_brotli-build/CMakeFiles/brotlidec.dir/c/dec/huffman.c.obj" "gcc" "_deps/google_brotli-build/CMakeFiles/brotlidec.dir/c/dec/huffman.c.obj.d"
-  "D:/AAA_C/compression-tool/third_party/brotli/c/dec/state.c" "_deps/google_brotli-build/CMakeFiles/brotlidec.dir/c/dec/state.c.obj" "gcc" "_deps/google_brotli-build/CMakeFiles/brotlidec.dir/c/dec/state.c.obj.d"
+  "D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/dec/bit_reader.c" "_deps/google_brotli-build/CMakeFiles/brotlidec.dir/c/dec/bit_reader.c.obj" "gcc" "_deps/google_brotli-build/CMakeFiles/brotlidec.dir/c/dec/bit_reader.c.obj.d"
+  "D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/dec/decode.c" "_deps/google_brotli-build/CMakeFiles/brotlidec.dir/c/dec/decode.c.obj" "gcc" "_deps/google_brotli-build/CMakeFiles/brotlidec.dir/c/dec/decode.c.obj.d"
+  "D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/dec/huffman.c" "_deps/google_brotli-build/CMakeFiles/brotlidec.dir/c/dec/huffman.c.obj" "gcc" "_deps/google_brotli-build/CMakeFiles/brotlidec.dir/c/dec/huffman.c.obj.d"
+  "D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/dec/state.c" "_deps/google_brotli-build/CMakeFiles/brotlidec.dir/c/dec/state.c.obj" "gcc" "_deps/google_brotli-build/CMakeFiles/brotlidec.dir/c/dec/state.c.obj.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

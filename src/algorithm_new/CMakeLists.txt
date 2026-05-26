@@ -1,11 +1,15 @@
 add_library(
     algorithm_new
     STATIC
+    AudioCodec.cpp
+    AudioCodecAac.cpp
     Brotli.cpp
     Deflate.cpp
     Dpflate.cpp
+    ImageCompressor.cpp
     LZDP.cpp
     LZSS.cpp
+    VideoCodec.cpp
     Visualization.cpp
     Zstd.cpp
 )
@@ -14,7 +18,8 @@ target_include_directories(
     algorithm_new
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_SOURCE_DIR}/src/core_new/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../core_new/include
+    ${CMAKE_SOURCE_DIR}/third_party
 )
 
 include(FetchContent)

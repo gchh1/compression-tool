@@ -84,51 +84,6 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
 
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-.PHONY : list_install_components/fast
-
-# Special rule for the target install
-install: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -P cmake_install.cmake
-.PHONY : install
-
-# Special rule for the target install
-install/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -P cmake_install.cmake
-.PHONY : install/fast
-
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
-
-# Special rule for the target install/local
-install/local/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local/fast
-
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip/fast
-
 # The main all target
 all: cmake_check_build_system
 	cd /d D:\AAA_C\compression-tool\build_py && $(CMAKE_COMMAND) -E cmake_progress_start D:\AAA_C\compression-tool\build_py\CMakeFiles D:\AAA_C\compression-tool\build_py\src\algorithm\\CMakeFiles\progress.marks
@@ -173,30 +128,6 @@ algorithm: src/algorithm/CMakeFiles/algorithm.dir/rule
 algorithm/fast:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/build
 .PHONY : algorithm/fast
-
-AlgorithmBase.obj: AlgorithmBase.cpp.obj
-.PHONY : AlgorithmBase.obj
-
-# target to build an object file
-AlgorithmBase.cpp.obj:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/AlgorithmBase.cpp.obj
-.PHONY : AlgorithmBase.cpp.obj
-
-AlgorithmBase.i: AlgorithmBase.cpp.i
-.PHONY : AlgorithmBase.i
-
-# target to preprocess a source file
-AlgorithmBase.cpp.i:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/AlgorithmBase.cpp.i
-.PHONY : AlgorithmBase.cpp.i
-
-AlgorithmBase.s: AlgorithmBase.cpp.s
-.PHONY : AlgorithmBase.s
-
-# target to generate assembly for a file
-AlgorithmBase.cpp.s:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/AlgorithmBase.cpp.s
-.PHONY : AlgorithmBase.cpp.s
 
 Brotli.obj: Brotli.cpp.obj
 .PHONY : Brotli.obj
@@ -318,29 +249,29 @@ Deflate.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/Deflate.cpp.s
 .PHONY : Deflate.cpp.s
 
-Delta.obj: Delta.cpp.obj
-.PHONY : Delta.obj
+Huffman.obj: Huffman.cpp.obj
+.PHONY : Huffman.obj
 
 # target to build an object file
-Delta.cpp.obj:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/Delta.cpp.obj
-.PHONY : Delta.cpp.obj
+Huffman.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/Huffman.cpp.obj
+.PHONY : Huffman.cpp.obj
 
-Delta.i: Delta.cpp.i
-.PHONY : Delta.i
+Huffman.i: Huffman.cpp.i
+.PHONY : Huffman.i
 
 # target to preprocess a source file
-Delta.cpp.i:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/Delta.cpp.i
-.PHONY : Delta.cpp.i
+Huffman.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/Huffman.cpp.i
+.PHONY : Huffman.cpp.i
 
-Delta.s: Delta.cpp.s
-.PHONY : Delta.s
+Huffman.s: Huffman.cpp.s
+.PHONY : Huffman.s
 
 # target to generate assembly for a file
-Delta.cpp.s:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/Delta.cpp.s
-.PHONY : Delta.cpp.s
+Huffman.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/Huffman.cpp.s
+.PHONY : Huffman.cpp.s
 
 HuffmanTree.obj: HuffmanTree.cpp.obj
 .PHONY : HuffmanTree.obj
@@ -414,29 +345,29 @@ Inflate.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/Inflate.cpp.s
 .PHONY : Inflate.cpp.s
 
-Inflate3HM.obj: Inflate3HM.cpp.obj
-.PHONY : Inflate3HM.obj
+KMPMatcher.obj: KMPMatcher.cpp.obj
+.PHONY : KMPMatcher.obj
 
 # target to build an object file
-Inflate3HM.cpp.obj:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/Inflate3HM.cpp.obj
-.PHONY : Inflate3HM.cpp.obj
+KMPMatcher.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/KMPMatcher.cpp.obj
+.PHONY : KMPMatcher.cpp.obj
 
-Inflate3HM.i: Inflate3HM.cpp.i
-.PHONY : Inflate3HM.i
+KMPMatcher.i: KMPMatcher.cpp.i
+.PHONY : KMPMatcher.i
 
 # target to preprocess a source file
-Inflate3HM.cpp.i:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/Inflate3HM.cpp.i
-.PHONY : Inflate3HM.cpp.i
+KMPMatcher.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/KMPMatcher.cpp.i
+.PHONY : KMPMatcher.cpp.i
 
-Inflate3HM.s: Inflate3HM.cpp.s
-.PHONY : Inflate3HM.s
+KMPMatcher.s: KMPMatcher.cpp.s
+.PHONY : KMPMatcher.s
 
 # target to generate assembly for a file
-Inflate3HM.cpp.s:
-	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/Inflate3HM.cpp.s
-.PHONY : Inflate3HM.cpp.s
+KMPMatcher.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_py && $(MAKE) $(MAKESILENT) -f src\algorithm\CMakeFiles\algorithm.dir\build.make src/algorithm/CMakeFiles/algorithm.dir/KMPMatcher.cpp.s
+.PHONY : KMPMatcher.cpp.s
 
 LZDP.obj: LZDP.cpp.obj
 .PHONY : LZDP.obj
@@ -541,15 +472,8 @@ help:
 	@echo ... clean
 	@echo ... depend
 	@echo ... edit_cache
-	@echo ... install
-	@echo ... install/local
-	@echo ... install/strip
-	@echo ... list_install_components
 	@echo ... rebuild_cache
 	@echo ... algorithm
-	@echo ... AlgorithmBase.obj
-	@echo ... AlgorithmBase.i
-	@echo ... AlgorithmBase.s
 	@echo ... Brotli.obj
 	@echo ... Brotli.i
 	@echo ... Brotli.s
@@ -565,9 +489,9 @@ help:
 	@echo ... Deflate.obj
 	@echo ... Deflate.i
 	@echo ... Deflate.s
-	@echo ... Delta.obj
-	@echo ... Delta.i
-	@echo ... Delta.s
+	@echo ... Huffman.obj
+	@echo ... Huffman.i
+	@echo ... Huffman.s
 	@echo ... HuffmanTree.obj
 	@echo ... HuffmanTree.i
 	@echo ... HuffmanTree.s
@@ -577,9 +501,9 @@ help:
 	@echo ... Inflate.obj
 	@echo ... Inflate.i
 	@echo ... Inflate.s
-	@echo ... Inflate3HM.obj
-	@echo ... Inflate3HM.i
-	@echo ... Inflate3HM.s
+	@echo ... KMPMatcher.obj
+	@echo ... KMPMatcher.i
+	@echo ... KMPMatcher.s
 	@echo ... LZDP.obj
 	@echo ... LZDP.i
 	@echo ... LZDP.s

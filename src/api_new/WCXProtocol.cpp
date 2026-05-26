@@ -78,6 +78,15 @@ auto toAlgoCode(compressor::core::AlgorithmID id) -> uint8_t {
         case compressor::core::AlgorithmID::ImagePng:
         case compressor::core::AlgorithmID::ImagePngDecompress:
             return 11;
+        case compressor::core::AlgorithmID::AudioFlac:
+        case compressor::core::AlgorithmID::AudioFlacDecompress:
+            return 12;
+        case compressor::core::AlgorithmID::AudioAacLC:
+        case compressor::core::AlgorithmID::AudioAacLCDecompress:
+            return 13;
+        case compressor::core::AlgorithmID::VideoH264:
+        case compressor::core::AlgorithmID::VideoH264Decompress:
+            return 14;
         default:
             return 0;
     }

@@ -1,5 +1,5 @@
 _deps/google_brotli-build/CMakeFiles/brotli.dir/c/tools/brotli.c.obj: \
- D:\AAA_C\compression-tool\third_party\brotli\c\tools\brotli.c \
+ D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\tools\brotli.c \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/errno.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/crtdefs.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt.h \
@@ -33,17 +33,17 @@ _deps/google_brotli-build/CMakeFiles/brotli.dir/c/tools/brotli.c.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_timeval.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_time.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/include/brotli/decode.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/include/brotli/port.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/include/brotli/shared_dictionary.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/include/brotli/types.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/include/brotli/decode.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/include/brotli/port.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/include/brotli/shared_dictionary.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/include/brotli/types.h \
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stddef.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stddef.h \
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdint.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdint.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/include/brotli/encode.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/common/constants.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/common/platform.h \
- D:/AAA_C/compression-tool/third_party/brotli/c/common/version.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/include/brotli/encode.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/common/constants.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/common/platform.h \
+ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src/c/common/version.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/share.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sys/utime.h

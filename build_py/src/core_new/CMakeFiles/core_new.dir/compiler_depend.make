@@ -627,10 +627,16 @@ src/core_new/CMakeFiles/core_new.dir/ExternalCodecs.cpp.obj: D:/AAA_C/compressio
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wctype.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/zconf.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/zlib.h \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/AudioCodec.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Brotli.hpp \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/ImageCompressor.hpp \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/VideoCodec.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp \
+  D:/AAA_C/compression-tool/src/core_new/include/AudioCompressorBindings.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/GzipCompressor.hpp \
-  D:/AAA_C/compression-tool/src/core_new/include/ICompressor.hpp
+  D:/AAA_C/compression-tool/src/core_new/include/ICompressor.hpp \
+  D:/AAA_C/compression-tool/src/core_new/include/ImageCompressorBindings.hpp \
+  D:/AAA_C/compression-tool/src/core_new/include/VideoCompressorBindings.hpp
 
 src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.obj: D:/AAA_C/compression-tool/src/core_new/GuiCompressors.cpp \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
@@ -1344,7 +1350,13 @@ D:/AAA_C/compression-tool/src/core_new/include/GuiCompressors.hpp:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/Visualization.hpp:
 
+D:/AAA_C/compression-tool/src/core_new/include/VideoCompressorBindings.hpp:
+
 D:/AAA_C/compression-tool/src/core_new/include/ICompressor.hpp:
+
+D:/AAA_C/compression-tool/src/core_new/include/AudioCompressorBindings.hpp:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/string_view:
 
@@ -1377,6 +1389,10 @@ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_mac.h:
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdlib:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/numbers:
+
+D:/AAA_C/compression-tool/src/core_new/include/GzipCompressor.hpp:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/align.h:
 
 D:/AAA_C/compression-tool/src/core_new/include/LZSScompressor.hpp:
 
@@ -1431,8 +1447,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algobase.h:
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wctype.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_funcs.h:
-
-D:/AAA_C/compression-tool/src/algorithm_new/include/Deflate.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_tempbuf.h:
 
@@ -1522,10 +1536,6 @@ D:/AAA_C/compression-tool/src/algorithm_new/include/HuffmanTree3HM.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h:
 
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/align.h:
-
-D:/AAA_C/compression-tool/src/core_new/include/GzipCompressor.hpp:
-
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/concept_check.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/streambuf_iterator.h:
@@ -1567,6 +1577,8 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/codecvt.h:
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ios_base.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocator.h:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/VideoCodec.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/locale.h:
 
@@ -1788,6 +1800,8 @@ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/signal.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stddef.h:
 
+D:/AAA_C/compression-tool/src/core_new/include/ImageCompressorBindings.hpp:
+
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdint.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdio.h:
@@ -1862,6 +1876,10 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/nested_exception.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h:
 
+D:/AAA_C/compression-tool/src/algorithm_new/include/AudioCodec.hpp:
+
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/zconf.h:
 
-D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp:
+D:/AAA_C/compression-tool/src/algorithm_new/include/Deflate.hpp:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/ImageCompressor.hpp:

@@ -68,11 +68,41 @@ include src/algorithm_new/CMakeFiles/algorithm_new.dir/progress.make
 # Include the compile flags for this target's objects.
 include src/algorithm_new/CMakeFiles/algorithm_new.dir/flags.make
 
+src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodec.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/flags.make
+src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodec.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/includes_CXX.rsp
+src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodec.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/AudioCodec.cpp
+src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodec.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodec.cpp.obj"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodec.cpp.obj -MF CMakeFiles\algorithm_new.dir\AudioCodec.cpp.obj.d -o CMakeFiles\algorithm_new.dir\AudioCodec.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm_new\AudioCodec.cpp
+
+src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodec.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/algorithm_new.dir/AudioCodec.cpp.i"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\AAA_C\compression-tool\src\algorithm_new\AudioCodec.cpp > CMakeFiles\algorithm_new.dir\AudioCodec.cpp.i
+
+src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodec.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/algorithm_new.dir/AudioCodec.cpp.s"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\algorithm_new\AudioCodec.cpp -o CMakeFiles\algorithm_new.dir\AudioCodec.cpp.s
+
+src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodecAac.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/flags.make
+src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodecAac.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/includes_CXX.rsp
+src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodecAac.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/AudioCodecAac.cpp
+src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodecAac.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodecAac.cpp.obj"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodecAac.cpp.obj -MF CMakeFiles\algorithm_new.dir\AudioCodecAac.cpp.obj.d -o CMakeFiles\algorithm_new.dir\AudioCodecAac.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm_new\AudioCodecAac.cpp
+
+src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodecAac.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/algorithm_new.dir/AudioCodecAac.cpp.i"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\AAA_C\compression-tool\src\algorithm_new\AudioCodecAac.cpp > CMakeFiles\algorithm_new.dir\AudioCodecAac.cpp.i
+
+src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodecAac.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/algorithm_new.dir/AudioCodecAac.cpp.s"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\algorithm_new\AudioCodecAac.cpp -o CMakeFiles\algorithm_new.dir\AudioCodecAac.cpp.s
+
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Brotli.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/flags.make
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Brotli.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/includes_CXX.rsp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Brotli.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/Brotli.cpp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Brotli.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/Brotli.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/Brotli.cpp.obj"
 	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm_new/CMakeFiles/algorithm_new.dir/Brotli.cpp.obj -MF CMakeFiles\algorithm_new.dir\Brotli.cpp.obj.d -o CMakeFiles\algorithm_new.dir\Brotli.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm_new\Brotli.cpp
 
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Brotli.cpp.i: cmake_force
@@ -87,7 +117,7 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj: src/algorithm_ne
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/includes_CXX.rsp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/Deflate.cpp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj"
 	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj -MF CMakeFiles\algorithm_new.dir\Deflate.cpp.obj.d -o CMakeFiles\algorithm_new.dir\Deflate.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm_new\Deflate.cpp
 
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.i: cmake_force
@@ -102,7 +132,7 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj: src/algorithm_ne
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/includes_CXX.rsp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/Dpflate.cpp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj"
 	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj -MF CMakeFiles\algorithm_new.dir\Dpflate.cpp.obj.d -o CMakeFiles\algorithm_new.dir\Dpflate.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm_new\Dpflate.cpp
 
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.i: cmake_force
@@ -113,11 +143,26 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/algorithm_new.dir/Dpflate.cpp.s"
 	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\algorithm_new\Dpflate.cpp -o CMakeFiles\algorithm_new.dir\Dpflate.cpp.s
 
+src/algorithm_new/CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/flags.make
+src/algorithm_new/CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/includes_CXX.rsp
+src/algorithm_new/CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/ImageCompressor.cpp
+src/algorithm_new/CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.obj"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm_new/CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.obj -MF CMakeFiles\algorithm_new.dir\ImageCompressor.cpp.obj.d -o CMakeFiles\algorithm_new.dir\ImageCompressor.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm_new\ImageCompressor.cpp
+
+src/algorithm_new/CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.i"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\AAA_C\compression-tool\src\algorithm_new\ImageCompressor.cpp > CMakeFiles\algorithm_new.dir\ImageCompressor.cpp.i
+
+src/algorithm_new/CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.s"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\algorithm_new\ImageCompressor.cpp -o CMakeFiles\algorithm_new.dir\ImageCompressor.cpp.s
+
 src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/flags.make
 src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/includes_CXX.rsp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/LZDP.cpp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj"
 	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj -MF CMakeFiles\algorithm_new.dir\LZDP.cpp.obj.d -o CMakeFiles\algorithm_new.dir\LZDP.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm_new\LZDP.cpp
 
 src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.i: cmake_force
@@ -132,7 +177,7 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj: src/algorithm_new/C
 src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/includes_CXX.rsp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/LZSS.cpp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj"
 	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj -MF CMakeFiles\algorithm_new.dir\LZSS.cpp.obj.d -o CMakeFiles\algorithm_new.dir\LZSS.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm_new\LZSS.cpp
 
 src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.i: cmake_force
@@ -143,11 +188,26 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/algorithm_new.dir/LZSS.cpp.s"
 	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\algorithm_new\LZSS.cpp -o CMakeFiles\algorithm_new.dir\LZSS.cpp.s
 
+src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/flags.make
+src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/includes_CXX.rsp
+src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/VideoCodec.cpp
+src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj -MF CMakeFiles\algorithm_new.dir\VideoCodec.cpp.obj.d -o CMakeFiles\algorithm_new.dir\VideoCodec.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm_new\VideoCodec.cpp
+
+src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/algorithm_new.dir/VideoCodec.cpp.i"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\AAA_C\compression-tool\src\algorithm_new\VideoCodec.cpp > CMakeFiles\algorithm_new.dir\VideoCodec.cpp.i
+
+src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/algorithm_new.dir/VideoCodec.cpp.s"
+	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\algorithm_new\VideoCodec.cpp -o CMakeFiles\algorithm_new.dir\VideoCodec.cpp.s
+
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/flags.make
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/includes_CXX.rsp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/Visualization.cpp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj"
 	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj -MF CMakeFiles\algorithm_new.dir\Visualization.cpp.obj.d -o CMakeFiles\algorithm_new.dir\Visualization.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm_new\Visualization.cpp
 
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.i: cmake_force
@@ -162,7 +222,7 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj: src/algorithm_new/C
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/includes_CXX.rsp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/Zstd.cpp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj"
 	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj -MF CMakeFiles\algorithm_new.dir\Zstd.cpp.obj.d -o CMakeFiles\algorithm_new.dir\Zstd.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm_new\Zstd.cpp
 
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.i: cmake_force
@@ -175,27 +235,35 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.s: cmake_force
 
 # Object files for target algorithm_new
 algorithm_new_OBJECTS = \
+"CMakeFiles/algorithm_new.dir/AudioCodec.cpp.obj" \
+"CMakeFiles/algorithm_new.dir/AudioCodecAac.cpp.obj" \
 "CMakeFiles/algorithm_new.dir/Brotli.cpp.obj" \
 "CMakeFiles/algorithm_new.dir/Deflate.cpp.obj" \
 "CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj" \
+"CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.obj" \
 "CMakeFiles/algorithm_new.dir/LZDP.cpp.obj" \
 "CMakeFiles/algorithm_new.dir/LZSS.cpp.obj" \
+"CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj" \
 "CMakeFiles/algorithm_new.dir/Visualization.cpp.obj" \
 "CMakeFiles/algorithm_new.dir/Zstd.cpp.obj"
 
 # External object files for target algorithm_new
 algorithm_new_EXTERNAL_OBJECTS =
 
+src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodec.cpp.obj
+src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodecAac.cpp.obj
 src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/Brotli.cpp.obj
 src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj
 src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj
+src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.obj
 src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj
 src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj
+src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj
 src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj
 src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj
 src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/build.make
 src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX static library libalgorithm_new.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\AAA_C\compression-tool\build_py\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Linking CXX static library libalgorithm_new.a"
 	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && $(CMAKE_COMMAND) -P CMakeFiles\algorithm_new.dir\cmake_clean_target.cmake
 	cd /d D:\AAA_C\compression-tool\build_py\src\algorithm_new && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\algorithm_new.dir\link.txt --verbose=$(VERBOSE)
 

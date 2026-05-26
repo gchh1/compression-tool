@@ -34,7 +34,7 @@ BROTLI_BUILD_TESTS:BOOL=OFF
 BROTLI_BUILD_TOOLS:BOOL=OFF
 
 //Build Pybind11 bindings for PyQt desktop app
-BUILD_PYTHON:BOOL=OFF
+BUILD_PYTHON:BOOL=ON
 
 BUILD_SHARED_LIBS:BOOL=
 
@@ -368,6 +368,9 @@ FETCHCONTENT_UPDATES_DISCONNECTED_GOOGLE_BROTLI:BOOL=OFF
 //Path to a program.
 GITCOMMAND:FILEPATH=D:/Git/cmd/git.exe
 
+//Git command line client
+GIT_EXECUTABLE:FILEPATH=D:/Git/cmd/git.exe
+
 //Command to build the project
 MAKECOMMAND:STRING=D:/AAA_C/AAA_MinGW/mingw64/bin/cmake.exe --build . --config "${CTEST_CONFIGURATION_TYPE}"
 
@@ -387,7 +390,7 @@ brotli_BINARY_DIR:STATIC=D:/AAA_C/compression-tool/build_debug/_deps/google_brot
 brotli_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
-brotli_SOURCE_DIR:STATIC=D:/AAA_C/compression-tool/third_party/brotli
+brotli_SOURCE_DIR:STATIC=D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-src
 
 //Value Computed by CMake
 compression-tool_BINARY_DIR:STATIC=D:/AAA_C/compression-tool/build_debug
@@ -539,7 +542,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=14
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=15
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
@@ -605,8 +608,12 @@ CTEST_SUBMIT_RETRY_COUNT-ADVANCED:INTERNAL=1
 CTEST_SUBMIT_RETRY_DELAY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: DART_TESTING_TIMEOUT
 DART_TESTING_TIMEOUT-ADVANCED:INTERNAL=1
+//Details about finding Python3
+FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[D:/Python/python.exe][D:/Python/libs/python312.lib][D:/Python/include][cfound components: Interpreter Development Development.Module Development.Embed ][v3.12.4()]
 //ADVANCED property for variable: GITCOMMAND
 GITCOMMAND-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: GIT_EXECUTABLE
+GIT_EXECUTABLE-ADVANCED:INTERNAL=1
 //Have function log2
 LOG2_RES:INTERNAL=1
 //ADVANCED property for variable: MAKECOMMAND
@@ -615,10 +622,45 @@ MAKECOMMAND-ADVANCED:INTERNAL=1
 MEMORYCHECK_COMMAND-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: MEMORYCHECK_SUPPRESSIONS_FILE
 MEMORYCHECK_SUPPRESSIONS_FILE-ADVANCED:INTERNAL=1
+//Python executable during the last CMake run
+PYBIND11_PYTHON_EXECUTABLE_LAST:INTERNAL=D:/Python/python.exe
+//Python debug status
+PYTHON_IS_DEBUG:INTERNAL=0
+PYTHON_MODULE_DEBUG_POSTFIX:INTERNAL=
+PYTHON_MODULE_EXTENSION:INTERNAL=.cp312-win_amd64.pyd
 //ADVANCED property for variable: SITE
 SITE-ADVANCED:INTERNAL=1
 //linker supports push/pop state
 _CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED:INTERNAL=TRUE
 //CMAKE_INSTALL_PREFIX during last run
 _GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=C:/Program Files (x86)/compression-tool
+_PYBIND11_CROSSCOMPILING:INTERNAL=OFF
+_Python:INTERNAL=Python3
+//Compiler reason failure
+_Python3_Compiler_REASON_FAILURE:INTERNAL=
+_Python3_DEVELOPMENT_EMBED_SIGNATURE:INTERNAL=5e204a449f96d03eadbddd1c025f690b
+_Python3_DEVELOPMENT_MODULE_SIGNATURE:INTERNAL=5e204a449f96d03eadbddd1c025f690b
+//Development reason failure
+_Python3_Development_REASON_FAILURE:INTERNAL=
+//Path to a program.
+_Python3_EXECUTABLE:INTERNAL=D:/Python/python.exe
+//Path to a program.
+_Python3_EXECUTABLE_DEBUG:INTERNAL=_Python3_EXECUTABLE_DEBUG-NOTFOUND
+//Path to a file.
+_Python3_INCLUDE_DIR:INTERNAL=D:/Python/include
+//Python3 Properties
+_Python3_INTERPRETER_PROPERTIES:INTERNAL=Python;3;12;4;64;<none>;cp312-win_amd64;;D:\Python\Lib;D:\Python\Lib;D:\Python\Lib\site-packages;D:\Python\Lib\site-packages
+_Python3_INTERPRETER_SIGNATURE:INTERNAL=49227ad3b909b81e5c68a8b8dec86852
+//Interpreter reason failure
+_Python3_Interpreter_REASON_FAILURE:INTERNAL=
+//Path to a library.
+_Python3_LIBRARY_DEBUG:INTERNAL=_Python3_LIBRARY_DEBUG-NOTFOUND
+//Path to a library.
+_Python3_LIBRARY_RELEASE:INTERNAL=D:/Python/libs/python312.lib
+//NumPy reason failure
+_Python3_NumPy_REASON_FAILURE:INTERNAL=
+//Path to a library.
+_Python3_RUNTIME_LIBRARY_RELEASE:INTERNAL=D:/Python/python312.dll
+//Directories where pybind11 and possibly Python headers are located
+pybind11_INCLUDE_DIRS:INTERNAL=D:/Python/Lib/site-packages/pybind11/include;D:/Python/include
 

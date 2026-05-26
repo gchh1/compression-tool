@@ -70,318 +70,318 @@ include _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/backward_references.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references.c.obj: _deps/google_brotli-src/c/enc/backward_references.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\backward_references.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\backward_references.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\backward_references.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\backward_references.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\backward_references.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\backward_references.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/backward_references.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\backward_references.c > CMakeFiles\brotlienc.dir\c\enc\backward_references.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\backward_references.c > CMakeFiles\brotlienc.dir\c\enc\backward_references.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/backward_references.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\backward_references.c -o CMakeFiles\brotlienc.dir\c\enc\backward_references.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\backward_references.c -o CMakeFiles\brotlienc.dir\c\enc\backward_references.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references_hq.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references_hq.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references_hq.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/backward_references_hq.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references_hq.c.obj: _deps/google_brotli-src/c/enc/backward_references_hq.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references_hq.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references_hq.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references_hq.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\backward_references_hq.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\backward_references_hq.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\backward_references_hq.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references_hq.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\backward_references_hq.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\backward_references_hq.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\backward_references_hq.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references_hq.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/backward_references_hq.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\backward_references_hq.c > CMakeFiles\brotlienc.dir\c\enc\backward_references_hq.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\backward_references_hq.c > CMakeFiles\brotlienc.dir\c\enc\backward_references_hq.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/backward_references_hq.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/backward_references_hq.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\backward_references_hq.c -o CMakeFiles\brotlienc.dir\c\enc\backward_references_hq.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\backward_references_hq.c -o CMakeFiles\brotlienc.dir\c\enc\backward_references_hq.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/bit_cost.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/bit_cost.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/bit_cost.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/bit_cost.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/bit_cost.c.obj: _deps/google_brotli-src/c/enc/bit_cost.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/bit_cost.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/bit_cost.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/bit_cost.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\bit_cost.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\bit_cost.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\bit_cost.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/bit_cost.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\bit_cost.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\bit_cost.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\bit_cost.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/bit_cost.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/bit_cost.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\bit_cost.c > CMakeFiles\brotlienc.dir\c\enc\bit_cost.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\bit_cost.c > CMakeFiles\brotlienc.dir\c\enc\bit_cost.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/bit_cost.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/bit_cost.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\bit_cost.c -o CMakeFiles\brotlienc.dir\c\enc\bit_cost.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\bit_cost.c -o CMakeFiles\brotlienc.dir\c\enc\bit_cost.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/block_splitter.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/block_splitter.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/block_splitter.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/block_splitter.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/block_splitter.c.obj: _deps/google_brotli-src/c/enc/block_splitter.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/block_splitter.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/block_splitter.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/block_splitter.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\block_splitter.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\block_splitter.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\block_splitter.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/block_splitter.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\block_splitter.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\block_splitter.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\block_splitter.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/block_splitter.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/block_splitter.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\block_splitter.c > CMakeFiles\brotlienc.dir\c\enc\block_splitter.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\block_splitter.c > CMakeFiles\brotlienc.dir\c\enc\block_splitter.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/block_splitter.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/block_splitter.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\block_splitter.c -o CMakeFiles\brotlienc.dir\c\enc\block_splitter.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\block_splitter.c -o CMakeFiles\brotlienc.dir\c\enc\block_splitter.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/brotli_bit_stream.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/brotli_bit_stream.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/brotli_bit_stream.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/brotli_bit_stream.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/brotli_bit_stream.c.obj: _deps/google_brotli-src/c/enc/brotli_bit_stream.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/brotli_bit_stream.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/brotli_bit_stream.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/brotli_bit_stream.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\brotli_bit_stream.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\brotli_bit_stream.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\brotli_bit_stream.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/brotli_bit_stream.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\brotli_bit_stream.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\brotli_bit_stream.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\brotli_bit_stream.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/brotli_bit_stream.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/brotli_bit_stream.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\brotli_bit_stream.c > CMakeFiles\brotlienc.dir\c\enc\brotli_bit_stream.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\brotli_bit_stream.c > CMakeFiles\brotlienc.dir\c\enc\brotli_bit_stream.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/brotli_bit_stream.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/brotli_bit_stream.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\brotli_bit_stream.c -o CMakeFiles\brotlienc.dir\c\enc\brotli_bit_stream.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\brotli_bit_stream.c -o CMakeFiles\brotlienc.dir\c\enc\brotli_bit_stream.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/cluster.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/cluster.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/cluster.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/cluster.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/cluster.c.obj: _deps/google_brotli-src/c/enc/cluster.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/cluster.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/cluster.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/cluster.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\cluster.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\cluster.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\cluster.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/cluster.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\cluster.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\cluster.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\cluster.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/cluster.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/cluster.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\cluster.c > CMakeFiles\brotlienc.dir\c\enc\cluster.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\cluster.c > CMakeFiles\brotlienc.dir\c\enc\cluster.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/cluster.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/cluster.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\cluster.c -o CMakeFiles\brotlienc.dir\c\enc\cluster.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\cluster.c -o CMakeFiles\brotlienc.dir\c\enc\cluster.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/command.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/command.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/command.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/command.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/command.c.obj: _deps/google_brotli-src/c/enc/command.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/command.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/command.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/command.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\command.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\command.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\command.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/command.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\command.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\command.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\command.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/command.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/command.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\command.c > CMakeFiles\brotlienc.dir\c\enc\command.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\command.c > CMakeFiles\brotlienc.dir\c\enc\command.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/command.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/command.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\command.c -o CMakeFiles\brotlienc.dir\c\enc\command.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\command.c -o CMakeFiles\brotlienc.dir\c\enc\command.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compound_dictionary.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compound_dictionary.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compound_dictionary.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/compound_dictionary.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compound_dictionary.c.obj: _deps/google_brotli-src/c/enc/compound_dictionary.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compound_dictionary.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compound_dictionary.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compound_dictionary.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\compound_dictionary.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\compound_dictionary.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\compound_dictionary.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compound_dictionary.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\compound_dictionary.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\compound_dictionary.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\compound_dictionary.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compound_dictionary.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/compound_dictionary.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\compound_dictionary.c > CMakeFiles\brotlienc.dir\c\enc\compound_dictionary.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\compound_dictionary.c > CMakeFiles\brotlienc.dir\c\enc\compound_dictionary.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compound_dictionary.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/compound_dictionary.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\compound_dictionary.c -o CMakeFiles\brotlienc.dir\c\enc\compound_dictionary.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\compound_dictionary.c -o CMakeFiles\brotlienc.dir\c\enc\compound_dictionary.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/compress_fragment.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment.c.obj: _deps/google_brotli-src/c/enc/compress_fragment.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\compress_fragment.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\compress_fragment.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\compress_fragment.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\compress_fragment.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\compress_fragment.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\compress_fragment.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/compress_fragment.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\compress_fragment.c > CMakeFiles\brotlienc.dir\c\enc\compress_fragment.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\compress_fragment.c > CMakeFiles\brotlienc.dir\c\enc\compress_fragment.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/compress_fragment.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\compress_fragment.c -o CMakeFiles\brotlienc.dir\c\enc\compress_fragment.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\compress_fragment.c -o CMakeFiles\brotlienc.dir\c\enc\compress_fragment.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment_two_pass.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment_two_pass.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment_two_pass.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/compress_fragment_two_pass.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment_two_pass.c.obj: _deps/google_brotli-src/c/enc/compress_fragment_two_pass.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment_two_pass.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment_two_pass.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment_two_pass.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\compress_fragment_two_pass.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\compress_fragment_two_pass.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\compress_fragment_two_pass.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment_two_pass.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\compress_fragment_two_pass.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\compress_fragment_two_pass.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\compress_fragment_two_pass.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment_two_pass.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/compress_fragment_two_pass.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\compress_fragment_two_pass.c > CMakeFiles\brotlienc.dir\c\enc\compress_fragment_two_pass.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\compress_fragment_two_pass.c > CMakeFiles\brotlienc.dir\c\enc\compress_fragment_two_pass.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/compress_fragment_two_pass.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/compress_fragment_two_pass.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\compress_fragment_two_pass.c -o CMakeFiles\brotlienc.dir\c\enc\compress_fragment_two_pass.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\compress_fragment_two_pass.c -o CMakeFiles\brotlienc.dir\c\enc\compress_fragment_two_pass.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/dictionary_hash.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/dictionary_hash.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/dictionary_hash.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/dictionary_hash.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/dictionary_hash.c.obj: _deps/google_brotli-src/c/enc/dictionary_hash.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/dictionary_hash.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/dictionary_hash.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/dictionary_hash.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\dictionary_hash.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\dictionary_hash.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\dictionary_hash.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/dictionary_hash.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\dictionary_hash.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\dictionary_hash.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\dictionary_hash.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/dictionary_hash.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/dictionary_hash.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\dictionary_hash.c > CMakeFiles\brotlienc.dir\c\enc\dictionary_hash.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\dictionary_hash.c > CMakeFiles\brotlienc.dir\c\enc\dictionary_hash.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/dictionary_hash.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/dictionary_hash.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\dictionary_hash.c -o CMakeFiles\brotlienc.dir\c\enc\dictionary_hash.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\dictionary_hash.c -o CMakeFiles\brotlienc.dir\c\enc\dictionary_hash.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encode.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encode.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encode.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/encode.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encode.c.obj: _deps/google_brotli-src/c/enc/encode.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encode.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encode.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encode.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\encode.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\encode.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\encode.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encode.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\encode.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\encode.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\encode.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encode.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/encode.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\encode.c > CMakeFiles\brotlienc.dir\c\enc\encode.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\encode.c > CMakeFiles\brotlienc.dir\c\enc\encode.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encode.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/encode.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\encode.c -o CMakeFiles\brotlienc.dir\c\enc\encode.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\encode.c -o CMakeFiles\brotlienc.dir\c\enc\encode.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encoder_dict.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encoder_dict.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encoder_dict.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/encoder_dict.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encoder_dict.c.obj: _deps/google_brotli-src/c/enc/encoder_dict.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encoder_dict.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encoder_dict.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encoder_dict.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\encoder_dict.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\encoder_dict.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\encoder_dict.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encoder_dict.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\encoder_dict.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\encoder_dict.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\encoder_dict.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encoder_dict.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/encoder_dict.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\encoder_dict.c > CMakeFiles\brotlienc.dir\c\enc\encoder_dict.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\encoder_dict.c > CMakeFiles\brotlienc.dir\c\enc\encoder_dict.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/encoder_dict.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/encoder_dict.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\encoder_dict.c -o CMakeFiles\brotlienc.dir\c\enc\encoder_dict.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\encoder_dict.c -o CMakeFiles\brotlienc.dir\c\enc\encoder_dict.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/entropy_encode.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/entropy_encode.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/entropy_encode.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/entropy_encode.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/entropy_encode.c.obj: _deps/google_brotli-src/c/enc/entropy_encode.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/entropy_encode.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/entropy_encode.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/entropy_encode.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\entropy_encode.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\entropy_encode.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\entropy_encode.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/entropy_encode.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\entropy_encode.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\entropy_encode.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\entropy_encode.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/entropy_encode.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/entropy_encode.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\entropy_encode.c > CMakeFiles\brotlienc.dir\c\enc\entropy_encode.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\entropy_encode.c > CMakeFiles\brotlienc.dir\c\enc\entropy_encode.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/entropy_encode.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/entropy_encode.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\entropy_encode.c -o CMakeFiles\brotlienc.dir\c\enc\entropy_encode.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\entropy_encode.c -o CMakeFiles\brotlienc.dir\c\enc\entropy_encode.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/fast_log.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/fast_log.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/fast_log.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/fast_log.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/fast_log.c.obj: _deps/google_brotli-src/c/enc/fast_log.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/fast_log.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/fast_log.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/fast_log.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\fast_log.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\fast_log.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\fast_log.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/fast_log.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\fast_log.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\fast_log.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\fast_log.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/fast_log.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/fast_log.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\fast_log.c > CMakeFiles\brotlienc.dir\c\enc\fast_log.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\fast_log.c > CMakeFiles\brotlienc.dir\c\enc\fast_log.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/fast_log.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/fast_log.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\fast_log.c -o CMakeFiles\brotlienc.dir\c\enc\fast_log.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\fast_log.c -o CMakeFiles\brotlienc.dir\c\enc\fast_log.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/histogram.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/histogram.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/histogram.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/histogram.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/histogram.c.obj: _deps/google_brotli-src/c/enc/histogram.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/histogram.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/histogram.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/histogram.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\histogram.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\histogram.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\histogram.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/histogram.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\histogram.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\histogram.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\histogram.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/histogram.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/histogram.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\histogram.c > CMakeFiles\brotlienc.dir\c\enc\histogram.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\histogram.c > CMakeFiles\brotlienc.dir\c\enc\histogram.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/histogram.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/histogram.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\histogram.c -o CMakeFiles\brotlienc.dir\c\enc\histogram.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\histogram.c -o CMakeFiles\brotlienc.dir\c\enc\histogram.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/literal_cost.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/literal_cost.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/literal_cost.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/literal_cost.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/literal_cost.c.obj: _deps/google_brotli-src/c/enc/literal_cost.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/literal_cost.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/literal_cost.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/literal_cost.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\literal_cost.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\literal_cost.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\literal_cost.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/literal_cost.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\literal_cost.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\literal_cost.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\literal_cost.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/literal_cost.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/literal_cost.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\literal_cost.c > CMakeFiles\brotlienc.dir\c\enc\literal_cost.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\literal_cost.c > CMakeFiles\brotlienc.dir\c\enc\literal_cost.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/literal_cost.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/literal_cost.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\literal_cost.c -o CMakeFiles\brotlienc.dir\c\enc\literal_cost.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\literal_cost.c -o CMakeFiles\brotlienc.dir\c\enc\literal_cost.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/memory.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/memory.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/memory.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/memory.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/memory.c.obj: _deps/google_brotli-src/c/enc/memory.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/memory.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/memory.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/memory.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\memory.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\memory.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\memory.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/memory.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\memory.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\memory.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\memory.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/memory.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/memory.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\memory.c > CMakeFiles\brotlienc.dir\c\enc\memory.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\memory.c > CMakeFiles\brotlienc.dir\c\enc\memory.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/memory.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/memory.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\memory.c -o CMakeFiles\brotlienc.dir\c\enc\memory.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\memory.c -o CMakeFiles\brotlienc.dir\c\enc\memory.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/metablock.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/metablock.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/metablock.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/metablock.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/metablock.c.obj: _deps/google_brotli-src/c/enc/metablock.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/metablock.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/metablock.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/metablock.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\metablock.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\metablock.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\metablock.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/metablock.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\metablock.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\metablock.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\metablock.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/metablock.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/metablock.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\metablock.c > CMakeFiles\brotlienc.dir\c\enc\metablock.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\metablock.c > CMakeFiles\brotlienc.dir\c\enc\metablock.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/metablock.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/metablock.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\metablock.c -o CMakeFiles\brotlienc.dir\c\enc\metablock.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\metablock.c -o CMakeFiles\brotlienc.dir\c\enc\metablock.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/static_dict.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/static_dict.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/static_dict.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/static_dict.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/static_dict.c.obj: _deps/google_brotli-src/c/enc/static_dict.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/static_dict.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/static_dict.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/static_dict.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\static_dict.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\static_dict.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\static_dict.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/static_dict.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\static_dict.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\static_dict.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\static_dict.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/static_dict.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/static_dict.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\static_dict.c > CMakeFiles\brotlienc.dir\c\enc\static_dict.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\static_dict.c > CMakeFiles\brotlienc.dir\c\enc\static_dict.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/static_dict.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/static_dict.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\static_dict.c -o CMakeFiles\brotlienc.dir\c\enc\static_dict.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\static_dict.c -o CMakeFiles\brotlienc.dir\c\enc\static_dict.c.s
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/utf8_util.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/flags.make
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/utf8_util.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/includes_C.rsp
-_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/utf8_util.c.obj: D:/AAA_C/compression-tool/third_party/brotli/c/enc/utf8_util.c
+_deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/utf8_util.c.obj: _deps/google_brotli-src/c/enc/utf8_util.c
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/utf8_util.c.obj: _deps/google_brotli-build/CMakeFiles/brotlienc.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building C object _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/utf8_util.c.obj"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/utf8_util.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\utf8_util.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\utf8_util.c.obj -c D:\AAA_C\compression-tool\third_party\brotli\c\enc\utf8_util.c
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/utf8_util.c.obj -MF CMakeFiles\brotlienc.dir\c\enc\utf8_util.c.obj.d -o CMakeFiles\brotlienc.dir\c\enc\utf8_util.c.obj -c D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\utf8_util.c
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/utf8_util.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/brotlienc.dir/c/enc/utf8_util.c.i"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\third_party\brotli\c\enc\utf8_util.c > CMakeFiles\brotlienc.dir\c\enc\utf8_util.c.i
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\utf8_util.c > CMakeFiles\brotlienc.dir\c\enc\utf8_util.c.i
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/c/enc/utf8_util.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/brotlienc.dir/c/enc/utf8_util.c.s"
-	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\third_party\brotli\c\enc\utf8_util.c -o CMakeFiles\brotlienc.dir\c\enc\utf8_util.c.s
+	cd /d D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build && D:\AAA_C\AAA_MinGW\mingw64\bin\cc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src\c\enc\utf8_util.c -o CMakeFiles\brotlienc.dir\c\enc\utf8_util.c.s
 
 # Object files for target brotlienc
 brotlienc_OBJECTS = \
@@ -446,6 +446,6 @@ _deps/google_brotli-build/CMakeFiles/brotlienc.dir/clean:
 .PHONY : _deps/google_brotli-build/CMakeFiles/brotlienc.dir/clean
 
 _deps/google_brotli-build/CMakeFiles/brotlienc.dir/depend:
-	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" D:\AAA_C\compression-tool D:\AAA_C\compression-tool\third_party\brotli D:\AAA_C\compression-tool\build_debug D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build\CMakeFiles\brotlienc.dir\DependInfo.cmake "--color=$(COLOR)"
+	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" D:\AAA_C\compression-tool D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-src D:\AAA_C\compression-tool\build_debug D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build D:\AAA_C\compression-tool\build_debug\_deps\google_brotli-build\CMakeFiles\brotlienc.dir\DependInfo.cmake "--color=$(COLOR)"
 .PHONY : _deps/google_brotli-build/CMakeFiles/brotlienc.dir/depend
 

@@ -53,4 +53,9 @@ src/core_new/CMakeFiles/core_new.dir/StreamingCancel.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/type_traits.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_mutex.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functexcept.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_defines.h
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_defines.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdio \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdio.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_stdio_config.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/swprintf.inl \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/stdio_s.h

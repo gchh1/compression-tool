@@ -116,6 +116,9 @@ src/core_new/CMakeFiles/core_new.dir/ExternalCodecs.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_vector.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/vector.tcc \
+ D:/AAA_C/compression-tool/src/core_new/include/ImageCompressorBindings.hpp \
+ D:/AAA_C/compression-tool/src/core_new/include/AudioCompressorBindings.hpp \
+ D:/AAA_C/compression-tool/src/core_new/include/VideoCompressorBindings.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/chrono \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/chrono.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ratio \
@@ -211,5 +214,8 @@ src/core_new/CMakeFiles/core_new.dir/ExternalCodecs.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/unistd.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/io.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/getopt.h \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/AudioCodec.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Brotli.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/ImageCompressor.hpp \
+ D:/AAA_C/compression-tool/src/algorithm_new/include/VideoCodec.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp
