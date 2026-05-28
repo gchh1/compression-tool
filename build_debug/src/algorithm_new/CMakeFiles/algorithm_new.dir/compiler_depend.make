@@ -33,111 +33,6 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodec.cpp.obj: D:/AAA_C/comp
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_util.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/refwrap.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/requires_hosted.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_abs.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algobase.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_construct.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_function.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_heap.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_funcs.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_types.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_numeric.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_pair.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_tempbuf.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_uninitialized.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_vector.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uniform_int_dist.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uses_allocator.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uses_allocator_args.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/utility.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/vector.tcc \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/version.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/compare \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/concepts \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstddef \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdint \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdlib \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstring \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/debug/assertions.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/debug/debug.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/alloc_traits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/numeric_traits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/type_traits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/initializer_list \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/limits \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/new \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/numbers \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/numeric \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/execution_defs.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_algorithm_defs.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_numeric_defs.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/pstl_config.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stdlib.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tuple \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/type_traits \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/vector \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++allocator.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++config.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/cpu_defines.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/os_defines.h \
-  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/limits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/mm_malloc.h \
-  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stddef.h \
-  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdint.h \
-  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/syslimits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_mac.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_secapi.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_wstdlib.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/crtdefs.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/errno.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/limits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/malloc.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/stdlib_s.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stddef.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdint.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdlib.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/string.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/vadefs.h \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/AudioCodec.hpp
-
-src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodecAac.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/AudioCodecAac.cpp \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/backward/binders.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bit \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/alloc_traits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocator.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/concept_check.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/cpp_type_traits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_defines.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functexcept.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functional_hash.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hash_bytes.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/invoke.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/iterator_concepts.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/max_size_type.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/memory_resource.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/memoryfwd.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/move.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/new_allocator.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/predefined_ops.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ptr_traits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/range_access.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algo.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algobase.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_base.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_cmp.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_util.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/refwrap.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/requires_hosted.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/specfun.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_abs.h \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h \
@@ -1407,227 +1302,6 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj: D:/AAA_C/compressio
   D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp
 
-src/algorithm_new/CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/OpenH264Codec.cpp \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/backward/binders.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bit \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/alloc_traits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocator.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/concept_check.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/cpp_type_traits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_defines.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functexcept.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functional_hash.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hash_bytes.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/invoke.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/iterator_concepts.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/max_size_type.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/memory_resource.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/memoryfwd.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/move.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/new_allocator.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/predefined_ops.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ptr_traits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/range_access.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algo.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algobase.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_base.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_cmp.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_util.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/refwrap.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/requires_hosted.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_abs.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algobase.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_construct.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_function.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_heap.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_funcs.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_types.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_pair.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_tempbuf.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_uninitialized.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_vector.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uniform_int_dist.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uses_allocator.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uses_allocator_args.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/utility.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/vector.tcc \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/version.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/compare \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/concepts \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstddef \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdint \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdio \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdlib \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstring \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/debug/assertions.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/debug/debug.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/alloc_traits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/numeric_traits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/type_traits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/initializer_list \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/new \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/numbers \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/execution_defs.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_algorithm_defs.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/pstl_config.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stdlib.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tuple \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/type_traits \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/vector \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++allocator.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++config.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/cpu_defines.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/os_defines.h \
-  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/limits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/mm_malloc.h \
-  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stddef.h \
-  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdint.h \
-  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/syslimits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_mac.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_off_t.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_secapi.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_stdio_config.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_wstdlib.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/crtdefs.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/errno.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/limits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/malloc.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/stdio_s.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/stdlib_s.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stddef.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdint.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdio.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdlib.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/string.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/swprintf.inl \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/vadefs.h \
-  _deps/openh264-src/codec/api/wels/codec_api.h \
-  _deps/openh264-src/codec/api/wels/codec_app_def.h \
-  _deps/openh264-src/codec/api/wels/codec_def.h \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/OpenH264Codec.hpp \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/VideoCodec.hpp
-
-src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/VideoCodec.cpp \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/backward/binders.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bit \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/alloc_traits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocator.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/concept_check.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/cpp_type_traits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_defines.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functexcept.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functional_hash.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hash_bytes.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/invoke.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/iterator_concepts.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/max_size_type.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/memory_resource.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/memoryfwd.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/move.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/new_allocator.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/predefined_ops.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ptr_traits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/range_access.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algo.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algobase.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_base.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_cmp.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_util.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/refwrap.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/requires_hosted.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_abs.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algobase.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_construct.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_function.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_heap.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_funcs.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_types.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_numeric.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_pair.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_tempbuf.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_uninitialized.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_vector.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uniform_int_dist.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uses_allocator.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uses_allocator_args.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/utility.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/vector.tcc \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/version.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/compare \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/concepts \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstddef \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdint \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdio \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdlib \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstring \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/debug/assertions.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/debug/debug.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/alloc_traits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/numeric_traits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/type_traits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/initializer_list \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/limits \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/new \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/numbers \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/numeric \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/execution_defs.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_algorithm_defs.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_numeric_defs.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/pstl_config.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stdlib.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tuple \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/type_traits \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/vector \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++allocator.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++config.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/cpu_defines.h \
-  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/os_defines.h \
-  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/limits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/mm_malloc.h \
-  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stddef.h \
-  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdint.h \
-  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/syslimits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_mac.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_off_t.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_secapi.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_stdio_config.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_wstdlib.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/crtdefs.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/errno.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/limits.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/malloc.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/stdio_s.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/stdlib_s.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stddef.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdint.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdio.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdlib.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/string.h \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/swprintf.inl \
-  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/vadefs.h \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/VideoCodec.hpp
-
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/Visualization.cpp \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array \
@@ -1928,19 +1602,9 @@ D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/Visualization.hpp:
 
-D:/AAA_C/compression-tool/src/algorithm_new/include/OpenH264Codec.hpp:
-
-_deps/openh264-src/codec/api/wels/codec_def.h:
-
-_deps/openh264-src/codec/api/wels/codec_app_def.h:
-
-D:/AAA_C/compression-tool/src/algorithm_new/OpenH264Codec.cpp:
-
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_tree.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_set.h:
-
-_deps/openh264-src/codec/api/wels/codec_api.h:
 
 D:/AAA_C/compression-tool/src/algorithm_new/LZDP.cpp:
 
@@ -1953,8 +1617,6 @@ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stdarg.h:
 D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/xmmintrin.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdarg.h:
-
-D:/AAA_C/compression-tool/src/algorithm_new/VideoCodec.cpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/mmintrin.h:
 
@@ -1980,31 +1642,13 @@ D:/AAA_C/compression-tool/src/algorithm_new/include/LZencoding.hpp:
 
 _deps/google_brotli-src/c/include/brotli/types.h:
 
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/sstream.tcc:
+
 _deps/google_brotli-src/c/include/brotli/port.h:
 
 D:/AAA_C/compression-tool/src/algorithm_new/Brotli.cpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_fwd.h:
-
-D:/AAA_C/compression-tool/src/algorithm_new/LZSS.cpp:
-
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/poly_laguerre.tcc:
-
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/modified_bessel_func.tcc:
-
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/hypergeometric.tcc:
-
-D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/mm_malloc.h:
-
-D:/AAA_C/compression-tool/src/algorithm_new/ImageCompressor.cpp:
-
-D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/swprintf.inl:
-
-D:/AAA_C/compression-tool/src/algorithm_new/AudioCodecAac.cpp:
-
-D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/syslimits.h:
-
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/version.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/string.h:
 
@@ -2012,15 +1656,11 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algo.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_timeval.h:
 
+D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdlib.h:
+
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/math.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt.h:
-
-D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdlib.h:
-
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator.h:
-
-D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stddef.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_mac.h:
 
@@ -2028,17 +1668,39 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cwchar:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw.h:
 
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/exp_integral.tcc:
+D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/syslimits.h:
 
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ptr_traits.h:
-
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/os_defines.h:
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/version.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstddef:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_classes.tcc:
 
+D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/mm_malloc.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/hypergeometric.tcc:
+
+D:/AAA_C/compression-tool/src/algorithm_new/ImageCompressor.cpp:
+
+D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/swprintf.inl:
+
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_startup.h:
+
+D:/AAA_C/compression-tool/src/algorithm_new/LZSS.cpp:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/poly_laguerre.tcc:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/modified_bessel_func.tcc:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/os_defines.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/exp_integral.tcc:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ptr_traits.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stddef.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stdlib.h:
 
@@ -2074,11 +1736,17 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/alloc_traits.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/parse_numbers.h:
 
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/set:
+D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/vadefs.h:
 
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cmath:
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/move.h:
 
-_deps/google_brotli-src/c/include/brotli/decode.h:
+D:/AAA_C/compression-tool/src/algorithm_new/Zstd.cpp:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_dir.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/crtdefs.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/numeric:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdlib:
 
@@ -2116,8 +1784,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algo.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocator.h:
 
-D:/AAA_C/compression-tool/src/algorithm_new/include/VideoCodec.hpp:
-
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/locale.h:
 
 D:/AAA_C/compression-tool/src/algorithm_new/Dpflate.cpp:
@@ -2129,20 +1795,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/erase_if.h:
 D:/AAA_C/compression-tool/src/algorithm_new/include/BitProcessor.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/memoryfwd.h:
-
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/specfun.h:
-
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_funcs.h:
-
-D:/AAA_C/compression-tool/src/algorithm_new/include/LZSS.hpp:
-
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h:
-
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_vector.h:
-
-D:/AAA_C/compression-tool/src/algorithm_new/include/ImageCompressor.hpp:
-
-D:/AAA_C/compression-tool/src/algorithm_new/include/Deflate.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_multiset.h:
 
@@ -2192,10 +1844,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/riemann_zeta.tcc:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/max_size_type.h:
 
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/numeric:
-
-D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/crtdefs.h:
-
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdint:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++allocator.h:
@@ -2211,14 +1859,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/vector.tcc:
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/execution_defs.h:
 
 _deps/google_brotli-src/c/include/brotli/encode.h:
-
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/move.h:
-
-D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/vadefs.h:
-
-D:/AAA_C/compression-tool/src/algorithm_new/Zstd.cpp:
-
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/fs_dir.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_signal.h:
 
@@ -2244,11 +1884,17 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algobase.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functexcept.h:
 
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h:
+_deps/google_brotli-src/c/include/brotli/decode.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/set:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cmath:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/stdlib_s.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/quoted_string.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_util.h:
 
@@ -2263,6 +1909,20 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdio:
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sys/timeb.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_compat.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/specfun.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_funcs.h:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/LZSS.hpp:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_vector.h:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/ImageCompressor.hpp:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/Deflate.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception.h:
 
@@ -2312,13 +1972,13 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/istream:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uses_allocator_args.h:
 
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/poly_hermite.tcc:
-
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/vector:
-
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/nested_exception.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/vector:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/poly_hermite.tcc:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/utility.h:
 
@@ -2343,8 +2003,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++config.
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/compare:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/postypes.h:
-
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/sstream.tcc:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic:
 
@@ -2434,9 +2092,9 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unique_ptr.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cctype:
 
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/bessel_function.tcc:
-
 D:/AAA_C/compression-tool/src/algorithm_new/Deflate.cpp:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tr1/bessel_function.tcc:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/KMP.hpp:
 

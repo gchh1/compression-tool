@@ -45,9 +45,6 @@ ADE_LABEL_NAMES: dict[int, str] = {
     7: "BROTLI",
     8: "ZSTD",
     9: "SKIP",
-    10: "FFMPEG_H264",
-    11: "FFMPEG_H265",
-    12: "OPENH264",
 }
 
 ALGORITHM_TYPE_TO_ADE_LABEL: dict[AlgorithmType, int] = {
@@ -59,9 +56,6 @@ ALGORITHM_TYPE_TO_ADE_LABEL: dict[AlgorithmType, int] = {
     AlgorithmType.GZIP: 5,
     AlgorithmType.BROTLI: 7,
     AlgorithmType.ZSTD: 8,
-    AlgorithmType.FFMPEG_H264: 10,
-    AlgorithmType.FFMPEG_H265: 11,
-    AlgorithmType.OPENH264: 12,
 }
 
 

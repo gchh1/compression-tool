@@ -15,17 +15,13 @@ HEADER_VERSION = 3
 UNIFIED_EXTENSION = ".wcx"
 
 _IMAGE_ALGORITHMS = frozenset({AlgorithmType.JPEG, AlgorithmType.PNG})
-_AUDIO_ALGORITHMS = frozenset({AlgorithmType.FLAC, AlgorithmType.AAC_LC})
-_VIDEO_ALGORITHMS = frozenset({AlgorithmType.H264, AlgorithmType.OPENH264})
-_MEDIA_ALGORITHMS_ALL = frozenset(_IMAGE_ALGORITHMS | _AUDIO_ALGORITHMS | _VIDEO_ALGORITHMS)
+_AUDIO_ALGORITHMS = frozenset({AlgorithmType.FLAC})
+_MEDIA_ALGORITHMS_ALL = frozenset(_IMAGE_ALGORITHMS | _AUDIO_ALGORITHMS)
 
 _MEDIA_ALGO_EXT = {
     AlgorithmType.JPEG: ".jpg",
     AlgorithmType.PNG: ".png",
     AlgorithmType.FLAC: ".flac",
-    AlgorithmType.AAC_LC: ".aac",
-    AlgorithmType.H264: ".h264",
-    AlgorithmType.OPENH264: ".h264",
 }
 
 ALGO_CODE_STORED = 0
@@ -43,11 +39,6 @@ ALGO_CODE_MAP: dict[AlgorithmType, int] = {
     AlgorithmType.JPEG: 10,
     AlgorithmType.PNG: 11,
     AlgorithmType.FLAC: 12,
-    AlgorithmType.AAC_LC: 13,
-    AlgorithmType.H264: 14,
-    AlgorithmType.FFMPEG_H264: 15,
-    AlgorithmType.FFMPEG_H265: 16,
-    AlgorithmType.OPENH264: 17,
 }
 
 CODE_TO_ALGO: dict[int, AlgorithmType] = {v: k for k, v in ALGO_CODE_MAP.items()}
@@ -205,8 +196,6 @@ def pack_compressed_file(
             AlgorithmType.JPEG: engine.AlgorithmID.IMAGE_JPEG,
             AlgorithmType.PNG: engine.AlgorithmID.IMAGE_PNG,
             AlgorithmType.FLAC: engine.AlgorithmID.AUDIO_FLAC,
-            AlgorithmType.AAC_LC: engine.AlgorithmID.AUDIO_AAC_LC,
-            AlgorithmType.H264: engine.AlgorithmID.VIDEO_H264,
         }
         algo_id = algo_map.get(algorithm)
         if algo_id is None:

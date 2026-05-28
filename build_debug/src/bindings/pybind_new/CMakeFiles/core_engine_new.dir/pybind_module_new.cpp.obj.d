@@ -413,5 +413,6 @@ src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/pybind_module_new.cpp.obj
  D:/AAA_C/compression-tool/src/algorithm_new/include/LZSS.hpp \
  D:/AAA_C/compression-tool/src/core_new/include/GzipCompressor.hpp \
  D:/AAA_C/compression-tool/src/core_new/include/ImageCompressorBindings.hpp \
- D:/AAA_C/compression-tool/src/core_new/include/VideoCompressorBindings.hpp \
+ D:/AAA_C/compression-tool/src/ade/include/ade_debug_log.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdarg \
  D:/AAA_C/compression-tool/src/api_new/include/api.hpp

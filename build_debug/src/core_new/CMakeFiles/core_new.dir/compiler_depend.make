@@ -630,14 +630,11 @@ src/core_new/CMakeFiles/core_new.dir/ExternalCodecs.cpp.obj: D:/AAA_C/compressio
   D:/AAA_C/compression-tool/src/algorithm_new/include/AudioCodec.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Brotli.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/ImageCompressor.hpp \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/OpenH264Codec.hpp \
-  D:/AAA_C/compression-tool/src/algorithm_new/include/VideoCodec.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/AudioCompressorBindings.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/GzipCompressor.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/ICompressor.hpp \
-  D:/AAA_C/compression-tool/src/core_new/include/ImageCompressorBindings.hpp \
-  D:/AAA_C/compression-tool/src/core_new/include/VideoCompressorBindings.hpp
+  D:/AAA_C/compression-tool/src/core_new/include/ImageCompressorBindings.hpp
 
 src/core_new/CMakeFiles/core_new.dir/GuiCompressors.cpp.obj: D:/AAA_C/compression-tool/src/core_new/GuiCompressors.cpp \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
@@ -1351,15 +1348,11 @@ D:/AAA_C/compression-tool/src/core_new/include/GuiCompressors.hpp:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/Visualization.hpp:
 
-D:/AAA_C/compression-tool/src/core_new/include/VideoCompressorBindings.hpp:
-
 D:/AAA_C/compression-tool/src/core_new/include/ICompressor.hpp:
 
 D:/AAA_C/compression-tool/src/core_new/include/AudioCompressorBindings.hpp:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp:
-
-D:/AAA_C/compression-tool/src/algorithm_new/include/OpenH264Codec.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/string_view:
 
@@ -1580,8 +1573,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/codecvt.h:
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ios_base.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocator.h:
-
-D:/AAA_C/compression-tool/src/algorithm_new/include/VideoCodec.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/locale.h:
 

@@ -314,6 +314,7 @@ src/api_new/CMakeFiles/api_new.dir/api.cpp.obj
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/codecvt
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/compare
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/concepts
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdarg
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstddef
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdint
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdio
@@ -383,6 +384,7 @@ src/api_new/CMakeFiles/api_new.dir/api.cpp.obj
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/time_members.h
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/limits.h
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/mm_malloc.h
+ D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdarg.h
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stddef.h
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdint.h
  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/syslimits.h
@@ -391,6 +393,7 @@ src/api_new/CMakeFiles/api_new.dir/api.cpp.obj
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_off_t.h
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_secapi.h
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stat64.h
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stdarg.h
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_timeval.h
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt.h
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_startup.h
@@ -414,6 +417,7 @@ src/api_new/CMakeFiles/api_new.dir/api.cpp.obj
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/wchar_s.h
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/signal.h
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdarg.h
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stddef.h
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdint.h
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdio.h
@@ -425,6 +429,7 @@ src/api_new/CMakeFiles/api_new.dir/api.cpp.obj
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/vadefs.h
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wchar.h
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wctype.h
+ D:/AAA_C/compression-tool/src/ade/include/ade_debug_log.h
  D:/AAA_C/compression-tool/src/algorithm_new/include/BitProcessor.hpp
  D:/AAA_C/compression-tool/src/algorithm_new/include/Brotli.hpp
  D:/AAA_C/compression-tool/src/algorithm_new/include/ByteView.hpp

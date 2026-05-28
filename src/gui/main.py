@@ -92,6 +92,7 @@ def run_gui():
 
     from PyQt6.QtWidgets import QApplication
     from PyQt6.QtGui import QIcon
+    import PyQt6.QtWebEngineWidgets  # noqa: F401  must be imported before QApplication for OpenGL context sharing
     from gui.ui.main_window import MainWindow
     from gui.config.settings import apply_theme
 

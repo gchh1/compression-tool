@@ -11,7 +11,7 @@
       "search_size": 4095,
       "lookahead_size": 31,
       "min_match": 0,
-      "dp_top": 6,
+      "dp_top": 5,
       "match_engine": 0,
       "use_flag_encoding": 1
     },
@@ -53,9 +53,6 @@
     },
     "png": {},
     "flac": {
-      "quality": 5
-    },
-    "aac_lc": {
       "quality": 5
     },
     "h264": {
@@ -114,13 +111,13 @@
         "follow_global_threshold": true,
         "threshold_mb": 10.0
       },
-      "lzss": {
+      "lzdp": {
         "follow_global_chunk": true,
         "chunk_size_kb": 1024,
         "follow_global_threshold": true,
         "threshold_mb": 10.0
       },
-      "lzdp": {
+      "lzss": {
         "follow_global_chunk": true,
         "chunk_size_kb": 1024,
         "follow_global_threshold": true,

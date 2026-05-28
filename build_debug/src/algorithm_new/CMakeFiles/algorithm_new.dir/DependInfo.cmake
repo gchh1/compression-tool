@@ -9,15 +9,12 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "D:/AAA_C/compression-tool/src/algorithm_new/AudioCodec.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodec.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodec.cpp.obj.d"
-  "D:/AAA_C/compression-tool/src/algorithm_new/AudioCodecAac.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodecAac.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/AudioCodecAac.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/algorithm_new/Brotli.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/Brotli.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/Brotli.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/algorithm_new/Deflate.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/Deflate.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/algorithm_new/Dpflate.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/Dpflate.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/algorithm_new/ImageCompressor.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/algorithm_new/LZDP.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/algorithm_new/LZSS.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj.d"
-  "D:/AAA_C/compression-tool/src/algorithm_new/OpenH264Codec.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.obj.d"
-  "D:/AAA_C/compression-tool/src/algorithm_new/VideoCodec.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/algorithm_new/Visualization.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/algorithm_new/Zstd.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj.d"
   )

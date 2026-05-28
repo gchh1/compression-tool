@@ -838,6 +838,7 @@ src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/pybind_module_new.cpp.obj
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cmath \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/compare \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/concepts \
+  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdarg \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstddef \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdint \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdio \
@@ -990,6 +991,7 @@ src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/pybind_module_new.cpp.obj
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/vadefs.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wchar.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wctype.h \
+  D:/AAA_C/compression-tool/src/ade/include/ade_debug_log.h \
   D:/AAA_C/compression-tool/src/algorithm_new/include/BitProcessor.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/ByteView.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Deflate.hpp \
@@ -1017,7 +1019,6 @@ src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/pybind_module_new.cpp.obj
   D:/AAA_C/compression-tool/src/core_new/include/ICompressor.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/ImageCompressorBindings.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp \
-  D:/AAA_C/compression-tool/src/core_new/include/VideoCompressorBindings.hpp \
   D:/Python/Lib/site-packages/pybind11/include/pybind11/attr.h \
   D:/Python/Lib/site-packages/pybind11/include/pybind11/buffer_info.h \
   D:/Python/Lib/site-packages/pybind11/include/pybind11/cast.h \
@@ -1740,8 +1741,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uses_allocator.h:
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hashtable.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_ios.tcc:
-
-D:/AAA_C/compression-tool/src/core_new/include/VideoCompressorBindings.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/avx512vpopcntdqintrin.h:
 

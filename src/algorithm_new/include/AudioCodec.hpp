@@ -6,7 +6,7 @@
 
 namespace compressor::algorithm {
 
-enum class AudioFormat { FLAC, AAC_LC };
+enum class AudioFormat { FLAC };
 
 struct WavInfo {
     int sample_rate = 0;
@@ -32,18 +32,8 @@ auto encode(const std::vector<int16_t>& samples, int sample_rate,
             int num_channels, int bits_per_sample,
             int compression_level = 5) -> std::vector<uint8_t>;
 
-auto decode(const std::vector<uint8_t>& flac_data) -> std::vector<int16_t>;
+auto decode(const std::vector<uint8_t>& flac_data) -> std::vector<uint8_t>;
 
 }  // namespace flac
-
-namespace aac {
-
-auto encode(const std::vector<int16_t>& samples, int sample_rate,
-            int num_channels, int bits_per_sample,
-            int bitrate_kbps = 128) -> std::vector<uint8_t>;
-
-auto decode(const std::vector<uint8_t>& aac_data) -> std::vector<int16_t>;
-
-}  // namespace aac
 
 }  // namespace compressor::algorithm

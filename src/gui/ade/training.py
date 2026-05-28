@@ -39,14 +39,9 @@ V3_ALGORITHM_ID_TO_TYPE: dict[int, AlgorithmType] = {
     7: AlgorithmType.GZIP,
     8: AlgorithmType.HUFFMAN,
     9: AlgorithmType.TRANSFORMER,
-    10: AlgorithmType.FFMPEG_H264,
-    11: AlgorithmType.FFMPEG_H265,
-    12: AlgorithmType.OPENH264,
-    13: AlgorithmType.JPEG,
-    14: AlgorithmType.PNG,
-    15: AlgorithmType.FLAC,
-    16: AlgorithmType.AAC_LC,
-    17: AlgorithmType.H264,
+    10: AlgorithmType.JPEG,
+    11: AlgorithmType.PNG,
+    12: AlgorithmType.FLAC,
 }
 
 
@@ -235,14 +230,9 @@ class TrainingSampleV3:
             AlgorithmType.GZIP: 7,
             AlgorithmType.HUFFMAN: 8,
             AlgorithmType.TRANSFORMER: 9,
-            AlgorithmType.FFMPEG_H264: 10,
-            AlgorithmType.FFMPEG_H265: 11,
-            AlgorithmType.OPENH264: 12,
-            AlgorithmType.JPEG: 13,
-            AlgorithmType.PNG: 14,
-            AlgorithmType.FLAC: 15,
-            AlgorithmType.AAC_LC: 16,
-            AlgorithmType.H264: 17,
+            AlgorithmType.JPEG: 10,
+            AlgorithmType.PNG: 11,
+            AlgorithmType.FLAC: 12,
             AlgorithmType.AUTO: -1,
         }
         sample.algorithm_id = algo_id_map.get(algo, -1)

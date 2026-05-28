@@ -256,4 +256,9 @@ src/api_new/CMakeFiles/api_new.dir/api.cpp.obj: \
  D:/AAA_C/compression-tool/src/algorithm_new/include/LZSS.hpp \
  D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp \
  D:/AAA_C/compression-tool/src/api_new/include/WCXProtocol.hpp \
+ D:/AAA_C/compression-tool/src/ade/include/ade_debug_log.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdarg \
+ D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdarg.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdarg.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stdarg.h \
  D:/AAA_C/compression-tool/src/core_new/include/io/FileIO.hpp

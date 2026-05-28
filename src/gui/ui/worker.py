@@ -38,10 +38,9 @@ def _crash_safe_flush() -> None:
         pass
 
 IMAGE_ALGORITHMS = frozenset({AlgorithmType.JPEG, AlgorithmType.PNG})
-AUDIO_ALGORITHMS = frozenset({AlgorithmType.FLAC, AlgorithmType.AAC_LC})
-VIDEO_ALGORITHMS = frozenset({AlgorithmType.H264, AlgorithmType.OPENH264, AlgorithmType.FFMPEG_H264, AlgorithmType.FFMPEG_H265})
+AUDIO_ALGORITHMS = frozenset({AlgorithmType.FLAC})
 
-MEDIA_ALGORITHMS = IMAGE_ALGORITHMS | AUDIO_ALGORITHMS | VIDEO_ALGORITHMS
+MEDIA_ALGORITHMS = IMAGE_ALGORITHMS | AUDIO_ALGORITHMS
 
 _MEDIA_EXT_MAP = {
     ".jpg": AlgorithmType.JPEG, ".jpeg": AlgorithmType.JPEG, ".jpe": AlgorithmType.JPEG,
@@ -51,13 +50,8 @@ _MEDIA_EXT_MAP = {
     ".wav": AlgorithmType.FLAC, ".flac": AlgorithmType.FLAC,
     ".ogg": AlgorithmType.FLAC, ".opus": AlgorithmType.FLAC,
     ".mid": AlgorithmType.FLAC, ".midi": AlgorithmType.FLAC,
-    ".mp3": AlgorithmType.AAC_LC, ".aac": AlgorithmType.AAC_LC,
-    ".wma": AlgorithmType.AAC_LC, ".m4a": AlgorithmType.AAC_LC,
-    ".mp4": AlgorithmType.H264, ".avi": AlgorithmType.H264,
-    ".mkv": AlgorithmType.H264, ".mov": AlgorithmType.H264,
-    ".wmv": AlgorithmType.H264, ".flv": AlgorithmType.H264,
-    ".webm": AlgorithmType.H264, ".m4v": AlgorithmType.H264,
-    ".mpg": AlgorithmType.H264, ".mpeg": AlgorithmType.H264,
+    ".mp3": AlgorithmType.FLAC, ".aac": AlgorithmType.FLAC,
+    ".wma": AlgorithmType.FLAC, ".m4a": AlgorithmType.FLAC,
 }
 
 
@@ -91,11 +85,6 @@ COMPARISON_ALGORITHMS = (
     AlgorithmType.BROTLI,
     AlgorithmType.ZSTD,
     AlgorithmType.FLAC,
-    AlgorithmType.AAC_LC,
-    AlgorithmType.H264,
-    AlgorithmType.OPENH264,
-    AlgorithmType.FFMPEG_H264,
-    AlgorithmType.FFMPEG_H265,
 )
 
 _GENERAL_COMPARISON = (
@@ -110,7 +99,7 @@ _GENERAL_COMPARISON = (
 
 
 def get_comparison_algorithms_for_file(file_path: str) -> tuple[AlgorithmType, ...]:
-    from gui.models import is_media_algorithm_suitable_for_file, IMAGE_EXTENSIONS, AUDIO_EXTENSIONS, VIDEO_EXTENSIONS
+    from gui.models import is_media_algorithm_suitable_for_file, IMAGE_EXTENSIONS, AUDIO_EXTENSIONS
     ext = Path(file_path).suffix.lower()
     algos = list(_GENERAL_COMPARISON)
     if ext in IMAGE_EXTENSIONS:
@@ -118,12 +107,6 @@ def get_comparison_algorithms_for_file(file_path: str) -> tuple[AlgorithmType, .
         algos.append(AlgorithmType.PNG)
     if ext in AUDIO_EXTENSIONS:
         algos.append(AlgorithmType.FLAC)
-        algos.append(AlgorithmType.AAC_LC)
-    if ext in VIDEO_EXTENSIONS:
-        algos.append(AlgorithmType.H264)
-        algos.append(AlgorithmType.OPENH264)
-        algos.append(AlgorithmType.FFMPEG_H264)
-        algos.append(AlgorithmType.FFMPEG_H265)
     return tuple(algos)
 
 def _heuristic_params_for_record(record: FileRecord, algo) -> dict[str, int] | None:
@@ -588,32 +571,44 @@ class CompressionWorker(QThread):
                 result = None
                 from gui.ade.explorer import SilentExplorer
 
-                _is_media = record.algorithm in MEDIA_ALGORITHMS
-                logger.info("[compress] DEBUG compress: calling smart_compress algo=%s bytes=%d media=%s",
-                           record.algorithm.value, len(record.raw_data), _is_media)
-                _crash_safe_flush()
-                try:
-                    with SilentExplorer.user_compression_priority():
-                        result = engine.smart_compress(
-                            record.raw_data,
-                            record.algorithm,
-                            force_memory_codec=web_dict_active,
-                        )
-                    logger.info(
-                        "[compress] memory smart_compress returned success=%s compressed_size=%s",
-                        getattr(result, "success", None),
-                        getattr(result, "compressed_size", None),
-                    )
-                except Exception as e:
-                    logger.exception("[compress] smart_compress raised: %s", e)
+                if record.algorithm == AlgorithmType.NONE:
+                    logger.info("[compress] ADE decided NONE, storing raw data as-is (%d bytes)",
+                               len(record.raw_data))
                     _crash_safe_flush()
-                    em_ex = str(e).lower()
-                    if self._is_cancelled or "cancel" in em_ex:
-                        record.status = CompressionStatus.FAILED
-                        record.error_message = "已取消"
-                        record.compression_config_snapshot = None
-                        self.error.emit(record)
-                        return
+                    _NONE_Result = type('_NONE_Result', (), {})
+                    result = _NONE_Result()
+                    result.success = True
+                    result.data = record.raw_data
+                    result.compressed_size = len(record.raw_data)
+                    result.time_ms = 0
+                    result.error_message = ""
+                else:
+                    _is_media = record.algorithm in MEDIA_ALGORITHMS
+                    logger.info("[compress] DEBUG compress: calling smart_compress algo=%s bytes=%d media=%s",
+                               record.algorithm.value, len(record.raw_data), _is_media)
+                    _crash_safe_flush()
+                    try:
+                        with SilentExplorer.user_compression_priority():
+                            result = engine.smart_compress(
+                                record.raw_data,
+                                record.algorithm,
+                                force_memory_codec=web_dict_active,
+                            )
+                        logger.info(
+                            "[compress] memory smart_compress returned success=%s compressed_size=%s",
+                            getattr(result, "success", None),
+                            getattr(result, "compressed_size", None),
+                        )
+                    except Exception as e:
+                        logger.exception("[compress] smart_compress raised: %s", e)
+                        _crash_safe_flush()
+                        em_ex = str(e).lower()
+                        if self._is_cancelled or "cancel" in em_ex:
+                            record.status = CompressionStatus.FAILED
+                            record.error_message = "已取消"
+                            record.compression_config_snapshot = None
+                            self.error.emit(record)
+                            return
 
                 if result is None or getattr(result, "success", True) is False:
                     em_fail = (getattr(result, "error_message", None) or "").strip() if result else ""
@@ -689,8 +684,7 @@ class CompressionWorker(QThread):
 
                 is_img_algo = record.algorithm in IMAGE_ALGORITHMS and folder_ref is None
                 is_audio_algo = record.algorithm in AUDIO_ALGORITHMS and folder_ref is None
-                is_video_algo = record.algorithm in VIDEO_ALGORITHMS and folder_ref is None
-                is_media_algo = is_img_algo or is_audio_algo or is_video_algo
+                is_media_algo = is_img_algo or is_audio_algo
                 if is_img_algo:
                     img_ext = ".jpg" if record.algorithm == AlgorithmType.JPEG else ".png"
                     from gui.utils.workspace import compressed_dir
@@ -728,31 +722,6 @@ class CompressionWorker(QThread):
                         record.is_stored = False
                         logger.info("[compress] %s compressed saved as %s (no WCX)", record.name, audio_path)
                     record.compressed_path = audio_path
-                    record.compressed_data = None
-                    record.compression_time_ms = result.time_ms
-                    record.compression_config_snapshot = snap
-                elif is_video_algo:
-                    from gui.utils.workspace import compressed_dir
-                    uid = uuid.uuid4().hex[:12]
-                    stem = Path(record.path).stem if hasattr(record, "path") and record.path else "video"
-                    if record.algorithm == AlgorithmType.FFMPEG_H264:
-                        video_ext = ".mp4"
-                    elif record.algorithm == AlgorithmType.FFMPEG_H265:
-                        video_ext = ".mp4"
-                    else:
-                        video_ext = ".h264"
-                    video_path = str(compressed_dir() / f"{uid}_{stem}{video_ext}")
-                    if compressed_size >= original_size:
-                        Path(video_path).write_bytes(stored_plain)
-                        record.compression_ratio = 1.0
-                        record.is_stored = True
-                        logger.info("[compress] %s EXPANSION, stored as %s (no WCX)", record.name, video_path)
-                    else:
-                        Path(video_path).write_bytes(coerced)
-                        record.compression_ratio = compressed_size / original_size if original_size > 0 else 0
-                        record.is_stored = False
-                        logger.info("[compress] %s compressed saved as %s (no WCX)", record.name, video_path)
-                    record.compressed_path = video_path
                     record.compressed_data = None
                     record.compression_time_ms = result.time_ms
                     record.compression_config_snapshot = snap

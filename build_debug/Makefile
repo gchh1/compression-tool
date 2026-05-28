@@ -558,58 +558,6 @@ algorithm_new/fast:
 .PHONY : algorithm_new/fast
 
 #=============================================================================
-# Target rules for targets named openh264_common
-
-# Build rule for target.
-openh264_common: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 openh264_common
-.PHONY : openh264_common
-
-# fast build rule for target.
-openh264_common/fast:
-	$(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/build
-.PHONY : openh264_common/fast
-
-#=============================================================================
-# Target rules for targets named openh264_encoder
-
-# Build rule for target.
-openh264_encoder: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 openh264_encoder
-.PHONY : openh264_encoder
-
-# fast build rule for target.
-openh264_encoder/fast:
-	$(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/build
-.PHONY : openh264_encoder/fast
-
-#=============================================================================
-# Target rules for targets named openh264_decoder
-
-# Build rule for target.
-openh264_decoder: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 openh264_decoder
-.PHONY : openh264_decoder
-
-# fast build rule for target.
-openh264_decoder/fast:
-	$(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/build
-.PHONY : openh264_decoder/fast
-
-#=============================================================================
-# Target rules for targets named openh264_processing
-
-# Build rule for target.
-openh264_processing: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 openh264_processing
-.PHONY : openh264_processing
-
-# fast build rule for target.
-openh264_processing/fast:
-	$(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/build
-.PHONY : openh264_processing/fast
-
-#=============================================================================
 # Target rules for targets named core_new
 
 # Build rule for target.
@@ -748,10 +696,6 @@ help:
 	@echo ... core
 	@echo ... core_engine_new
 	@echo ... core_new
-	@echo ... openh264_common
-	@echo ... openh264_decoder
-	@echo ... openh264_encoder
-	@echo ... openh264_processing
 	@echo ... test_LZSS
 .PHONY : help
 

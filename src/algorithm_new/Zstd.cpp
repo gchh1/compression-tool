@@ -178,7 +178,7 @@ private:
             out.push_back(static_cast<uint8_t>((size >> 4) | 0x40));
             out.push_back(static_cast<uint8_t>((size << 4) & 0xFF));
         } else {
-            out.push_back(0x80);
+            out.push_back(0xC0);
             out.push_back(size & 0xFF);
             out.push_back((size >> 8) & 0xFF);
             out.push_back((size >> 16) & 0xFF);
@@ -194,8 +194,9 @@ private:
         size_t of_code = 0;
         while (of_code < 28 && OF_BASE[of_code + 1] <= m.offset) ++of_code;
 
-        uint8_t token = static_cast<uint8_t>((ml_code << 3) | of_code);
-        out.push_back(token);
+        out.push_back(0x80);
+        out.push_back(static_cast<uint8_t>(ml_code));
+        out.push_back(static_cast<uint8_t>(of_code));
 
         if (ml_code >= 52) {
             size_t extra = m.length - ML_BASE[ml_code];
@@ -248,12 +249,9 @@ public:
 
             if ((block_header & 0x80) == 0) {
                 size_t lit_size;
-                if ((block_header & 0xC0) == 0x40) {
+                if ((block_header & 0x40) != 0) {
                     lit_size = ((block_header & 0x3F) << 4) | (input[pos] >> 4);
                     ++pos;
-                } else if ((block_header & 0xC0) == 0x80) {
-                    lit_size = input[pos] | (input[pos+1] << 8) | (input[pos+2] << 16);
-                    pos += 3;
                 } else {
                     lit_size = block_header;
                 }
@@ -262,10 +260,18 @@ public:
                 output.insert(output.end(), input.begin() + pos,
                               input.begin() + pos + lit_size);
                 pos += lit_size;
+            } else if ((block_header & 0x40) != 0) {
+                size_t lit_size = input[pos] | (input[pos+1] << 8) | (input[pos+2] << 16);
+                pos += 3;
+
+                if (pos + lit_size > input.size()) break;
+                output.insert(output.end(), input.begin() + pos,
+                              input.begin() + pos + lit_size);
+                pos += lit_size;
             } else {
-                uint8_t token = block_header;
-                size_t ml_code = (token >> 3) & 0x1F;
-                size_t of_code = token & 0x07;
+                if (pos + 1 >= input.size()) break;
+                size_t ml_code = input[pos++];
+                size_t of_code = input[pos++];
 
                 size_t match_len = ML_BASE[ml_code];
                 if (ml_code >= 52) {

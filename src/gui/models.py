@@ -85,12 +85,8 @@ class AlgorithmType(Enum):
     ZSTD = "zstd"
     JPEG = "jpeg"
     PNG = "png"
+    AAC_LC = "aac_lc"  # REMOVED - keep for backward compat
     FLAC = "flac"
-    AAC_LC = "aac_lc"
-    H264 = "h264"
-    OPENH264 = "openh264"
-    FFMPEG_H264 = "ffmpeg_h264"
-    FFMPEG_H265 = "ffmpeg_h265"
     TRANSFORMER = "transformer (beta)"
     NONE = "none"
 
@@ -202,23 +198,6 @@ ALGORITHM_PARAMS: dict[AlgorithmType, list[AlgorithmParamDef]] = {
     AlgorithmType.PNG: [],
     AlgorithmType.FLAC: [
         AlgorithmParamDef("quality", "FLAC 压缩级别", 5, 0, 8, 1, ""),
-    ],
-    AlgorithmType.AAC_LC: [
-        AlgorithmParamDef("quality", "AAC-LC 编码质量", 5, 1, 10, 1, ""),
-    ],
-    AlgorithmType.H264: [
-        AlgorithmParamDef("quality", "H.264 QP 量化参数", 26, 0, 51, 1, " (0=无损, 51=最差)"),
-    ],
-    AlgorithmType.OPENH264: [
-        AlgorithmParamDef("quality", "H.264 QP 量化参数", 26, 0, 51, 1, " (0=无损, 51=最差)"),
-    ],
-    AlgorithmType.FFMPEG_H264: [
-        AlgorithmParamDef("quality", "CRF 质量参数", 23, 0, 51, 1, " (0=无损, 51=最差)"),
-        AlgorithmParamDef("preset", "编码速度预设", 2, choices={0: "ultrafast", 1: "fast", 2: "medium", 3: "slow", 4: "veryslow"}),
-    ],
-    AlgorithmType.FFMPEG_H265: [
-        AlgorithmParamDef("quality", "CRF 质量参数", 28, 0, 51, 1, " (0=无损, 51=最差)"),
-        AlgorithmParamDef("preset", "编码速度预设", 2, choices={0: "ultrafast", 1: "fast", 2: "medium", 3: "slow", 4: "veryslow"}),
     ],
 }
 
@@ -361,14 +340,9 @@ AUDIO_EXTENSIONS = frozenset({
     ".wav", ".mp3", ".ogg", ".flac", ".aac", ".wma", ".m4a", ".opus", ".mid", ".midi",
 })
 
-VIDEO_EXTENSIONS = frozenset({
-    ".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".m4v", ".mpg", ".mpeg",
-})
-
 _IMAGE_ALGORITHMS = frozenset({AlgorithmType.JPEG, AlgorithmType.PNG})
-_AUDIO_ALGORITHMS = frozenset({AlgorithmType.FLAC, AlgorithmType.AAC_LC})
-_VIDEO_ALGORITHMS = frozenset({AlgorithmType.H264, AlgorithmType.OPENH264, AlgorithmType.FFMPEG_H264, AlgorithmType.FFMPEG_H265})
-_MEDIA_ALGORITHMS = _IMAGE_ALGORITHMS | _AUDIO_ALGORITHMS | _VIDEO_ALGORITHMS
+_AUDIO_ALGORITHMS = frozenset({AlgorithmType.FLAC})
+_MEDIA_ALGORITHMS = _IMAGE_ALGORITHMS | _AUDIO_ALGORITHMS
 
 
 def validate_media_algorithm(file_ext: str, algorithm: AlgorithmType) -> tuple[bool, str]:
@@ -383,10 +357,6 @@ def validate_media_algorithm(file_ext: str, algorithm: AlgorithmType) -> tuple[b
         if ext in AUDIO_EXTENSIONS:
             return True, ""
         return False, f"{algorithm.value} 仅适用于音频文件，不支持 {ext} 格式"
-    if algorithm in _VIDEO_ALGORITHMS:
-        if ext in VIDEO_EXTENSIONS:
-            return True, ""
-        return False, f"{algorithm.value} 仅适用于视频文件，不支持 {ext} 格式"
     return True, ""
 
 
@@ -415,8 +385,6 @@ def _filetype(ext: str) -> ResourceType:
         return ResourceType.IMAGE
     if ext in AUDIO_EXTENSIONS:
         return ResourceType.AUDIO
-    if ext in VIDEO_EXTENSIONS:
-        return ResourceType.VIDEO
     if ext in SCRIPT_EXTENSIONS:
         return ResourceType.SCRIPT
     if ext in COMPRESSED:

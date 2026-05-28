@@ -202,7 +202,7 @@ class VizDashboard(QWidget):
 
         self._info_lbl.setStyleSheet(
 
-            f"color: {ThemeManager.resolve_hex('text_muted')}; font-size: 11px;")
+            f"color: {ThemeManager.hex('text_muted')}; font-size: 11px;")
 
         ctrl.addWidget(self._info_lbl)
 
@@ -274,7 +274,7 @@ class VizDashboard(QWidget):
 
         self._step_lbl.setStyleSheet(
 
-            f"color: {ThemeManager.resolve_hex('text_primary')}; font-size: 11px; min-width: 60px;")
+            f"color: {ThemeManager.hex('text_primary')}; font-size: 11px; min-width: 60px;")
 
         ctrl.addWidget(self._step_lbl)
 

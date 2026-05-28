@@ -117,10 +117,6 @@ src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: D:/Python/libs/pyth
 src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: _deps/google_brotli-build/libbrotlienc.a
 src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: _deps/google_brotli-build/libbrotlidec.a
 src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: _deps/google_brotli-build/libbrotlicommon.a
-src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/algorithm_new/libopenh264_encoder.a
-src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/algorithm_new/libopenh264_decoder.a
-src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/algorithm_new/libopenh264_processing.a
-src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/algorithm_new/libopenh264_common.a
 src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/linkLibs.rsp
 src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/objects1.rsp
 src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/link.txt

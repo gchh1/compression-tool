@@ -63,8 +63,7 @@ WINDOW_HEIGHT = 700
 
 _MEDIA_ALGO_EXT = {
     AlgorithmType.JPEG: ".jpg", AlgorithmType.PNG: ".png",
-    AlgorithmType.FLAC: ".flac", AlgorithmType.AAC_LC: ".aac",
-    AlgorithmType.H264: ".h264", AlgorithmType.OPENH264: ".h264",
+    AlgorithmType.FLAC: ".flac",
 }
 
 
@@ -135,10 +134,6 @@ class AlgorithmSelector(QComboBox):
         ("PNG", AlgorithmType.PNG),
         ("── 音频 ──", None),
         ("FLAC", AlgorithmType.FLAC),
-        ("AAC-LC", AlgorithmType.AAC_LC),
-        ("── 视频 ──", None),
-        ("H.264", AlgorithmType.H264),
-        ("OpenH264", AlgorithmType.OPENH264),
     ]
 
     def __init__(self, parent=None):
@@ -1494,12 +1489,10 @@ class AlgorithmConfigDialog(QDialog):
         )
         self._media_comp_btn.setToolTip(
             "勾选后压缩文件夹时图片/音频文件自动走对应专用算法。"
-            "视频编码需要输入原始 RAW YUV 数据。"
         )
         layout.addWidget(self._media_comp_btn)
         media_comp_note = QLabel(
-            "媒体压缩算法：JPEG/PNG (图片)、FLAC/AAC-LC (音频)、H.264/OpenH264 (视频)。"
-            "视频编码需要原始 YUV 数据；请使用文本压缩算法处理所有其他文件。"
+            "媒体压缩算法：JPEG/PNG (图片)、FLAC (音频)。"
         )
         media_comp_note.setWordWrap(True)
         media_comp_note.setStyleSheet(
@@ -1534,13 +1527,10 @@ class AlgorithmConfigDialog(QDialog):
                 AlgorithmType.JPEG: "JPEG (图片)",
                 AlgorithmType.PNG: "PNG (图片)",
                 AlgorithmType.FLAC: "FLAC (音频)",
-                AlgorithmType.AAC_LC: "AAC-LC (音频)",
-                AlgorithmType.H264: "H.264 (视频)",
-                AlgorithmType.OPENH264: "OpenH264 (视频)",
             }
 
             for algo in [AlgorithmType.DEFLATE, AlgorithmType.LZDP, AlgorithmType.LZSS, AlgorithmType.DPFLATE, AlgorithmType.GZIP, AlgorithmType.BROTLI, AlgorithmType.ZSTD,
-                         AlgorithmType.JPEG, AlgorithmType.PNG, AlgorithmType.FLAC, AlgorithmType.AAC_LC, AlgorithmType.H264, AlgorithmType.OPENH264]:
+                         AlgorithmType.JPEG, AlgorithmType.PNG, AlgorithmType.FLAC]:
                 params = ALGORITHM_PARAMS.get(algo, [])
                 if not params:
                     continue
@@ -2532,7 +2522,7 @@ class MainWindow(QMainWindow):
                 payload_bytes=len(payload),
             )
             return payload
-        _MEDIA_PASSTHROUGH = frozenset({AlgorithmType.JPEG, AlgorithmType.PNG, AlgorithmType.FLAC, AlgorithmType.AAC_LC, AlgorithmType.H264, AlgorithmType.OPENH264})
+        _MEDIA_PASSTHROUGH = frozenset({AlgorithmType.JPEG, AlgorithmType.PNG, AlgorithmType.FLAC})
         if header.algorithm in _MEDIA_PASSTHROUGH:
             log_decompress(
                 "gui_payload_skip",

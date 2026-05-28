@@ -312,6 +312,7 @@ src/api_new/CMakeFiles/api_new.dir/api.cpp.obj: D:/AAA_C/compression-tool/src/ap
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/codecvt \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/compare \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/concepts \
+  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdarg \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstddef \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdint \
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdio \
@@ -381,6 +382,7 @@ src/api_new/CMakeFiles/api_new.dir/api.cpp.obj: D:/AAA_C/compression-tool/src/ap
   D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/time_members.h \
   D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/limits.h \
   D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/mm_malloc.h \
+  D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdarg.h \
   D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stddef.h \
   D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdint.h \
   D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/syslimits.h \
@@ -389,6 +391,7 @@ src/api_new/CMakeFiles/api_new.dir/api.cpp.obj: D:/AAA_C/compression-tool/src/ap
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_off_t.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_secapi.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stat64.h \
+  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stdarg.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_timeval.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_startup.h \
@@ -412,6 +415,7 @@ src/api_new/CMakeFiles/api_new.dir/api.cpp.obj: D:/AAA_C/compression-tool/src/ap
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/wchar_s.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/signal.h \
+  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdarg.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stddef.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdint.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdio.h \
@@ -423,6 +427,7 @@ src/api_new/CMakeFiles/api_new.dir/api.cpp.obj: D:/AAA_C/compression-tool/src/ap
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/vadefs.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wchar.h \
   D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/wctype.h \
+  D:/AAA_C/compression-tool/src/ade/include/ade_debug_log.h \
   D:/AAA_C/compression-tool/src/algorithm_new/include/BitProcessor.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Brotli.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/ByteView.hpp \
@@ -458,6 +463,14 @@ D:/AAA_C/compression-tool/src/core_new/include/StreamingCancel.hpp:
 D:/AAA_C/compression-tool/src/algorithm_new/include/config/Config.hpp:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/Streaming.hpp:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/Models.hpp:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/LZencoding.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/string_view:
 
@@ -555,8 +568,6 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_facets.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/atomic:
 
-D:/AAA_C/compression-tool/src/algorithm_new/include/Models.hpp:
-
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/string_view.tcc:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/chrono:
@@ -605,8 +616,6 @@ D:/AAA_C/compression-tool/src/api_new/include/api.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/invoke.h:
 
-D:/AAA_C/compression-tool/src/algorithm_new/include/Utils.hpp:
-
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tuple:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/messages_members.h:
@@ -645,6 +654,10 @@ D:/AAA_C/compression-tool/src/algorithm_new/include/BitProcessor.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/erase_if.h:
 
+D:/AAA_C/compression-tool/src/algorithm_new/include/MatchEngine.hpp:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/string_conversions.h:
+
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cwctype:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/basic_string.h:
@@ -653,21 +666,13 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/stdexcept:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/Brotli.hpp:
 
-D:/AAA_C/compression-tool/src/algorithm_new/include/LZencoding.hpp:
-
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_deque.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/alloc_traits.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/debug/debug.h:
 
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hash_bytes.h:
-
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/debug/assertions.h:
-
-D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/string_conversions.h:
-
-D:/AAA_C/compression-tool/src/algorithm_new/include/MatchEngine.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_function.h:
 
@@ -747,6 +752,8 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/concepts:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ostream_insert.h:
 
+D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stdarg.h:
+
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_base.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_classes.h:
@@ -794,6 +801,10 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/requires_hosted.h:
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/atomic_word.h:
 
 D:/AAA_C/compression-tool/src/core_new/include/AlgorithmFactory.hpp:
+
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hash_bytes.h:
+
+D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdarg.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++allocator.h:
 
@@ -861,6 +872,8 @@ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_time.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/stdio_s.h:
 
+D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdarg.h:
+
 D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/stdlib_s.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/quoted_string.h:
@@ -894,6 +907,8 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h:
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_wait.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/chrono.h:
+
+D:/AAA_C/compression-tool/src/ade/include/ade_debug_log.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/chrono_io.h:
 
@@ -937,6 +952,8 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unicode-data.h:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unique_ptr.h:
 
+D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdarg:
+
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/codecvt:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/charconv:
@@ -972,5 +989,3 @@ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_vector.h:
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/LZSS.hpp:
-
-D:/AAA_C/compression-tool/src/algorithm_new/include/Streaming.hpp:
