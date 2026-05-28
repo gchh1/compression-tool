@@ -1047,25 +1047,27 @@ void h264::rgb24_to_yuv420(const uint8_t* rgb, int width, int height,
                            std::vector<uint8_t>& y,
                            std::vector<uint8_t>& u,
                            std::vector<uint8_t>& v) {
-    y.resize(static_cast<size_t>(width * height));
-    u.resize(static_cast<size_t>((width / 2) * (height / 2)));
-    v.resize(static_cast<size_t>((width / 2) * (height / 2)));
+    size_t w = static_cast<size_t>(width);
+    size_t h = static_cast<size_t>(height);
+    y.resize(w * h);
+    u.resize((w / 2) * (h / 2));
+    v.resize((w / 2) * (h / 2));
 
     for (int py = 0; py < height; ++py) {
         for (int px = 0; px < width; ++px) {
-            size_t rgb_idx = static_cast<size_t>(py * width + px) * 3;
+            size_t rgb_idx = (static_cast<size_t>(py) * w + static_cast<size_t>(px)) * 3;
             int R = rgb[rgb_idx];
             int G = rgb[rgb_idx + 1];
             int B = rgb[rgb_idx + 2];
 
             // BT.601
             int Y_val = ((66 * R + 129 * G + 25 * B + 128) >> 8) + 16;
-            y[static_cast<size_t>(py * width + px)] = static_cast<uint8_t>(std::clamp(Y_val, 0, 255));
+            y[static_cast<size_t>(py) * w + static_cast<size_t>(px)] = static_cast<uint8_t>(std::clamp(Y_val, 0, 255));
 
             if (px % 2 == 0 && py % 2 == 0) {
                 int U_val = ((-38 * R - 74 * G + 112 * B + 128) >> 8) + 128;
                 int V_val = ((112 * R - 94 * G - 18 * B + 128) >> 8) + 128;
-                size_t uv_idx = static_cast<size_t>((py / 2) * (width / 2) + (px / 2));
+                size_t uv_idx = (static_cast<size_t>(py / 2) * (w / 2) + static_cast<size_t>(px / 2));
                 u[uv_idx] = static_cast<uint8_t>(std::clamp(U_val, 0, 255));
                 v[uv_idx] = static_cast<uint8_t>(std::clamp(V_val, 0, 255));
             }
@@ -1366,12 +1368,19 @@ auto video_compress(const std::vector<uint8_t>& raw_data,
     static_cast<void>(format);
 
     auto info = parse_raw_video_header(raw_data);
-    if (info.width == 0 || info.height == 0 || info.num_frames == 0)
+    if (info.width <= 0 || info.height <= 0 || info.num_frames <= 0)
+        return {};
+    if (info.width > 4096 || info.height > 4096 || info.num_frames > 10000)
         return {};
 
     int w = info.width;
     int h = info.height;
     int qp = std::clamp(quality, 0, 51);
+
+    size_t frame_size = static_cast<size_t>(w) * static_cast<size_t>(h) * 3;
+    size_t total_frame_data = frame_size * static_cast<size_t>(info.num_frames);
+    if (raw_data.size() < 16 + total_frame_data)
+        return {};
 
     // Generate SPS and PPS
     std::vector<uint8_t> out;
@@ -1381,10 +1390,9 @@ auto video_compress(const std::vector<uint8_t>& raw_data,
     out.insert(out.end(), pps.begin(), pps.end());
 
     const uint8_t* frame_ptr = raw_data.data() + 16;
-    size_t frame_size = static_cast<size_t>(w * h * 3); // RGB24
 
     for (int fnum = 0; fnum < info.num_frames; ++fnum) {
-        const uint8_t* rgb_frame = frame_ptr + fnum * frame_size;
+        const uint8_t* rgb_frame = frame_ptr + static_cast<size_t>(fnum) * frame_size;
 
         // Convert RGB to YUV420
         std::vector<uint8_t> y, u, v;

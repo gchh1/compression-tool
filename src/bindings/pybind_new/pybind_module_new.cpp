@@ -13,6 +13,7 @@
 #include "GzipCompressor.hpp"
 #include "ImageCompressorBindings.hpp"
 #include "VideoCompressorBindings.hpp"
+#include "ade_debug_log.h"
 #include "Visualization.hpp"
 #include "api.hpp"
 
@@ -386,6 +387,22 @@ void bind_compressors(py::module_& m) {
             [](VideoH264Compressor& self, py::buffer buf) {
                 return self.decompress(buffer_to_u8vec(buf));
             });
+
+    py::class_<VideoOpenH264Compressor, ICompressor, std::shared_ptr<VideoOpenH264Compressor>>(
+        m, "VideoOpenH264Compressor")
+        .def(py::init<>())
+        .def("set_quality", &VideoOpenH264Compressor::set_quality)
+        .def("get_quality", &VideoOpenH264Compressor::get_quality)
+        .def(
+            "compress",
+            [](VideoOpenH264Compressor& self, py::buffer buf) {
+                return self.compress(buffer_to_u8vec(buf));
+            })
+        .def(
+            "decompress",
+            [](VideoOpenH264Compressor& self, py::buffer buf) {
+                return self.decompress(buffer_to_u8vec(buf));
+            });
 }
 
 void bind_pipeline(py::module_& m) {
@@ -550,6 +567,10 @@ void bind_pipeline(py::module_& m) {
             const compressor::core::LzssPipelineParams* ls =
                 lzss_p.has_value() ? &lzss_p.value() : nullptr;
             auto data = buffer_to_u8vec(buf);
+            compressor::ade::ade_debug_writef(
+                "pybind pipeline_compress: chain_size=%zu id=%d data_size=%zu lzdp_wf=%d",
+                chain.size(), chain.empty() ? -1 : static_cast<int>(chain[0]),
+                data.size(), lzdp_wf.has_value() ? 1 : 0);
             py::gil_scoped_release release;
             return compressor::api_new::compress(data, chain, p, d, df, ls,
                                                  stream_chunk_bytes);
@@ -635,12 +656,20 @@ void bind_pipeline(py::module_& m) {
 
 }  // namespace
 
+void init_ade(py::module_& m);
+void init_param_regressor(py::module_& m);
+void init_ea(py::module_& m);
+
 PYBIND11_MODULE(core_engine_new, m) {
     m.doc() = "Web Compressor C++ Core Engine (algorithm_new brick stack)";
 
     bind_lzdp_viz(m);
     bind_compressors(m);
     bind_pipeline(m);
+
+    init_ade(m);
+    init_param_regressor(m);
+    init_ea(m);
 
     m.def("test_algorithm_new", []() -> bool { return true; }, "Smoke test: module loaded");
 }

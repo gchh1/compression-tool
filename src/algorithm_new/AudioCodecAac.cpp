@@ -187,11 +187,11 @@ static double dequantize(int quant_val, double inv_scale) {
 }
 
 static double estimate_scale(int bitrate_kbps, int sample_rate, int num_channels) {
-    double base = 0.05;
+    (void)sample_rate;
+    double base = 0.4;
     double bitrate_factor = static_cast<double>(bitrate_kbps) / 128.0;
-    double sr_factor = static_cast<double>(sample_rate) / 44100.0;
-    double ch_factor = static_cast<double>(num_channels);
-    return base * bitrate_factor * sr_factor / ch_factor;
+    double ch_factor = std::sqrt(static_cast<double>(num_channels));
+    return base * bitrate_factor / ch_factor;
 }
 
 // Convert quantizer scale to 8-bit global_gain for bitstream
@@ -582,7 +582,7 @@ static std::vector<uint8_t> encode_frame(const AacFrame& frame) {
     adts.write_bits(0, 1);
     adts.write_bits(0, 2);
     adts.write_bits(1, 1);
-    adts.write_bits(2, 2);           // AAC-LC profile
+    adts.write_bits(1, 2);           // AAC-LC profile
     adts.write_bits(get_sampling_index(sr), 4);
     adts.write_bits(0, 1);
     adts.write_bits(channels, 3);

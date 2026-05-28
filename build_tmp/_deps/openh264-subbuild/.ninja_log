@@ -1,0 +1,21 @@
+# ninja log v6
+16330	16470	8016313086065120	openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-install	dc6035f9977631d9
+16045	16188	8016313083238786	D:/AAA_C/compression-tool/build_tmp/_deps/openh264-subbuild/openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-configure	23925bbc1badeddd
+16610	16824	8016313089573044	openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-done	f3eda8d26548b7d9
+16188	16330	8016313084662685	openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-build	d7cc35911ab703b2
+204	15739	8016313078740585	openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-download	d1450aa18a457ce8
+15896	16045	8016313081805596	openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-patch	b67a7e5e2d1f97bd
+16610	16824	8016313089573044	D:/AAA_C/compression-tool/build_tmp/_deps/openh264-subbuild/openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-done	f3eda8d26548b7d9
+16610	16824	8016313089573044	CMakeFiles/openh264-populate-complete	f3eda8d26548b7d9
+16470	16609	8016313087456579	D:/AAA_C/compression-tool/build_tmp/_deps/openh264-subbuild/openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-test	6b8492ae57ae528e
+16330	16470	8016313086065120	D:/AAA_C/compression-tool/build_tmp/_deps/openh264-subbuild/openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-install	dc6035f9977631d9
+15739	15895	8016313080306393	openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-update	943418f3d48a07ff
+16610	16824	8016313089573044	D:/AAA_C/compression-tool/build_tmp/_deps/openh264-subbuild/CMakeFiles/openh264-populate-complete	f3eda8d26548b7d9
+2	203	8016312923399460	openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-mkdir	72e2fbda87efbba4
+16188	16330	8016313084662685	D:/AAA_C/compression-tool/build_tmp/_deps/openh264-subbuild/openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-build	d7cc35911ab703b2
+2	203	8016312923399460	D:/AAA_C/compression-tool/build_tmp/_deps/openh264-subbuild/openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-mkdir	72e2fbda87efbba4
+16470	16609	8016313087456579	openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-test	6b8492ae57ae528e
+204	15739	8016313078740585	D:/AAA_C/compression-tool/build_tmp/_deps/openh264-subbuild/openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-download	d1450aa18a457ce8
+15739	15895	8016313080306393	D:/AAA_C/compression-tool/build_tmp/_deps/openh264-subbuild/openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-update	943418f3d48a07ff
+15896	16045	8016313081805596	D:/AAA_C/compression-tool/build_tmp/_deps/openh264-subbuild/openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-patch	b67a7e5e2d1f97bd
+16045	16188	8016313083238786	openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-configure	23925bbc1badeddd

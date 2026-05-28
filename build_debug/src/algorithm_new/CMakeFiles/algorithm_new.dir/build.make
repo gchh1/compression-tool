@@ -188,11 +188,26 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/algorithm_new.dir/LZSS.cpp.s"
 	cd /d D:\AAA_C\compression-tool\build_debug\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\algorithm_new\LZSS.cpp -o CMakeFiles\algorithm_new.dir\LZSS.cpp.s
 
+src/algorithm_new/CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/flags.make
+src/algorithm_new/CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/includes_CXX.rsp
+src/algorithm_new/CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/OpenH264Codec.cpp
+src/algorithm_new/CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.obj"
+	cd /d D:\AAA_C\compression-tool\build_debug\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm_new/CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.obj -MF CMakeFiles\algorithm_new.dir\OpenH264Codec.cpp.obj.d -o CMakeFiles\algorithm_new.dir\OpenH264Codec.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm_new\OpenH264Codec.cpp
+
+src/algorithm_new/CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.i"
+	cd /d D:\AAA_C\compression-tool\build_debug\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\AAA_C\compression-tool\src\algorithm_new\OpenH264Codec.cpp > CMakeFiles\algorithm_new.dir\OpenH264Codec.cpp.i
+
+src/algorithm_new/CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.s"
+	cd /d D:\AAA_C\compression-tool\build_debug\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\algorithm_new\OpenH264Codec.cpp -o CMakeFiles\algorithm_new.dir\OpenH264Codec.cpp.s
+
 src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/flags.make
 src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/includes_CXX.rsp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/VideoCodec.cpp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj"
 	cd /d D:\AAA_C\compression-tool\build_debug\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj -MF CMakeFiles\algorithm_new.dir\VideoCodec.cpp.obj.d -o CMakeFiles\algorithm_new.dir\VideoCodec.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm_new\VideoCodec.cpp
 
 src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.i: cmake_force
@@ -207,7 +222,7 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj: src/algori
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/includes_CXX.rsp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/Visualization.cpp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj"
 	cd /d D:\AAA_C\compression-tool\build_debug\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj -MF CMakeFiles\algorithm_new.dir\Visualization.cpp.obj.d -o CMakeFiles\algorithm_new.dir\Visualization.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm_new\Visualization.cpp
 
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.i: cmake_force
@@ -222,7 +237,7 @@ src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj: src/algorithm_new/C
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/includes_CXX.rsp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj: D:/AAA_C/compression-tool/src/algorithm_new/Zstd.cpp
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj: src/algorithm_new/CMakeFiles/algorithm_new.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj"
 	cd /d D:\AAA_C\compression-tool\build_debug\src\algorithm_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj -MF CMakeFiles\algorithm_new.dir\Zstd.cpp.obj.d -o CMakeFiles\algorithm_new.dir\Zstd.cpp.obj -c D:\AAA_C\compression-tool\src\algorithm_new\Zstd.cpp
 
 src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.i: cmake_force
@@ -243,6 +258,7 @@ algorithm_new_OBJECTS = \
 "CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.obj" \
 "CMakeFiles/algorithm_new.dir/LZDP.cpp.obj" \
 "CMakeFiles/algorithm_new.dir/LZSS.cpp.obj" \
+"CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.obj" \
 "CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj" \
 "CMakeFiles/algorithm_new.dir/Visualization.cpp.obj" \
 "CMakeFiles/algorithm_new.dir/Zstd.cpp.obj"
@@ -258,12 +274,13 @@ src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new
 src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.obj
 src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj
 src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj
+src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.obj
 src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj
 src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj
 src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj
 src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/build.make
 src/algorithm_new/libalgorithm_new.a: src/algorithm_new/CMakeFiles/algorithm_new.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Linking CXX static library libalgorithm_new.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX static library libalgorithm_new.a"
 	cd /d D:\AAA_C\compression-tool\build_debug\src\algorithm_new && $(CMAKE_COMMAND) -P CMakeFiles\algorithm_new.dir\cmake_clean_target.cmake
 	cd /d D:\AAA_C\compression-tool\build_debug\src\algorithm_new && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\algorithm_new.dir\link.txt --verbose=$(VERBOSE)
 

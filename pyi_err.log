@@ -1,0 +1,92 @@
+118 INFO: PyInstaller: 6.20.0, contrib hooks: 2026.4
+119 INFO: Python: 3.12.4
+143 INFO: Platform: Windows-11-10.0.26200-SP0
+144 INFO: Python environment: D:\Python
+163 INFO: UPX is available and will be used if enabled on build targets.
+212 INFO: Module search paths (PYTHONPATH):
+['D:\\Python\\Scripts\\pyinstaller.exe',
+ 'D:\\Python\\python312.zip',
+ 'D:\\Python\\DLLs',
+ 'D:\\Python\\Lib',
+ 'D:\\Python',
+ 'D:\\Python\\Lib\\site-packages',
+ 'D:\\Python\\Lib\\site-packages\\win32',
+ 'D:\\Python\\Lib\\site-packages\\win32\\lib',
+ 'D:\\Python\\Lib\\site-packages\\Pythonwin',
+ 'd:\\AAA_C\\compression-tool\\src\\gui',
+ 'd:\\AAA_C\\compression-tool\\src']
+753 INFO: Appending 'datas' from .spec
+754 INFO: checking Analysis
+766 INFO: Building because hiddenimports changed
+768 INFO: Looking for Python shared library...
+768 INFO: Using Python shared library: D:\Python\python312.dll
+768 INFO: Running Analysis Analysis-00.toc
+768 INFO: Target bytecode optimization level: 0
+768 INFO: Initializing module dependency graph...
+769 INFO: Initializing module graph hook caches...
+779 INFO: Analyzing modules for base_library.zip ...
+1659 INFO: Processing standard module hook 'hook-encodings.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+2054 INFO: Processing standard module hook 'hook-heapq.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+2492 INFO: Processing standard module hook 'hook-pickle.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+3400 INFO: Caching module dependency graph...
+3479 INFO: Analyzing d:\AAA_C\compression-tool\src\gui\main.py
+4069 INFO: Processing standard module hook 'hook-platform.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+4143 INFO: Processing standard module hook 'hook-PyQt6.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+4761 INFO: Processing standard module hook 'hook-PyQt6.QtGui.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+13933 INFO: Processing standard module hook 'hook-PyQt6.QtCore.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+17879 INFO: Processing standard module hook 'hook-numpy.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+18529 INFO: Processing standard module hook 'hook-difflib.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+18712 INFO: Processing standard module hook 'hook-multiprocessing.util.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+18788 INFO: Processing standard module hook 'hook-xml.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+19017 INFO: Processing standard module hook 'hook-_ctypes.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+19425 INFO: Processing standard module hook 'hook-sysconfig.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+19946 INFO: Processing standard module hook 'hook-psutil.py' from 'D:\\Python\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+22131 INFO: Processing standard module hook 'hook-PyQt6.QtWidgets.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+25263 INFO: Processing standard module hook 'hook-PyQt6.QtWebEngineCore.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+28097 INFO: Processing standard module hook 'hook-PyQt6.QtNetwork.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+31668 INFO: Processing standard module hook 'hook-PyQt6.QtWebChannel.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+32309 INFO: Processing standard module hook 'hook-PyQt6.QtWebEngineWidgets.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+33022 INFO: Processing standard module hook 'hook-PyQt6.QtPrintSupport.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+33794 INFO: Processing module hooks (post-graph stage)...
+33870 INFO: Processing standard module hook 'hook-PyQt6.QtQuick.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+34547 INFO: Processing standard module hook 'hook-PyQt6.QtQml.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+47074 INFO: Processing standard module hook 'hook-PyQt6.QtOpenGL.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+48006 INFO: Processing standard module hook 'hook-PyQt6.QtPositioning.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+48936 INFO: Processing standard module hook 'hook-PyQt6.QtQuickWidgets.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+49380 INFO: Performing binary vs. data reclassification (1599 entries)
+49960 INFO: Looking for ctypes DLLs
+49988 INFO: Analyzing run-time hooks ...
+49990 INFO: Including run-time hook 'pyi_rth_inspect.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+49994 INFO: Including run-time hook 'pyi_rth_pyqt6.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+49996 INFO: Processing pre-find-module-path hook 'hook-_pyi_rth_utils.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\pre_find_module_path'
+49999 INFO: Processing standard module hook 'hook-_pyi_rth_utils.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks'
+50003 INFO: Including run-time hook 'pyi_rth_pkgutil.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+50006 INFO: Including run-time hook 'pyi_rth_multiprocessing.py' from 'D:\\Python\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+50058 INFO: Creating base_library.zip...
+50078 INFO: Looking for dynamic libraries
+D:\Python\Lib\site-packages\PyInstaller\building\build_main.py:227: UserWarning: The numpy.array_api submodule is still experimental. See NEP 47.
+  __import__(package)
+50415 INFO: Extra DLL search directories (AddDllDirectory): ['D:\\Python\\Lib\\site-packages\\PyQt6\\Qt6\\bin', 'D:\\Python\\Lib\\site-packages\\numpy.libs']
+50415 INFO: Extra DLL search directories (PATH): ['D:\\Python\\Lib\\site-packages\\PyQt6\\Qt6\\bin']
+56286 INFO: Warnings written to D:\AAA_C\compression-tool\build\WebCompress\warn-WebCompress.txt
+56339 INFO: Graph cross-reference written to D:\AAA_C\compression-tool\build\WebCompress\xref-WebCompress.html
+56398 INFO: checking PYZ
+56401 INFO: Building because toc changed
+56401 INFO: Building PYZ (ZlibArchive) D:\AAA_C\compression-tool\build\WebCompress\PYZ-00.pyz
+56954 INFO: Building PYZ (ZlibArchive) D:\AAA_C\compression-tool\build\WebCompress\PYZ-00.pyz completed successfully.
+56995 INFO: checking PKG
+57007 INFO: Building because toc changed
+57007 INFO: Building PKG (CArchive) WebCompress.pkg
+115454 INFO: Building PKG (CArchive) WebCompress.pkg completed successfully.
+115473 INFO: Bootloader D:\Python\Lib\site-packages\PyInstaller\bootloader\Windows-64bit-intel\runw.exe
+115473 INFO: checking EXE
+115483 INFO: Building because toc changed
+115483 INFO: Building EXE from EXE-00.toc
+115499 INFO: Copying bootloader EXE to D:\AAA_C\compression-tool\dist\WebCompress.exe
+115507 INFO: Copying icon to EXE
+115513 INFO: Copying 0 resources to EXE
+115513 INFO: Embedding manifest in EXE
+115519 INFO: Appending PKG archive to EXE
+115620 INFO: Fixing EXE headers
+116224 INFO: Building EXE from EXE-00.toc completed successfully.
+116244 INFO: Build complete! The results are available in: D:\AAA_C\compression-tool\dist

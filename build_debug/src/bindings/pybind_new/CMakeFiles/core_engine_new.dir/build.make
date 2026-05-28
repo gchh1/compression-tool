@@ -83,26 +83,48 @@ src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/pybind_module_new.cpp.s: 
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/core_engine_new.dir/pybind_module_new.cpp.s"
 	cd /d D:\AAA_C\compression-tool\build_debug\src\bindings\pybind_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\bindings\pybind_new\pybind_module_new.cpp -o CMakeFiles\core_engine_new.dir\pybind_module_new.cpp.s
 
+src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.obj: src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/flags.make
+src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.obj: src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/includes_CXX.rsp
+src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.obj: D:/AAA_C/compression-tool/src/bindings/pybind/pybind_ade.cpp
+src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.obj: src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.obj"
+	cd /d D:\AAA_C\compression-tool\build_debug\src\bindings\pybind_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.obj -MF CMakeFiles\core_engine_new.dir\__\pybind\pybind_ade.cpp.obj.d -o CMakeFiles\core_engine_new.dir\__\pybind\pybind_ade.cpp.obj -c D:\AAA_C\compression-tool\src\bindings\pybind\pybind_ade.cpp
+
+src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.i"
+	cd /d D:\AAA_C\compression-tool\build_debug\src\bindings\pybind_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\AAA_C\compression-tool\src\bindings\pybind\pybind_ade.cpp > CMakeFiles\core_engine_new.dir\__\pybind\pybind_ade.cpp.i
+
+src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.s"
+	cd /d D:\AAA_C\compression-tool\build_debug\src\bindings\pybind_new && D:\AAA_C\AAA_MinGW\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\AAA_C\compression-tool\src\bindings\pybind\pybind_ade.cpp -o CMakeFiles\core_engine_new.dir\__\pybind\pybind_ade.cpp.s
+
 # Object files for target core_engine_new
 core_engine_new_OBJECTS = \
-"CMakeFiles/core_engine_new.dir/pybind_module_new.cpp.obj"
+"CMakeFiles/core_engine_new.dir/pybind_module_new.cpp.obj" \
+"CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.obj"
 
 # External object files for target core_engine_new
 core_engine_new_EXTERNAL_OBJECTS =
 
 src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/pybind_module_new.cpp.obj
+src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.obj
 src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/build.make
 src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/api_new/libapi_new.a
 src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/core_new/libcore_new.a
 src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/algorithm_new/libalgorithm_new.a
+src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/ade/libade.a
 src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: D:/Python/libs/python312.lib
 src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: _deps/google_brotli-build/libbrotlienc.a
 src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: _deps/google_brotli-build/libbrotlidec.a
 src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: _deps/google_brotli-build/libbrotlicommon.a
+src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/algorithm_new/libopenh264_encoder.a
+src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/algorithm_new/libopenh264_decoder.a
+src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/algorithm_new/libopenh264_processing.a
+src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/algorithm_new/libopenh264_common.a
 src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/linkLibs.rsp
 src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/objects1.rsp
 src/bindings/pybind_new/core_engine_new.cp312-win_amd64.pyd: src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX shared module core_engine_new.cp312-win_amd64.pyd"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\AAA_C\compression-tool\build_debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX shared module core_engine_new.cp312-win_amd64.pyd"
 	cd /d D:\AAA_C\compression-tool\build_debug\src\bindings\pybind_new && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\core_engine_new.dir\link.txt --verbose=$(VERBOSE)
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "Copy libgcc_s_seh-1.dll beside core_engine_new"
 	cd /d D:\AAA_C\compression-tool\build_debug\src\bindings\pybind_new && D:\AAA_C\AAA_MinGW\mingw64\bin\cmake.exe -E copy_if_different D:/AAA_C/AAA_MinGW/mingw64/bin/libgcc_s_seh-1.dll D:/AAA_C/compression-tool/build_debug/src/bindings/pybind_new/libgcc_s_seh-1.dll

@@ -16,6 +16,7 @@
 #include "Zstd.hpp"
 #include "StreamingCancel.hpp"
 #include "WCXProtocol.hpp"
+#include "ade_debug_log.h"
 #include "io/FileIO.hpp"
 
 #ifndef __EMSCRIPTEN__
@@ -266,15 +267,24 @@ auto compress(const std::vector<uint8_t>& data,
     auto t0 = std::chrono::high_resolution_clock::now();
     const auto id = chain.front();
 
+    compressor::ade::ade_debug_writef("compress: entry id=%d data_size=%zu", static_cast<int>(id), data.size());
+    fflush(stdout);
+
     try {
         if (is_lzdp(id)) {
-            if (core_new::is_streaming_cancel_requested()) {
-                throw std::runtime_error("cancelled");
-            }
-            auto r = compress_bytes(data, lzdp_from_params(lzdp_whole_file));
-            if (core_new::is_streaming_cancel_requested()) {
-                throw std::runtime_error("cancelled");
-            }
+            compressor::ade::ade_debug_writef("compress: LZDP path, data_size=%zu", data.size());
+            auto cfg = lzdp_from_params(lzdp_whole_file);
+            compressor::ade::ade_debug_writef(
+                "compress: LZDP cfg search=%zu look=%zu minmatch=%zu dptop=%d flag=%d engine=%d ob=%d lb=%d",
+                cfg.window.search_size, cfg.window.look_size, cfg.window.min_match_len,
+                (int)cfg.dp.dp_top, (int)cfg.encoding.use_flag_encoding,
+                cfg.dp.match_engine == models::MatchEngine::KMP ? 0 : 1,
+                (int)cfg.encoding.offset_bits, (int)cfg.encoding.length_bits);
+            compressor::ade::ade_debug_writef("compress: LZDP calling compress_bytes...");
+            fflush(stdout);
+            auto r = compress_bytes(data, cfg);
+            compressor::ade::ade_debug_writef(
+                "compress: LZDP compress_bytes OK, compressed_size=%zu", r.compressed.size());
             result.data = std::move(r.compressed);
         } else if (is_lzss(id)) {
             fprintf(stderr, "[CANCEL_TRACE] compress LZSS memory path\n");

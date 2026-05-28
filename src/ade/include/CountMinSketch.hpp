@@ -29,6 +29,7 @@
 #include <array>
 #include <cstdint>
 #include <limits>
+#include <queue>
 #include <vector>
 
 namespace compressor {

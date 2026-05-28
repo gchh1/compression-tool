@@ -1,4 +1,9 @@
 #include "ADEBridge.hpp"
+#include "ade_debug_log.h"
+
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
 
 namespace compressor {
 namespace ade {
@@ -67,10 +72,22 @@ auto ADEBridge::predict_padded(const std::vector<float>& padded_features) const 
 }
 
 auto ADEBridge::analyze(const uint8_t* data, size_t size) -> ADEBridgeResult {
+    char msg[128];
+    std::snprintf(msg, sizeof(msg), "analyze: ENTER size=%zu", size);
+    ade_debug_write(msg);
     ADEBridgeResult result;
 
+    ade_debug_write("analyze: calling extractor_.extract");
     auto extraction = extractor_.extract(data, size);
+    std::snprintf(msg, sizeof(msg), "analyze: extract returned, shannon_entropy=%.3f",
+            extraction.vector.base.shannon_entropy);
+    ade_debug_write(msg);
+
+    ade_debug_write("analyze: calling engine_.decide");
     auto decision = engine_.decide(extraction.vector);
+    std::snprintf(msg, sizeof(msg), "analyze: engine_.decide returned algo=%d",
+            static_cast<int>(decision.algorithm));
+    ade_debug_write(msg);
 
     result.algorithm = map_algorithm(decision.algorithm);
     result.estimated_ratio = decision.estimated_ratio;
@@ -94,11 +111,15 @@ auto ADEBridge::analyze(const std::vector<uint8_t>& data) -> ADEBridgeResult {
 }
 
 auto ADEBridge::analyze_file(const std::string& filepath) -> ADEBridgeResult {
+    char msg[256];
+    std::snprintf(msg, sizeof(msg), "analyze_file: ENTER path=%s", filepath.c_str());
+    ade_debug_write(msg);
     std::ifstream file(filepath, std::ios::binary | std::ios::ate);
     if (!file) {
         ADEBridgeResult result;
         result.algorithm = CoreAlgorithmID::None;
         result.reason = "File not found: " + filepath;
+        ade_debug_write("analyze_file: file not found, returning");
         return result;
     }
 
@@ -107,14 +128,19 @@ auto ADEBridge::analyze_file(const std::string& filepath) -> ADEBridgeResult {
         ADEBridgeResult result;
         result.algorithm = CoreAlgorithmID::None;
         result.reason = "Empty file";
+        ade_debug_write("analyze_file: empty file, returning");
         return result;
     }
 
+    std::snprintf(msg, sizeof(msg), "analyze_file: reading %lld bytes",
+            static_cast<long long>(file_size));
+    ade_debug_write(msg);
     file.seekg(0, std::ios::beg);
     std::vector<uint8_t> buffer(static_cast<size_t>(file_size));
     file.read(reinterpret_cast<char*>(buffer.data()), static_cast<size_t>(file_size));
     file.close();
 
+    ade_debug_write("analyze_file: calling analyze(buffer)");
     return analyze(buffer);
 }
 

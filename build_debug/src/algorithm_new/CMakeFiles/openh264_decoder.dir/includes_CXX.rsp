@@ -1,0 +1,1 @@
+-I"D:/AAA_C/compression-tool/build_debug/_deps/openh264-src/codec/api/wels" -I"D:/AAA_C/compression-tool/build_debug/_deps/openh264-src/codec/common/inc" -I"D:/AAA_C/compression-tool/build_debug/_deps/openh264-src/codec/decoder/core/inc" -I"D:/AAA_C/compression-tool/build_debug/_deps/openh264-src/codec/decoder/plus/inc"

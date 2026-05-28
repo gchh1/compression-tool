@@ -1,0 +1,43 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.cpp.obj"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.cpp.obj.d"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.cpp.obj"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.cpp.obj.d"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.cpp.obj"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.cpp.obj.d"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.cpp.obj"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.cpp.obj.d"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/common/memory.cpp.obj"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/common/memory.cpp.obj.d"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.cpp.obj"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.cpp.obj.d"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/denoise/denoise.cpp.obj"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/denoise/denoise.cpp.obj.d"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.cpp.obj"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.cpp.obj.d"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/downsample/downsample.cpp.obj"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/downsample/downsample.cpp.obj.d"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.cpp.obj"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.cpp.obj.d"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.cpp.obj"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.cpp.obj.d"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.cpp.obj"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.cpp.obj.d"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.cpp.obj"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.cpp.obj.d"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.cpp.obj"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.cpp.obj.d"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.cpp.obj"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.cpp.obj.d"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.cpp.obj"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.cpp.obj.d"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.cpp.obj"
+  "CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.cpp.obj.d"
+  "libopenh264_processing.a"
+  "libopenh264_processing.pdb"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/openh264_processing.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

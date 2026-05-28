@@ -12,7 +12,7 @@
       "lookahead_size": 31,
       "min_match": 0,
       "dp_top": 6,
-      "match_engine": 1,
+      "match_engine": 0,
       "use_flag_encoding": 1
     },
     "dpflate": {
@@ -20,7 +20,7 @@
       "lookahead_size": 255,
       "min_match": 0,
       "dp_sub_match_max": 8,
-      "max_chain_length": 256,
+      "max_chain_length": 255,
       "match_engine": 1,
       "use_flag_encoding": 1,
       "use_3hfmtree": 0,
@@ -31,11 +31,11 @@
       "search_size": 32767,
       "lookahead_size": 255,
       "min_match": 0,
-      "max_chain_length": 232,
+      "max_chain_length": 255,
       "use_flag_encoding": 1,
       "use_3hfmtree": 0,
-      "huffman_offset_chunk_bits": 6,
-      "huffman_length_chunk_bits": 6
+      "huffman_offset_chunk_bits": 8,
+      "huffman_length_chunk_bits": 8
     },
     "gzip": {
       "compression_level": 6
@@ -60,6 +60,17 @@
     },
     "h264": {
       "quality": 26
+    },
+    "openh264": {
+      "quality": 26
+    },
+    "ffmpeg_h264": {
+      "quality": 23,
+      "preset": 2
+    },
+    "ffmpeg_h265": {
+      "quality": 28,
+      "preset": 2
     }
   },
   "ade": {
@@ -89,7 +100,7 @@
     }
   },
   "compression": {
-    "use_web_resource_dict": false,
+    "use_web_resource_dict": true,
     "use_media_compression": true
   },
   "streaming": {
@@ -103,13 +114,13 @@
         "follow_global_threshold": true,
         "threshold_mb": 10.0
       },
-      "lzdp": {
+      "lzss": {
         "follow_global_chunk": true,
         "chunk_size_kb": 1024,
         "follow_global_threshold": true,
         "threshold_mb": 10.0
       },
-      "lzss": {
+      "lzdp": {
         "follow_global_chunk": true,
         "chunk_size_kb": 1024,
         "follow_global_threshold": true,

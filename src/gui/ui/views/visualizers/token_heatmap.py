@@ -28,7 +28,7 @@ def ratio_to_gray(ratio: float) -> QColor:
     return QColor(v, v, v)
 
 
-class TokenHeatmapWidget(QPlainTextEdit):
+class TokenHeatmapWidget(QPlainTextEdit):# 负责文本显示和高亮
     token_hovered = pyqtSignal(int)
 
     def __init__(self, parent=None, grayscale: bool = False):
@@ -101,7 +101,7 @@ class TokenHeatmapWidget(QPlainTextEdit):
             self.token_hovered.emit(-1)
 
 
-class TokenInfoPanel(QWidget):
+class TokenInfoPanel(QWidget): # 负责显示 Token 详情文本
     def __init__(self, parent=None, grayscale: bool = False):
         super().__init__(parent)
         self._grayscale = grayscale
@@ -140,7 +140,7 @@ class TokenInfoPanel(QWidget):
         self._label.setText("\n".join(lines))
 
 
-class BitstreamWidget(QWidget):
+class BitstreamWidget(QWidget): # 负责比特流热力图显示（每个比特一个小格子，颜色表示压缩率）
     TOOLTIP_REQUESTED = pyqtSignal(int)
 
     def __init__(self, parent=None):

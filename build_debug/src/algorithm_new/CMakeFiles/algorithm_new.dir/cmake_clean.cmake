@@ -15,6 +15,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/algorithm_new.dir/LZDP.cpp.obj.d"
   "CMakeFiles/algorithm_new.dir/LZSS.cpp.obj"
   "CMakeFiles/algorithm_new.dir/LZSS.cpp.obj.d"
+  "CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.obj"
+  "CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.obj.d"
   "CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj"
   "CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj.d"
   "CMakeFiles/algorithm_new.dir/Visualization.cpp.obj"

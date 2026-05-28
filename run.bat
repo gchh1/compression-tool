@@ -61,9 +61,13 @@ pyinstaller --noconfirm --onefile --windowed --name "WebCompress" --icon "%PROJE
   --exclude-module PySide6 ^
   --exclude-module torch ^
   --exclude-module tensorflow ^
-  --add-data "%PROJECT_DIR%\assets\ade\default_model.bin;ade" ^
+  --hidden-import PyQt6.QtWebEngineCore ^
+  --hidden-import PyQt6.QtWebEngineWidgets ^
+  --hidden-import gui.ui.views.viz_dashboard ^
+  --hidden-import gui.ade.features ^
   --add-data "%PROJECT_DIR%\assets\ade\training_data_v3.json;ade" ^
   --add-data "%PROJECT_DIR%\resources\dict\web_phrases.txt;resources/dict" ^
+  --add-data "%PROJECT_DIR%\src\gui\ui\views\html\deflate_dashboard.html;gui\ui\views\html" ^
   --add-data "%CORE_ENGINE_PYD%;core_engine_new" ^
   --add-data "%CORE_ENGINE_DIR%\libgcc_s_seh-1.dll;core_engine_new" ^
   --add-data "%CORE_ENGINE_DIR%\libstdc++-6.dll;core_engine_new" ^

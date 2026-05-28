@@ -10,6 +10,23 @@
 namespace py = pybind11;
 
 void init_ade(py::module_& m) {
+    py::enum_<compressor::ade::CoreAlgorithmID>(m, "CoreAlgorithmID")
+        .value("NONE", compressor::ade::CoreAlgorithmID::None)
+        .value("DEFLATE", compressor::ade::CoreAlgorithmID::Deflate)
+        .value("INFLATE", compressor::ade::CoreAlgorithmID::Inflate)
+        .value("DELTA_ENCODE", compressor::ade::CoreAlgorithmID::DeltaEncode)
+        .value("DELTA_DECODE", compressor::ade::CoreAlgorithmID::DeltaDecode)
+        .value("LZSS", compressor::ade::CoreAlgorithmID::LZSS)
+        .value("LZSS_DECOMPRESS", compressor::ade::CoreAlgorithmID::LZSSDecompress)
+        .value("LZDP", compressor::ade::CoreAlgorithmID::LZDP)
+        .value("LZDP_DECOMPRESS", compressor::ade::CoreAlgorithmID::LZDPDecompress)
+        .value("DPFLATE", compressor::ade::CoreAlgorithmID::DPFlate)
+        .value("BROTLI", compressor::ade::CoreAlgorithmID::Brotli)
+        .value("BROTLI_DECOMPRESS", compressor::ade::CoreAlgorithmID::BrotliDecompress)
+        .value("ZSTD", compressor::ade::CoreAlgorithmID::Zstd)
+        .value("ZSTD_DECOMPRESS", compressor::ade::CoreAlgorithmID::ZstdDecompress)
+        .export_values();
+
     py::class_<compressor::ade::RandomForestConfig>(m, "RandomForestConfig")
         .def(py::init<>())
         .def_readwrite("num_trees", &compressor::ade::RandomForestConfig::num_trees)
@@ -44,7 +61,6 @@ void init_ade(py::module_& m) {
             "Analyze data and recommend compression algorithm")
         .def("analyze_file", &compressor::ade::ADEBridge::analyze_file,
             py::arg("filepath"),
-            py::call_guard<py::gil_scoped_release>(),
             "Analyze a file and recommend compression algorithm")
         .def("set_mode", [](compressor::ade::ADEBridge& bridge, int mode) {
             auto m = static_cast<compressor::ade::AlgorithmDecisionEngine::Mode>(mode);

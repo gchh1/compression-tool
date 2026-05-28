@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import math
 import os
+import sys
 import time
 from functools import partial
 from pathlib import Path
@@ -60,6 +61,25 @@ def _compressed_size(record: Record) -> int:
 WINDOW_WIDTH = 900
 WINDOW_HEIGHT = 700
 
+_MEDIA_ALGO_EXT = {
+    AlgorithmType.JPEG: ".jpg", AlgorithmType.PNG: ".png",
+    AlgorithmType.FLAC: ".flac", AlgorithmType.AAC_LC: ".aac",
+    AlgorithmType.H264: ".h264", AlgorithmType.OPENH264: ".h264",
+}
+
+
+def _safe_flush() -> None:
+    for h in logging.root.handlers:
+        try:
+            h.flush()
+        except Exception:
+            pass
+    try:
+        sys.stderr.flush()
+        sys.stdout.flush()
+    except Exception:
+        pass
+
 
 class StatusBarWidget(QWidget):
     def __init__(self, parent=None):
@@ -109,12 +129,16 @@ class AlgorithmSelector(QComboBox):
         ("Gzip (zlib标准)", AlgorithmType.GZIP),
         ("Brotli", AlgorithmType.BROTLI),
         ("Zstd", AlgorithmType.ZSTD),
+        ("Auto", AlgorithmType.AUTO),
+        ("── 图片 ──", None),
         ("JPEG", AlgorithmType.JPEG),
         ("PNG", AlgorithmType.PNG),
-        ("FLAC (音频无损)", AlgorithmType.FLAC),
-        ("AAC-LC (音频有损)", AlgorithmType.AAC_LC),
-        ("Transformer (beta)", AlgorithmType.TRANSFORMER),
-        ("Auto", AlgorithmType.AUTO),
+        ("── 音频 ──", None),
+        ("FLAC", AlgorithmType.FLAC),
+        ("AAC-LC", AlgorithmType.AAC_LC),
+        ("── 视频 ──", None),
+        ("H.264", AlgorithmType.H264),
+        ("OpenH264", AlgorithmType.OPENH264),
     ]
 
     def __init__(self, parent=None):
@@ -123,12 +147,18 @@ class AlgorithmSelector(QComboBox):
 
     def _setup_ui(self) -> None:
         for label, value in self.ALGORITHMS:
+            if value is None:
+                self.insertSeparator(self.count())
+                continue
             self.addItem(label, value)
         self.setToolTip("选择压缩算法")
 
     @property
     def current_algorithm(self) -> AlgorithmType:
-        return self.currentData()
+        data = self.currentData()
+        if data is None:
+            return AlgorithmType.AUTO
+        return data
 
 
 # ============================================================
@@ -1463,16 +1493,13 @@ class AlgorithmConfigDialog(QDialog):
             checked=get_use_media_compression(_stream_file_cfg),
         )
         self._media_comp_btn.setToolTip(
-            "勾选后：压缩文件夹时，其中的 .jpg/.jpeg/.jpe 文件自动走 JPEG 算法，"
-            ".png 文件自动走 PNG 算法，.wav/.flac 自动走 FLAC 算法，"
-            ".mp4/.avi/.mkv/.mov 自动走 H.264 算法。"
-            "如需对 .wav 使用 AAC-LC 有损压缩，请手动选择 AAC-LC 算法。"
-            "Auto 自动决策不受此影响。"
+            "勾选后压缩文件夹时图片/音频文件自动走对应专用算法。"
+            "视频编码需要输入原始 RAW YUV 数据。"
         )
         layout.addWidget(self._media_comp_btn)
         media_comp_note = QLabel(
-            "对文件夹压缩时，图片/音频/视频文件自动匹配对应的专用压缩算法；"
-            "也可在算法下拉框中手动选择 FLAC 或 AAC-LC。Auto 模式自行决策。"
+            "媒体压缩算法：JPEG/PNG (图片)、FLAC/AAC-LC (音频)、H.264/OpenH264 (视频)。"
+            "视频编码需要原始 YUV 数据；请使用文本压缩算法处理所有其他文件。"
         )
         media_comp_note.setWordWrap(True)
         media_comp_note.setStyleSheet(
@@ -1504,9 +1531,16 @@ class AlgorithmConfigDialog(QDialog):
                 AlgorithmType.GZIP: "Gzip",
                 AlgorithmType.BROTLI: "Brotli",
                 AlgorithmType.ZSTD: "Zstd",
+                AlgorithmType.JPEG: "JPEG (图片)",
+                AlgorithmType.PNG: "PNG (图片)",
+                AlgorithmType.FLAC: "FLAC (音频)",
+                AlgorithmType.AAC_LC: "AAC-LC (音频)",
+                AlgorithmType.H264: "H.264 (视频)",
+                AlgorithmType.OPENH264: "OpenH264 (视频)",
             }
 
-            for algo in [AlgorithmType.DEFLATE, AlgorithmType.LZDP, AlgorithmType.LZSS, AlgorithmType.DPFLATE, AlgorithmType.GZIP, AlgorithmType.BROTLI, AlgorithmType.ZSTD]:
+            for algo in [AlgorithmType.DEFLATE, AlgorithmType.LZDP, AlgorithmType.LZSS, AlgorithmType.DPFLATE, AlgorithmType.GZIP, AlgorithmType.BROTLI, AlgorithmType.ZSTD,
+                         AlgorithmType.JPEG, AlgorithmType.PNG, AlgorithmType.FLAC, AlgorithmType.AAC_LC, AlgorithmType.H264, AlgorithmType.OPENH264]:
                 params = ALGORITHM_PARAMS.get(algo, [])
                 if not params:
                     continue
@@ -1551,52 +1585,54 @@ class AlgorithmConfigDialog(QDialog):
                         self._spinboxes[algo][p.key] = spin
 
                 pa0 = _per_algo_saved.get(algo.value, {})
-                follow_global = bool(pa0.get("follow_global_chunk", True))
-                stream_gb = QGroupBox("流式（本算法）")
-                sform = QFormLayout(stream_gb)
-                follow_cb = _streaming_follow_toggle_button(
-                    "分块大小跟随全局「流式设置」", checked=follow_global
-                )
-                chunk_sb = QSpinBox()
-                chunk_sb.setMinimum(64)
-                chunk_sb.setMaximum(128 * 1024)
-                chunk_sb.setSingleStep(64)
-                chunk_sb.setSuffix(" KB")
-                chunk_sb.setValue(int(pa0.get("chunk_size_kb", _global_chunk_kb)))
+                is_text_algo = algo in (AlgorithmType.DEFLATE, AlgorithmType.LZDP, AlgorithmType.LZSS,
+                                        AlgorithmType.DPFLATE, AlgorithmType.GZIP,
+                                        AlgorithmType.BROTLI, AlgorithmType.ZSTD)
+                if is_text_algo:
+                    follow_global = bool(pa0.get("follow_global_chunk", True))
+                    stream_gb = QGroupBox("流式（本算法）")
+                    sform = QFormLayout(stream_gb)
+                    follow_cb = _streaming_follow_toggle_button(
+                        "分块大小跟随全局「流式设置」", checked=follow_global
+                    )
+                    chunk_sb = QSpinBox()
+                    chunk_sb.setMinimum(64)
+                    chunk_sb.setMaximum(128 * 1024)
+                    chunk_sb.setSingleStep(64)
+                    chunk_sb.setSuffix(" KB")
+                    chunk_sb.setValue(int(pa0.get("chunk_size_kb", _global_chunk_kb)))
 
-                # 与 MinMatchWidget 一致：用 toggled(bool) + 信号里的 checked，不用 isChecked() 竞态。
-                # 必须用 lambda 默认参数绑定 sb=chunk_sb，避免 for 循环闭包延迟绑定到「最后一个算法」的 SpinBox。
-                follow_cb.toggled.connect(
-                    lambda checked, sb=chunk_sb: sb.setEnabled(not checked)
-                )
-                chunk_sb.setEnabled(not follow_global)
-                sform.addRow("", follow_cb)
-                sform.addRow("本算法流式分块:", chunk_sb)
-                follow_thresh = bool(pa0.get("follow_global_threshold", True))
-                follow_thresh_cb = _streaming_follow_toggle_button(
-                    "流式阈值跟随全局「流式设置」", checked=follow_thresh
-                )
-                thresh_sb = QDoubleSpinBox()
-                thresh_sb.setMinimum(0.0)
-                thresh_sb.setMaximum(20480.0)
-                thresh_sb.setDecimals(4)
-                thresh_sb.setSingleStep(0.001)
-                thresh_sb.setSuffix(" MB")
-                thresh_sb.setValue(float(pa0.get("threshold_mb", _global_threshold_mb)))
+                    follow_cb.toggled.connect(
+                        lambda checked, sb=chunk_sb: sb.setEnabled(not checked)
+                    )
+                    chunk_sb.setEnabled(not follow_global)
+                    sform.addRow("", follow_cb)
+                    sform.addRow("本算法流式分块:", chunk_sb)
+                    follow_thresh = bool(pa0.get("follow_global_threshold", True))
+                    follow_thresh_cb = _streaming_follow_toggle_button(
+                        "流式阈值跟随全局「流式设置」", checked=follow_thresh
+                    )
+                    thresh_sb = QDoubleSpinBox()
+                    thresh_sb.setMinimum(0.0)
+                    thresh_sb.setMaximum(20480.0)
+                    thresh_sb.setDecimals(4)
+                    thresh_sb.setSingleStep(0.001)
+                    thresh_sb.setSuffix(" MB")
+                    thresh_sb.setValue(float(pa0.get("threshold_mb", _global_threshold_mb)))
 
-                follow_thresh_cb.toggled.connect(
-                    lambda checked, sb=thresh_sb: sb.setEnabled(not checked)
-                )
-                thresh_sb.setEnabled(not follow_thresh)
-                sform.addRow("", follow_thresh_cb)
-                sform.addRow("本算法流式阈值:", thresh_sb)
-                tab_outer.addWidget(stream_gb)
-                self._per_algo_stream_widgets[algo] = {
-                    "follow": follow_cb,
-                    "chunk": chunk_sb,
-                    "follow_threshold": follow_thresh_cb,
-                    "threshold": thresh_sb,
-                }
+                    follow_thresh_cb.toggled.connect(
+                        lambda checked, sb=thresh_sb: sb.setEnabled(not checked)
+                    )
+                    thresh_sb.setEnabled(not follow_thresh)
+                    sform.addRow("", follow_thresh_cb)
+                    sform.addRow("本算法流式阈值:", thresh_sb)
+                    tab_outer.addWidget(stream_gb)
+                    self._per_algo_stream_widgets[algo] = {
+                        "follow": follow_cb,
+                        "chunk": chunk_sb,
+                        "follow_threshold": follow_thresh_cb,
+                        "threshold": thresh_sb,
+                    }
 
                 if algo in (
                     AlgorithmType.DEFLATE,
@@ -1976,6 +2012,8 @@ class MainWindow(QMainWindow):
         self._table.request_webpage_heatmap.connect(self._on_webpage_heatmap)
         self._table.request_folder_summary.connect(self._on_folder_summary)
         self._table.request_decision_detail.connect(self._on_view_decision_detail)
+        self._table.request_three_tier_heatmap.connect(self._on_three_tier_heatmap)
+        self._table.request_viz_dashboard.connect(self._on_viz_dashboard)
 
         try:
             from gui.ade.explorer import SilentExplorer
@@ -2494,6 +2532,15 @@ class MainWindow(QMainWindow):
                 payload_bytes=len(payload),
             )
             return payload
+        _MEDIA_PASSTHROUGH = frozenset({AlgorithmType.JPEG, AlgorithmType.PNG, AlgorithmType.FLAC, AlgorithmType.AAC_LC, AlgorithmType.H264, AlgorithmType.OPENH264})
+        if header.algorithm in _MEDIA_PASSTHROUGH:
+            log_decompress(
+                "gui_payload_skip",
+                reason="media_passthrough",
+                algo=header.algorithm.value,
+                payload_bytes=len(payload),
+            )
+            return payload
         log_decompress(
             "gui_payload_begin",
             algo=header.algorithm.value,
@@ -2735,23 +2782,51 @@ class MainWindow(QMainWindow):
                         record.ensure_files_loaded()
                         folder_root = P(record.path)
                         file_list = []
+                        skipped_files: list[str] = []
                         for f in record.files:
                             if f.status != CompressionStatus.DONE:
+                                skipped_files.append(f"[{f.name}] status={f.status.value}")
                                 continue
                             blob = file_record_compression_blob(f)
                             if not blob:
-                                logger.warning("[decompress] folder child skip (no data): %s", f.name)
+                                has_cdata = bool(getattr(f, 'compressed_data', None))
+                                has_cpath = bool(getattr(f, 'compressed_path', None))
+                                cdata_len = len(f.compressed_data) if isinstance(f.compressed_data, (bytes, bytearray)) else 0
+                                reason = (
+                                    f"no_data"
+                                    f" compressed_data={'YES(%d)' % cdata_len if has_cdata else 'None'}"
+                                    f" compressed_path={'YES' if has_cpath else 'None'}"
+                                    f" is_stored={getattr(f, 'is_stored', False)}"
+                                    f" algo={getattr(f, 'algorithm', '?').value if getattr(f, 'algorithm', None) else '?'}"
+                                )
+                                skipped_files.append(f"[{f.name}] {reason}")
+                                logger.warning("[decompress] folder child skip (%s): %s", reason, f.name)
                                 continue
                             try:
                                 rel = str(P(f.path).relative_to(folder_root))
                             except ValueError:
                                 rel = f.name
                             file_list.append((rel, blob, f.algorithm, f.size, bool(getattr(f, 'web_dict_preprocess', False))))
+                        if skipped_files:
+                            logger.warning(
+                                "[decompress] folder skipped %d/%d files: %s",
+                                len(skipped_files),
+                                len(record.files),
+                                "; ".join(skipped_files),
+                            )
+                        if not file_list:
+                            raise RuntimeError(
+                                f"文件夹 {record.name} 解压失败：0/{len(record.files)} 个文件有有效压缩数据；"
+                                f"跳过的文件: {'; '.join(skipped_files) if skipped_files else 'none'}"
+                            )
                         archive_data = pack_folder_archive(record.name, file_list)
                         inner_files = unpack_folder_archive(archive_data)
                         for inner_hdr, inner_payload in inner_files:
                             output_data = self._decompress_payload(engine, inner_hdr, inner_payload)
                             rel_path = inner_hdr.original_filename or f"unnamed_{success}"
+                            if inner_hdr.algorithm in _MEDIA_ALGO_EXT:
+                                p = Path(rel_path)
+                                rel_path = str(p.parent / (p.stem + _MEDIA_ALGO_EXT[inner_hdr.algorithm]))
                             out_path = os.path.join(export_dir, rel_path)
                             out_parent = os.path.dirname(out_path)
                             if out_parent:
@@ -2816,6 +2891,9 @@ class MainWindow(QMainWindow):
                         for inner_hdr, inner_payload in inner_files:
                             output_data = self._decompress_payload(engine, inner_hdr, inner_payload)
                             rel_path = inner_hdr.original_filename or f"unnamed_{success}"
+                            if inner_hdr.algorithm in _MEDIA_ALGO_EXT:
+                                p = Path(rel_path)
+                                rel_path = str(p.parent / (p.stem + _MEDIA_ALGO_EXT[inner_hdr.algorithm]))
                             out_path = os.path.join(folder_out, rel_path)
                             out_parent = os.path.dirname(out_path)
                             if out_parent:
@@ -2827,6 +2905,9 @@ class MainWindow(QMainWindow):
 
                     output_data = self._decompress_payload(engine, header, payload)
                     original_name = header.original_filename or record.name
+                    if header.algorithm in _MEDIA_ALGO_EXT:
+                        p = Path(original_name)
+                        original_name = str(p.parent / (p.stem + _MEDIA_ALGO_EXT[header.algorithm]))
                     output_path = os.path.join(export_dir, original_name)
                     with open(output_path, 'wb') as f:
                         f.write(output_data)
@@ -3168,6 +3249,118 @@ class MainWindow(QMainWindow):
             logger.error("[view] heatmap failed: %s", e, exc_info=True)
             QMessageBox.warning(self, "热力图错误", f"生成热力图失败:\n{e}")
 
+    def _on_three_tier_heatmap(self, row: int) -> None:
+        logger.info("[three_tier_heatmap] from right-click, row=%d", row)
+        record = self._table.get_record(row)
+        if not isinstance(record, FileRecord) or record.status != CompressionStatus.DONE:
+            QMessageBox.information(self, "提示", "该文件尚未压缩完成，无法查看热力图")
+            return
+        if getattr(record, "is_stored", False):
+            QMessageBox.information(self, "提示", "原样存储的文件无法查看热力图")
+            return
+        self._open_three_tier_heatmap(record)
+
+    def _open_three_tier_heatmap(self, record: FileRecord) -> None:
+        logger.info("[three_tier] opening for %s (algo=%s)", record.name, record.algorithm.value)
+        try:
+            record.load_raw_data()
+        except Exception as e:
+            QMessageBox.warning(self, "3层热力图", f"无法读取原文件:\n{e}")
+            return
+        if not record.raw_data:
+            QMessageBox.warning(self, "3层热力图", "原文件为空")
+            return
+
+        heat_path = getattr(record, "heat_path", "") or ""
+        viz_path = getattr(record, "viz_path", "") or ""
+        source_path = getattr(record, "path", "") or ""
+        compressed_size = compressed_payload_size(record)
+
+        from gui.ui.dialogs.three_tier_heatmap_dialog import ThreeTierHeatmapDialog
+
+        has_heat = bool(heat_path and Path(heat_path).is_file())
+
+        dlg = ThreeTierHeatmapDialog(
+            heat_path=heat_path if has_heat else "",
+            source_path=source_path,
+            compressed_size=compressed_size,
+            original_size=record.size,
+            viz_path=viz_path if (viz_path and Path(viz_path).is_file()) else "",
+            raw_data=record.raw_data,
+            compressed_data=None,
+            algorithm=record.algorithm.value,
+            parent=self,
+        )
+        dlg.exec()
+
+    def _on_viz_dashboard(self, row: int) -> None:
+        logger.info("[viz_dashboard] from right-click, row=%d", row)
+        record = self._table.get_record(row)
+        if not isinstance(record, FileRecord) or record.status != CompressionStatus.DONE:
+            QMessageBox.information(self, "提示", "该文件尚未压缩完成，无法回放")
+            return
+        if record.algorithm not in (AlgorithmType.DEFLATE, AlgorithmType.DPFLATE):
+            QMessageBox.information(self, "提示", "DEFLATE 过程回放仅支持 Deflate / DPFlate 算法")
+            return
+
+        viz_path = getattr(record, "viz_path", "") or ""
+        source_path = getattr(record, "path", "") or ""
+
+        if not viz_path or not Path(viz_path).is_file():
+            try:
+                import tempfile
+
+                if not record.raw_data:
+                    record.load_raw_data()
+
+                if not record.raw_data:
+                    raise RuntimeError("无法读取原始文件数据")
+
+                from gui.engine.token_parser import parse_for_demo, can_parse
+                from gui.engine.viz_writer import VizWriter
+
+                if not can_parse(record.algorithm):
+                    raise RuntimeError(f"算法 {record.algorithm.value} 不支持 token 解析")
+
+                result = parse_for_demo(record.algorithm, record.raw_data)
+                if not result or not result.tokens:
+                    raise RuntimeError("token 解析失败")
+
+                viz_dir = Path(source_path).parent if source_path else tempfile.gettempdir()
+                viz_path = str(viz_dir / (Path(source_path).stem + ".viz"))
+                writer = VizWriter(viz_path)
+                writer.generate_from_tokens(
+                    tokens=result.tokens,
+                    raw_size=len(record.raw_data),
+                    compressed_size=compressed_payload_size(record),
+                    raw_data=record.raw_data,
+                )
+                writer.close()
+                record.viz_path = viz_path
+                logger.info("[viz_dashboard] generated .viz at %s with %d tokens",
+                           viz_path, len(result.tokens))
+            except Exception as e:
+                logger.warning("[viz_dashboard] viz generation failed: %s", e)
+                QMessageBox.information(
+                    self, "提示",
+                    "该文件没有 .viz 可视化数据，且自动生成失败。\n"
+                    f"错误: {e}"
+                )
+                return
+
+        try:
+            from gui.ui.views.viz_dashboard import VizDashboard
+            self._viz_dashboard = VizDashboard(
+                viz_path=viz_path,
+                source_path=source_path,
+                parent=None,
+            )
+            self._viz_dashboard.setWindowFlag(Qt.WindowType.Window)
+            self._viz_dashboard.show()
+        except Exception as e:
+            logger.error("[viz_dashboard] failed: %s", e, exc_info=True)
+            QMessageBox.warning(self, "回放错误", f"无法打开 DEFLATE 过程回放:\n{e}")
+
 
     def _start_comparison_worker(self, record: Record, title: str) -> None:
         if self._comparison_worker and self._comparison_worker.isRunning():
@@ -3320,12 +3513,14 @@ class MainWindow(QMainWindow):
         if not isinstance(record, FileRecord):
             QMessageBox.information(self, "提示", "仅支持文件记录")
             return
+        _safe_flush()
         try:
             dialog = DecisionDetailDialog(record, parent=self)
             dialog.exec()
             logger.info("[view] decision detail dialog closed")
         except Exception as e:
             logger.error("[view] decision detail failed: %s", e, exc_info=True)
+            _safe_flush()
             QMessageBox.warning(self, "决策详情错误", f"显示决策详情失败:\n{e}")
 
     def _on_folder_summary(self, row: int) -> None:
@@ -3736,24 +3931,44 @@ class DecisionDetailDialog(QDialog):
             params_lbl.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
             decision_form.addRow("使用参数:", params_lbl)
         else:
-            de = DecisionEngine.get()
-            try:
-                new_decision = de.decide(self.record) if de._ade else None
-                if new_decision:
-                    self.record.decision_result = new_decision
-                    algo_name = new_decision.algorithm.value if hasattr(new_decision.algorithm, 'value') else str(new_decision.algorithm)
-                    confidence_pct = new_decision.confidence * 100
-                    decision_form.addRow("推荐算法:", QLabel(algo_name))
-                    decision_form.addRow("置信度:", QLabel(f"{confidence_pct:.1f}%"))
-                    decision_form.addRow("决策原因:", QLabel(self._label_text(new_decision.reason) or "无"))
-                    np_lbl = QLabel(self._params_display_for_decision(new_decision.algorithm, new_decision.params))
-                    np_lbl.setWordWrap(True)
-                    np_lbl.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
-                    decision_form.addRow("使用参数:", np_lbl)
-                else:
-                    decision_form.addRow("状态:", QLabel("ADE 未初始化或无法决策"))
-            except Exception as e:
-                decision_form.addRow("状态:", QLabel(f"重新分析失败: {e}"))
+            _safe_flush()
+            has_features = getattr(self.record, 'base_features', None) is not None
+            has_raw = bool(getattr(self.record, 'raw_data', None))
+            file_exists = hasattr(self.record, 'path') and self.record.path and Path(self.record.path).exists()
+
+            if has_features or (has_raw and file_exists):
+                try:
+                    de = DecisionEngine.get()
+                    logger.info("[view] decision detail: DEBUG de._ade=%s de._mode=%s",
+                                de._ade is not None,
+                                getattr(de, '_mode', '?').name if hasattr(getattr(de, '_mode', None), 'name') else '?')
+                    _safe_flush()
+                    if de._ade is None:
+                        decision_form.addRow("状态:", QLabel("ADE 未加载模型"))
+                    else:
+                        logger.info("[view] decision detail: triggering re-decide for %s", self.record.path)
+                        _safe_flush()
+                        new_decision = de.decide(self.record)
+                        if new_decision:
+                            self.record.decision_result = new_decision
+                            algo_name = new_decision.algorithm.value if hasattr(new_decision.algorithm, 'value') else str(new_decision.algorithm)
+                            confidence_pct = new_decision.confidence * 100
+                            decision_form.addRow("推荐算法:", QLabel(algo_name))
+                            decision_form.addRow("置信度:", QLabel(f"{confidence_pct:.1f}%"))
+                            decision_form.addRow("决策原因:", QLabel(self._label_text(new_decision.reason) or "无"))
+                            np_lbl = QLabel(self._params_display_for_decision(new_decision.algorithm, new_decision.params))
+                            np_lbl.setWordWrap(True)
+                            np_lbl.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+                            decision_form.addRow("使用参数:", np_lbl)
+                        else:
+                            decision_form.addRow("状态:", QLabel("ADE 返回空决策"))
+                except Exception as e:
+                    logger.exception("[view] decision detail: re-decide crashed: %s", e)
+                    _safe_flush()
+                    decision_form.addRow("状态:", QLabel(f"分析失败: {e}"))
+            else:
+                decision_form.addRow("状态:", QLabel("未压缩/未分析 — 请先压缩此文件"))
+                decision_form.addRow("提示:", QLabel('压缩时使用 "auto" 模式可自动收集决策详情'))
 
         content_layout.addWidget(decision_group)
 

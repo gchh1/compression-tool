@@ -129,6 +129,30 @@ core_engine_new/fast:
 	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\bindings\pybind_new\CMakeFiles\core_engine_new.dir\build.make src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/build
 .PHONY : core_engine_new/fast
 
+__/pybind/pybind_ade.obj: __/pybind/pybind_ade.cpp.obj
+.PHONY : __/pybind/pybind_ade.obj
+
+# target to build an object file
+__/pybind/pybind_ade.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\bindings\pybind_new\CMakeFiles\core_engine_new.dir\build.make src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.obj
+.PHONY : __/pybind/pybind_ade.cpp.obj
+
+__/pybind/pybind_ade.i: __/pybind/pybind_ade.cpp.i
+.PHONY : __/pybind/pybind_ade.i
+
+# target to preprocess a source file
+__/pybind/pybind_ade.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\bindings\pybind_new\CMakeFiles\core_engine_new.dir\build.make src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.i
+.PHONY : __/pybind/pybind_ade.cpp.i
+
+__/pybind/pybind_ade.s: __/pybind/pybind_ade.cpp.s
+.PHONY : __/pybind/pybind_ade.s
+
+# target to generate assembly for a file
+__/pybind/pybind_ade.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\bindings\pybind_new\CMakeFiles\core_engine_new.dir\build.make src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.s
+.PHONY : __/pybind/pybind_ade.cpp.s
+
 pybind_module_new.obj: pybind_module_new.cpp.obj
 .PHONY : pybind_module_new.obj
 
@@ -162,6 +186,9 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... core_engine_new
+	@echo ... __/pybind/pybind_ade.obj
+	@echo ... __/pybind/pybind_ade.i
+	@echo ... __/pybind/pybind_ade.s
 	@echo ... pybind_module_new.obj
 	@echo ... pybind_module_new.i
 	@echo ... pybind_module_new.s

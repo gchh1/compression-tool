@@ -51,13 +51,35 @@ class ParameterRegressor:
                 self._cpp_net = eng._engine.ParamRegressorNet()
                 self._has_cpp = True
                 logger.info("[param_regressor] C++ ParamRegressorNet available")
-            else:
-                logger.warning(
-                    "[param_regressor] core_engine.ParamRegressorNet missing; "
-                    "rebuild core_engine for Stage2a NN"
-                )
+                return
+
+            self._try_legacy_core_engine()
         except Exception as e:
-            logger.warning("[param_regressor] C++ backend init failed: %s", e)
+            self._try_legacy_core_engine()
+            if not self._has_cpp:
+                logger.warning("[param_regressor] C++ backend init failed: %s", e)
+
+    def _try_legacy_core_engine(self) -> None:
+        try:
+            import importlib
+
+            core_engine = importlib.import_module("core_engine")
+            if hasattr(core_engine, "ParamRegressorNet"):
+                self._cpp_net = core_engine.ParamRegressorNet()
+                self._has_cpp = True
+                logger.info(
+                    "[param_regressor] C++ ParamRegressorNet loaded from legacy core_engine"
+                )
+                return
+        except ImportError:
+            pass
+        except Exception as ex:
+            logger.debug("[param_regressor] legacy core_engine init failed: %s", ex)
+
+        logger.warning(
+            "[param_regressor] core_engine.ParamRegressorNet missing; "
+            "rebuild core_engine for Stage2a NN"
+        )
 
     @classmethod
     def get(cls, *, force_reload: bool = False) -> "ParameterRegressor":
@@ -332,8 +354,19 @@ class ParameterRegressor:
         rows = self._build_cpp_training_rows()
         logger.info("[param_regressor] C++ training on %d samples", len(rows))
 
-        from gui.engine.compressor import CompressionEngine
-        TrainCfg = CompressionEngine()._engine.ParamRegressorTrainConfig
+        import importlib
+
+        if self._cpp_net is None:
+            raise RuntimeError("C++ ParamRegressorNet is None")
+        TrainCfg = type(self._cpp_net).__module__
+        if TrainCfg:
+            core_engine = importlib.import_module(TrainCfg)
+        else:
+            try:
+                core_engine = importlib.import_module("core_engine_new")
+            except ImportError:
+                core_engine = importlib.import_module("core_engine")
+        TrainCfg = core_engine.ParamRegressorTrainConfig
         train_cfg = TrainCfg()
         train_cfg.epochs = int(epochs)
         train_cfg.learning_rate = float(lr)

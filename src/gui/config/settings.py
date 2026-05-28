@@ -71,8 +71,8 @@ DEFAULTS = {
         },
     },
     "compression": {
-        # When true: load full file, apply web phrase dictionary, then run chosen codec (no streaming).
         "use_web_resource_dict": False,
+        "use_media_compression": False,
     },
     "streaming": {
         "threshold_mb": STREAMING_THRESHOLD_MB,

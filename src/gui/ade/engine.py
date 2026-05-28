@@ -2,9 +2,13 @@ from __future__ import annotations
 
 import json
 import logging
+import os
+import struct
+import sys
 import time
 import uuid
 from dataclasses import asdict
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -18,7 +22,88 @@ from gui.models import (
     FileRecord,
 )
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('gui.ade')
+
+MAX_EXPECTED_FEATURE_DIM = 33
+
+
+def _ade_flush() -> None:
+    """Force flush log handlers before crash-prone operations."""
+    for h in logging.root.handlers:
+        try:
+            h.flush()
+        except Exception:
+            pass
+    try:
+        sys.stderr.flush()
+        sys.stdout.flush()
+    except Exception:
+        pass
+
+
+def _ade_crash_log(msg: str) -> None:
+    import os
+    try:
+        from gui.utils.logging import get_log_path
+        _base = get_log_path().parent
+        crash_path = _base / "ade_crash.log"
+        with open(crash_path, "a", encoding="utf-8") as f:
+            ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+            f.write(f"{ts} {msg}\n")
+            f.flush()
+            os.fsync(f.fileno())
+    except Exception:
+        pass
+
+
+def _ade_redirect_stderr_to_crash_log() -> None:
+    try:
+        import os
+        from gui.utils.logging import get_log_path
+        _base = get_log_path().parent
+        crash_path = _base / "ade_crash.log"
+        os.environ["ADE_CRASH_LOG_PATH"] = str(crash_path)
+    except Exception:
+        pass
+
+def _ade_restore_stderr() -> None:
+    try:
+        import os
+        os.environ.pop("ADE_CRASH_LOG_PATH", None)
+    except Exception:
+        pass
+
+
+def _validate_model_file(filepath: str) -> bool:
+    try:
+        with open(filepath, "rb") as f:
+            header = f.read(65)
+            if len(header) < 65:
+                return False
+            magic = struct.unpack_from("<I", header, 0)[0]
+            if magic != 0x52465346:
+                return False
+            num_trees = struct.unpack_from("<Q", header, 8)[0]
+            if num_trees == 0:
+                return False
+
+            tree_header = f.read(25)
+            if len(tree_header) < 25:
+                return False
+            tree_magic = struct.unpack_from("<I", tree_header, 0)[0]
+            if tree_magic != 0x44545246:
+                return False
+            num_features = struct.unpack_from("<Q", tree_header, 8)[0]
+            if num_features > MAX_EXPECTED_FEATURE_DIM:
+                logger.warning(
+                    "[decision] model expects %d features but max is %d, incompatible",
+                    num_features, MAX_EXPECTED_FEATURE_DIM,
+                )
+                return False
+            return True
+    except Exception as e:
+        logger.warning("[decision] failed to validate model: %s", e)
+        return False
 
 
 class DecisionEngine:
@@ -47,18 +132,30 @@ class DecisionEngine:
                 logger.warning("[decision] ADE not found in core_engine")
                 return
             self._ade = eng.ADE()
+            logger.info("[decision] DEBUG _ade created: type=%s", type(self._ade).__name__)
 
             model_loaded = self._ade.try_load_default_model()
+            logger.info("[decision] DEBUG _ade.try_load_default_model() returned=%s", model_loaded)
 
             if not model_loaded:
                 model_loaded = self._try_load_model_from_project()
+                logger.info("[decision] DEBUG _try_load_model_from_project() returned=%s", model_loaded)
 
             if model_loaded:
-                self._mode = DecisionMode.ML_HYBRID
-                self._ade.set_mode(1)
-                logger.info("[decision] ADE loaded default model, using ML_HYBRID mode")
+                model_ok = self._validate_loaded_model()
+                logger.info("[decision] DEBUG _validate_loaded_model() returned=%s", model_ok)
+                if model_ok:
+                    self._mode = DecisionMode.ML_HYBRID
+                    self._ade.set_mode(1)
+                    logger.info("[decision] ADE loaded default model, using ML_HYBRID mode")
+                else:
+                    logger.warning("[decision] ADE model incompatible, using RULE_BASED mode")
+                    self._ade.set_mode(0)
             else:
                 logger.info("[decision] ADE using RULE_BASED mode (no default model)")
+                self._mode = DecisionMode.RULE_BASED
+                self._ade.set_mode(0)
+            logger.info("[decision] DEBUG _init_ade final mode=%s", self._mode.name)
             logger.info("[decision] ADE initialized successfully")
         except Exception as e:
             logger.warning("[decision] ADE init failed: %s", e)
@@ -130,6 +227,48 @@ class DecisionEngine:
                 except Exception as e:
                     logger.debug("[decision] failed to load from %s: %s", path, e)
 
+        return False
+
+    def _validate_loaded_model(self) -> bool:
+        candidates = []
+
+        if getattr(sys, 'frozen', False):
+            base = Path(sys.executable).parent
+            meipass = getattr(sys, "_MEIPASS", None)
+            if meipass:
+                meipass_path = Path(meipass)
+                candidates.extend([
+                    meipass_path / "ade" / "default_model.bin",
+                    meipass_path / "default_model.bin",
+                ])
+            candidates.extend([
+                base / "ade" / "default_model.bin",
+                base / "default_model.bin",
+                base.parent / "ade" / "default_model.bin",
+                base.parent / "default_model.bin",
+            ])
+        else:
+            base = Path(__file__).resolve().parent.parent.parent.parent
+            candidates.extend([
+                base / "assets" / "ade" / "default_model.bin",
+                base / "ade" / "default_model.bin",
+            ])
+
+        env_path = os.environ.get("ADE_MODEL_PATH", "")
+        if env_path:
+            candidates.insert(0, Path(env_path))
+
+        candidates.extend([
+            Path("ade/default_model.bin"),
+            Path("default_model.bin"),
+            Path("../ade/default_model.bin"),
+            Path("../default_model.bin"),
+        ])
+
+        for path in candidates:
+            if path.exists():
+                if _validate_model_file(str(path)):
+                    return True
         return False
 
     @classmethod
@@ -204,7 +343,11 @@ class DecisionEngine:
         return self._engine.compress_with_overrides(data, algorithm, overrides)
 
     def decide(self, record: FileRecord) -> DecisionResult:
+        _fpath = str(getattr(record, 'path', '') or '')
+        _fsize = int(getattr(record, 'size', 0) or 0)
+        logger.info("[decision] DEBUG decide entry: path=%s size=%d mode=%s", _fpath, _fsize, self._mode.name)
         if self._ade is None:
+            logger.warning("[decision] DEBUG _ade is None, falling back to LZDP")
             return DecisionResult(
                 algorithm=AlgorithmType.LZDP,
                 confidence=0.0,
@@ -217,9 +360,25 @@ class DecisionEngine:
 
         try:
             if hasattr(record, 'path') and record.path and Path(record.path).exists():
-                result = self._ade.analyze_file(record.path)
+                logger.info("[decision] DEBUG analyze_file: path=%s mode=%s ade_type=%s",
+                            record.path, self._mode.name, type(self._ade).__name__)
+                _ade_flush()
+                _ade_crash_log(f"[BEFORE analyze_file] path={record.path} mode={self._mode.name}")
+                _ade_crash_log(f"[BEFORE analyze_file] _ade={type(self._ade).__name__} id={id(self._ade)}")
+
+                _ade_redirect_stderr_to_crash_log()
+                try:
+                    result = self._ade.analyze_file(record.path)
+                finally:
+                    _ade_restore_stderr()
+                _ade_crash_log(f"[AFTER  analyze_file] returned algo={result.algorithm}")
+                logger.info("[decision] DEBUG analyze_file: returned algo=%s", result.algorithm)
             elif hasattr(record, 'raw_data') and record.raw_data:
+                logger.info("[decision] DEBUG analyze: raw_data=%d bytes", len(record.raw_data))
+                _ade_flush()
+                _ade_crash_log(f"[BEFORE analyze] raw_bytes={len(record.raw_data)}")
                 result = self._ade.analyze(list(record.raw_data))
+                _ade_crash_log(f"[AFTER  analyze] returned algo={result.algorithm}")
             else:
                 return DecisionResult(
                     algorithm=AlgorithmType.LZDP,
@@ -257,19 +416,19 @@ class DecisionEngine:
         if not self._engine.available:
             return AlgorithmType.LZDP
         eng = self._engine._engine
-        if core_algo_id == eng.AlgorithmID.DEFLATE:
+        if core_algo_id == eng.CoreAlgorithmID.DEFLATE:
             return AlgorithmType.DEFLATE
-        elif core_algo_id == eng.AlgorithmID.LZSS:
+        elif core_algo_id == eng.CoreAlgorithmID.LZSS:
             return AlgorithmType.LZSS
-        elif core_algo_id == eng.AlgorithmID.LZDP:
+        elif core_algo_id == eng.CoreAlgorithmID.LZDP:
             return AlgorithmType.LZDP
-        elif core_algo_id == eng.AlgorithmID.DPFLATE:
+        elif core_algo_id == eng.CoreAlgorithmID.DPFLATE:
             return AlgorithmType.DPFLATE
-        elif core_algo_id == eng.AlgorithmID.BROTLI:
+        elif core_algo_id == eng.CoreAlgorithmID.BROTLI:
             return AlgorithmType.BROTLI
-        elif core_algo_id == eng.AlgorithmID.ZSTD:
+        elif core_algo_id == eng.CoreAlgorithmID.ZSTD:
             return AlgorithmType.ZSTD
-        elif core_algo_id == eng.AlgorithmID.NONE:
+        elif core_algo_id == eng.CoreAlgorithmID.NONE:
             return AlgorithmType.NONE
         else:
             return AlgorithmType.LZDP
@@ -282,9 +441,11 @@ class DecisionEngine:
 
     def _optimize_params(self, algorithm: AlgorithmType) -> dict[str, int] | None:
         regressor = ParameterRegressor.get()
+        logger.info("[decision] DEBUG _optimize_params: algo=%s regressor_ready=%s", algorithm.value, regressor.is_ready)
 
         if regressor.is_ready and hasattr(self, '_current_record') and self._current_record:
             try:
+                _ade_flush()
                 nn_params = regressor.predict(self._current_record, algorithm)
                 if nn_params:
                     from gui.models import sanitize_stage2_params
@@ -423,6 +584,12 @@ class DecisionEngine:
 
         self._training_data.append(sample)
 
+        from gui.models import is_media_algorithm
+        algorithm = decision.algorithm if decision else getattr(record, 'algorithm', AlgorithmType.AUTO)
+        if is_media_algorithm(algorithm):
+            logger.debug("[decision] skipping V3 store for media algo: %s", algorithm.value)
+            return sample
+
         # Also collect to V3 store
         try:
             from gui.ade.training import get_training_store
@@ -438,8 +605,14 @@ class DecisionEngine:
         record: FileRecord,
         decision: DecisionResult | None = None,
     ) -> ParamRegressionSample | None:
+        from gui.models import is_media_algorithm
+
         regressor = ParameterRegressor.get()
         algorithm = decision.algorithm if decision else getattr(record, 'algorithm', AlgorithmType.LZDP)
+
+        if is_media_algorithm(algorithm):
+            logger.debug("[decision] skipping param regression for media algo: %s", algorithm.value)
+            return None
 
         predicted_params = decision.params if decision and decision.params else None
         actual_params: dict[str, int] = {}

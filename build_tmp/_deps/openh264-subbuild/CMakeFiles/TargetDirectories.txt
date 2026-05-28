@@ -1,0 +1,3 @@
+D:/AAA_C/compression-tool/build_tmp/_deps/openh264-subbuild/CMakeFiles/openh264-populate.dir
+D:/AAA_C/compression-tool/build_tmp/_deps/openh264-subbuild/CMakeFiles/edit_cache.dir
+D:/AAA_C/compression-tool/build_tmp/_deps/openh264-subbuild/CMakeFiles/rebuild_cache.dir

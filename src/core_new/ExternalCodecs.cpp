@@ -12,6 +12,7 @@
 #include "Brotli.hpp"
 #include "ImageCompressor.hpp"
 #include "VideoCodec.hpp"
+#include "OpenH264Codec.hpp"
 #include "Zstd.hpp"
 
 namespace compressor::core {
@@ -405,7 +406,7 @@ CompressorResult VideoH264Compressor::compress(std::vector<uint8_t> data) {
     auto t0 = std::chrono::high_resolution_clock::now();
     auto result = algorithm::video_compress(data, algorithm::VideoFormat::H264, quality_);
     if (result.empty())
-        return fail_codec("H.264 encode failed: invalid video data", data.size());
+        return fail_codec("H.264 仅支持原始 RGB24 视频（16字节头+w*h*3每帧），不支持 MP4/MKV/AVI 容器格式", data.size());
     const auto t1 = std::chrono::high_resolution_clock::now();
     return ok_codec(std::move(result), data.size(),
                     std::chrono::duration<double, std::milli>(t1 - t0).count());
@@ -422,5 +423,29 @@ CompressorResult VideoH264Compressor::decompress(std::vector<uint8_t> data) {
 }
 
 std::string VideoH264Compressor::get_algorithm_name() { return "H.264"; }
+
+// ── Video OpenH264 ──
+
+CompressorResult VideoOpenH264Compressor::compress(std::vector<uint8_t> data) {
+    auto t0 = std::chrono::high_resolution_clock::now();
+    auto result = algorithm::openh264_compress(data, quality_);
+    if (result.empty())
+        return fail_codec("OpenH264 仅支持原始 RGB24 视频（16字节头+w*h*3每帧），不支持 MP4/MKV/AVI 容器格式", data.size());
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    return ok_codec(std::move(result), data.size(),
+                    std::chrono::duration<double, std::milli>(t1 - t0).count());
+}
+
+CompressorResult VideoOpenH264Compressor::decompress(std::vector<uint8_t> data) {
+    auto t0 = std::chrono::high_resolution_clock::now();
+    auto result = algorithm::openh264_decompress(data);
+    if (result.empty())
+        return fail_codec("OpenH264 decode failed", data.size());
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    return ok_codec(std::move(result), data.size(),
+                    std::chrono::duration<double, std::milli>(t1 - t0).count());
+}
+
+std::string VideoOpenH264Compressor::get_algorithm_name() { return "OpenH264"; }
 
 }  // namespace compressor::core

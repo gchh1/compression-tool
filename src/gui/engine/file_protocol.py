@@ -14,6 +14,20 @@ MAGIC = b'WCMP'
 HEADER_VERSION = 3
 UNIFIED_EXTENSION = ".wcx"
 
+_IMAGE_ALGORITHMS = frozenset({AlgorithmType.JPEG, AlgorithmType.PNG})
+_AUDIO_ALGORITHMS = frozenset({AlgorithmType.FLAC, AlgorithmType.AAC_LC})
+_VIDEO_ALGORITHMS = frozenset({AlgorithmType.H264, AlgorithmType.OPENH264})
+_MEDIA_ALGORITHMS_ALL = frozenset(_IMAGE_ALGORITHMS | _AUDIO_ALGORITHMS | _VIDEO_ALGORITHMS)
+
+_MEDIA_ALGO_EXT = {
+    AlgorithmType.JPEG: ".jpg",
+    AlgorithmType.PNG: ".png",
+    AlgorithmType.FLAC: ".flac",
+    AlgorithmType.AAC_LC: ".aac",
+    AlgorithmType.H264: ".h264",
+    AlgorithmType.OPENH264: ".h264",
+}
+
 ALGO_CODE_STORED = 0
 
 ALGO_CODE_MAP: dict[AlgorithmType, int] = {
@@ -31,6 +45,9 @@ ALGO_CODE_MAP: dict[AlgorithmType, int] = {
     AlgorithmType.FLAC: 12,
     AlgorithmType.AAC_LC: 13,
     AlgorithmType.H264: 14,
+    AlgorithmType.FFMPEG_H264: 15,
+    AlgorithmType.FFMPEG_H265: 16,
+    AlgorithmType.OPENH264: 17,
 }
 
 CODE_TO_ALGO: dict[int, AlgorithmType] = {v: k for k, v in ALGO_CODE_MAP.items()}
@@ -248,7 +265,7 @@ def wcx_bytes_for_file_record(record: object) -> bytes | None:
     if len(blob) >= 4 and blob[:4] == MAGIC:
         return blob
     algo = getattr(record, "algorithm", AlgorithmType.NONE)
-    if algo in (AlgorithmType.JPEG, AlgorithmType.PNG):
+    if algo in _MEDIA_ALGORITHMS_ALL:
         return blob
     if getattr(record, "is_stored", False):
         algo = AlgorithmType.NONE
@@ -393,10 +410,9 @@ def detect_algorithm_from_file(path: str | Path) -> AlgorithmType | None:
 
 
 def make_export_filename(original_name: str, algorithm: AlgorithmType | None = None) -> str:
-    if algorithm == AlgorithmType.JPEG:
-        return Path(original_name).stem + ".jpg"
-    if algorithm == AlgorithmType.PNG:
-        return Path(original_name).stem + ".png"
+    media_ext = _MEDIA_ALGO_EXT.get(algorithm) if algorithm is not None else None
+    if media_ext is not None:
+        return Path(original_name).stem + media_ext
     base = original_name
     for ext in ('.wcl', '.wcm', '.wcs', '.wch', '.wcf', '.wcd', '.wcg', '.wcx', '.archive'):
         if base.lower().endswith(ext):

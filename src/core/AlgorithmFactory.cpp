@@ -128,7 +128,8 @@ auto createAlgorithm(AlgorithmID id,
         case AlgorithmID::Zstd:
             return std::make_unique<SCA>(
                 [](const std::vector<uint8_t>& data) -> std::vector<uint8_t> {
-                    return algorithm::ZstdCompress::compress(data, 3);
+                    algorithm::ZstdCompress compressor(3);
+                    return compressor.compress(data);
                 },
                 sca_chunk);
         case AlgorithmID::ZstdDecompress:

@@ -60,6 +60,22 @@ def run_cli(): # 在命令行模式下运行，压缩指定目录下的文件并
 
 
 def run_gui():
+    import faulthandler
+    import os
+    import logging
+
+    from gui.utils.logging import get_log_path
+
+    _log_path = get_log_path()
+    _crash_dir = _log_path.parent
+    _crash_dir.mkdir(parents=True, exist_ok=True)
+    crash_dump_path = _crash_dir / "ade_crash_dump.log"
+    _crash_fd = open(str(crash_dump_path), "w", encoding="utf-8")
+    faulthandler.enable(file=_crash_fd, all_threads=True)
+    _crash_fd.write(f"=== faulthandler enabled at {__import__('datetime').datetime.now()} ===\n")
+    _crash_fd.flush()
+    os.fsync(_crash_fd.fileno())
+
     setup_logging()
 
     import logging

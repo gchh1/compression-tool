@@ -1,2 +1,0 @@
-D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc libapi_new.a CMakeFiles/api_new.dir/WCXProtocol.cpp.obj CMakeFiles/api_new.dir/api.cpp.obj
-D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe libapi_new.a

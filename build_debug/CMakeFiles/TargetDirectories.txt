@@ -42,6 +42,10 @@ D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-build/CMakeFiles/Conti
 D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-build/CMakeFiles/edit_cache.dir
 D:/AAA_C/compression-tool/build_debug/_deps/google_brotli-build/CMakeFiles/rebuild_cache.dir
 D:/AAA_C/compression-tool/build_debug/src/algorithm_new/CMakeFiles/algorithm_new.dir
+D:/AAA_C/compression-tool/build_debug/src/algorithm_new/CMakeFiles/openh264_common.dir
+D:/AAA_C/compression-tool/build_debug/src/algorithm_new/CMakeFiles/openh264_encoder.dir
+D:/AAA_C/compression-tool/build_debug/src/algorithm_new/CMakeFiles/openh264_decoder.dir
+D:/AAA_C/compression-tool/build_debug/src/algorithm_new/CMakeFiles/openh264_processing.dir
 D:/AAA_C/compression-tool/build_debug/src/algorithm_new/CMakeFiles/edit_cache.dir
 D:/AAA_C/compression-tool/build_debug/src/algorithm_new/CMakeFiles/rebuild_cache.dir
 D:/AAA_C/compression-tool/build_debug/src/core_new/CMakeFiles/core_new.dir
@@ -60,6 +64,7 @@ D:/AAA_C/compression-tool/build_debug/src/archiver/CMakeFiles/edit_cache.dir
 D:/AAA_C/compression-tool/build_debug/src/archiver/CMakeFiles/rebuild_cache.dir
 D:/AAA_C/compression-tool/build_debug/src/processor/CMakeFiles/edit_cache.dir
 D:/AAA_C/compression-tool/build_debug/src/processor/CMakeFiles/rebuild_cache.dir
+D:/AAA_C/compression-tool/build_debug/src/ade/CMakeFiles/ade.dir
 D:/AAA_C/compression-tool/build_debug/src/ade/CMakeFiles/edit_cache.dir
 D:/AAA_C/compression-tool/build_debug/src/ade/CMakeFiles/rebuild_cache.dir
 D:/AAA_C/compression-tool/build_debug/tests/CMakeFiles/test_LZSS.dir

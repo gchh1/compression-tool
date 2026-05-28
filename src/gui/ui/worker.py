@@ -3,7 +3,9 @@ from __future__ import annotations
 import logging
 import os
 import math
+import sys
 import time
+import traceback
 import uuid
 from pathlib import Path
 
@@ -22,19 +24,62 @@ from gui.models import (
 
 logger = logging.getLogger('gui.worker')
 
+def _crash_safe_flush() -> None:
+    """Force flush all log handlers so crash-logs survive process termination."""
+    for handler in logging.root.handlers:
+        try:
+            handler.flush()
+        except Exception:
+            pass
+    try:
+        sys.stderr.flush()
+        sys.stdout.flush()
+    except Exception:
+        pass
+
 IMAGE_ALGORITHMS = frozenset({AlgorithmType.JPEG, AlgorithmType.PNG})
 AUDIO_ALGORITHMS = frozenset({AlgorithmType.FLAC, AlgorithmType.AAC_LC})
-VIDEO_ALGORITHMS = frozenset({AlgorithmType.H264})
+VIDEO_ALGORITHMS = frozenset({AlgorithmType.H264, AlgorithmType.OPENH264, AlgorithmType.FFMPEG_H264, AlgorithmType.FFMPEG_H265})
 
 MEDIA_ALGORITHMS = IMAGE_ALGORITHMS | AUDIO_ALGORITHMS | VIDEO_ALGORITHMS
 
 _MEDIA_EXT_MAP = {
     ".jpg": AlgorithmType.JPEG, ".jpeg": AlgorithmType.JPEG, ".jpe": AlgorithmType.JPEG,
-    ".png": AlgorithmType.PNG,
+    ".webp": AlgorithmType.JPEG, ".ico": AlgorithmType.PNG,
+    ".png": AlgorithmType.PNG, ".gif": AlgorithmType.PNG, ".bmp": AlgorithmType.PNG,
+    ".tiff": AlgorithmType.PNG, ".tif": AlgorithmType.PNG,
     ".wav": AlgorithmType.FLAC, ".flac": AlgorithmType.FLAC,
+    ".ogg": AlgorithmType.FLAC, ".opus": AlgorithmType.FLAC,
+    ".mid": AlgorithmType.FLAC, ".midi": AlgorithmType.FLAC,
+    ".mp3": AlgorithmType.AAC_LC, ".aac": AlgorithmType.AAC_LC,
+    ".wma": AlgorithmType.AAC_LC, ".m4a": AlgorithmType.AAC_LC,
     ".mp4": AlgorithmType.H264, ".avi": AlgorithmType.H264,
     ".mkv": AlgorithmType.H264, ".mov": AlgorithmType.H264,
+    ".wmv": AlgorithmType.H264, ".flv": AlgorithmType.H264,
+    ".webm": AlgorithmType.H264, ".m4v": AlgorithmType.H264,
+    ".mpg": AlgorithmType.H264, ".mpeg": AlgorithmType.H264,
 }
+
+
+def _warn_media_mismatch(filerecord) -> None:
+    if not hasattr(filerecord, "path") or not filerecord.path:
+        return
+    fext = Path(filerecord.path).suffix.lower()
+    expected_media = _MEDIA_EXT_MAP.get(fext)
+    if expected_media is None:
+        return
+    if hasattr(filerecord, "_original_algo"):
+        return
+    actual_algo = getattr(filerecord, "algorithm", None)
+    if actual_algo not in MEDIA_ALGORITHMS:
+        logger.warning(
+            "[compress] media-extension file %s (ext=%s) compressed with general algo=%s; "
+            "enable media compression for optimal results (expected=%s)",
+            getattr(filerecord, "name", "?"),
+            fext,
+            actual_algo.value if actual_algo else "?",
+            expected_media.value if expected_media else "?",
+        )
 
 
 COMPARISON_ALGORITHMS = (
@@ -48,6 +93,9 @@ COMPARISON_ALGORITHMS = (
     AlgorithmType.FLAC,
     AlgorithmType.AAC_LC,
     AlgorithmType.H264,
+    AlgorithmType.OPENH264,
+    AlgorithmType.FFMPEG_H264,
+    AlgorithmType.FFMPEG_H265,
 )
 
 _GENERAL_COMPARISON = (
@@ -73,6 +121,9 @@ def get_comparison_algorithms_for_file(file_path: str) -> tuple[AlgorithmType, .
         algos.append(AlgorithmType.AAC_LC)
     if ext in VIDEO_EXTENSIONS:
         algos.append(AlgorithmType.H264)
+        algos.append(AlgorithmType.OPENH264)
+        algos.append(AlgorithmType.FFMPEG_H264)
+        algos.append(AlgorithmType.FFMPEG_H265)
     return tuple(algos)
 
 def _heuristic_params_for_record(record: FileRecord, algo) -> dict[str, int] | None:
@@ -218,8 +269,17 @@ class CompressionWorker(QThread):
         _core_set_streaming_compress_cancel(False)
         from gui.ade.explorer import SilentExplorer
 
-        with SilentExplorer.user_compression_priority():
-            result = engine.smart_compress_file(record.path, out_path, record.algorithm)
+        _is_media2 = record.algorithm in MEDIA_ALGORITHMS
+        logger.info("[compress] DEBUG streaming: calling smart_compress_file algo=%s in=%s out=%s size=%d media=%s",
+                   record.algorithm.value, record.path, out_path, record.size, _is_media2)
+        _crash_safe_flush()
+        try:
+            with SilentExplorer.user_compression_priority():
+                result = engine.smart_compress_file(record.path, out_path, record.algorithm)
+        except Exception as e:
+            logger.exception("[compress] smart_compress_file CRASHED: %s", e)
+            _crash_safe_flush()
+            raise
         logger.info(
             "[compress] streaming compress returned success=%s compressed_size=%s",
             getattr(result, "success", None),
@@ -322,6 +382,11 @@ class CompressionWorker(QThread):
             return
         self.row_started.emit(record)
         logger.info("[compress] START record=%s file=%s algo=%s", id(record), getattr(record, 'path', '?'), self.algorithm.value)
+        _fname = str(getattr(record, 'name', '') or '')
+        _fsize = int(getattr(record, 'size', 0) or 0)
+        _fext = Path(record.path).suffix.lower() if hasattr(record, 'path') and record.path else ''
+        logger.info("[compress] DEBUG meta: name=%s size=%d ext=%s auto=%s", _fname, _fsize, _fext, self.algorithm == AlgorithmType.AUTO)
+        _crash_safe_flush()
         try:
             from gui.engine.compressor import CompressionEngine
             engine = CompressionEngine()
@@ -344,14 +409,25 @@ class CompressionWorker(QThread):
 
                 _use_web_dict_cfg = get_use_web_resource_dict()
 
-                record.algorithm = self.algorithm
+                if not hasattr(record, '_original_algo'):
+                    record.algorithm = self.algorithm
                 _auto_params = None
                 if self.algorithm == AlgorithmType.AUTO:
+                    logger.info("[compress] DEBUG auto_decision: entering ADE decide for %s (%d bytes)", _fname, _fsize)
+                    _crash_safe_flush()
                     try:
                         record.extract_features()
+                        feat_dims = len(record.base_features.vector) if record.base_features else 0
+                        logger.info("[compress] DEBUG auto_decision: features extracted, feat_dims=%d", feat_dims)
+                        _crash_safe_flush()
                         
                         decision_engine = DecisionEngine.get()
+                        logger.info("[compress] DEBUG auto_decision: calling decide()...")
+                        _crash_safe_flush()
                         decision = decision_engine.decide(record)
+                        logger.info("[compress] DEBUG auto_decision: decide() returned algo=%s conf=%.2f mode=%s",
+                                   decision.algorithm.value, decision.confidence, decision.mode_used)
+                        _crash_safe_flush()
                         
                         if record.base_features is not None:
                             from gui.ade.features import get_compression_decision
@@ -390,6 +466,8 @@ class CompressionWorker(QThread):
                             getattr(record, "name", "?"),
                         )
 
+                _warn_media_mismatch(record)
+
                 if _auto_params or (self.algorithm == AlgorithmType.AUTO and record.base_features is not None):
                     from gui.engine.compressor import CompressionEngine
                     from gui.models import merge_decision_overrides_into_algo_config, sanitize_stage2_params
@@ -417,6 +495,9 @@ class CompressionWorker(QThread):
 
                 if is_media_algorithm(record.algorithm):
                     fext = Path(record.path).suffix.lower() if hasattr(record, "path") and record.path else ""
+                    logger.info("[compress] DEBUG media_algo: algo=%s ext=%s file=%s size=%d",
+                               record.algorithm.value, fext, _fname, _fsize)
+                    _crash_safe_flush()
                     ok, msg = validate_media_algorithm(fext, record.algorithm)
                     if not ok:
                         record.status = CompressionStatus.FAILED
@@ -441,6 +522,7 @@ class CompressionWorker(QThread):
                 )
 
             if use_streaming and isinstance(record, FileRecord) and getattr(record, "path", None):
+                logger.info("[compress] DEBUG branch: use_streaming=True (primary), algo=%s size=%d", record.algorithm.value, record.size)
                 snap = CompressionEngine.snapshot_for_algorithm(record.algorithm)
                 self._run_streaming_compress_branch(engine, record, folder_ref, snap)
 
@@ -506,6 +588,10 @@ class CompressionWorker(QThread):
                 result = None
                 from gui.ade.explorer import SilentExplorer
 
+                _is_media = record.algorithm in MEDIA_ALGORITHMS
+                logger.info("[compress] DEBUG compress: calling smart_compress algo=%s bytes=%d media=%s",
+                           record.algorithm.value, len(record.raw_data), _is_media)
+                _crash_safe_flush()
                 try:
                     with SilentExplorer.user_compression_priority():
                         result = engine.smart_compress(
@@ -520,6 +606,7 @@ class CompressionWorker(QThread):
                     )
                 except Exception as e:
                     logger.exception("[compress] smart_compress raised: %s", e)
+                    _crash_safe_flush()
                     em_ex = str(e).lower()
                     if self._is_cancelled or "cancel" in em_ex:
                         record.status = CompressionStatus.FAILED
@@ -583,6 +670,17 @@ class CompressionWorker(QThread):
 
                 original_size = int(getattr(record, "size", 0) or len(record.raw_data))
                 compressed_size = result.compressed_size
+
+                if compressed_size == 0 and original_size > 0:
+                    logger.warning(
+                        "[compress] EMPTY result: %d -> 0 bytes for algo=%s on file=%s (ext=%s); falling back to stored",
+                        original_size,
+                        record.algorithm.value,
+                        getattr(record, "name", "?"),
+                        Path(record.path).suffix.lower() if hasattr(record, "path") else "?",
+                    )
+                    compressed_size = original_size
+
                 stored_plain = (
                     record.plaintext_snapshot
                     if getattr(record, "web_dict_preprocess", False) and record.plaintext_snapshot
@@ -637,7 +735,13 @@ class CompressionWorker(QThread):
                     from gui.utils.workspace import compressed_dir
                     uid = uuid.uuid4().hex[:12]
                     stem = Path(record.path).stem if hasattr(record, "path") and record.path else "video"
-                    video_path = str(compressed_dir() / f"{uid}_{stem}.h264")
+                    if record.algorithm == AlgorithmType.FFMPEG_H264:
+                        video_ext = ".mp4"
+                    elif record.algorithm == AlgorithmType.FFMPEG_H265:
+                        video_ext = ".mp4"
+                    else:
+                        video_ext = ".h264"
+                    video_path = str(compressed_dir() / f"{uid}_{stem}{video_ext}")
                     if compressed_size >= original_size:
                         Path(video_path).write_bytes(stored_plain)
                         record.compression_ratio = 1.0

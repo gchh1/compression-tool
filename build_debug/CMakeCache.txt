@@ -359,11 +359,18 @@ FETCHCONTENT_QUIET:BOOL=ON
 // for google_brotli
 FETCHCONTENT_SOURCE_DIR_GOOGLE_BROTLI:PATH=
 
+//When not empty, overrides where to find pre-populated content
+// for openh264
+FETCHCONTENT_SOURCE_DIR_OPENH264:PATH=
+
 //Enables UPDATE_DISCONNECTED behavior for all content population
 FETCHCONTENT_UPDATES_DISCONNECTED:BOOL=OFF
 
 //Enables UPDATE_DISCONNECTED behavior just for population of google_brotli
 FETCHCONTENT_UPDATES_DISCONNECTED_GOOGLE_BROTLI:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of openh264
+FETCHCONTENT_UPDATES_DISCONNECTED_OPENH264:BOOL=OFF
 
 //Path to a program.
 GITCOMMAND:FILEPATH=D:/Git/cmd/git.exe

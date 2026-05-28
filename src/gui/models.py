@@ -88,6 +88,9 @@ class AlgorithmType(Enum):
     FLAC = "flac"
     AAC_LC = "aac_lc"
     H264 = "h264"
+    OPENH264 = "openh264"
+    FFMPEG_H264 = "ffmpeg_h264"
+    FFMPEG_H265 = "ffmpeg_h265"
     TRANSFORMER = "transformer (beta)"
     NONE = "none"
 
@@ -205,6 +208,17 @@ ALGORITHM_PARAMS: dict[AlgorithmType, list[AlgorithmParamDef]] = {
     ],
     AlgorithmType.H264: [
         AlgorithmParamDef("quality", "H.264 QP 量化参数", 26, 0, 51, 1, " (0=无损, 51=最差)"),
+    ],
+    AlgorithmType.OPENH264: [
+        AlgorithmParamDef("quality", "H.264 QP 量化参数", 26, 0, 51, 1, " (0=无损, 51=最差)"),
+    ],
+    AlgorithmType.FFMPEG_H264: [
+        AlgorithmParamDef("quality", "CRF 质量参数", 23, 0, 51, 1, " (0=无损, 51=最差)"),
+        AlgorithmParamDef("preset", "编码速度预设", 2, choices={0: "ultrafast", 1: "fast", 2: "medium", 3: "slow", 4: "veryslow"}),
+    ],
+    AlgorithmType.FFMPEG_H265: [
+        AlgorithmParamDef("quality", "CRF 质量参数", 28, 0, 51, 1, " (0=无损, 51=最差)"),
+        AlgorithmParamDef("preset", "编码速度预设", 2, choices={0: "ultrafast", 1: "fast", 2: "medium", 3: "slow", 4: "veryslow"}),
     ],
 }
 
@@ -353,7 +367,7 @@ VIDEO_EXTENSIONS = frozenset({
 
 _IMAGE_ALGORITHMS = frozenset({AlgorithmType.JPEG, AlgorithmType.PNG})
 _AUDIO_ALGORITHMS = frozenset({AlgorithmType.FLAC, AlgorithmType.AAC_LC})
-_VIDEO_ALGORITHMS = frozenset({AlgorithmType.H264})
+_VIDEO_ALGORITHMS = frozenset({AlgorithmType.H264, AlgorithmType.OPENH264, AlgorithmType.FFMPEG_H264, AlgorithmType.FFMPEG_H265})
 _MEDIA_ALGORITHMS = _IMAGE_ALGORITHMS | _AUDIO_ALGORITHMS | _VIDEO_ALGORITHMS
 
 

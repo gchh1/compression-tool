@@ -115,6 +115,140 @@ depend:
 	cd /d D:\AAA_C\compression-tool\build_debug && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles\Makefile.cmake 1
 .PHONY : depend
 
+# Convenience name for target.
+src/ade/CMakeFiles/ade.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/ade/CMakeFiles/ade.dir/rule
+.PHONY : src/ade/CMakeFiles/ade.dir/rule
+
+# Convenience name for target.
+ade: src/ade/CMakeFiles/ade.dir/rule
+.PHONY : ade
+
+# fast build rule for target.
+ade/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/build
+.PHONY : ade/fast
+
+models/EvolutionaryAlgorithms.obj: models/EvolutionaryAlgorithms.cpp.obj
+.PHONY : models/EvolutionaryAlgorithms.obj
+
+# target to build an object file
+models/EvolutionaryAlgorithms.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/models/EvolutionaryAlgorithms.cpp.obj
+.PHONY : models/EvolutionaryAlgorithms.cpp.obj
+
+models/EvolutionaryAlgorithms.i: models/EvolutionaryAlgorithms.cpp.i
+.PHONY : models/EvolutionaryAlgorithms.i
+
+# target to preprocess a source file
+models/EvolutionaryAlgorithms.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/models/EvolutionaryAlgorithms.cpp.i
+.PHONY : models/EvolutionaryAlgorithms.cpp.i
+
+models/EvolutionaryAlgorithms.s: models/EvolutionaryAlgorithms.cpp.s
+.PHONY : models/EvolutionaryAlgorithms.s
+
+# target to generate assembly for a file
+models/EvolutionaryAlgorithms.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/models/EvolutionaryAlgorithms.cpp.s
+.PHONY : models/EvolutionaryAlgorithms.cpp.s
+
+models/ParamRegressorNet.obj: models/ParamRegressorNet.cpp.obj
+.PHONY : models/ParamRegressorNet.obj
+
+# target to build an object file
+models/ParamRegressorNet.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.obj
+.PHONY : models/ParamRegressorNet.cpp.obj
+
+models/ParamRegressorNet.i: models/ParamRegressorNet.cpp.i
+.PHONY : models/ParamRegressorNet.i
+
+# target to preprocess a source file
+models/ParamRegressorNet.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.i
+.PHONY : models/ParamRegressorNet.cpp.i
+
+models/ParamRegressorNet.s: models/ParamRegressorNet.cpp.s
+.PHONY : models/ParamRegressorNet.s
+
+# target to generate assembly for a file
+models/ParamRegressorNet.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.s
+.PHONY : models/ParamRegressorNet.cpp.s
+
+models/RandomForest.obj: models/RandomForest.cpp.obj
+.PHONY : models/RandomForest.obj
+
+# target to build an object file
+models/RandomForest.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/models/RandomForest.cpp.obj
+.PHONY : models/RandomForest.cpp.obj
+
+models/RandomForest.i: models/RandomForest.cpp.i
+.PHONY : models/RandomForest.i
+
+# target to preprocess a source file
+models/RandomForest.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/models/RandomForest.cpp.i
+.PHONY : models/RandomForest.cpp.i
+
+models/RandomForest.s: models/RandomForest.cpp.s
+.PHONY : models/RandomForest.s
+
+# target to generate assembly for a file
+models/RandomForest.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/models/RandomForest.cpp.s
+.PHONY : models/RandomForest.cpp.s
+
+runtime/ADEBridge.obj: runtime/ADEBridge.cpp.obj
+.PHONY : runtime/ADEBridge.obj
+
+# target to build an object file
+runtime/ADEBridge.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/runtime/ADEBridge.cpp.obj
+.PHONY : runtime/ADEBridge.cpp.obj
+
+runtime/ADEBridge.i: runtime/ADEBridge.cpp.i
+.PHONY : runtime/ADEBridge.i
+
+# target to preprocess a source file
+runtime/ADEBridge.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/runtime/ADEBridge.cpp.i
+.PHONY : runtime/ADEBridge.cpp.i
+
+runtime/ADEBridge.s: runtime/ADEBridge.cpp.s
+.PHONY : runtime/ADEBridge.s
+
+# target to generate assembly for a file
+runtime/ADEBridge.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/runtime/ADEBridge.cpp.s
+.PHONY : runtime/ADEBridge.cpp.s
+
+runtime/DecisionEngine.obj: runtime/DecisionEngine.cpp.obj
+.PHONY : runtime/DecisionEngine.obj
+
+# target to build an object file
+runtime/DecisionEngine.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/runtime/DecisionEngine.cpp.obj
+.PHONY : runtime/DecisionEngine.cpp.obj
+
+runtime/DecisionEngine.i: runtime/DecisionEngine.cpp.i
+.PHONY : runtime/DecisionEngine.i
+
+# target to preprocess a source file
+runtime/DecisionEngine.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/runtime/DecisionEngine.cpp.i
+.PHONY : runtime/DecisionEngine.cpp.i
+
+runtime/DecisionEngine.s: runtime/DecisionEngine.cpp.s
+.PHONY : runtime/DecisionEngine.s
+
+# target to generate assembly for a file
+runtime/DecisionEngine.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\ade\CMakeFiles\ade.dir\build.make src/ade/CMakeFiles/ade.dir/runtime/DecisionEngine.cpp.s
+.PHONY : runtime/DecisionEngine.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -123,6 +257,22 @@ help:
 	@echo ... depend
 	@echo ... edit_cache
 	@echo ... rebuild_cache
+	@echo ... ade
+	@echo ... models/EvolutionaryAlgorithms.obj
+	@echo ... models/EvolutionaryAlgorithms.i
+	@echo ... models/EvolutionaryAlgorithms.s
+	@echo ... models/ParamRegressorNet.obj
+	@echo ... models/ParamRegressorNet.i
+	@echo ... models/ParamRegressorNet.s
+	@echo ... models/RandomForest.obj
+	@echo ... models/RandomForest.i
+	@echo ... models/RandomForest.s
+	@echo ... runtime/ADEBridge.obj
+	@echo ... runtime/ADEBridge.i
+	@echo ... runtime/ADEBridge.s
+	@echo ... runtime/DecisionEngine.obj
+	@echo ... runtime/DecisionEngine.i
+	@echo ... runtime/DecisionEngine.s
 .PHONY : help
 
 

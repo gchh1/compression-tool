@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "D:/AAA_C/compression-tool/src/bindings/pybind/pybind_ade.cpp" "src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.obj" "gcc" "src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/bindings/pybind_new/pybind_module_new.cpp" "src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/pybind_module_new.cpp.obj" "gcc" "src/bindings/pybind_new/CMakeFiles/core_engine_new.dir/pybind_module_new.cpp.obj.d"
   )
 

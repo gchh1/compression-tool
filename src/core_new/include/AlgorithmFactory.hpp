@@ -83,6 +83,8 @@ enum class AlgorithmID {
     AudioAacLCDecompress,
     VideoH264,
     VideoH264Decompress,
+    VideoOpenH264,
+    VideoOpenH264Decompress,
 };
 
 inline AlgorithmID getDecompressorID(AlgorithmID comp) {
@@ -104,6 +106,7 @@ inline AlgorithmID getDecompressorID(AlgorithmID comp) {
         {AlgorithmID::AudioFlac, AlgorithmID::AudioFlacDecompress},
         {AlgorithmID::AudioAacLC, AlgorithmID::AudioAacLCDecompress},
         {AlgorithmID::VideoH264, AlgorithmID::VideoH264Decompress},
+        {AlgorithmID::VideoOpenH264, AlgorithmID::VideoOpenH264Decompress},
     };
     auto it = map.find(comp);
     return it != map.end() ? it->second : AlgorithmID::None;

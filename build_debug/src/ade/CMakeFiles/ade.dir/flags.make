@@ -6,5 +6,5 @@ CXX_DEFINES = -DDEBUG_LOG_ENABLED=1
 
 CXX_INCLUDES = @CMakeFiles/ade.dir/includes_CXX.rsp
 
-CXX_FLAGS = -g -std=c++17 -Wall -Wextra -Wpedantic -O2
+CXX_FLAGS = -g -std=gnu++20
 

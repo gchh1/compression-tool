@@ -16,6 +16,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "D:/AAA_C/compression-tool/src/algorithm_new/ImageCompressor.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/ImageCompressor.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/algorithm_new/LZDP.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/LZDP.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/algorithm_new/LZSS.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.obj.d"
+  "D:/AAA_C/compression-tool/src/algorithm_new/OpenH264Codec.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/algorithm_new/VideoCodec.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/VideoCodec.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/algorithm_new/Visualization.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/Visualization.cpp.obj.d"
   "D:/AAA_C/compression-tool/src/algorithm_new/Zstd.cpp" "src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj" "gcc" "src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.obj.d"

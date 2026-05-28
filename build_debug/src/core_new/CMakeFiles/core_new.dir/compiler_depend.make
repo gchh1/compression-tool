@@ -630,6 +630,7 @@ src/core_new/CMakeFiles/core_new.dir/ExternalCodecs.cpp.obj: D:/AAA_C/compressio
   D:/AAA_C/compression-tool/src/algorithm_new/include/AudioCodec.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Brotli.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/ImageCompressor.hpp \
+  D:/AAA_C/compression-tool/src/algorithm_new/include/OpenH264Codec.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/VideoCodec.hpp \
   D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp \
   D:/AAA_C/compression-tool/src/core_new/include/AudioCompressorBindings.hpp \
@@ -1357,6 +1358,8 @@ D:/AAA_C/compression-tool/src/core_new/include/ICompressor.hpp:
 D:/AAA_C/compression-tool/src/core_new/include/AudioCompressorBindings.hpp:
 
 D:/AAA_C/compression-tool/src/algorithm_new/include/Zstd.hpp:
+
+D:/AAA_C/compression-tool/src/algorithm_new/include/OpenH264Codec.hpp:
 
 D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/string_view:
 

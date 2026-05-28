@@ -51,6 +51,8 @@ class FileTableWidget(QTableWidget):
     request_webpage_heatmap = pyqtSignal(int)
     request_folder_summary = pyqtSignal(int)
     request_decision_detail = pyqtSignal(int)
+    request_three_tier_heatmap = pyqtSignal(int)
+    request_viz_dashboard = pyqtSignal(int)
 
     _SEL_TOGGLE = (
         QItemSelectionModel.SelectionFlag.Toggle | QItemSelectionModel.SelectionFlag.Rows
@@ -159,11 +161,18 @@ class FileTableWidget(QTableWidget):
                 if record.status == CompressionStatus.DONE and compressed_payload_size(record) > 0:
                     demo_action = menu.addAction("🔧 压缩演示")
                     heatmap_action = menu.addAction("📊 压缩热力图")
+                    three_tier_action = menu.addAction("🔥 3层压缩热力图")
+                    if record.algorithm in (AlgorithmType.DEFLATE, AlgorithmType.DPFLATE):
+                        viz_action = menu.addAction("▶ DEFLATE 过程回放")
+                    else:
+                        viz_action = None
                     comparison_action = menu.addAction("⚖ 算法对比")
                     network_action = menu.addAction("🌐 网络传输模拟")
                 else:
                     demo_action = None
                     heatmap_action = None
+                    three_tier_action = None
+                    viz_action = None
                     comparison_action = None
                     network_action = None
                 
@@ -183,6 +192,10 @@ class FileTableWidget(QTableWidget):
                     self.request_demo.emit(row)
                 elif heatmap_action and action == heatmap_action:
                     self.request_heatmap.emit(row)
+                elif three_tier_action and action == three_tier_action:
+                    self.request_three_tier_heatmap.emit(row)
+                elif viz_action and action == viz_action:
+                    self.request_viz_dashboard.emit(row)
                 elif comparison_action and action == comparison_action:
                     self.request_comparison.emit(row)
                 elif network_action and action == network_action:

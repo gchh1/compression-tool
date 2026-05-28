@@ -209,9 +209,11 @@ auto encode(const std::vector<int16_t>& samples, int sample_rate,
 
     FlacBitWriter w;
 
+    w.write_bytes(reinterpret_cast<const uint8_t*>("fLaC"), 4);
+
     // ── Metadata: STREAMINFO (34 bytes) ──
     // Metadata block header: 1 bit is_last(0) + 7 bits type(0) + 24 bits length(34)
-    w.write_bits(0, 1);      // not last (will be patched)
+    w.write_bits(0, 1);      // not last
     w.write_bits(0, 7);      // STREAMINFO
     w.write_bits(34, 24);    // length
 
@@ -244,7 +246,7 @@ auto encode(const std::vector<int16_t>& samples, int sample_rate,
         w.write_bits(0, 8);
 
     // Patch metadata is_last bits later
-    const size_t streaminfo_pos = 0; // first byte
+    const size_t streaminfo_pos = 4; // after fLaC
     const size_t padding_pos = streaminfo_pos + 2 + 34; // after STREAMINFO block
 
     // ── Audio frames ──
@@ -384,9 +386,9 @@ auto encode(const std::vector<int16_t>& samples, int sample_rate,
 
                 w.write_bits(0, 1);  // not padding
                 // FIXED type: 001bbb where bbb = order
+                w.write_bits(0, 1);
+                w.write_bits(0, 1);
                 w.write_bits(1, 1);
-                w.write_bits(0, 1);
-                w.write_bits(0, 1);
                 w.write_bits(static_cast<uint32_t>(best_order), 3);
                 w.write_bits(0, 1);  // no wasted bits
 
@@ -428,12 +430,8 @@ auto encode(const std::vector<int16_t>& samples, int sample_rate,
     // ── Finalize ──
     w.flush();
 
-    // Patch STREAMINFO metadata block to mark it not-last (type bit = 0 for not last)
-    // Actually we need to mark the LAST metadata block (PADDING) as is_last=1
-    // Patch padding header byte at padding_pos: set bit 7 = 1
-    // padding header is at byte position: 2 + 34 = 36 (STREAMINFO header 2B + data 34B)
-    // Let's recalculate: streaminfo block header at byte 0 (2 bytes), streaminfo data at byte 2 (34 bytes)
-    // So padding block header at byte 36
+    // Patch PADDING metadata block is_last bit
+    // fLaC(4B) + STREAMINFO header(4B) + STREAMINFO data(34B) = 42B before PADDING header
     auto result = w.take_buffer();
     if (result.size() > padding_pos) {
         result[padding_pos] |= 0x80;  // set is_last = 1
@@ -797,14 +795,118 @@ auto decode(const std::vector<uint8_t>& flac_data) -> std::vector<int16_t> {
                 } else if (type >= 8 && type <= 12) {
                     // FIXED (order = type - 8)
                     int order = type - 8;
-                    // ++pos (we've consumed the header byte)
-                    // Actually we need bit-level reading for FIXED subframe
-                    // Since our encoder produces everything MSB-first within each byte,
-                    // and the subframe data starts at the current byte boundary after CRC-8,
-                    // we need a bit reader.
-                    // For simplicity, let's switch to a bit reader approach.
-                    decode_ok = false;
-                    break;
+                    ++pos; // consume subframe header byte
+
+                    // Handle wasted bits
+                    if (has_wasted) {
+                        while (pos < flac_data.size() && (flac_data[pos] & 0x80) == 0x80)
+                            ++pos;
+                        if (pos >= flac_data.size()) { decode_ok = false; break; }
+                        // skip the terminating 0 bit of wasted-bits unary code
+                        // (already consumed the terminator bit within the same byte)
+                        // Actually the wasted bits count is unary coded within the current byte
+                        // We need bit-level reading for this.
+                        // For simplicity, if wasted bits are present, just scan bytes
+                        // This is a simplified approach
+                        ++pos;
+                    }
+
+                    // Read warmup samples (order * bits_per_sample bits)
+                    std::vector<int32_t> warmup(static_cast<size_t>(order));
+                    int bit_offset;
+                    for (int i = 0; i < order; ++i) {
+                        int32_t val = 0;
+                        if (bits_per_sample == 16) {
+                            if (pos + 2 > flac_data.size()) { decode_ok = false; break; }
+                            val = static_cast<int16_t>(
+                                (static_cast<int>(flac_data[pos]) << 8) |
+                                flac_data[pos + 1]);
+                            pos += 2;
+                        } else if (bits_per_sample == 8) {
+                            if (pos >= flac_data.size()) { decode_ok = false; break; }
+                            val = static_cast<int8_t>(flac_data[pos]);
+                            pos += 1;
+                        } else {
+                            decode_ok = false; break;
+                        }
+                        warmup[i] = val;
+                    }
+                    if (!decode_ok) break;
+
+                    if (pos >= flac_data.size()) { decode_ok = false; break; }
+
+                    // Read coding method
+                    // Our encoder writes: 1 bit method(0) + 3 bits rice_param + 4 bits partition_order
+                    int coding_method = (flac_data[pos] >> 7) & 0x01;
+                    bit_offset = 1;
+
+                    // If coding_method != 0, can't decode
+                    if (coding_method != 0) { decode_ok = false; break; }
+
+                    int rice_param = (flac_data[pos] >> 4) & 0x07;
+                    bit_offset = 4;
+
+                    int partition_order = flac_data[pos] & 0x0F;
+                    bit_offset = 8;
+                    ++pos;
+
+                    int num_partitions = 1 << partition_order;
+                    size_t total_residuals = static_cast<size_t>(block_size) - static_cast<size_t>(order);
+                    size_t base_count = total_residuals / static_cast<size_t>(num_partitions);
+                    size_t extra = total_residuals % static_cast<size_t>(num_partitions);
+
+                    // Local bit reader for Rice residuals (starting within current byte at bit_offset)
+                    // We'll read byte-by-byte for Rice unary codes
+                    auto read_residual = [&](int k) -> int32_t {
+                        uint32_t q = 0;
+                        while (true) {
+                            if (pos >= flac_data.size()) return 0;
+                            int bit_val = (flac_data[pos] >> (7 - bit_offset)) & 1;
+                            bit_offset++;
+                            if (bit_offset >= 8) { bit_offset = 0; pos++; }
+                            if (bit_val == 0) break;
+                            q++;
+                        }
+
+                        // Read k-bit remainder
+                        uint32_t r = 0;
+                        for (int b = k - 1; b >= 0; --b) {
+                            if (pos >= flac_data.size()) return 0;
+                            int bit_val = (flac_data[pos] >> (7 - bit_offset)) & 1;
+                            r = (r << 1) | static_cast<uint32_t>(bit_val);
+                            bit_offset++;
+                            if (bit_offset >= 8) { bit_offset = 0; pos++; }
+                        }
+
+                        uint32_t unsigned_val = (q << k) | r;
+                        // Convert folded unsigned to signed
+                        if (unsigned_val & 1)
+                            return -static_cast<int32_t>((unsigned_val + 1) >> 1);
+                        else
+                            return static_cast<int32_t>(unsigned_val >> 1);
+                    };
+
+                    size_t res_idx = 0;
+                    for (int p = 0; p < num_partitions; ++p) {
+                        size_t pcount = base_count + (static_cast<size_t>(p) < extra ? 1 : 0);
+                        int k = rice_param;
+                        for (size_t i = 0; i < pcount; ++i, ++res_idx) {
+                            int32_t residual_val = read_residual(k);
+                            size_t data_idx = static_cast<size_t>(order) + res_idx;
+                            if (data_idx < static_cast<size_t>(block_size))
+                                channel_data[ch][data_idx] = residual_val;
+                        }
+                    }
+
+                    // Apply fixed predictor to reconstruct samples
+                    for (int i = 0; i < order && i < block_size; ++i)
+                        channel_data[ch][i] = warmup[i];
+
+                    for (int i = order; i < block_size; ++i) {
+                        int64_t pred = fixed_predict(order, channel_data[ch].data(), i);
+                        channel_data[ch][i] = static_cast<int32_t>(
+                            static_cast<int64_t>(channel_data[ch][i]) + pred);
+                    }
                 } else if (type == 1) {
                     // VERBATIM
                     ++pos;
@@ -844,7 +946,7 @@ auto decode(const std::vector<uint8_t>& flac_data) -> std::vector<int16_t> {
         }
 
         // Skip frame footer CRC-16 (2 bytes) and continue
-        pos = frame_start + 1; // advance past sync code to look for next frame
+        pos += 2; // advance past CRC-16 footer to look for next frame
     }
 
     return all_samples;

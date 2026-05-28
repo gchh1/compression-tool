@@ -1,0 +1,1173 @@
+WebCompress GUI 模块过程论述
+
+说明：本文沿功能实现路径对 src/gui 目录进行系统代码剖析，供大作业过程论述使用。文中一级标题采用「一、二、三」形式，图示为 ASCII 结构图，可直接复制到 Word 后按需设置标题样式。
+
+
+一、GUI 模块完整文件目录（共 53 个源文件）
+
+下列目录树覆盖当前仓库 src/gui 下全部 Python 源文件（不含 __pycache__）。每个文件附一句职责说明，便于与后文实现路径对照。
+
+src/gui/
+├── main.py                          应用程序双入口：run_gui 启动 PyQt6 主窗口，run_cli 无界面批量压缩
+├── models.py                        领域模型：FileRecord、FolderRecord、算法枚举、参数元数据 ALGORITHM_PARAMS
+├── config/
+│   ├── __init__.py                  配置包初始化
+│   ├── settings.py                  读写 webcompress_settings.json：流式阈值、ADE、主题、各算法旋钮
+│   └── theme.py                     Theme 数据类与 ThemeManager 单例，生成主窗/表格/对话框 QSS
+├── engine/
+│   ├── bridge.py                    动态加载 core_engine 或 core_engine_new 扩展模块（多路径探测）
+│   ├── compressor.py                CompressionEngine 门面：smart_compress、pipeline、配置锁
+│   ├── file_protocol.py             WCX 容器打包解包、文件夹归档、可视化用载荷提取
+│   ├── token_parser.py              LZSS/LZDP/Deflate Token 与 Huffman 树解析，供演示与热力图
+│   ├── web_dict.py                  网页资源短语字典：对 html/css/js 等扩展名预编码
+│   ├── decompress_log.py            解压路径结构化日志 log_decompress
+│   ├── network_transfer.py          网络限速仿真 benchmark 与 FileRecord 适配
+│   └── ffmpeg_codec.py              音视频扩展名走 FFmpeg 编解码的封装
+├── ade/
+│   ├── types.py                     DecisionResult、DecisionMode 等 ADE 数据结构
+│   ├── engine.py                    DecisionEngine 单例、随机森林/神经网络策略、StrategyDispatcher
+│   ├── training.py                  TrainingDataStore、TrainingSampleV3、JSONL 持久化（内含对特征模块的引用）
+│   ├── explorer.py                  SilentExplorer 静默探索：压缩后后台试参写训练样本
+│   ├── explore_log.py               探索线程专用日志 log_explore
+│   ├── params.py                    ParameterRegressor 与 C++ ParamRegressorNet 桥接
+│   ├── retrain.py                   增量重训练触发 maybe_supplemental_retrain
+│   ├── checkpoint.py                探索任务 CheckpointManifest 与作业目录
+│   ├── streaming_explore.py         探索用流式/内存 WCX 压缩与可选取消
+│   ├── ea_tune.py                   进化算法调参 Stage2
+│   ├── stage2_train.py              Stage2TrainWorker 后台训练线程
+│   ├── nn_train.py                  神经网络训练 Worker 与 JSONL 样本统计
+│   └── rf_train.py                  随机森林相关训练辅助
+├── ui/
+│   ├── __init__.py                  UI 包初始化
+│   ├── main_window.py               主窗口、菜单工具栏、多数对话框、拖放、压缩解压导出入口
+│   ├── worker.py                    CompressionWorker 与 ComparisonWorker（QThread）
+│   ├── table.py                     FileTableWidget 七列文件表与右键菜单信号
+│   ├── helpers.py                   标签样式、位宽计算、算法参数 HTML 预览文案
+│   ├── network_transfer_worker.py   网络仿真 QThread 包装
+│   ├── panels/
+│   │   ├── __init__.py              面板包初始化
+│   │   └── info_panel.py            DP 演示侧栏 InfoPanel 与工厂函数
+│   ├── dialogs/
+│   │   ├── __init__.py              对话框包初始化
+│   │   ├── heatmap_dialog.py        通用热力图对话框壳
+│   │   ├── block_heatmap_dialog.py  按块压缩率着色的热力图对话框
+│   │   ├── huffman_dialog.py        Huffman 树对话框，嵌入 HuffmanTreePanel
+│   │   ├── lz_demo_dialog.py        LZ/LZDP 滑块演示、DP 数组条动画
+│   │   ├── flate_demo_dialog.py     Deflate Huffman 建树动画队列演示
+│   │   └── network_sim_dialog.py    网络传输仿真进度对话框
+│   └── views/
+│       ├── __init__.py              视图包初始化
+│       └── visualizers/
+│           ├── token_heatmap.py     TokenHeatmapWidget、BitstreamWidget、TokenInfoPanel
+│           └── huffman.py           HuffmanTreeCanvas 自绘树、频谱图 HuffmanFreqChart
+├── windows/
+│   ├── comparison.py                多算法对比 HTML 报告 ComparisonDialog
+│   ├── heatmap.py                   热力图 HTML 生成辅助
+│   ├── token_heatmap.py             Token 热力图完整 HTML 页面生成与浏览器打开
+│   ├── webpage_heatmap.py           网页内联/外链资源引用热力图 HTML
+│   └── network_sim.py               网络仿真 HTML 报告生成
+└── utils/
+    ├── logging.py                   RotatingFileHandler 写 Package/logs/gui.log
+    ├── interaction_log.py           UI 交互事件 log_ui、log_ui_flush
+    ├── resources.py                 应用图标 resolve_icon_path（开发/打包路径）
+    └── workspace.py                 流式 WCX 工作区目录、allocate_streaming_wcx_path
+
+图示：GUI 包依赖方向（自上而下为调用方向）
+
+    +------------------+
+    |  main.py         |
+    +--------+---------+
+             |
+    +--------v---------+     +----------------+
+    | ui/main_window   |---->| ui/worker      |
+    | ui/table         |     +-------+--------+
+    +--------+---------+             |
+             |              +-------v--------+
+             |              | engine/        |
+             +------------->| compressor     |
+                            | file_protocol  |
+                            | bridge         |
+                            +-------+--------+
+                                    |
+                            +-------v--------+
+                            | core_engine    |
+                            | (C++ pyd)      |
+                            +----------------+
+
+    ade/ 与 ui/、engine/ 横向协作：压缩完成后 explorer 写 training，Auto 模式 engine 读 DecisionEngine。
+
+
+二、程序启动与全局初始化实现路径
+
+启动命令为在 src 目录下执行 python -m gui，由包内 __main__ 转调 main.run_gui。非打包环境下 main.py 将 src 插入 sys.path，保证 import gui 可用。
+
+第一步，setup_logging 在 utils/logging.py 中配置根 logger：文件写入 Package/logs/gui.log（单文件 10MB、保留 5 个备份），控制台 INFO 级别。flush_logging 在关键 UI 事件后刷盘，避免崩溃丢日志。
+
+第二步，注册 sys.excepthook，将未捕获异常记入 gui.main logger，避免静默失败。
+
+第三步，构造 QApplication，设置应用名 WebCompress，通过 utils/resources.resolve_icon_path 加载窗口图标（依次尝试 Package/bin、build 目录、PyInstaller _MEIPASS 等）。
+
+第四步，config/settings.apply_theme 从 JSON 读取主题色并调用 config/theme.ThemeManager.apply，后续 MainWindow 构造时 setStyleSheet(ThemeManager.main_window_sheet())。
+
+第五步，utils/workspace.ensure_workspace_layout 创建 Package/workspace 下 compressed、tmp 等子目录；aboutToQuit 时 cleanup_workspace_on_app_quit 清理临时 part 文件。
+
+第六步，CompressionEngine.reload_from_file 在引擎单例逻辑下从 webcompress_settings.json 填充各 AlgorithmType 的整型参数字典与流式阈值 MB。
+
+第七步，ADE 初始化：SilentExplorer.apply_tunables_from_settings 读探索开关与预算；apply_stage2_to_decision_engine 将 Stage2 配置注入 DecisionEngine。
+
+第八步，实例化 MainWindow 并 show，进入 app.exec 事件循环。MainWindow.__init__ 内完成：FileTableWidget、StatusBarWidget、AlgorithmSelector、菜单、工具栏、中央布局、表格信号连接到 _on_compress_demo、_on_view_heatmap_row 等槽函数。
+
+图示：启动序列
+
+  setup_logging → QApplication → apply_theme → ensure_workspace
+        → CompressionEngine.reload_from_file → ADE tunables
+        → MainWindow() → show() → exec()
+
+
+三、数据模型层（models.py）实现路径
+
+GUI 一切列表行绑定的业务对象定义在 models.py，View 层通过 Qt.UserRole 存取，避免表格单元格散落字符串状态。
+
+ResourceType 枚举区分 audio、binary、compressed、image、script、text、video、unknown，由扩展名映射函数 _filetype 决定，影响图标或筛选展示。
+
+CompressionStatus 枚举：pending、compressing、done、failed、skipped，表格「状态」列直接显示其 value。
+
+AlgorithmType 枚举涵盖 AUTO、LZSS、LZDP、DPFLATE、DEFLATE、GZIP、BROTLI、ZSTD、各类媒体编解码、TRANSFORMER、NONE（膨胀回退原样存储）、HUFFMAN 等。AlgorithmSelector 的 QComboBox 项与之一一对应。
+
+AlgorithmParamDef 描述单个可调参数：key、中文 label、default、min、max、step、suffix、choices 字典。ALGORITHM_PARAMS 为每种算法列出参数列表，AlgorithmConfigDialog 据此动态生成 SpinBox，无需为每个算法手写表单。
+
+Record 为抽象基类，FileRecord 表示单文件：path、size、raw_data、compressed_data 或 compressed_path、algorithm、compression_ratio、compression_time_ms、compression_config_snapshot、decision_result、base_features、web_dict_preprocess、plaintext_snapshot 等。load_raw_data 从磁盘读入 bytes 并可选 extract_features。FolderRecord 表示文件夹：files 子列表懒加载 ensure_files_loaded、汇总 total_original/total_compressed。
+
+工具函数 formatted_size 将字节格式化为 B/KB/MB/GB；compressed_payload_size 统一从 WCX 或内存 blob 计算有效载荷长度，供表格压缩率列与对比功能使用。
+
+merge_decision_overrides_into_algo_config、sanitize_stage2_params 在 Auto 模式把 ADE 决策参数合并进引擎配置时做范围裁剪。
+
+
+四、配置与主题子系统实现路径
+
+4.1 settings.py
+
+持久化文件默认位于 Package/config/webcompress_settings.json。load_config 读 JSON，_merge_with_defaults 补全缺失键；save_config 写回。
+
+主要配置节：algorithms 下每算法 search_size、lookahead_size 等；streaming 下 threshold_mb、chunk_size_kb、per_algorithm 覆盖；compression.use_web_resource_dict；ade 下 silent_explore_enabled、explorer 预算、stage2、retrain_min_new_samples。
+
+get_effective_streaming_threshold_mb 与 get_effective_streaming_chunk_kb 按算法名解析是否 follow_global，供 CompressionEngine.should_use_streaming 与 smart_compress_file 使用。
+
+get_algo_config 将 JSON 转为 dict[AlgorithmType, dict[str,int]]，与 CompressionEngine._config 结构一致。
+
+4.2 theme.py
+
+Theme 为 frozen dataclass，字段包括 bg_primary、accent、chart_1 至 chart_6 等。ThemeManager 单例持有当前 Theme，apply 替换全局主题；main_window_sheet、table_sheet、full_dialog_sheet 返回大段 QSS 字符串。
+
+ThemeConfigDialog 在 main_window.py 中实现：色块点击 QColorDialog、预设亮/暗主题、实时预览面板，确认后 save_theme 写入 JSON 并 ThemeManager.apply，MainWindow.refresh_theme 级联刷新表格与状态栏。
+
+
+五、C++ 引擎桥接层（engine/bridge.py）实现路径
+
+GUI 不直接链接 C++，而通过 pybind 模块调用。get_core_engine 全局缓存 _core_engine，按序尝试：build_py/src/bindings/pybind_new、pybind、Package/bin/core_engine、Package/bin/core_engine_new、PyInstaller 解包目录。
+
+_try_load_engine 将目录加入 sys.path 后 importlib.import_module。失败则 CompressionEngine.available 为 False，主窗口压缩按钮应提示不可用。
+
+该设计使开发时可用 build 目录最新 pyd，发布时用 Package/bin 随包分发。
+
+
+六、压缩引擎门面（engine/compressor.py）实现路径
+
+CompressionEngine 是 GUI 与 C++ 之间的核心门面，类级 _config 保存各算法参数字典，_engine_op_lock 为可重入锁：仅在快照配置时加锁，实际 compress 在锁外执行以免阻塞「算法配置」对话框。
+
+6.1 构造与配置
+
+__init__ 调用 get_core_engine，若 _config 为空则从 load_config 填充。get_config、set_config、reload_from_file、snapshot_for_algorithm 供主窗口与 Worker 读取一致快照。
+
+_create_compressor 根据 AlgorithmType 实例化 pybind 暴露的 LZDPCompressor、DeflateCompressor、DPFlateCompressor、LZSSCompressor、GzipCompressor、BrotliCompressor、ZstdCompressor 等，遍历 algo_cfg 调用 set_{key}，对 DPFLATE/DEFLATE 另调 _apply_huffman_slot_config 设置 offset/length 槽宽。
+
+6.2 内存压缩 compress
+
+compress 方法对 TRANSFORMER 走 gui/algorithms（若存在）或报错；其余算法 _create_compressor 后调用 compressor.compress(data)，组装 CompressorResult 返回。LZSS 等调试日志可写 lzss_gui_debug.log。
+
+6.3 smart_compress 分支选择
+
+smart_compress 先判断 should_use_streaming(len(data), algorithm)：超过阈值则 pipeline_compress（整段 bytes 仍进 Python，但 C++ 侧可走分块逻辑）或失败回退 compress；否则 compress。force_memory_codec 为 True 时（网页字典激活）强制内存路径。
+
+6.4 文件流式 smart_compress_file
+
+对 GZIP 用 Python gzip 模块分块复制。对其余算法取 pipeline ID，构建 LzdpWholeFileParams、DpflatePipelineParams、DeflatePipelineParams、LzssPipelineParams 快照，调用 _engine.pipeline_compress_file(input_path, output_path, chain, chunk_bytes, file_opts, ...)。LZDP 时 file_opts 含 _FILE_COMPRESS_LZDP_WHOLE_FILE，与 C++ api_new 整文件语义对齐。
+
+6.5 解压 smart_decompress 与 smart_decompress_file
+
+smart_decompress 优先识别 WCX 分帧流等特殊载荷走 pipeline_decompress；否则 _create_compressor.decompress。smart_decompress_file 默认策略为整文件读入 WCX 再解压后一次写盘；可通过环境变量走 pipeline_decompress_file 原生分块读盘。解压日志经 decompress_log 记录分支与字节数。
+
+6.6 should_use_streaming
+
+比较 data_size 与 get_effective_streaming_threshold_mb(algorithm) 乘 1024*1024，媒体算法、无路径等条件由 Worker 额外约束。
+
+
+七、WCX 文件协议（engine/file_protocol.py）实现路径
+
+压缩结果对外以 .wcx 为扩展名。CompressedFileHeader 描述 algorithm、original_size、compressed_size、web_dict_preprocess 等元数据。
+
+pack_compressed_file、finalize_codec_payload_to_wcx 将 C++ 裸载荷包上 WCX 魔数与头。unpack_compressed_file 解析返回 header 与 payload。wcx_bytes_for_file_record 从记录导出完整字节；compression_blob_for_visualization 剥离 WCX 供 token_parser 使用。
+
+pack_folder_archive、unpack_folder_archive 支持文件夹多条目打包。make_export_filename 生成导出文件名。detect_algorithm_from_file 读 WCX 头推断算法类型。
+
+
+八、Token 解析与可视化数据（engine/token_parser.py）实现路径
+
+Token 数据类含 offset、length、literal、type（MATCH/LITERAL）。LZSSTokenParser、LZDPTokenParser、DeflateTokenParser 分别按算法比特流规则解码；Deflate 侧含 _CanonicalHuffmanTree 解析 Huffman 码表。
+
+get_parser(algorithm) 返回对应解析器。parse_for_demo、fetch_demo_dp_visualization 调用 C++ LZDPCompressor.get_dp_visualization 供 LZ 演示对话框。HuffmanTreeData、HuffmanTreeNode 供 huffman 可视化控件建树。
+
+main_window 打开演示或热力图时：compression_blob_for_visualization → strip_wcx → parser.parse → 交给 views 或 windows 生成 HTML/控件。
+
+
+九、网页资源字典（engine/web_dict.py）实现路径
+
+当 settings 中 use_web_resource_dict 为真且扩展名为 .html/.htm/.css/.js/.json 时，prepare_file_record_for_compression 将磁盘原文读入 plaintext_snapshot，再 encode 为短语替换字节流写入 record.raw_data，并置 web_dict_preprocess=True。
+
+encode 最长短语优先匹配，命中写 ESC 引导的三字节码，否则保留单字节。解压后 postprocess_after_codec 调用 decode 还原。
+
+该路径会 forced_no_stream=True，因编码后字节流需与内存压缩一致且不宜边读盘边字典替换。
+
+
+十、主窗口（ui/main_window.py）实现路径
+
+10.1 类与内嵌组件
+
+StatusBarWidget：状态文案 QLabel 与 QProgressBar(0–100)。
+
+AlgorithmSelector：QComboBox 绑定 AlgorithmType。
+
+ThemeConfigDialog、DecisionEngineManagerDialog、AlgorithmConfigDialog、MinMatchWidget、CompressDemoDialog、FolderReportWidget、DecisionDetailDialog 等同文件内大段 UI 逻辑。
+
+MainWindow 持有 _table、_statusbar、_algo_selector、_worker、_comparison_worker。
+
+10.2 菜单与工具栏
+
+文件菜单：添加文件 Ctrl+F、添加文件夹 Ctrl+D、清空 Ctrl+Shift+C。高级菜单：算法配置、决策引擎管理、主题配置。工具栏：添加、压缩、解压、导出、删除、算法下拉、全选等，各 QAction 连接到 _on_add_files、_on_compress、_on_decompress、_on_export 等。
+
+10.3 拖放与路径导入
+
+dragEnterEvent 在 mime 含 urls 时 accept。dropEvent 取 toLocalFile 列表，调用 _add_paths(paths, source="drop")。_add_paths 区分文件与文件夹：FileRecord.add_file、FolderRecord 扫描子树，表格 add_file/add_folder，log_ui 记交互日志。
+
+10.4 压缩入口 _on_compress
+
+若已有 CompressionWorker.isRunning 则返回。收集表格 selected_rows 或全部行，构造 tasks 列表 (row_index, Record)。创建 CompressionWorker(tasks, _algo_selector.current_algorithm)，连接 progress → _statusbar、finished_row → _on_compress_row_finished、error → 提示。worker.start() 启动线程。
+
+10.5 解压入口 _on_decompress
+
+对选中行读取 compressed_path 或 compressed_data，调用 smart_decompress 或写临时文件后 smart_decompress_file，校验解压长度与 header.original_size，web_dict 时 postprocess。失败 QMessageBox 显示 gui_payload_size_mismatch 类错误。
+
+10.6 导出 _on_export
+
+将 DONE 状态记录的 WCX 写入用户选择目录，make_export_filename 命名。
+
+10.7 可视化与高级功能槽
+
+_on_view_heatmap_row：打开热力图相关对话框或 windows/token_heatmap.generate_token_heatmap。
+
+_on_view_comparison_row：启动 ComparisonWorker。
+
+_on_compress_demo：CompressDemoDialog 或 lz_demo_dialog、flate_demo_dialog。
+
+_on_view_decision_detail：DecisionDetailDialog 展示 ADE 决策字段。
+
+_on_theme_config、_on_algo_config、_on_de_manager：弹出对应对话框。
+
+10.8 主题刷新
+
+refresh_theme 重设主窗 QSS、_table.refresh_theme、_statusbar.refresh_theme。
+
+
+十一、文件表格（ui/table.py）实现路径
+
+FileTableWidget 继承 QTableWidget，七列：勾选、文件名、大小、类型、状态、算法、压缩率。
+
+COL_CHECK 与行选择联动：mousePressEvent 在首列切换选择；_sync_checkboxes_from_selection 用 bg_selection 刷行背景。
+
+add_file(path) 创建 FileRecord，插入行，各列 QTableWidgetItem，UserRole 存 Record。
+
+contextMenuEvent：FolderRecord 提供文件夹报告、算法对比、网页热力图、整站网络仿真、移除。FileRecord 提供决策详情、打开位置、复制路径、压缩演示、热力图、对比、网络仿真、移除。动作为发射信号，由 MainWindow 槽处理，保持 table 不依赖具体对话框类。
+
+remove_row、select_all、selected_rows 供工具栏与压缩逻辑使用。
+
+
+十二、后台压缩线程（ui/worker.py）实现路径
+
+12.1 CompressionWorker 信号与生命周期
+
+继承 QThread。信号 progress(int,str)、row_started(object)、finished_row(object)、error(object)。cancel 置 _is_cancelled 并 _core_set_streaming_compress_cancel(True) 通知 C++ 流式读盘协作取消。
+
+run 遍历 tasks，对 FolderRecord 递归子文件 single_compress，对 FileRecord 直接 single_compress。
+
+12.2 single_compress 核心分支（FileRecord）
+
+入口 row_started.emit，记录 START 日志。
+
+构造 CompressionEngine，不可用则 error.emit。
+
+每次压缩前 load_raw_data 清空 web_dict 标记与旧特征，保证磁盘最新。
+
+若算法为 AUTO：extract_features，DecisionEngine.decide，可与 features.get_compression_decision 交叉验证，得到最终 algorithm 与 _auto_params，merge 进 CompressionEngine.set_config。
+
+若开启网页字典且算法非 NONE：prepare_file_record_for_compression，web_dict_active=True，forced_no_stream=True。
+
+若有 _auto_params：sanitize_stage2_params 后写入引擎配置，并可能 forced_no_stream 取决于 should_use_streaming。
+
+媒体算法 validate_media_algorithm 校验扩展名，不符则 failed。
+
+计算 use_streaming：非 web_dict、有 path、非 NONE、非媒体（或文件夹内）、should_use_streaming 为真。
+
+流式分支：_run_streaming_compress_branch → allocate_streaming_wcx_path → smart_compress_file → 更新 compressed_path、compression_ratio、compression_config_snapshot；膨胀则 shutil.copy2 原文件并 algorithm=NONE。
+
+内存分支：SilentExplorer 优先级内 smart_compress(record.raw_data, algorithm, force_memory_codec=web_dict_active)。捕获异常与取消。膨胀检测类似流式。
+
+完成后 status=DONE，TrainingDataStore.add_from_record，每 10 条 incremental save，SilentExplorer.maybe_explore 可能后台探索。
+
+finished_row.emit(record) 驱动主线程刷新表格。
+
+12.3 ComparisonWorker
+
+对单文件按 COMPARISON_ALGORITHMS 或 get_comparison_algorithms_for_file 列表，_compress_data 或 _compress_streaming_file 测各算法压缩大小，emit comparison_finished，windows/comparison 生成 HTML。
+
+
+十三、ADE 决策与探索子系统实现路径
+
+13.1 DecisionEngine（ade/engine.py）
+
+单例 get()，decide(record) 根据 base_features 与历史样本选 AlgorithmType 与 params 字典。实现包括随机森林、神经网络策略类。StrategyDispatcher 供 CLI 批量调度。
+
+13.2 训练数据（ade/training.py）
+
+TrainingSampleV3 记录特征、标签、算法 ID、压缩率等。TrainingDataStore 单例 add_from_record、save 写 Package/ade/ade_training_v3.jsonl，与 C++ 特征维度对齐。
+
+13.3 静默探索（ade/explorer.py）
+
+SilentExplorer.maybe_explore 在用户压缩完成后、非用户操作活跃时，用备选参数流式或内存压测，若更优则写训练样本。explore_log 记跳过原因（user_ops_active 等）。streaming_explore.py 提供 explore 专用 compress_streaming_to_wcx 与取消环境变量。
+
+13.4 重训练与 Stage2
+
+retrain.maybe_supplemental_retrain 在新增样本数超阈值时触发。stage2_train.Stage2TrainWorker、nn_train.NNTrainWorker 在 DecisionEngineManagerDialog 中启动。params.ParameterRegressor 对接 C++ MLP。
+
+13.5 checkpoint（ade/checkpoint.py）
+
+长时探索可序列化 ExploreDispatch 状态到 jobs 目录，manifest JSON 读写。
+
+
+十四、可视化模块实现路径（按功能）
+
+14.1 内嵌 Qt 控件（ui/views/visualizers/）
+
+token_heatmap.py：TokenHeatmapWidget 在 QPlainTextEdit 上对匹配区间 setExtraSelections 高亮；BitstreamWidget 绘制比特格；TokenInfoPanel 显示当前 Token 字段。
+
+huffman.py：HuffmanTreeCanvas 递归计算树布局，QPainter 画边与圆；HuffmanFreqChart 柱状频谱；HuffmanTreePanel 组合画布与码表。
+
+14.2 对话框封装（ui/dialogs/）
+
+huffman_dialog.py：加载 HuffmanTreeData，嵌入 HuffmanTreePanel，展示码长码表。
+
+block_heatmap_dialog.py、heatmap_dialog.py：块级压缩率矩阵着色，ThemeManager 取色。
+
+lz_demo_dialog.py：LZSliderWidget 逐步显示贪心匹配；LZDPDPDialog 显示 DP 候选与 DPArrayBar；调用 fetch_demo_dp_visualization。
+
+flate_demo_dialog.py：HuffmanBuildAnimator 按步骤回放建树，_ZoomableTreeCanvas 缩放。
+
+network_sim_dialog.py：绑定 NetworkTransferWorker，显示各网络档位耗时。
+
+14.3 浏览器 HTML 报告（windows/）
+
+token_heatmap.py：generate_token_heatmap 拼装 HTML/CSS/JS，含文本视图、块视图、LZDP DP 视图、滑块视图，open_token_heatmap_html 用默认浏览器打开。
+
+comparison.py：generate_comparison 柱状图数据嵌入 HTML，ComparisonDialog 或 open_comparison_html。
+
+webpage_heatmap.py：解析 HTML 中 script/link 引用，按资源压缩率着色。
+
+network_sim.py：compute_network_sim_profiles 调用 engine/network_transfer，generate_network_sim 输出表格 HTML。
+
+heatmap.py：被其他模块引用的热力图页模板辅助。
+
+14.4 主窗口调用链
+
+用户右键「压缩演示」→ table.request_demo → MainWindow._on_compress_demo → 根据算法打开 lz_demo_dialog 或 flate_demo_dialog 或 CompressDemoDialog。
+
+用户右键「压缩热力图」→ request_heatmap → 解析 payload → heatmap_dialog 或 token_heatmap 窗口。
+
+14.5 panels/info_panel.py
+
+为 LZDP 演示提供 create_dp_step_info 等，显示当前位置、候选匹配列表、最优 token 计数。
+
+
+十五、网络传输仿真实现路径
+
+engine/network_transfer.py 定义 NetworkBenchmarkItem、throttled_deliver 限速发送、benchmark_profile 对单条 WCX 载荷测延时与有效吞吐。
+
+ui/network_transfer_worker.py 在 QThread 中跑 benchmark，结果交 network_sim_dialog 或 windows/network_sim.generate_network_sim。
+
+Folder 整站仿真汇总子文件 DONE 记录的总字节与总时间。table 右键「网络传输模拟」发射 request_network 或 request_folder_network。
+
+
+十六、工具模块（utils/）实现路径
+
+logging.py：开发环境日志默认 Package/logs/gui.log，frozen 时用可执行文件旁 logs。
+
+interaction_log.py：log_ui 写 gui.ui 命名空间，记录按钮、拖放、对话框，便于回放用户操作序列。
+
+resources.py：resolve_icon_path 多路径查找 icon.ico 或 png。
+
+workspace.py：workspace_root 默认 Package/workspace；allocate_streaming_wcx_path 用 uuid 前缀加原文件名 stem 生成唯一 .wcx 路径，避免并发覆盖；remove_stale_compressed_parts 清理 .part 临时文件。
+
+
+十七、UI 辅助（ui/helpers.py）实现路径
+
+create_bold_label、create_styled_label 统一字体色。calc_bit_width、lzdp_effective_min_match 与 C++ calcBitWidth 语义一致的预览计算。format_lzss_preview、format_deflate_preview、format_dpflate_lz_reference_preview 为 AlgorithmConfigDialog 生成「当前编码语义」说明 HTML，减少用户误配参数。
+
+
+十八、网络传输 Worker（ui/network_transfer_worker.py）
+
+封装对 network_transfer.benchmark_all_profiles 的线程执行，progress 信号驱动对话框进度条，完成返回 profiles 列表供 HTML 渲染。
+
+
+十九、日志与异常处理实现路径
+
+命名空间分离：gui.main_window、gui.worker、gui.table、gui.engine、gui.decompress、gui.ui（interaction_log）、gui.explore（ADE 探索）。压缩主路径写 gui.log；解压详单写 log_decompress 事件名如 smart_decompress_begin、gui_payload_size_mismatch。
+
+Worker 内异常 traceback 记入 logger，error.emit 触发主窗口 QMessageBox。table 的 mousePressEvent、contextMenuEvent 包 try/except 防止单点崩溃拖死整个应用。
+
+C++ 异常经 pybind 转为 RuntimeError，compressor 捕获后写入 CompressorResult.error_message。
+
+
+二十、端到端功能实现路径总览（图示）
+
+20.1 用户拖入文件并 LZDP 压缩（内存路径）
+
+  用户拖放文件
+    → MainWindow.dropEvent
+    → _add_paths
+    → FileTableWidget.add_file
+    → FileRecord 创建
+  用户点压缩
+    → _on_compress
+    → CompressionWorker.start
+    → single_compress
+    → load_raw_data
+    → should_use_streaming 为假（小文件）
+    → smart_compress
+    → CompressionEngine.compress
+    → _create_compressor(LZDP)
+    → LZDPCompressor.compress → C++ compress_bytes
+    → 结果写入 record.compressed_data
+    → finished_row
+    → MainWindow 刷新表格压缩率列
+
+20.2 大文件流式压缩
+
+  should_use_streaming 为真
+    → _run_streaming_compress_branch
+    → allocate_streaming_wcx_path
+    → smart_compress_file
+    → pipeline_compress_file（C++）
+    → 输出 .wcx 至 workspace
+    → record.compressed_path 非空，compressed_data 为空
+
+20.3 打开 Token 热力图
+
+  右键 request_heatmap
+    → MainWindow 取 DONE 记录
+    → file_protocol.compression_blob_for_visualization
+    → token_parser.get_parser
+    → parse
+    → windows/token_heatmap.generate_token_heatmap
+    → 浏览器打开 HTML
+
+20.4 Auto 模式
+
+  algorithm=AUTO
+    → extract_features（熵、重复率等）
+    → DecisionEngine.decide
+    → 可能改写 record.algorithm
+    → merge_decision_overrides_into_algo_config
+    → 再走流式或内存压缩
+
+
+二十一、与 C++ 边界及配置一致性说明（过程论述补充）
+
+GUI 侧 CompressionEngine._create_compressor 通过 set_* 更新 GuiCompressors 内 LZDPConfig、DeflateConfig 等；smart_compress_file 通过 LzdpWholeFileParams、DeflatePipelineParams 等结构体传参。两条路径在实现上应尽量保持字段一致，否则会出现「界面旋钮已改、流式与内存结果不同」的现象。LZDP 文件压缩带 kFileCompressLzdpWholeFile 标志时，C++ 侧走整文件 compress_bytes 与内存 LZDPCompressor 对齐。
+
+媒体文件路径 worker 中 MEDIA_ALGORITHMS 分支调用 ffmpeg_codec 或专用 compressor，不进入 LZ 流式管线。
+
+Transformer 算法依赖可选 PyTorch，无则 GUI 提示不可用。
+
+
+二十二、测试与边界行为在 GUI 层的体现
+
+空文件：压缩返回极小载荷，可能触发膨胀逻辑，algorithm 置 NONE，is_stored 表示原样存储。压缩失败：status=failed，error_message 显示于 error 信号。取消：Worker _is_cancelled，流式 C++ cancel，记录 FAILED 或已取消文案。core_engine 缺失：CompressionEngine.available False，Worker 首行即 error。文件夹：仅当 ensure_files_loaded 后统计子项；全部子文件 DONE 后 FolderRecord.status 置 DONE。
+
+对比模式不测解压，仅测各算法压缩后大小，用于相对排名展示。
+二十三、各类定义与接口说明
+
+本节对 GUI 源码中每一个 class（含 Enum、dataclass、QWidget、QThread）给出：所在文件、职责说明、对外方法或 Qt 信号、必要的内部辅助方法名。各小节末尾列出该文件模块级辅助函数（不含以下划线开头的私有函数）。
+
+23.1 src/gui/main.py
+
+  模块级辅助函数：run_cli, run_gui。
+
+23.2 src/gui/models.py
+
+ResourceType
+  所在：src/gui/models.py 约第 56 行。
+  说明：按扩展名归类资源，驱动默认算法与表格类型列。
+  枚举成员：AUDIO、BINARY、COMPRESSED、IMAGE、SCRIPT、TEXT、VIDEO、UNKNOWN。由 _filetype(ext) 根据扩展名集合映射。
+
+CompressionStatus
+  所在：src/gui/models.py 约第 68 行。
+  说明：单行压缩生命周期。
+  枚举成员：PENDING（等待）、COMPRESSING（进行中）、DONE（成功）、FAILED（失败）、SKIPPED（跳过）。
+
+AlgorithmType
+  所在：src/gui/models.py 约第 76 行。
+  说明：全局算法枚举，与 WCX algo_code、算法下拉框、C++ 管线 ID 一致。
+  枚举成员（节选）：AUTO、LZSS、LZDP、DPFLATE、DEFLATE、GZIP、BROTLI、ZSTD、JPEG、PNG、FLAC、AAC_LC、H264、OPENH264、FFMPEG_H264、FFMPEG_H265、TRANSFORMER、NONE、HUFFMAN。模块常量 ALGORITHM_PARAMS 为各算法参数定义表；NETWORK_PROFILES 预置 4G/5G/WiFi/Ethernet。
+
+AlgorithmParamDef
+  所在：src/gui/models.py 约第 98 行。
+  说明：算法配置对话框中单参数的元数据：key、label、default、min、max、step、choices。
+  主要方法/接口：__init__。
+
+Record
+  所在：src/gui/models.py 约第 428 行。
+  说明：FileRecord 与 FolderRecord 的抽象基类，定义 load_raw_data、extract_features 钩子。
+  主要方法/接口：__init__, load_raw_data, extract_features。
+
+FileRecord
+  所在：src/gui/models.py 约第 437 行。
+  说明：单文件业务对象：路径、原文、压缩结果、ADE 特征与决策，存于表格 Qt.UserRole。
+  主要属性：path、name、extension、size、type、raw_data、compressed_data、compressed_path、compression_ratio、compression_time_ms、status、algorithm、error_message、is_stored、content_entropy、repetition_ratio、decision_result、compression_config_snapshot、web_dict_preprocess、plaintext_snapshot、base_features、detected_file_type。
+  主要方法/接口：__init__, load_raw_data, extract_features。
+
+FolderRecord
+  所在：src/gui/models.py 约第 511 行。
+  说明：文件夹批量对象：懒加载子 FileRecord 列表与汇总统计。
+  主要方法/接口：__init__, ensure_files_loaded, add_file, load_raw_data, extract_features, filenum, success_count, error_count, summary。
+
+NetworkProfile
+  所在：src/gui/models.py 约第 595 行。
+  说明：网络仿真档位：名称、带宽 bps、单向时延 ms；transfer_time 估算传输秒数。
+  主要方法/接口：__init__, transfer_time。
+
+ArchiveEntry
+  所在：src/gui/models.py 约第 613 行。
+  说明：文件夹 WCX 归档内单条条目（名称、大小、是否目录）。
+  主要方法/接口：__init__。
+
+  模块级辅助函数：formatted_size, compressed_payload_size, get_default_config, merge_decision_overrides_into_algo_config, sanitize_stage2_params, format_algorithm_config_param_lines, validate_media_algorithm, is_media_algorithm, is_media_algorithm_suitable_for_file, get_folder_size。
+
+23.3 src/gui/config/settings.py
+
+  模块级辅助函数：get_defaults, load_config, save_config, get_silent_explore_enabled, get_ade_explore_streaming_threshold_mb, get_ade_explore_streaming_chunk_kb, get_ade_explorer_tunables, get_ade_stage2_settings, apply_stage2_to_decision_engine, get_ade_retrain_min_new_samples, get_theme_config, apply_theme, save_theme, get_algo_config, get_use_web_resource_dict, set_use_web_resource_dict, get_use_media_compression, set_use_media_compression, get_streaming_threshold, get_streaming_chunk_size, get_streaming_workspace_root_override, get_streaming_per_algorithm, get_effective_streaming_chunk_kb, get_effective_streaming_threshold_mb。
+
+23.4 src/gui/config/theme.py
+
+Theme
+  所在：src/gui/config/theme.py 约第 12 行。
+  说明：frozen dataclass，承载 bg_primary、accent、chart_1 等 QSS 颜色字段；to_dict/from_dict 序列化。
+  主要方法/接口：to_dict, from_dict。
+
+ThemeManager
+  所在：src/gui/config/theme.py 约第 100 行。
+  说明：单例：apply 切换 Theme，生成 main_window_sheet、table_sheet、full_dialog_sheet 等 QSS。
+  主要方法/接口：get, apply, reset_to_default, set_dark, set_light, is_dark, color, hex, to_dict, from_dict, dialog_sheet, table_sheet, tab_widget_sheet, button_sheet, plain_edit_sheet, full_dialog_sheet, html_report_css, compression_view_btn_style, dashboard_card_style, main_window_sheet, html_base_css。
+  辅助/内部方法：__new__。
+
+23.5 src/gui/engine/bridge.py
+
+  模块级辅助函数：get_core_engine。
+
+23.6 src/gui/engine/compressor.py
+
+CompressionEngine
+  所在：src/gui/engine/compressor.py 约第 54 行。
+  说明：GUI 压缩解压门面：内存 compress、流式 smart_compress_file、WCX pack/unpack、配置锁与快照。
+  主要方法/接口：__init__, reload_from_file, set_config, get_config, snapshot_for_algorithm, create_compressor_for_visualization, set_streaming_threshold, get_streaming_threshold, available, reset_to_defaults, compress_with_overrides, compress, decompress, should_use_streaming, smart_compress, smart_decompress, smart_compress_file, smart_decompress_file, pack_files, unpack_archive, pipeline_compress, pipeline_decompress, pipeline_compress_file, pipeline_decompress_file。
+  辅助/内部方法：_get_config_unlocked, _deep_copy_config, _save_to_file, _create_compressor, _make_pipeline_result, _gzip_bytes_compress, _gzip_bytes_decompress, _gzip_smart_compress_file, _gzip_smart_decompress_file, _python_decompress_wcx_file_to_disk, _get_pipeline_id, _get_decompress_pipeline_id, _lzss_pipeline_params_from_cfg, _lzss_pipeline_params_for_file_pipeline, _lzdp_whole_file_params_from_cfg…。
+
+23.7 src/gui/engine/file_protocol.py
+
+CompressedFileHeader
+  所在：src/gui/engine/file_protocol.py 约第 45 行。
+  说明：WCX v3 头：algorithm、original_size、compressed_size、flags（文件夹/网页字典）；to_bytes/from_bytes。
+  主要方法/接口：__init__, algo_code, extension, to_bytes, from_bytes, fixed_header_size, header_total_size。
+
+  模块级辅助函数：pack_compressed_file, finalize_codec_payload_to_wcx, wcx_bytes_for_file_record, unpack_compressed_file, file_record_compression_blob, strip_wcx_if_present, deframe_u32_be_chunk_stream, dpflate_format_byte, prepare_token_parse_payload, compression_blob_for_visualization, is_u32_be_chunk_framed_stream_payload, detect_algorithm_from_file, make_export_filename, pack_folder_archive, unpack_folder_archive。
+
+23.8 src/gui/engine/token_parser.py
+
+TokenType
+  所在：src/gui/engine/token_parser.py 约第 13 行。
+  说明：枚举 LITERAL、MATCH、LITERAL_RUN。
+
+Token
+  所在：src/gui/engine/token_parser.py 约第 20 行。
+  说明：可视化单元：原文区间、压缩比特代价、match_offset、bit_offset 等；compression_ratio 属性。
+  主要方法/接口：compression_ratio。
+
+ParseResult
+  所在：src/gui/engine/token_parser.py 约第 40 行。
+  说明：parse 输出：tokens 列表、original_size、dp_steps、huffman_trees。
+  主要方法/接口：total_original, total_compressed。
+
+HuffmanCodeEntry
+  所在：src/gui/engine/token_parser.py 约第 58 行。
+  说明：Huffman 码表项：symbol、frequency、code、code_length。
+
+HuffmanTreeNode
+  所在：src/gui/engine/token_parser.py 约第 66 行。
+  说明：Huffman 树节点：symbol、frequency、left、right；is_leaf 判断。
+  主要方法/接口：is_leaf。
+
+HuffmanTreeData
+  所在：src/gui/engine/token_parser.py 约第 77 行。
+  说明：一棵树的数据：根节点、codes 列表、tree_type、total_bits。
+
+TokenParser
+  所在：src/gui/engine/token_parser.py 约第 84 行。
+  说明：解析器抽象基类，子类实现 parse(compressed_data, raw_data, compression_params)。
+  主要方法/接口：parse。
+
+LZSSTokenParser
+  所在：src/gui/engine/token_parser.py 约第 97 行。
+  说明：LZSS 1-bit flag + 匹配字解析。
+  主要方法/接口：parse。
+
+LZDPTokenParser
+  所在：src/gui/engine/token_parser.py 约第 166 行。
+  说明：LZDP：优先 C++ DP 可视化，否则逆向解析比特流。
+  主要方法/接口：parse。
+  辅助/内部方法：_parse_via_dp, _extract_dp_steps, _parse_reverse。
+
+_LSBBitReader
+  所在：src/gui/engine/token_parser.py 约第 358 行。
+  说明：Deflate 解析内部 LSB 位读取器。
+  主要方法/接口：__init__, ensure, read_bits, read_bit, bit_position。
+  辅助/内部方法：_fill。
+
+_CanonicalHuffmanTree
+  所在：src/gui/engine/token_parser.py 约第 392 行。
+  说明：由码长数组构建 canonical Huffman 并解码。
+  主要方法/接口：__init__, decode, to_tree_node, to_code_table。
+  辅助/内部方法：_build_reverse_map。
+
+DeflateTokenParser
+  所在：src/gui/engine/token_parser.py 约第 479 行。
+  说明：Deflate/DPFlate 块级 Huffman + LZ 引用解析。
+  主要方法/接口：parse。
+
+  模块级辅助函数：get_parser, can_parse, parse_for_demo, fetch_demo_dp_visualization。
+
+23.9 src/gui/engine/web_dict.py
+
+  模块级辅助函数：load_phrases, encode, decode, prepare_file_record_for_compression, postprocess_after_codec。
+
+23.10 src/gui/engine/decompress_log.py
+
+  模块级辅助函数：log_decompress, summarize_result。
+
+23.11 src/gui/engine/network_transfer.py
+
+NetworkBenchmarkItem
+  所在：src/gui/engine/network_transfer.py 约第 28 行。
+  说明：单文件网络实测输入：wire 字节、算法、原始大小。
+
+NetworkBenchmarkTarget
+  所在：src/gui/engine/network_transfer.py 约第 37 行。
+  说明：实测目标：items 列表或文件夹聚合。
+
+ProfileBenchmarkResult
+  所在：src/gui/engine/network_transfer.py 约第 46 行。
+  说明：单档位 benchmark 结果：profile 名、耗时、吞吐、解压耗时。
+
+  模块级辅助函数：throttled_deliver, benchmark_profile, benchmark_all_profiles, item_from_file_record, target_from_file_record, target_from_folder_record。
+
+23.12 src/gui/engine/ffmpeg_codec.py
+
+VideoFFmpegCompressor
+  所在：src/gui/engine/ffmpeg_codec.py 约第 81 行。
+  说明：FFmpeg H.264/H.265 内存压缩解压，compress/decompress 返回 dict。
+  主要方法/接口：__init__, ffmpeg_available, ffprobe_available, bundled_ffmpeg_dir, compress, decompress。
+  辅助/内部方法：_parse_raw_header, _build_raw_header, _make_result。
+
+23.13 src/gui/ade/types.py
+
+DecisionMode
+  所在：src/gui/ade/types.py 约第 7 行。
+  说明：ADE 模式枚举：RULE_BASED、ML_HYBRID、ML_ONLY。
+
+DecisionResult
+  所在：src/gui/ade/types.py 约第 14 行。
+  说明：决策输出 dataclass，Worker 在 AUTO 模式下写入 FileRecord.decision_result。
+  字段：algorithm、confidence、reason、params（整型参数字典）、extraction_time_ms、mode_used、latency_ms、strategy_id、is_model_decision。
+
+ParamRegressionSample
+  所在：src/gui/ade/types.py 约第 27 行。
+  说明：Stage2a 参数回归单条样本（特征、实际/预测参数、压缩率）。
+
+TrainingSample
+  所在：src/gui/ade/types.py 约第 39 行。
+  说明：早期训练样本结构（兼容保留）。
+
+23.14 src/gui/ade/engine.py
+
+DecisionEngine
+  所在：src/gui/ade/engine.py 约第 24 行。
+  说明：ADE 单例：decide、collect_training_sample、train、save/load_training_data。
+  主要方法/接口：__init__, reload_rf_model, get, set_mode, get_mode, set_ea_algorithm, set_ea_max_time, set_ea_max_eval_bytes, set_ea_use_live_compress, decide, decide_batch, collect_training_sample, collect_param_regression_sample, auto_retrain_param_regressor, train, train_with_feedback, save_training_data, load_training_data, sample_count, is_ready, get_info。
+  辅助/内部方法：_init_ade, _try_load_model_from_project, _ea_trial_overrides, _ea_live_fitness, _map_algorithm, _optimize_params, _get_default_data_path。
+
+RandomForestStrategy
+  所在：src/gui/ade/engine.py 约第 589 行。
+  说明：继承 DecisionEngine，decide 走 C++ 随机森林模型。
+  主要方法/接口：__init__, decide, train。
+
+NeuralNetworkStrategy
+  所在：src/gui/ade/engine.py 约第 618 行。
+  说明：继承 DecisionEngine，decide/train 走 C++ 或内置 NN。
+  主要方法/接口：__init__, decide, build_model, train。
+  辅助/内部方法：_extract_features。
+
+StrategyDispatcher
+  所在：src/gui/ade/engine.py 约第 755 行。
+  说明：批量 dispatch/dispatch_and_compress，供 CLI 或实验脚本。
+  主要方法/接口：__init__, dispatch, dispatch_and_compress, dispatch_batch, strategy, strategy。
+
+23.15 src/gui/ade/training.py
+
+TrainingSampleV3
+  所在：src/gui/ade/training.py 约第 81 行。
+  说明：v3 JSONL 一行样本，持久化至 Package/ade/ade_training_v3.jsonl。
+  核心字段（dataclass）：sample_id、filepath、file_size、features_vector（20 维基段等）、algorithm_id、compression_ratio、compression_time_ms、output_size_bytes、is_exploration、sample_weight、params_snapshot。
+  主要方法/接口：__post_init__, validate, to_json_line, from_json_line, from_file_record。
+  模块级辅助：v3_algorithm_id_to_param_slot、algorithm_type_from_v3、get_training_store。
+
+TrainingDataStore
+  所在：src/gui/ade/training.py 约第 264 行。
+  说明：单例：add_from_record、save/load JSONL、get_feature_matrix、export_csv。
+  主要方法/接口：__init__, data_path, sample_count, total_persisted, add_sample, add_from_record, save, load, get_feature_matrix, get_label_vector, get_ratio_vector, get_param_regression_rows, get_weight_vector, count_persisted_exploration_samples, get_stats, export_csv, clear, reset。
+  辅助/内部方法：_ensure_dir, _load_stats, _save_stats。
+
+  模块级辅助函数：v3_algorithm_id_to_param_slot, algorithm_type_from_v3, get_training_store。
+
+23.16 src/gui/ade/explorer.py
+
+ArmStats
+  所在：src/gui/ade/explorer.py 约第 38 行。
+  说明：静默探索单臂统计：mean_ratio、count、sum_ratio、min_ratio。
+
+FeatureClusterSpace
+  所在：src/gui/ade/explorer.py 约第 46 行。
+  说明：20 维特征向量聚类到 cluster_id（最多 64 簇）。
+  主要方法/接口：__init__, assign, n_clusters。
+  辅助/内部方法：_create_cluster, _distance。
+
+SilentExplorer
+  所在：src/gui/ade/explorer.py 约第 98 行。
+  说明：AC-UCB 静默探索：maybe_explore、user_compression_priority、apply_tunables_from_settings。
+  主要方法/接口：__init__, begin_user_operation, end_user_operation, user_operations_active, user_compression_priority, apply_enabled_from_settings, apply_tunables_from_settings, set_enabled, get, reset, maybe_explore, get_stats。
+  辅助/内部方法：_should_explore, _compute_ucb_scores, _compute_ucb_gap, _pick_least_sampled, _pick_explore_params, _effective_epsilon, _check_budget, _execute_explore_async, _record_arm_result。
+
+23.17 src/gui/ade/explore_log.py
+
+  模块级辅助函数：log_explore, summarize_stream_result, summarize_pipeline_result。
+
+23.18 src/gui/ade/params.py
+
+ParameterRegressor
+  所在：src/gui/ade/params.py 约第 14 行。
+  说明：Stage2a C++ ParamRegressorNet 桥接：predict、train、ingest_v3_sample。
+  主要方法/接口：__init__, get, is_ready, clear_ingested_samples, count_by_algorithm, ingest_v3_sample, predict, collect_sample, train, save_model, load_model, get_info。
+  辅助/内部方法：_init_cpp_backend, _param_keys_for_algorithm, _normalize_params, _denormalize_params, _encode_algorithm, _extract_features, _features_from_v3_vector, _build_input_vector, _build_cpp_training_rows, _get_default_model_path。
+
+23.19 src/gui/ade/retrain.py
+
+  模块级辅助函数：ingest_v3_into_param_regressor, maybe_supplemental_retrain。
+
+23.20 src/gui/ade/checkpoint.py
+
+ExploreDispatch
+  所在：src/gui/ade/checkpoint.py 约第 19 行。
+  说明：探索任务调度元数据（cluster、UCB gap、目标算法）。
+
+CheckpointManifest
+  所在：src/gui/ade/checkpoint.py 约第 28 行。
+  说明：流式探索被取消时的作业清单 JSON 序列化。
+  主要方法/接口：to_dict, from_dict。
+
+  模块级辅助函数：new_job_id, jobs_dir, manifest_path, save_manifest, load_manifest, block_profile_hint。
+
+23.21 src/gui/ade/streaming_explore.py
+
+ExploreStreamResult
+  所在：src/gui/ade/streaming_explore.py 约第 21 行。
+  说明：探索压缩结果 dataclass：success、wcx_bytes、ratio、error 等。
+
+  模块级辅助函数：clear_simulate_cancel_env, should_explore_use_streaming, explore_chunk_bytes, compress_streaming_to_wcx, compress_memory_to_wcx_bytes, run_explore_stream_with_optional_cancel, decompress_wcx_to_bytes, wcx_codec_payload。
+
+23.22 src/gui/ade/ea_tune.py
+
+  模块级辅助函数：resolve_ea_priors_path, build_ea_priors_from_jsonl, load_ea_priors, get_prior_params, prior_fitness_penalty, format_ea_priors_summary。
+
+23.23 src/gui/ade/stage2_train.py
+
+Stage2TrainResult
+  所在：src/gui/ade/stage2_train.py 约第 22 行。
+  说明：Stage2 训练结果 dataclass。
+
+Stage2TrainWorker
+  所在：src/gui/ade/stage2_train.py 约第 29 行。
+  说明：QThread：Stage2 参数网络训练。
+  Qt 信号：finished_with_result, progress。
+  主要方法/接口：__init__, run。
+
+  模块级辅助函数：count_stage2_ready_nn。
+
+23.24 src/gui/ade/nn_train.py
+
+NNTrainResult
+  所在：src/gui/ade/nn_train.py 约第 134 行。
+  说明：神经网络训练结果摘要 dataclass。
+
+NNTrainWorker
+  所在：src/gui/ade/nn_train.py 约第 140 行。
+  说明：QThread：后台 train_nn_from_jsonl，progress/done 信号。
+  Qt 信号：finished_with_result, progress。
+  主要方法/接口：run。
+
+  模块级辅助函数：count_nn_ready_samples, describe_nn_sample_gap, train_nn_from_jsonl, format_nn_train_summary。
+
+23.25 src/gui/ade/rf_train.py
+
+RFTrainResult
+  所在：src/gui/ade/rf_train.py 约第 357 行。
+  说明：随机森林训练结果 dataclass。
+
+RFTrainWorker
+  所在：src/gui/ade/rf_train.py 约第 363 行。
+  说明：QThread：train_rf_from_jsonl。
+  Qt 信号：finished_with_result, progress。
+  主要方法/接口：__init__, run。
+
+  模块级辅助函数：pad_features_for_rf, v3_sample_to_ade_label, build_rf_rows, count_rf_ready_samples, resolve_rf_model_output_path, train_rf_from_jsonl, format_train_summary。
+
+23.26 src/gui/ui/main_window.py
+
+StatusBarWidget
+  所在：src/gui/ui/main_window.py 约第 64 行。
+  说明：主窗口底部状态文案与进度条。
+  主要方法/接口：__init__, set_status_text, set_progress_value, reset, refresh_theme。
+  辅助/内部方法：_setup_ui。
+
+AlgorithmSelector
+  所在：src/gui/ui/main_window.py 约第 103 行。
+  说明：工具栏算法 QComboBox，current_algorithm 返回 AlgorithmType。
+  主要方法/接口：__init__, current_algorithm。
+  辅助/内部方法：_setup_ui。
+
+ThemeConfigDialog
+  所在：src/gui/ui/main_window.py 约第 146 行。
+  说明：主题色编辑、亮暗预设、实时预览。
+  主要方法/接口：__init__。
+  辅助/内部方法：_setup_ui, _pick_color, _update_color_button, _on_switch_dark, _on_switch_light, _on_reset_all, _update_preview, _on_apply。
+
+DecisionEngineManagerDialog
+  所在：src/gui/ui/main_window.py 约第 412 行。
+  说明：ADE 引擎/探索/训练/配置四页签管理对话框。
+  主要方法/接口：__init__, sync_text。
+  辅助/内部方法：_setup_ui, _build_engine_tab, _build_explorer_tab, _build_training_tab, _build_config_tab, _de_cfg_load_from_disk, _on_apply_de_config, _on_de_cfg_restore_defaults, _on_reset_explorer, _on_train_rf_model, _start_ade_train_dialog, _on_train_nn_model, _on_train_stage2, _refresh。
+
+MinMatchWidget
+  所在：src/gui/ui/main_window.py 约第 1370 行。
+  说明：min_match 旋钮与「自动」勾选组合控件。
+  主要方法/接口：__init__, value, setValue。
+  辅助/内部方法：_on_auto_toggled。
+
+AlgorithmConfigDialog
+  所在：src/gui/ui/main_window.py 约第 1409 行。
+  说明：各算法 SpinBox/Combo 动态表单，应用后 CompressionEngine.set_config。
+  主要方法/接口：__init__。
+  辅助/内部方法：_setup_ui, _read_algo_widget_int, _read_algo_flag_encoding, _read_algo_combo_int, _refresh_encoding_preview, _wire_encoding_preview, _on_reset, _on_apply。
+
+CompressDemoDialog
+  所在：src/gui/ui/main_window.py 约第 1904 行。
+  说明：压缩演示入口壳（按记录打开子演示）。
+  主要方法/接口：__init__。
+  辅助/内部方法：_setup_ui。
+
+MainWindow
+  所在：src/gui/ui/main_window.py 约第 1946 行。
+  说明：QMainWindow：拖放、压缩解压导出、可视化槽、主题刷新。
+  主要方法/接口：__init__, closeEvent, refresh_theme, dragEnterEvent, dropEvent。
+  辅助/内部方法：_setup_menu, _setup_toolbar, _setup_central, _on_add_files, _on_add_folder, _apply_added_status, _add_paths, _on_clear, _on_toggle_select_all, _update_select_button, _on_compress, _on_cancel_compress, _on_compress_row_started, _on_compress_worker_progress, _on_compress_row_finished…。
+
+FolderReportWidget
+  所在：src/gui/ui/main_window.py 约第 3444 行。
+  说明：文件夹压缩汇总报告面板。
+  主要方法/接口：__init__。
+  辅助/内部方法：_setup_ui, _create_meta_label, _create_stats_widget, _create_stat_card, _create_table, _populate_data。
+
+DecisionDetailDialog
+  所在：src/gui/ui/main_window.py 约第 3609 行。
+  说明：展示 FileRecord.decision_result 字段。
+  主要方法/接口：__init__。
+  辅助/内部方法：_scalar_from_base_features, _format_feature_text, _label_text, _params_display_for_decision, _setup_ui。
+
+  模块级辅助函数：get_training_store_path_hint。
+
+23.27 src/gui/ui/worker.py
+
+CompressionWorker
+  所在：src/gui/ui/worker.py 约第 166 行。
+  说明：压缩后台线程：single_compress、流式/内存分支、训练样本写入。
+  Qt 信号：progress, row_started, finished_row, error。
+  主要方法/接口：__init__, cancel, single_compress, run。
+  辅助/内部方法：_compress_phase_notify, _flush_training_data, _run_streaming_compress_branch, _run_compress_tasks。
+
+ComparisonWorker
+  所在：src/gui/ui/worker.py 约第 800 行。
+  说明：多算法对比线程：_run_file_comparison、comparison_finished 信号。
+  Qt 信号：progress, comparison_finished, failed。
+  主要方法/接口：__init__, cancel, run。
+  辅助/内部方法：_chunk_bytes, _check_cancelled, _is_streaming_file, _units_for_file, _emit_step, _load_comparison_input, _comparison_ratio, _compress_data, _compress_streaming_file, _compare_file, _run_file_comparison, _run_folder_comparison。
+
+  模块级辅助函数：get_comparison_algorithms_for_file。
+
+23.28 src/gui/ui/table.py
+
+FileTableWidget
+  所在：src/gui/ui/table.py 约第 33 行。
+  说明：七列表格：add_file、update_row、右键信号、UserRole 存 Record。
+  Qt 信号：selection_changed, request_demo, request_heatmap, request_comparison, request_network, request_folder_network, request_webpage_heatmap, request_folder_summary, request_decision_detail。
+  主要方法/接口：__init__, refresh_theme, mousePressEvent, contextMenuEvent, remove_row, select_all, selected_rows, is_all_selected, add_file, add_folder, add_paths, update_row, get_record, get_records, row_for_record, mark_error, mark_error_record, clear_all。
+  辅助/内部方法：_setup_ui, _sync_checkboxes_from_selection, _open_file_location, _copy_file_path。
+
+23.29 src/gui/ui/helpers.py
+
+  模块级辅助函数：create_bold_label, create_italic_label, create_styled_label, set_label_html_free, create_color_dot, calc_bit_width, lzdp_effective_min_match, format_lzdp_preview, format_lzss_preview, format_dpflate_lz_reference_preview, format_deflate_preview。
+
+23.30 src/gui/ui/network_transfer_worker.py
+
+NetworkTransferWorker
+  所在：src/gui/ui/network_transfer_worker.py 约第 18 行。
+  说明：网络实测 QThread：benchmark_all_profiles。
+  Qt 信号：progress, finished_ok, failed。
+  主要方法/接口：__init__, cancel, run。
+
+23.31 src/gui/ui/panels/info_panel.py
+
+InfoPanel
+  所在：src/gui/ui/panels/info_panel.py 约第 11 行。
+  说明：LZDP 演示侧栏信息区。
+  主要方法/接口：__init__, clear, add_title, add_info_row, add_text, add_spacing。
+  辅助/内部方法：_add_layout。
+
+  模块级辅助函数：create_dp_literal_info, create_dp_empty_info, create_dp_step_info。
+
+23.32 src/gui/ui/dialogs/heatmap_dialog.py
+
+HeatmapDialog
+  所在：src/gui/ui/dialogs/heatmap_dialog.py 约第 21 行。
+  说明：内嵌 Token 热力图三件套（文本/信息/比特流）的对话框。
+  主要方法/接口：__init__。
+  辅助/内部方法：_setup_ui, _on_token_hovered。
+
+23.33 src/gui/ui/dialogs/block_heatmap_dialog.py
+
+BlockHeatmapCanvas
+  所在：src/gui/ui/dialogs/block_heatmap_dialog.py 约第 18 行。
+  说明：按块压缩率矩阵着色画布。
+  Qt 信号：_block_hovered。
+  主要方法/接口：__init__, sizeHint, paintEvent, mouseMoveEvent, leaveEvent。
+
+BlockHeatmapDialog
+  所在：src/gui/ui/dialogs/block_heatmap_dialog.py 约第 111 行。
+  说明：块热力图对话框壳。
+  主要方法/接口：__init__。
+
+23.34 src/gui/ui/dialogs/huffman_dialog.py
+
+HuffmanTreeDialog
+  所在：src/gui/ui/dialogs/huffman_dialog.py 约第 21 行。
+  说明：嵌入 HuffmanTreePanel 的树与码表对话框。
+  主要方法/接口：__init__。
+  辅助/内部方法：_setup_ui, _on_tree_changed, _populate_code_table, _format_symbol, _update_stats。
+
+23.35 src/gui/ui/dialogs/lz_demo_dialog.py
+
+DPArrayBar
+  所在：src/gui/ui/dialogs/lz_demo_dialog.py 约第 65 行。
+  说明：LZDP DP 数组柱状条可视化。
+  主要方法/接口：__init__, set_data, sizeHint, mouseMoveEvent, leaveEvent, paintEvent。
+  辅助/内部方法：_visible_range。
+
+LZDPDPSliderWidget
+  所在：src/gui/ui/dialogs/lz_demo_dialog.py 约第 264 行。
+  说明：LZDP 逐步 DP 滑块演示主控件。
+  主要方法/接口：__init__。
+  辅助/内部方法：_precompute, _setup_ui, _get_token_char_range, _get_prev_end, _render_step, _render_dp_panel, _on_slider, _max_step_index, _step_prev, _step_next, _toggle_play, _auto_step。
+
+LZDPDPDialog
+  所在：src/gui/ui/dialogs/lz_demo_dialog.py 约第 635 行。
+  说明：LZDPDPSliderWidget 的 QDialog 包装。
+  主要方法/接口：__init__。
+
+LZSliderWidget
+  所在：src/gui/ui/dialogs/lz_demo_dialog.py 约第 664 行。
+  说明：LZSS/LZ 贪心逐步滑块演示。
+  主要方法/接口：__init__。
+  辅助/内部方法：_setup_ui, _get_token_char_range, _get_prev_end, _render_step, _on_slider, _step_prev, _step_next, _toggle_play, _auto_step。
+
+LZSliderDialog
+  所在：src/gui/ui/dialogs/lz_demo_dialog.py 约第 863 行。
+  说明：LZSliderWidget 的 QDialog 包装。
+  主要方法/接口：__init__。
+
+23.36 src/gui/ui/dialogs/flate_demo_dialog.py
+
+_BuildStep
+  所在：src/gui/ui/dialogs/flate_demo_dialog.py 约第 22 行。
+  说明：Huffman 建树动画单步快照。
+  主要方法/接口：__init__。
+
+_QueueNode
+  所在：src/gui/ui/dialogs/flate_demo_dialog.py 约第 35 行。
+  说明：建树动画优先队列节点模型。
+  主要方法/接口：__init__。
+  辅助/内部方法：_label。
+
+_ZoomableTreeCanvas
+  所在：src/gui/ui/dialogs/flate_demo_dialog.py 约第 88 行。
+  说明：可缩放平移的画布，承载自定义 paint_fn。
+  主要方法/接口：__init__, set_paint_fn, paintEvent, wheelEvent, mousePressEvent, mouseMoveEvent, mouseReleaseEvent, zoom_in, zoom_out, reset_view。
+
+HuffmanBuildAnimator
+  所在：src/gui/ui/dialogs/flate_demo_dialog.py 约第 152 行。
+  说明：Deflate Huffman 建树逐步回放控件。
+  主要方法/接口：__init__, timerEvent。
+  辅助/内部方法：_setup_ui, _precompute, _render_step, _compute_width, _layout_subtree, _draw_tree_edges, _draw_tree_nodes, _paint_tree, _step_prev, _step_next, _on_slider, _toggle_play, _start_play, _stop_play。
+
+FlateDemoDialog
+  所在：src/gui/ui/dialogs/flate_demo_dialog.py 约第 469 行。
+  说明：Deflate 演示：LZ 页 + Huffman 建树页。
+  主要方法/接口：__init__。
+  辅助/内部方法：_setup_ui, _build_lz_tab, _build_huffman_tab, _on_tree_changed, _populate_code_table。
+
+23.37 src/gui/ui/dialogs/network_sim_dialog.py
+
+NetworkSimDialog
+  所在：src/gui/ui/dialogs/network_sim_dialog.py 约第 32 行。
+  说明：网络仿真：公式卡片 + 实测进度 + HTML 导出。
+  主要方法/接口：__init__。
+  辅助/内部方法：_apply_style, _clear_cards, _rebuild_cards, _build_formula_card, _build_measured_card, _add_profile_header, _add_bar_row, _add_metric_row, _on_run_benchmark, _on_cancel_benchmark, _on_benchmark_progress, _on_benchmark_done, _on_benchmark_failed, _on_close, _report_html…。
+
+23.38 src/gui/ui/views/visualizers/token_heatmap.py
+
+TokenHeatmapWidget
+  所在：src/gui/ui/views/visualizers/token_heatmap.py 约第 31 行。
+  说明：QPlainTextEdit 上对 Token 区间 ExtraSelection 高亮。
+  Qt 信号：token_hovered。
+  主要方法/接口：__init__, set_data, mouseMoveEvent。
+  辅助/内部方法：_apply_highlights。
+
+TokenInfoPanel
+  所在：src/gui/ui/views/visualizers/token_heatmap.py 约第 104 行。
+  说明：悬停 Token 时显示字段文本。
+  主要方法/接口：__init__, show_token。
+
+BitstreamWidget
+  所在：src/gui/ui/views/visualizers/token_heatmap.py 约第 143 行。
+  说明：逐比特小格热力图。
+  Qt 信号：TOOLTIP_REQUESTED。
+  主要方法/接口：__init__, set_data, paintEvent, mouseMoveEvent。
+  辅助/内部方法：_update_size, _bit_at, _tooltip_for。
+
+  模块级辅助函数：ratio_to_qcolor, ratio_to_gray。
+
+23.39 src/gui/ui/views/visualizers/huffman.py
+
+HuffmanTreeWidget
+  所在：src/gui/ui/views/visualizers/huffman.py 约第 55 行。
+  说明：双树（literal/length + distance）切换绘制。
+  主要方法/接口：__init__, set_ll_tree, set_dist_tree, set_block_index, paintEvent, mouseMoveEvent, mousePressEvent, leaveEvent。
+  辅助/内部方法：_layout, _node_at。
+
+HuffmanTreePanel
+  所在：src/gui/ui/views/visualizers/huffman.py 约第 324 行。
+  说明：树画布 + 频谱图组合面板。
+  主要方法/接口：__init__, set_block。
+
+HuffmanTreeCanvas
+  所在：src/gui/ui/views/visualizers/huffman.py 约第 380 行。
+  说明：递归布局 HuffmanTreeNode 并 QPainter 绘制。
+  主要方法/接口：__init__, minimumSize, sizeHint, paintEvent。
+  辅助/内部方法：_compute_layout, _layout_node, _draw_edges, _draw_nodes, _symbol_label。
+
+HuffmanFreqChart
+  所在：src/gui/ui/views/visualizers/huffman.py 约第 492 行。
+  说明：符号频率柱状图。
+  主要方法/接口：__init__, minimumSize, sizeHint, paintEvent。
+
+  模块级辅助函数：code_length_to_color。
+
+23.40 src/gui/windows/comparison.py
+
+ComparisonDialog
+  所在：src/gui/windows/comparison.py 约第 25 行。
+  说明：内嵌 HTML 或 WebEngine 的算法对比结果对话框。
+  主要方法/接口：__init__。
+  辅助/内部方法：_setup_ui。
+
+  模块级辅助函数：open_comparison_html, generate_comparison。
+
+23.41 src/gui/windows/heatmap.py
+
+  模块级辅助函数：generate_heatmap, open_heatmap_html。
+
+23.42 src/gui/windows/token_heatmap.py
+
+  模块级辅助函数：generate_token_heatmap, open_token_heatmap_html。
+
+23.43 src/gui/windows/webpage_heatmap.py
+
+ResourceReference
+  所在：src/gui/windows/webpage_heatmap.py 约第 13 行。
+  说明：网页热力图中单条资源引用（URL、类型、压缩率）。
+  主要方法/接口：__init__。
+  辅助/内部方法：_fmt_size。
+
+  模块级辅助函数：generate_webpage_heatmap, open_webpage_heatmap。
+
+23.44 src/gui/windows/network_sim.py
+
+NetworkSimInput
+  所在：src/gui/windows/network_sim.py 约第 24 行。
+  说明：网络报告生成输入：总字节、总压缩字节、名称。
+
+  模块级辅助函数：folder_transfer_totals, compute_network_sim_profiles, build_network_analysis_text, generate_network_sim, open_network_sim_html。
+
+23.45 src/gui/utils/logging.py
+
+  模块级辅助函数：get_log_path, setup_logging, flush_logging。
+
+23.46 src/gui/utils/interaction_log.py
+
+  模块级辅助函数：log_ui, log_ui_flush, preview_paths。
+
+23.47 src/gui/utils/resources.py
+
+  模块级辅助函数：resolve_icon_path。
+
+23.48 src/gui/utils/workspace.py
+
+  模块级辅助函数：workspace_root, compressed_dir, tmp_dir, ensure_workspace_layout, remove_stale_compressed_parts, empty_tmp_dir, sweep_workspace_transient_artifacts, cleanup_workspace_on_app_quit, allocate_streaming_wcx_path。
+
+二十四、过程论述小结
+
+WebCompress GUI 以 main.py 为入口，models.py 承载业务状态，config 持久化用户旋钮，engine 封装 C++ 与 WCX 协议，ui 负责交互与线程隔离，ade 提供 Auto 与静默探索 intelligence，windows 与 visualizers 完成演示级可视化，utils 提供日志与工作区基础设施。功能实现的主轴为：MainWindow 收集意图 → Worker 线程执行 CompressionEngine → bridge 进入 core_engine → 结果写回 FileRecord → 表格刷新；辅助路径包括 token_parser 解析、web_dict 预处理、network_transfer 仿真、TrainingDataStore 反馈 ADE。全文所列 53 个源文件均可在此主轴上找到挂载点，构成完整 GUI 板块的过程论述闭环。
+
+（全文完）

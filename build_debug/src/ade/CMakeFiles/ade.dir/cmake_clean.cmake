@@ -1,10 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/ade.dir/features/FeatureExtractorV3.cpp.obj"
-  "CMakeFiles/ade.dir/features/FeatureExtractorV3.cpp.obj.d"
-  "CMakeFiles/ade.dir/features/FeatureVector.cpp.obj"
-  "CMakeFiles/ade.dir/features/FeatureVector.cpp.obj.d"
-  "CMakeFiles/ade.dir/features/MagicBytesDetector.cpp.obj"
-  "CMakeFiles/ade.dir/features/MagicBytesDetector.cpp.obj.d"
   "CMakeFiles/ade.dir/models/EvolutionaryAlgorithms.cpp.obj"
   "CMakeFiles/ade.dir/models/EvolutionaryAlgorithms.cpp.obj.d"
   "CMakeFiles/ade.dir/models/ParamRegressorNet.cpp.obj"

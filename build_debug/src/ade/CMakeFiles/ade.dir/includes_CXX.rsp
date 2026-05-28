@@ -1,1 +1,1 @@
--I"D:/AAA_C/compression-tool/src/ade/include" -I"D:/AAA_C/compression-tool/src"
+-I"D:/AAA_C/compression-tool/src/ade/include" -I"D:/AAA_C/compression-tool/src/ade/features" -I"D:/AAA_C/compression-tool/src/ade/runtime" -I"D:/AAA_C/compression-tool/src/ade/models"

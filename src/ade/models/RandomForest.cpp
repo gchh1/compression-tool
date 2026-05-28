@@ -1,12 +1,15 @@
 #include "RandomForest.hpp"
+#include "ade_debug_log.h"
 
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
 #include <cstring>
 #include <fstream>
 #include <limits>
 #include <numeric>
 #include <sstream>
+#include <unordered_map>
 #include <utility>
 
 namespace compressor {
@@ -21,20 +24,16 @@ auto DecisionTree::train(const std::vector<TrainingSample>& samples,
 
     num_features_ = samples[0].features.size();
     labels_ = extract_labels(samples);
-    // 无法确保标签连续的话，直接计算最大标签下标加1作为类别数
     num_classes_ = *std::max_element(labels_.begin(), labels_.end()) + 1;
 
     if (config.max_features == 0 || config.max_features > num_features_) {
-        // 默认使用 sqrt(num_features) 的特征数量，类似于 scikit-learn 的做法
         max_features_ = static_cast<size_t>(std::sqrt(static_cast<double>(num_features_)));
         if (max_features_ == 0) max_features_ = num_features_;
     } else {
         max_features_ = config.max_features;
     }
 
-    
     std::vector<size_t> indices(samples.size());
-    //会填充为0,1,2,...,samples.size()-1
     std::iota(indices.begin(), indices.end(), 0);
 
     root_ = build_tree(samples, indices, 0);
@@ -166,6 +165,7 @@ auto DecisionTree::build_tree(const std::vector<TrainingSample>& samples,
         return node;
     }
 
+    node->is_leaf = false;
     node->feature_index = best_split.feature_index;
     node->threshold = best_split.threshold;
     node->split_gain = best_split.gain;
@@ -334,27 +334,37 @@ auto DecisionTree::gini_from_counts(const std::vector<size_t>& counts, size_t to
 auto DecisionTree::predict_node(const Node& node, const std::vector<float>& features) const
     -> int {
     if (node.is_leaf) return node.predicted_class;
+    if (node.feature_index >= features.size()) return 0;
     if (features[node.feature_index] <= node.threshold) {
-        return predict_node(*node.left, features);
+        if (node.left) return predict_node(*node.left, features);
+        return 0;
     }
-    return predict_node(*node.right, features);
+    if (node.right) return predict_node(*node.right, features);
+    return 0;
 }
 
 // 预测每个类的概率分布，通过递归遍历树节点找到对应叶子节点的类别分布
 auto DecisionTree::predict_proba_node(const Node& node, const std::vector<float>& features) const
     -> std::vector<float> {
     if (node.is_leaf) return node.class_distribution;
-    if (features[node.feature_index] <= node.threshold) {
-        return predict_proba_node(*node.left, features);
+    if (node.feature_index >= features.size()) {
+        return std::vector<float>(num_classes_, 1.0f / num_classes_);
     }
-    return predict_proba_node(*node.right, features);
+    if (features[node.feature_index] <= node.threshold) {
+        if (node.left) return predict_proba_node(*node.left, features);
+        return std::vector<float>(num_classes_, 1.0f / num_classes_);
+    }
+    if (node.right) return predict_proba_node(*node.right, features);
+    return std::vector<float>(num_classes_, 1.0f / num_classes_);
 }
 
 // 递归遍历树节点，累积每个特征的分割增益到重要性向量中
 auto DecisionTree::accumulate_importance(const Node& node, std::vector<float>& importance) const
     -> void {
     if (node.is_leaf) return;
-    importance[node.feature_index] += static_cast<float>(node.split_gain);
+    if (node.feature_index < importance.size()) {
+        importance[node.feature_index] += static_cast<float>(node.split_gain);
+    }
     if (node.left) accumulate_importance(*node.left, importance);
     if (node.right) accumulate_importance(*node.right, importance);
 }
@@ -473,9 +483,13 @@ auto RandomForest::train(const std::vector<TrainingSample>& samples,
 auto RandomForest::predict(const std::vector<float>& features) const -> int {
     if (trees_.empty()) return 0;
 
+    ade_debug_writef("RF::predict: num_trees=%zu features_size=%zu",
+            trees_.size(), features.size());
+
     std::unordered_map<int, size_t> votes;
-    for (const auto& tree : trees_) {
-        int pred = tree.predict(features);
+    for (size_t ti = 0; ti < trees_.size(); ++ti) {
+        ade_debug_writef("RF::predict: tree[%zu] predicting", ti);
+        int pred = trees_[ti].predict(features);
         votes[pred]++;
     }
 

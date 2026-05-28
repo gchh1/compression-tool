@@ -1,7 +1,9 @@
 #include "DecisionEngine.hpp"
+#include "ade_debug_log.h"
 
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
 #include <istream>
 #include <ostream>
 #include <sstream>
@@ -189,7 +191,7 @@ auto RuleEngine::is_already_compressed(const FeatureVectorV3& features) const ->
 
 auto RuleEngine::is_multimedia_already_compressed(const FeatureVectorV3& features) const -> bool {
     if (features.ext_type == ExtensionType::IMAGE) {
-        if (features.ext.image.is_lossless_original < 0.5f) {
+        if (features.ext.image.is_lossless_orig < 0.5f) {
             return true;
         }
     }
@@ -360,12 +362,12 @@ auto RuleEngine::decide_very_high_entropy(const FeatureVectorV3& features) const
 }
 
 auto RuleEngine::detect_dominant_type(const FeatureVectorV3& features) const -> uint8_t {
-    if (features.ext_type == ExtensionType::TEXT) return static_cast<uint8_t>(FileType::TEXT_PLAIN);
-    if (features.ext_type == ExtensionType::IMAGE) return static_cast<uint8_t>(FileType::IMAGE_PNG);
-    if (features.ext_type == ExtensionType::AUDIO) return static_cast<uint8_t>(FileType::AUDIO_WAV);
-    if (features.ext_type == ExtensionType::VIDEO) return static_cast<uint8_t>(FileType::VIDEO_MP4);
-    if (features.ext_type == ExtensionType::ARCHIVE) return static_cast<uint8_t>(FileType::ARCHIVE_ZIP);
-    if (features.ext_type == ExtensionType::BINARY) return static_cast<uint8_t>(FileType::BINARY_GENERIC);
+    if (features.ext_type == ExtensionType::TEXT) return static_cast<uint8_t>(FileType::TEXT);
+    if (features.ext_type == ExtensionType::IMAGE) return static_cast<uint8_t>(FileType::IMAGE);
+    if (features.ext_type == ExtensionType::AUDIO) return static_cast<uint8_t>(FileType::AUDIO);
+    if (features.ext_type == ExtensionType::VIDEO) return static_cast<uint8_t>(FileType::VIDEO);
+    if (features.ext_type == ExtensionType::ARCHIVE) return static_cast<uint8_t>(FileType::COMPRESSED);
+    if (features.ext_type == ExtensionType::BINARY) return static_cast<uint8_t>(FileType::BINARY);
     return static_cast<uint8_t>(FileType::UNKNOWN);
 }
 
@@ -379,15 +381,24 @@ auto AlgorithmDecisionEngine::train(const std::vector<TrainingSample>& samples,
 }
 
 auto AlgorithmDecisionEngine::decide(const FeatureVectorV3& features) const -> CompressionDecision {
+    ade_debug_writef("decide: ENTER mode=%d rf_trained=%d",
+            static_cast<int>(mode_), static_cast<int>(rf_trained_));
     switch (mode_) {
         case Mode::RULE_BASED:
+            ade_debug_write("decide: RULE_BASED, calling rule_engine_.decide");
             return rule_engine_.decide(features);
 
         case Mode::ML_HYBRID: {
+            ade_debug_write("decide: ML_HYBRID, calling rule_engine_.decide first");
             auto rule_decision = rule_engine_.decide(features);
+            ade_debug_writef("decide: rule_decision returned algo=%d conf=%.3f",
+                    static_cast<int>(rule_decision.algorithm), rule_decision.confidence);
             if (!rf_trained_) return rule_decision;
 
+            ade_debug_write("decide: ML_HYBRID, calling decide_ml");
             auto ml_decision = decide_ml(features);
+            ade_debug_writef("decide: ml_decision returned algo=%d conf=%.3f",
+                    static_cast<int>(ml_decision.algorithm), ml_decision.confidence);
             if (ml_decision.confidence > rule_decision.confidence) {
                 return ml_decision;
             }
@@ -498,13 +509,18 @@ auto AlgorithmDecisionEngine::sample_from_result(const ExtractionResult& result,
 
 auto AlgorithmDecisionEngine::decide_ml(const FeatureVectorV3& features) const
     -> CompressionDecision {
+    ade_debug_write("decide_ml: ENTER");
     CompressionDecision decision;
 
     auto input = features.to_padded_array(constants::MAX_PADDED_DIMENSIONS);
+    ade_debug_writef("decide_ml: to_padded_array returned size=%zu, calling rf_.predict", input.size());
     int predicted_label = rf_.predict(input);
+    ade_debug_writef("decide_ml: rf_.predict returned label=%d", predicted_label);
     decision.algorithm = label_to_algorithm_id(predicted_label);
 
+    ade_debug_write("decide_ml: calling rf_.predict_proba");
     auto proba = rf_.predict_proba(input);
+    ade_debug_writef("decide_ml: predict_proba returned size=%zu", proba.size());
     float max_proba = *std::max_element(proba.begin(), proba.end());
     decision.confidence = max_proba;
 

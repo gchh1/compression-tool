@@ -31,7 +31,7 @@ try:
 except ImportError:
     HAS_NUMPY = False
 
-from gui.models import AlgorithmType, FileRecord
+from gui.models import AlgorithmType, FileRecord, is_media_algorithm
 
 
 @dataclass
@@ -401,7 +401,9 @@ class SilentExplorer:
         stats = self.cluster_stats.get(cluster_id, {})
 
         for algo in AlgorithmType:
-            if algo == AlgorithmType.AUTO:
+            if algo in (AlgorithmType.AUTO, AlgorithmType.NONE, AlgorithmType.TRANSFORMER):
+                continue
+            if is_media_algorithm(algo):
                 continue
             s = stats.get(algo)
             if s is None or s.count == 0:
@@ -426,11 +428,16 @@ class SilentExplorer:
         stats = self.cluster_stats.get(cluster_id, {})
         candidates = [
             (algo, s.count) for algo, s in stats.items()
-            if algo != exclude and algo not in (AlgorithmType.AUTO, AlgorithmType.NONE, AlgorithmType.TRANSFORMER)
+            if algo != exclude
+            and algo not in (AlgorithmType.AUTO, AlgorithmType.NONE, AlgorithmType.TRANSFORMER)
+            and not is_media_algorithm(algo)
         ]
         if not candidates:
-            all_algos = [a for a in AlgorithmType
-                        if a not in (AlgorithmType.AUTO, AlgorithmType.NONE, AlgorithmType.TRANSFORMER)]
+            all_algos = [
+                a for a in AlgorithmType
+                if a not in (AlgorithmType.AUTO, AlgorithmType.NONE, AlgorithmType.TRANSFORMER)
+                and not is_media_algorithm(a)
+            ]
             random.shuffle(all_algos)
             return all_algos[0] if all_algos else None
         candidates.sort(key=lambda x: x[1])

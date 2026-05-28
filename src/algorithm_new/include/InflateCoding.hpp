@@ -45,7 +45,7 @@ inline size_t findLengthCode(uint32_t length) {
         if (i + 1 < kDeflateLengthCodeCount &&
             length < kDeflateLengthTable[i + 1].base) return i;
     }
-    return 0;
+    return kDeflateLengthCodeCount - 1;
 }
 
 inline size_t findDistCode(uint32_t dist) {
@@ -54,7 +54,7 @@ inline size_t findDistCode(uint32_t dist) {
         if (i + 1 < kDeflateDistCodeCount &&
             dist < kDeflateDistTable[i + 1].base) return i;
     }
-    return 0;
+    return kDeflateDistCodeCount - 1;
 }
 
 struct InflateEncodeResult {

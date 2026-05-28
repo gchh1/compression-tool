@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "D:/AAA_C/compression-tool/build_debug/_deps/openh264-subbuild/CMakeFiles/openh264-populate"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_debug/_deps/openh264-subbuild/CMakeFiles/openh264-populate.rule"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_debug/_deps/openh264-subbuild/CMakeFiles/openh264-populate-complete.rule"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_debug/_deps/openh264-subbuild/openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-build.rule"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_debug/_deps/openh264-subbuild/openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-configure.rule"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_debug/_deps/openh264-subbuild/openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-download.rule"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_debug/_deps/openh264-subbuild/openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-install.rule"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_debug/_deps/openh264-subbuild/openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-mkdir.rule"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_debug/_deps/openh264-subbuild/openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-patch.rule"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_debug/_deps/openh264-subbuild/openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-test.rule"
+		},
+		{
+			"file" : "D:/AAA_C/compression-tool/build_debug/_deps/openh264-subbuild/openh264-populate-prefix/src/openh264-populate-stamp/openh264-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"openh264-populate"
+		],
+		"name" : "openh264-populate"
+	}
+}

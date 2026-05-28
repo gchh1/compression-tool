@@ -39,40 +39,47 @@ src/ade/CMakeFiles/ade.dir/models/EvolutionaryAlgorithms.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/tuple \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_pair.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/utility.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/compare \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/concepts \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/uses_allocator.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/invoke.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_util.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_base.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/initializer_list \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/cpp_type_traits.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_types.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/iterator_concepts.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ptr_traits.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_cmp.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/type_traits.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/new \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_defines.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_construct.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_funcs.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/concept_check.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/debug/assertions.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/numeric_traits.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/max_size_type.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/numbers \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functional_hash.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hash_bytes.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/refwrap.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_function.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/new \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/typeinfo \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/functexcept.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/exception_defines.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/unordered_map \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/initializer_list \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unordered_map.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hashtable.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/hashtable_policy.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_algobase.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/cpp_type_traits.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/type_traits.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/numeric_traits.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_types.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator_base_funcs.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/concept_check.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/debug/assertions.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_iterator.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ptr_traits.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/debug/debug.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/predefined_ops.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bit \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/concepts \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/aligned_buffer.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ext/alloc_traits.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/alloc_traits.h \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_construct.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/allocator.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++allocator.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/new_allocator.h \
@@ -89,7 +96,6 @@ src/ade/CMakeFiles/ade.dir/models/EvolutionaryAlgorithms.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_bvector.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/vector.tcc \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/array \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/compare \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/limits \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/random \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cmath \
@@ -150,6 +156,17 @@ src/ade/CMakeFiles/ade.dir/models/EvolutionaryAlgorithms.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_relops.h \
  D:/AAA_C/compression-tool/src/ade/include/DecisionEngine.hpp \
  D:/AAA_C/compression-tool/src/ade/include/FeatureExtractorV3.hpp \
+ D:/AAA_C/compression-tool/src/ade/include/ade_debug_log.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstdarg \
+ D:/AAA_C/AAA_MinGW/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdarg.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/stdarg.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_mingw_stdarg.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ctime \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/time.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sys/timeb.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_timeval.h \
+ D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_time.h \
  D:/AAA_C/compression-tool/src/ade/include/BaseFeatureExtractor.hpp \
  D:/AAA_C/compression-tool/src/ade/include/CountMinSketch.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/algorithm \
@@ -157,13 +174,20 @@ src/ade/CMakeFiles/ade.dir/models/EvolutionaryAlgorithms.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/algorithmfwd.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_heap.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_tempbuf.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algo.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_algobase.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_algorithm_defs.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/queue \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/deque \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_deque.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/deque.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/stl_queue.h \
  D:/AAA_C/compression-tool/src/ade/include/FeatureVectorV3.hpp \
  D:/AAA_C/compression-tool/src/ade/include/MagicBytesDetector.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/cstring \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/string.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h \
- D:/AAA_C/compression-tool/src/ade/include/ExtensionExtractors.hpp \
+ D:/AAA_C/compression-tool/src/ade/features/ExtensionExtractors.hpp \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/sstream \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/istream \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ios \
@@ -181,11 +205,6 @@ src/ade/CMakeFiles/ade.dir/models/EvolutionaryAlgorithms.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/corecrt_startup.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/signal.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_signal.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/time.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sys/timeb.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/_timeval.h \
- D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_time.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_compat.h \
  D:/AAA_C/AAA_MinGW/mingw64/x86_64-w64-mingw32/include/pthread_unistd.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/atomic_word.h \
@@ -221,10 +240,29 @@ src/ade/CMakeFiles/ade.dir/models/EvolutionaryAlgorithms.cpp.obj: \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/shared_ptr_atomic.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_base.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_lockfree_defines.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/atomic_wait.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/std_mutex.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/backward/auto_ptr.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/ranges_uninitialized.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/pstl/glue_memory_defs.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/chrono \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/chrono.h \
  D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ratio \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/ctime \
- D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/parse_numbers.h
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/parse_numbers.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/chrono_io.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/iomanip \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/locale \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_facets_nonio.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/time_members.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/messages_members.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/codecvt.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_facets_nonio.tcc \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/locale_conv.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/quoted_string.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/format \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/charconv \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/optional \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/span \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/variant \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unicode.h \
+ D:/AAA_C/AAA_MinGW/mingw64/include/c++/14.2.0/bits/unicode-data.h

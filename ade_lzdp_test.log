@@ -1,0 +1,6 @@
+08:31:27 [C++] pybind pipeline_compress: chain_size=1 id=9 data_size=13000 lzdp_wf=1
+08:31:27 [C++] compress: entry id=9 data_size=13000
+08:31:27 [C++] compress: LZDP path, data_size=13000
+08:31:27 [C++] compress: LZDP cfg search=4096 look=256 minmatch=3 dptop=3 flag=0 engine=0 ob=13 lb=9
+08:31:27 [C++] compress: LZDP calling compress_bytes...
+08:31:27 [C++] compress: LZDP compress_bytes OK, compressed_size=156

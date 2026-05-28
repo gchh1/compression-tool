@@ -39,6 +39,14 @@ V3_ALGORITHM_ID_TO_TYPE: dict[int, AlgorithmType] = {
     7: AlgorithmType.GZIP,
     8: AlgorithmType.HUFFMAN,
     9: AlgorithmType.TRANSFORMER,
+    10: AlgorithmType.FFMPEG_H264,
+    11: AlgorithmType.FFMPEG_H265,
+    12: AlgorithmType.OPENH264,
+    13: AlgorithmType.JPEG,
+    14: AlgorithmType.PNG,
+    15: AlgorithmType.FLAC,
+    16: AlgorithmType.AAC_LC,
+    17: AlgorithmType.H264,
 }
 
 
@@ -227,6 +235,14 @@ class TrainingSampleV3:
             AlgorithmType.GZIP: 7,
             AlgorithmType.HUFFMAN: 8,
             AlgorithmType.TRANSFORMER: 9,
+            AlgorithmType.FFMPEG_H264: 10,
+            AlgorithmType.FFMPEG_H265: 11,
+            AlgorithmType.OPENH264: 12,
+            AlgorithmType.JPEG: 13,
+            AlgorithmType.PNG: 14,
+            AlgorithmType.FLAC: 15,
+            AlgorithmType.AAC_LC: 16,
+            AlgorithmType.H264: 17,
             AlgorithmType.AUTO: -1,
         }
         sample.algorithm_id = algo_id_map.get(algo, -1)
@@ -382,14 +398,21 @@ class TrainingDataStore:
     ) -> Optional[TrainingSampleV3]:
         """
         Create and add a training sample from a FileRecord
-        
+
         Args:
             record: Compressed FileRecord
             decision_result: Optional ADE DecisionResult
-            
+
         Returns:
             TrainingSampleV3 if added, None if rejected
         """
+        from gui.models import is_media_algorithm
+
+        algorithm = getattr(record, 'algorithm', None)
+        if algorithm is not None and is_media_algorithm(algorithm):
+            logger.debug("[TrainingDataStore] skipping media algo: %s", algorithm.value)
+            return None
+
         sample = TrainingSampleV3.from_file_record(record, decision_result)
         if self.add_sample(sample):
             return sample

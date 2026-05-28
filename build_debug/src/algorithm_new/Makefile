@@ -129,6 +129,62 @@ algorithm_new/fast:
 	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/build
 .PHONY : algorithm_new/fast
 
+# Convenience name for target.
+src/algorithm_new/CMakeFiles/openh264_common.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/algorithm_new/CMakeFiles/openh264_common.dir/rule
+.PHONY : src/algorithm_new/CMakeFiles/openh264_common.dir/rule
+
+# Convenience name for target.
+openh264_common: src/algorithm_new/CMakeFiles/openh264_common.dir/rule
+.PHONY : openh264_common
+
+# fast build rule for target.
+openh264_common/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/build
+.PHONY : openh264_common/fast
+
+# Convenience name for target.
+src/algorithm_new/CMakeFiles/openh264_encoder.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/algorithm_new/CMakeFiles/openh264_encoder.dir/rule
+.PHONY : src/algorithm_new/CMakeFiles/openh264_encoder.dir/rule
+
+# Convenience name for target.
+openh264_encoder: src/algorithm_new/CMakeFiles/openh264_encoder.dir/rule
+.PHONY : openh264_encoder
+
+# fast build rule for target.
+openh264_encoder/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/build
+.PHONY : openh264_encoder/fast
+
+# Convenience name for target.
+src/algorithm_new/CMakeFiles/openh264_decoder.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/algorithm_new/CMakeFiles/openh264_decoder.dir/rule
+.PHONY : src/algorithm_new/CMakeFiles/openh264_decoder.dir/rule
+
+# Convenience name for target.
+openh264_decoder: src/algorithm_new/CMakeFiles/openh264_decoder.dir/rule
+.PHONY : openh264_decoder
+
+# fast build rule for target.
+openh264_decoder/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/build
+.PHONY : openh264_decoder/fast
+
+# Convenience name for target.
+src/algorithm_new/CMakeFiles/openh264_processing.dir/rule:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 src/algorithm_new/CMakeFiles/openh264_processing.dir/rule
+.PHONY : src/algorithm_new/CMakeFiles/openh264_processing.dir/rule
+
+# Convenience name for target.
+openh264_processing: src/algorithm_new/CMakeFiles/openh264_processing.dir/rule
+.PHONY : openh264_processing
+
+# fast build rule for target.
+openh264_processing/fast:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/build
+.PHONY : openh264_processing/fast
+
 AudioCodec.obj: AudioCodec.cpp.obj
 .PHONY : AudioCodec.obj
 
@@ -321,6 +377,30 @@ LZSS.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/LZSS.cpp.s
 .PHONY : LZSS.cpp.s
 
+OpenH264Codec.obj: OpenH264Codec.cpp.obj
+.PHONY : OpenH264Codec.obj
+
+# target to build an object file
+OpenH264Codec.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.obj
+.PHONY : OpenH264Codec.cpp.obj
+
+OpenH264Codec.i: OpenH264Codec.cpp.i
+.PHONY : OpenH264Codec.i
+
+# target to preprocess a source file
+OpenH264Codec.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.i
+.PHONY : OpenH264Codec.cpp.i
+
+OpenH264Codec.s: OpenH264Codec.cpp.s
+.PHONY : OpenH264Codec.s
+
+# target to generate assembly for a file
+OpenH264Codec.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/OpenH264Codec.cpp.s
+.PHONY : OpenH264Codec.cpp.s
+
 VideoCodec.obj: VideoCodec.cpp.obj
 .PHONY : VideoCodec.obj
 
@@ -393,6 +473,2094 @@ Zstd.cpp.s:
 	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\algorithm_new.dir\build.make src/algorithm_new/CMakeFiles/algorithm_new.dir/Zstd.cpp.s
 .PHONY : Zstd.cpp.s
 
+__/__/_deps/openh264-src/codec/common/src/WelsTaskThread.obj: __/__/_deps/openh264-src/codec/common/src/WelsTaskThread.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsTaskThread.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/common/src/WelsTaskThread.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsTaskThread.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsTaskThread.cpp.obj
+
+__/__/_deps/openh264-src/codec/common/src/WelsTaskThread.i: __/__/_deps/openh264-src/codec/common/src/WelsTaskThread.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsTaskThread.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/common/src/WelsTaskThread.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsTaskThread.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsTaskThread.cpp.i
+
+__/__/_deps/openh264-src/codec/common/src/WelsTaskThread.s: __/__/_deps/openh264-src/codec/common/src/WelsTaskThread.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsTaskThread.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/common/src/WelsTaskThread.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsTaskThread.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsTaskThread.cpp.s
+
+__/__/_deps/openh264-src/codec/common/src/WelsThread.obj: __/__/_deps/openh264-src/codec/common/src/WelsThread.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsThread.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/common/src/WelsThread.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsThread.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsThread.cpp.obj
+
+__/__/_deps/openh264-src/codec/common/src/WelsThread.i: __/__/_deps/openh264-src/codec/common/src/WelsThread.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsThread.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/common/src/WelsThread.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsThread.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsThread.cpp.i
+
+__/__/_deps/openh264-src/codec/common/src/WelsThread.s: __/__/_deps/openh264-src/codec/common/src/WelsThread.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsThread.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/common/src/WelsThread.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsThread.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsThread.cpp.s
+
+__/__/_deps/openh264-src/codec/common/src/WelsThreadLib.obj: __/__/_deps/openh264-src/codec/common/src/WelsThreadLib.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsThreadLib.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/common/src/WelsThreadLib.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsThreadLib.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsThreadLib.cpp.obj
+
+__/__/_deps/openh264-src/codec/common/src/WelsThreadLib.i: __/__/_deps/openh264-src/codec/common/src/WelsThreadLib.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsThreadLib.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/common/src/WelsThreadLib.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsThreadLib.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsThreadLib.cpp.i
+
+__/__/_deps/openh264-src/codec/common/src/WelsThreadLib.s: __/__/_deps/openh264-src/codec/common/src/WelsThreadLib.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsThreadLib.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/common/src/WelsThreadLib.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsThreadLib.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsThreadLib.cpp.s
+
+__/__/_deps/openh264-src/codec/common/src/WelsThreadPool.obj: __/__/_deps/openh264-src/codec/common/src/WelsThreadPool.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsThreadPool.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/common/src/WelsThreadPool.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsThreadPool.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsThreadPool.cpp.obj
+
+__/__/_deps/openh264-src/codec/common/src/WelsThreadPool.i: __/__/_deps/openh264-src/codec/common/src/WelsThreadPool.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsThreadPool.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/common/src/WelsThreadPool.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsThreadPool.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsThreadPool.cpp.i
+
+__/__/_deps/openh264-src/codec/common/src/WelsThreadPool.s: __/__/_deps/openh264-src/codec/common/src/WelsThreadPool.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsThreadPool.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/common/src/WelsThreadPool.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsThreadPool.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/WelsThreadPool.cpp.s
+
+__/__/_deps/openh264-src/codec/common/src/common_tables.obj: __/__/_deps/openh264-src/codec/common/src/common_tables.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/common_tables.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/common/src/common_tables.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/common_tables.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/common_tables.cpp.obj
+
+__/__/_deps/openh264-src/codec/common/src/common_tables.i: __/__/_deps/openh264-src/codec/common/src/common_tables.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/common_tables.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/common/src/common_tables.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/common_tables.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/common_tables.cpp.i
+
+__/__/_deps/openh264-src/codec/common/src/common_tables.s: __/__/_deps/openh264-src/codec/common/src/common_tables.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/common_tables.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/common/src/common_tables.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/common_tables.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/common_tables.cpp.s
+
+__/__/_deps/openh264-src/codec/common/src/copy_mb.obj: __/__/_deps/openh264-src/codec/common/src/copy_mb.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/copy_mb.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/common/src/copy_mb.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/copy_mb.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/copy_mb.cpp.obj
+
+__/__/_deps/openh264-src/codec/common/src/copy_mb.i: __/__/_deps/openh264-src/codec/common/src/copy_mb.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/copy_mb.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/common/src/copy_mb.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/copy_mb.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/copy_mb.cpp.i
+
+__/__/_deps/openh264-src/codec/common/src/copy_mb.s: __/__/_deps/openh264-src/codec/common/src/copy_mb.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/copy_mb.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/common/src/copy_mb.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/copy_mb.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/copy_mb.cpp.s
+
+__/__/_deps/openh264-src/codec/common/src/cpu.obj: __/__/_deps/openh264-src/codec/common/src/cpu.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/cpu.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/common/src/cpu.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/cpu.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/cpu.cpp.obj
+
+__/__/_deps/openh264-src/codec/common/src/cpu.i: __/__/_deps/openh264-src/codec/common/src/cpu.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/cpu.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/common/src/cpu.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/cpu.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/cpu.cpp.i
+
+__/__/_deps/openh264-src/codec/common/src/cpu.s: __/__/_deps/openh264-src/codec/common/src/cpu.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/cpu.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/common/src/cpu.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/cpu.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/cpu.cpp.s
+
+__/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.obj: __/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.cpp.obj
+
+__/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.i: __/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.cpp.i
+
+__/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.s: __/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.cpp.s
+
+__/__/_deps/openh264-src/codec/common/src/deblocking_common.obj: __/__/_deps/openh264-src/codec/common/src/deblocking_common.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/deblocking_common.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/common/src/deblocking_common.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/deblocking_common.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/deblocking_common.cpp.obj
+
+__/__/_deps/openh264-src/codec/common/src/deblocking_common.i: __/__/_deps/openh264-src/codec/common/src/deblocking_common.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/deblocking_common.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/common/src/deblocking_common.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/deblocking_common.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/deblocking_common.cpp.i
+
+__/__/_deps/openh264-src/codec/common/src/deblocking_common.s: __/__/_deps/openh264-src/codec/common/src/deblocking_common.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/deblocking_common.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/common/src/deblocking_common.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/deblocking_common.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/deblocking_common.cpp.s
+
+__/__/_deps/openh264-src/codec/common/src/expand_pic.obj: __/__/_deps/openh264-src/codec/common/src/expand_pic.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/expand_pic.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/common/src/expand_pic.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/expand_pic.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/expand_pic.cpp.obj
+
+__/__/_deps/openh264-src/codec/common/src/expand_pic.i: __/__/_deps/openh264-src/codec/common/src/expand_pic.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/expand_pic.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/common/src/expand_pic.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/expand_pic.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/expand_pic.cpp.i
+
+__/__/_deps/openh264-src/codec/common/src/expand_pic.s: __/__/_deps/openh264-src/codec/common/src/expand_pic.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/expand_pic.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/common/src/expand_pic.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/expand_pic.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/expand_pic.cpp.s
+
+__/__/_deps/openh264-src/codec/common/src/intra_pred_common.obj: __/__/_deps/openh264-src/codec/common/src/intra_pred_common.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/intra_pred_common.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/common/src/intra_pred_common.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/intra_pred_common.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/intra_pred_common.cpp.obj
+
+__/__/_deps/openh264-src/codec/common/src/intra_pred_common.i: __/__/_deps/openh264-src/codec/common/src/intra_pred_common.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/intra_pred_common.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/common/src/intra_pred_common.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/intra_pred_common.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/intra_pred_common.cpp.i
+
+__/__/_deps/openh264-src/codec/common/src/intra_pred_common.s: __/__/_deps/openh264-src/codec/common/src/intra_pred_common.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/intra_pred_common.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/common/src/intra_pred_common.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/intra_pred_common.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/intra_pred_common.cpp.s
+
+__/__/_deps/openh264-src/codec/common/src/mc.obj: __/__/_deps/openh264-src/codec/common/src/mc.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/mc.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/common/src/mc.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/mc.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/mc.cpp.obj
+
+__/__/_deps/openh264-src/codec/common/src/mc.i: __/__/_deps/openh264-src/codec/common/src/mc.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/mc.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/common/src/mc.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/mc.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/mc.cpp.i
+
+__/__/_deps/openh264-src/codec/common/src/mc.s: __/__/_deps/openh264-src/codec/common/src/mc.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/mc.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/common/src/mc.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/mc.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/mc.cpp.s
+
+__/__/_deps/openh264-src/codec/common/src/memory_align.obj: __/__/_deps/openh264-src/codec/common/src/memory_align.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/memory_align.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/common/src/memory_align.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/memory_align.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/memory_align.cpp.obj
+
+__/__/_deps/openh264-src/codec/common/src/memory_align.i: __/__/_deps/openh264-src/codec/common/src/memory_align.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/memory_align.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/common/src/memory_align.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/memory_align.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/memory_align.cpp.i
+
+__/__/_deps/openh264-src/codec/common/src/memory_align.s: __/__/_deps/openh264-src/codec/common/src/memory_align.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/memory_align.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/common/src/memory_align.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/memory_align.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/memory_align.cpp.s
+
+__/__/_deps/openh264-src/codec/common/src/sad_common.obj: __/__/_deps/openh264-src/codec/common/src/sad_common.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/sad_common.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/common/src/sad_common.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/sad_common.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/sad_common.cpp.obj
+
+__/__/_deps/openh264-src/codec/common/src/sad_common.i: __/__/_deps/openh264-src/codec/common/src/sad_common.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/sad_common.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/common/src/sad_common.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/sad_common.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/sad_common.cpp.i
+
+__/__/_deps/openh264-src/codec/common/src/sad_common.s: __/__/_deps/openh264-src/codec/common/src/sad_common.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/sad_common.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/common/src/sad_common.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/sad_common.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/sad_common.cpp.s
+
+__/__/_deps/openh264-src/codec/common/src/utils.obj: __/__/_deps/openh264-src/codec/common/src/utils.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/utils.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/common/src/utils.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/utils.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/utils.cpp.obj
+
+__/__/_deps/openh264-src/codec/common/src/utils.i: __/__/_deps/openh264-src/codec/common/src/utils.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/utils.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/common/src/utils.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/utils.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/utils.cpp.i
+
+__/__/_deps/openh264-src/codec/common/src/utils.s: __/__/_deps/openh264-src/codec/common/src/utils.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/utils.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/common/src/utils.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/utils.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/utils.cpp.s
+
+__/__/_deps/openh264-src/codec/common/src/welsCodecTrace.obj: __/__/_deps/openh264-src/codec/common/src/welsCodecTrace.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/welsCodecTrace.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/common/src/welsCodecTrace.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/welsCodecTrace.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/common/src/welsCodecTrace.cpp.obj
+
+__/__/_deps/openh264-src/codec/common/src/welsCodecTrace.i: __/__/_deps/openh264-src/codec/common/src/welsCodecTrace.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/welsCodecTrace.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/common/src/welsCodecTrace.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/welsCodecTrace.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/common/src/welsCodecTrace.cpp.i
+
+__/__/_deps/openh264-src/codec/common/src/welsCodecTrace.s: __/__/_deps/openh264-src/codec/common/src/welsCodecTrace.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/welsCodecTrace.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/common/src/welsCodecTrace.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_common.dir\build.make src/algorithm_new/CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/welsCodecTrace.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/common/src/welsCodecTrace.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/au_parser.obj: __/__/_deps/openh264-src/codec/decoder/core/src/au_parser.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/au_parser.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/au_parser.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/au_parser.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/au_parser.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/au_parser.i: __/__/_deps/openh264-src/codec/decoder/core/src/au_parser.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/au_parser.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/au_parser.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/au_parser.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/au_parser.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/au_parser.s: __/__/_deps/openh264-src/codec/decoder/core/src/au_parser.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/au_parser.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/au_parser.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/au_parser.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/au_parser.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.obj: __/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.i: __/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.s: __/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.obj: __/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.i: __/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.s: __/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/deblocking.obj: __/__/_deps/openh264-src/codec/decoder/core/src/deblocking.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/deblocking.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/deblocking.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/deblocking.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/deblocking.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/deblocking.i: __/__/_deps/openh264-src/codec/decoder/core/src/deblocking.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/deblocking.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/deblocking.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/deblocking.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/deblocking.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/deblocking.s: __/__/_deps/openh264-src/codec/decoder/core/src/deblocking.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/deblocking.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/deblocking.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/deblocking.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/deblocking.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.obj: __/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.i: __/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.s: __/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.obj: __/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.i: __/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.s: __/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/decoder.obj: __/__/_deps/openh264-src/codec/decoder/core/src/decoder.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decoder.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/decoder.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/decoder.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decoder.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/decoder.i: __/__/_deps/openh264-src/codec/decoder/core/src/decoder.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decoder.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/decoder.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/decoder.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decoder.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/decoder.s: __/__/_deps/openh264-src/codec/decoder/core/src/decoder.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decoder.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/decoder.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/decoder.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decoder.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.obj: __/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.i: __/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.s: __/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.obj: __/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.i: __/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.s: __/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.obj: __/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.i: __/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.s: __/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/fmo.obj: __/__/_deps/openh264-src/codec/decoder/core/src/fmo.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/fmo.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/fmo.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/fmo.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/fmo.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/fmo.i: __/__/_deps/openh264-src/codec/decoder/core/src/fmo.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/fmo.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/fmo.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/fmo.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/fmo.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/fmo.s: __/__/_deps/openh264-src/codec/decoder/core/src/fmo.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/fmo.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/fmo.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/fmo.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/fmo.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.obj: __/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.i: __/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.s: __/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.obj: __/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.i: __/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.s: __/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.obj: __/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.i: __/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.s: __/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.obj: __/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.i: __/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.s: __/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.obj: __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.i: __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.s: __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.obj: __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.i: __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.s: __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.obj: __/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.i: __/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.s: __/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.obj: __/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.i: __/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.s: __/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.obj: __/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.i: __/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.s: __/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.cpp.s
+
+__/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.obj: __/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.cpp.obj
+
+__/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.i: __/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.cpp.i
+
+__/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.s: __/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_decoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_decoder.dir/__/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/au_set.obj: __/__/_deps/openh264-src/codec/encoder/core/src/au_set.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/au_set.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/au_set.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/au_set.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/au_set.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/au_set.i: __/__/_deps/openh264-src/codec/encoder/core/src/au_set.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/au_set.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/au_set.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/au_set.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/au_set.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/au_set.s: __/__/_deps/openh264-src/codec/encoder/core/src/au_set.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/au_set.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/au_set.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/au_set.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/au_set.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/deblocking.obj: __/__/_deps/openh264-src/codec/encoder/core/src/deblocking.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/deblocking.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/deblocking.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/deblocking.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/deblocking.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/deblocking.i: __/__/_deps/openh264-src/codec/encoder/core/src/deblocking.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/deblocking.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/deblocking.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/deblocking.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/deblocking.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/deblocking.s: __/__/_deps/openh264-src/codec/encoder/core/src/deblocking.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/deblocking.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/deblocking.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/deblocking.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/deblocking.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.obj: __/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.i: __/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.s: __/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.obj: __/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.i: __/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.s: __/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/encoder.obj: __/__/_deps/openh264-src/codec/encoder/core/src/encoder.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encoder.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/encoder.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/encoder.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encoder.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/encoder.i: __/__/_deps/openh264-src/codec/encoder/core/src/encoder.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encoder.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/encoder.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/encoder.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encoder.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/encoder.s: __/__/_deps/openh264-src/codec/encoder/core/src/encoder.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encoder.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/encoder.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/encoder.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encoder.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.obj: __/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.i: __/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.s: __/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.obj: __/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.i: __/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.s: __/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.obj: __/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.i: __/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.s: __/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/md.obj: __/__/_deps/openh264-src/codec/encoder/core/src/md.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/md.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/md.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/md.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/md.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/md.i: __/__/_deps/openh264-src/codec/encoder/core/src/md.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/md.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/md.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/md.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/md.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/md.s: __/__/_deps/openh264-src/codec/encoder/core/src/md.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/md.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/md.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/md.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/md.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.obj: __/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.i: __/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.s: __/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.obj: __/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.i: __/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.s: __/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.obj: __/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.i: __/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.s: __/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.obj: __/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.i: __/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.s: __/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/ratectl.obj: __/__/_deps/openh264-src/codec/encoder/core/src/ratectl.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/ratectl.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/ratectl.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/ratectl.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/ratectl.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/ratectl.i: __/__/_deps/openh264-src/codec/encoder/core/src/ratectl.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/ratectl.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/ratectl.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/ratectl.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/ratectl.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/ratectl.s: __/__/_deps/openh264-src/codec/encoder/core/src/ratectl.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/ratectl.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/ratectl.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/ratectl.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/ratectl.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.obj: __/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.i: __/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.s: __/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/sample.obj: __/__/_deps/openh264-src/codec/encoder/core/src/sample.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/sample.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/sample.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/sample.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/sample.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/sample.i: __/__/_deps/openh264-src/codec/encoder/core/src/sample.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/sample.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/sample.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/sample.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/sample.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/sample.s: __/__/_deps/openh264-src/codec/encoder/core/src/sample.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/sample.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/sample.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/sample.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/sample.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.obj: __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.i: __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.s: __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.obj: __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.i: __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.s: __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.obj: __/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.i: __/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.s: __/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.obj: __/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.i: __/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.s: __/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.obj: __/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.i: __/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.s: __/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.obj: __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.i: __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.s: __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.obj: __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.i: __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.s: __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.obj: __/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.i: __/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.s: __/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.obj: __/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.i: __/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.s: __/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.obj: __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.i: __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.s: __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.obj: __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.i: __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.s: __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.obj: __/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.i: __/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.s: __/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.obj: __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.i: __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.s: __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.obj: __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.i: __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.s: __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.obj: __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.i: __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.s: __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.obj: __/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.i: __/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.s: __/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.cpp.s
+
+__/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.obj: __/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.cpp.obj
+
+__/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.i: __/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.cpp.i
+
+__/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.s: __/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_encoder.dir\build.make src/algorithm_new/CMakeFiles/openh264_encoder.dir/__/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.cpp.s
+
+__/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.obj: __/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.cpp.obj
+
+__/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.i: __/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.cpp.i
+
+__/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.s: __/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.cpp.s
+
+__/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.obj: __/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.cpp.obj
+
+__/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.i: __/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.cpp.i
+
+__/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.s: __/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.cpp.s
+
+__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.obj: __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.cpp.obj
+
+__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.i: __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.cpp.i
+
+__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.s: __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.cpp.s
+
+__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.obj: __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.cpp.obj
+
+__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.i: __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.cpp.i
+
+__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.s: __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.cpp.s
+
+__/__/_deps/openh264-src/codec/processing/src/common/memory.obj: __/__/_deps/openh264-src/codec/processing/src/common/memory.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/common/memory.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/processing/src/common/memory.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/common/memory.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/common/memory.cpp.obj
+
+__/__/_deps/openh264-src/codec/processing/src/common/memory.i: __/__/_deps/openh264-src/codec/processing/src/common/memory.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/common/memory.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/processing/src/common/memory.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/common/memory.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/common/memory.cpp.i
+
+__/__/_deps/openh264-src/codec/processing/src/common/memory.s: __/__/_deps/openh264-src/codec/processing/src/common/memory.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/common/memory.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/processing/src/common/memory.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/common/memory.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/common/memory.cpp.s
+
+__/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.obj: __/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.cpp.obj
+
+__/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.i: __/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.cpp.i
+
+__/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.s: __/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.cpp.s
+
+__/__/_deps/openh264-src/codec/processing/src/denoise/denoise.obj: __/__/_deps/openh264-src/codec/processing/src/denoise/denoise.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/denoise/denoise.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/processing/src/denoise/denoise.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/denoise/denoise.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/denoise/denoise.cpp.obj
+
+__/__/_deps/openh264-src/codec/processing/src/denoise/denoise.i: __/__/_deps/openh264-src/codec/processing/src/denoise/denoise.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/denoise/denoise.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/processing/src/denoise/denoise.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/denoise/denoise.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/denoise/denoise.cpp.i
+
+__/__/_deps/openh264-src/codec/processing/src/denoise/denoise.s: __/__/_deps/openh264-src/codec/processing/src/denoise/denoise.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/denoise/denoise.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/processing/src/denoise/denoise.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/denoise/denoise.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/denoise/denoise.cpp.s
+
+__/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.obj: __/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.cpp.obj
+
+__/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.i: __/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.cpp.i
+
+__/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.s: __/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.cpp.s
+
+__/__/_deps/openh264-src/codec/processing/src/downsample/downsample.obj: __/__/_deps/openh264-src/codec/processing/src/downsample/downsample.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/downsample/downsample.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/processing/src/downsample/downsample.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/downsample/downsample.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/downsample/downsample.cpp.obj
+
+__/__/_deps/openh264-src/codec/processing/src/downsample/downsample.i: __/__/_deps/openh264-src/codec/processing/src/downsample/downsample.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/downsample/downsample.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/processing/src/downsample/downsample.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/downsample/downsample.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/downsample/downsample.cpp.i
+
+__/__/_deps/openh264-src/codec/processing/src/downsample/downsample.s: __/__/_deps/openh264-src/codec/processing/src/downsample/downsample.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/downsample/downsample.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/processing/src/downsample/downsample.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/downsample/downsample.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/downsample/downsample.cpp.s
+
+__/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.obj: __/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.cpp.obj
+
+__/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.i: __/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.cpp.i
+
+__/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.s: __/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.cpp.s
+
+__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.obj: __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.cpp.obj
+
+__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.i: __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.cpp.i
+
+__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.s: __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.cpp.s
+
+__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.obj: __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.cpp.obj
+
+__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.i: __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.cpp.i
+
+__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.s: __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.cpp.s
+
+__/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.obj: __/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.cpp.obj
+
+__/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.i: __/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.cpp.i
+
+__/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.s: __/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.cpp.s
+
+__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.obj: __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.cpp.obj
+
+__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.i: __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.cpp.i
+
+__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.s: __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.cpp.s
+
+__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.obj: __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.cpp.obj
+
+__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.i: __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.cpp.i
+
+__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.s: __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.cpp.s
+
+__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.obj: __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.cpp.obj
+
+__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.i: __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.cpp.i
+
+__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.s: __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.cpp.s
+
+__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.obj: __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.obj
+
+# target to build an object file
+__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.cpp.obj:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.cpp.obj
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.cpp.obj
+
+__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.i: __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.i
+
+# target to preprocess a source file
+__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.cpp.i:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.cpp.i
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.cpp.i
+
+__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.s: __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.s
+
+# target to generate assembly for a file
+__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.cpp.s:
+	cd /d D:\AAA_C\compression-tool\build_debug && $(MAKE) $(MAKESILENT) -f src\algorithm_new\CMakeFiles\openh264_processing.dir\build.make src/algorithm_new/CMakeFiles/openh264_processing.dir/__/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.cpp.s
+.PHONY : __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -402,6 +2570,10 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... algorithm_new
+	@echo ... openh264_common
+	@echo ... openh264_decoder
+	@echo ... openh264_encoder
+	@echo ... openh264_processing
 	@echo ... AudioCodec.obj
 	@echo ... AudioCodec.i
 	@echo ... AudioCodec.s
@@ -426,6 +2598,9 @@ help:
 	@echo ... LZSS.obj
 	@echo ... LZSS.i
 	@echo ... LZSS.s
+	@echo ... OpenH264Codec.obj
+	@echo ... OpenH264Codec.i
+	@echo ... OpenH264Codec.s
 	@echo ... VideoCodec.obj
 	@echo ... VideoCodec.i
 	@echo ... VideoCodec.s
@@ -435,6 +2610,267 @@ help:
 	@echo ... Zstd.obj
 	@echo ... Zstd.i
 	@echo ... Zstd.s
+	@echo ... __/__/_deps/openh264-src/codec/common/src/WelsTaskThread.obj
+	@echo ... __/__/_deps/openh264-src/codec/common/src/WelsTaskThread.i
+	@echo ... __/__/_deps/openh264-src/codec/common/src/WelsTaskThread.s
+	@echo ... __/__/_deps/openh264-src/codec/common/src/WelsThread.obj
+	@echo ... __/__/_deps/openh264-src/codec/common/src/WelsThread.i
+	@echo ... __/__/_deps/openh264-src/codec/common/src/WelsThread.s
+	@echo ... __/__/_deps/openh264-src/codec/common/src/WelsThreadLib.obj
+	@echo ... __/__/_deps/openh264-src/codec/common/src/WelsThreadLib.i
+	@echo ... __/__/_deps/openh264-src/codec/common/src/WelsThreadLib.s
+	@echo ... __/__/_deps/openh264-src/codec/common/src/WelsThreadPool.obj
+	@echo ... __/__/_deps/openh264-src/codec/common/src/WelsThreadPool.i
+	@echo ... __/__/_deps/openh264-src/codec/common/src/WelsThreadPool.s
+	@echo ... __/__/_deps/openh264-src/codec/common/src/common_tables.obj
+	@echo ... __/__/_deps/openh264-src/codec/common/src/common_tables.i
+	@echo ... __/__/_deps/openh264-src/codec/common/src/common_tables.s
+	@echo ... __/__/_deps/openh264-src/codec/common/src/copy_mb.obj
+	@echo ... __/__/_deps/openh264-src/codec/common/src/copy_mb.i
+	@echo ... __/__/_deps/openh264-src/codec/common/src/copy_mb.s
+	@echo ... __/__/_deps/openh264-src/codec/common/src/cpu.obj
+	@echo ... __/__/_deps/openh264-src/codec/common/src/cpu.i
+	@echo ... __/__/_deps/openh264-src/codec/common/src/cpu.s
+	@echo ... __/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.obj
+	@echo ... __/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.i
+	@echo ... __/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.s
+	@echo ... __/__/_deps/openh264-src/codec/common/src/deblocking_common.obj
+	@echo ... __/__/_deps/openh264-src/codec/common/src/deblocking_common.i
+	@echo ... __/__/_deps/openh264-src/codec/common/src/deblocking_common.s
+	@echo ... __/__/_deps/openh264-src/codec/common/src/expand_pic.obj
+	@echo ... __/__/_deps/openh264-src/codec/common/src/expand_pic.i
+	@echo ... __/__/_deps/openh264-src/codec/common/src/expand_pic.s
+	@echo ... __/__/_deps/openh264-src/codec/common/src/intra_pred_common.obj
+	@echo ... __/__/_deps/openh264-src/codec/common/src/intra_pred_common.i
+	@echo ... __/__/_deps/openh264-src/codec/common/src/intra_pred_common.s
+	@echo ... __/__/_deps/openh264-src/codec/common/src/mc.obj
+	@echo ... __/__/_deps/openh264-src/codec/common/src/mc.i
+	@echo ... __/__/_deps/openh264-src/codec/common/src/mc.s
+	@echo ... __/__/_deps/openh264-src/codec/common/src/memory_align.obj
+	@echo ... __/__/_deps/openh264-src/codec/common/src/memory_align.i
+	@echo ... __/__/_deps/openh264-src/codec/common/src/memory_align.s
+	@echo ... __/__/_deps/openh264-src/codec/common/src/sad_common.obj
+	@echo ... __/__/_deps/openh264-src/codec/common/src/sad_common.i
+	@echo ... __/__/_deps/openh264-src/codec/common/src/sad_common.s
+	@echo ... __/__/_deps/openh264-src/codec/common/src/utils.obj
+	@echo ... __/__/_deps/openh264-src/codec/common/src/utils.i
+	@echo ... __/__/_deps/openh264-src/codec/common/src/utils.s
+	@echo ... __/__/_deps/openh264-src/codec/common/src/welsCodecTrace.obj
+	@echo ... __/__/_deps/openh264-src/codec/common/src/welsCodecTrace.i
+	@echo ... __/__/_deps/openh264-src/codec/common/src/welsCodecTrace.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/au_parser.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/au_parser.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/au_parser.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/bit_stream.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/cabac_decoder.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/deblocking.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/deblocking.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/deblocking.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/decode_mb_aux.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/decode_slice.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/decoder.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/decoder.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/decoder.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/decoder_core.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/decoder_data_tables.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/error_concealment.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/fmo.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/fmo.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/fmo.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/get_intra_predictor.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/manage_dec_ref.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/memmgr_nal_unit.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/mv_pred.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cabac.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/parse_mb_syn_cavlc.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/pic_queue.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/rec_mb.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/core/src/wels_decoder_thread.s
+	@echo ... __/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.obj
+	@echo ... __/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.i
+	@echo ... __/__/_deps/openh264-src/codec/decoder/plus/src/welsDecoderExt.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/au_set.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/au_set.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/au_set.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/deblocking.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/deblocking.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/deblocking.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/decode_mb_aux.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/encode_mb_aux.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/encoder.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/encoder.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/encoder.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/encoder_data_tables.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/encoder_ext.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/get_intra_predictor.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/md.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/md.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/md.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/mv_pred.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/nal_encap.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/paraset_strategy.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/picture_handle.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/ratectl.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/ratectl.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/ratectl.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/ref_list_mgr_svc.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/sample.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/sample.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/sample.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cabac.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/set_mb_syn_cavlc.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/slice_multi_threading.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_base_layer_md.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_enc_slice_segment.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_mb.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_encode_slice.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_mode_decision.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_motion_estimate.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cabac.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/svc_set_mb_syn_cavlc.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/wels_preprocess.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_base.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_encoder.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/core/src/wels_task_management.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/plus/src/DllEntry.s
+	@echo ... __/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.obj
+	@echo ... __/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.i
+	@echo ... __/__/_deps/openh264-src/codec/encoder/plus/src/welsEncoderExt.s
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.obj
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.i
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/adaptivequantization/AdaptiveQuantization.s
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.obj
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.i
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/backgrounddetection/BackgroundDetection.s
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.obj
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.i
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWork.s
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.obj
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.i
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/common/WelsFrameWorkEx.s
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/common/memory.obj
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/common/memory.i
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/common/memory.s
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.obj
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.i
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/complexityanalysis/ComplexityAnalysis.s
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/denoise/denoise.obj
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/denoise/denoise.i
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/denoise/denoise.s
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.obj
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.i
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/denoise/denoise_filter.s
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/downsample/downsample.obj
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/downsample/downsample.i
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/downsample/downsample.s
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.obj
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.i
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/downsample/downsamplefuncs.s
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.obj
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.i
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotate.s
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.obj
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.i
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/imagerotate/imagerotatefuncs.s
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.obj
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.i
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/scenechangedetection/SceneChangeDetection.s
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.obj
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.i
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetection.s
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.obj
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.i
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/scrolldetection/ScrollDetectionFuncs.s
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.obj
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.i
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalcfuncs.s
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.obj
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.i
+	@echo ... __/__/_deps/openh264-src/codec/processing/src/vaacalc/vaacalculation.s
 .PHONY : help
 
 

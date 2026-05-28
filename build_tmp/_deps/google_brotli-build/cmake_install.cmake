@@ -1,4 +1,4 @@
-# Install script for directory: D:/AAA_C/compression-tool/third_party/brotli
+# Install script for directory: D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

@@ -1,2 +1,0 @@
-D:\AAA_C\AAA_MinGW\mingw64\bin\ar.exe qc libbrotlicommon.a CMakeFiles/brotlicommon.dir/c/common/constants.c.obj CMakeFiles/brotlicommon.dir/c/common/context.c.obj CMakeFiles/brotlicommon.dir/c/common/dictionary.c.obj CMakeFiles/brotlicommon.dir/c/common/platform.c.obj CMakeFiles/brotlicommon.dir/c/common/shared_dictionary.c.obj CMakeFiles/brotlicommon.dir/c/common/transform.c.obj
-D:\AAA_C\AAA_MinGW\mingw64\bin\ranlib.exe libbrotlicommon.a

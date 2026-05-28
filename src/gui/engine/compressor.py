@@ -135,6 +135,8 @@ class CompressionEngine:
         params: dict[str, int] | None = None,
     ):
         """Build compressor with global config, then overlay ``params`` if provided."""
+        if algorithm in (AlgorithmType.FFMPEG_H264, AlgorithmType.FFMPEG_H265):
+            raise ValueError(f"{algorithm.value} does not support C++ compressor visualization")
         with CompressionEngine._engine_op_lock:
             compressor = self._create_compressor(algorithm)
             if params:
@@ -221,6 +223,8 @@ class CompressionEngine:
             comp = self._engine.AudioAacCompressor()
         elif algorithm == AlgorithmType.H264:
             comp = self._engine.VideoH264Compressor()
+        elif algorithm == AlgorithmType.OPENH264:
+            comp = self._engine.VideoOpenH264Compressor()
         else:
             raise ValueError(f"Unsupported algorithm: {algorithm.value}")
 
@@ -257,6 +261,19 @@ class CompressionEngine:
         """Compress in memory with param overrides; return ratio (1.0 on failure)."""
         if not data or not self.available:
             return 1.0
+
+        if algorithm in (AlgorithmType.FFMPEG_H264, AlgorithmType.FFMPEG_H265):
+            from gui.engine.ffmpeg_codec import VideoFFmpegCompressor
+
+            codec = "h264" if algorithm == AlgorithmType.FFMPEG_H264 else "hevc"
+            quality = int(overrides.get("quality", 23))
+            preset = str(overrides.get("preset", "medium"))
+            fc = VideoFFmpegCompressor(codec=codec, quality=quality, preset=preset)
+            result = fc.compress(data)
+            if not result["success"]:
+                return 1.0
+            return float(result["compression_ratio"] or 1.0)
+
         from gui.models import merge_decision_overrides_into_algo_config
 
         with CompressionEngine._engine_op_lock:
@@ -274,6 +291,25 @@ class CompressionEngine:
             return 1.0
 
     def compress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE):
+        if algorithm in (AlgorithmType.FFMPEG_H264, AlgorithmType.FFMPEG_H265):
+            from gui.engine.ffmpeg_codec import VideoFFmpegCompressor
+
+            codec = "h264" if algorithm == AlgorithmType.FFMPEG_H264 else "hevc"
+            cfg = self.get_config().get(algorithm, {})
+            quality = int(cfg.get("quality", 23))
+            preset = str(cfg.get("preset", "medium"))
+            fc = VideoFFmpegCompressor(codec=codec, quality=quality, preset=preset)
+            result = fc.compress(data)
+            cr = self._engine.CompressorResult()
+            cr.original_size = result["original_size"]
+            cr.compressed_size = result["compressed_size"]
+            cr.compression_ratio = result["compression_ratio"]
+            cr.time_ms = result["time_ms"]
+            cr.data = list(result["data"])
+            cr.success = result["success"]
+            cr.error_message = result["error_message"]
+            return cr
+
         if algorithm == AlgorithmType.TRANSFORMER:
             from gui.algorithms.transformer_compressor import TransformerCompressor, HAS_TORCH
 
@@ -320,6 +356,22 @@ class CompressionEngine:
         return cr
 
     def decompress(self, data: bytes, algorithm: AlgorithmType = AlgorithmType.DEFLATE):
+        if algorithm in (AlgorithmType.FFMPEG_H264, AlgorithmType.FFMPEG_H265):
+            from gui.engine.ffmpeg_codec import VideoFFmpegCompressor
+
+            codec = "h264" if algorithm == AlgorithmType.FFMPEG_H264 else "hevc"
+            fc = VideoFFmpegCompressor(codec=codec)
+            result = fc.decompress(data)
+            cr = self._engine.CompressorResult()
+            cr.original_size = result["original_size"]
+            cr.compressed_size = result["compressed_size"]
+            cr.compression_ratio = result["compression_ratio"]
+            cr.time_ms = result["time_ms"]
+            cr.data = list(result["data"])
+            cr.success = result["success"]
+            cr.error_message = result["error_message"]
+            return cr
+
         if algorithm == AlgorithmType.TRANSFORMER:
             cr = self._engine.CompressorResult()
             cr.success = False
@@ -465,8 +517,15 @@ class CompressionEngine:
         if algorithm == AlgorithmType.GZIP:
             return self.compress(data, algorithm)
 
-        if algorithm in (AlgorithmType.FLAC, AlgorithmType.AAC_LC, AlgorithmType.H264):
-            return self.compress(data, algorithm)
+        if algorithm in (AlgorithmType.FLAC, AlgorithmType.AAC_LC, AlgorithmType.H264,
+                         AlgorithmType.OPENH264,
+                         AlgorithmType.FFMPEG_H264, AlgorithmType.FFMPEG_H265):
+            logger.debug("[smart_compress] media algorithm: %s, data=%d bytes, calling C++ compress...",
+                        algorithm.value, len(data))
+            result = self.compress(data, algorithm)
+            logger.debug("[smart_compress] media compress returned: success=%s size=%s",
+                        getattr(result, 'success', '?'), getattr(result, 'compressed_size', '?'))
+            return result
 
         if not self.available:
             raise RuntimeError("C++ core_engine not available")
@@ -490,7 +549,9 @@ class CompressionEngine:
             log_decompress("smart_decompress_end", **summarize_result(r))
             return r
 
-        if algorithm in (AlgorithmType.FLAC, AlgorithmType.AAC_LC, AlgorithmType.H264):
+        if algorithm in (AlgorithmType.FLAC, AlgorithmType.AAC_LC, AlgorithmType.H264,
+                         AlgorithmType.OPENH264,
+                         AlgorithmType.FFMPEG_H264, AlgorithmType.FFMPEG_H265):
             r = self.decompress(data, algorithm)
             log_decompress("smart_decompress_end", **summarize_result(r))
             return r
@@ -529,8 +590,18 @@ class CompressionEngine:
             else:
                 try:
                     r = self.pipeline_decompress(data, algorithm)
-                    log_decompress("smart_decompress_end", **summarize_result(r))
-                    return r
+                    if not r.success and "bad_alloc" in str(getattr(r, "error_message", "") or "").lower():
+                        logger.warning(
+                            "[smart_decompress] pipeline returned std::bad_alloc; falling back to one-shot"
+                        )
+                        log_decompress(
+                            "smart_decompress_fallback",
+                            reason="pipeline_bad_alloc",
+                            err=str(r.error_message),
+                        )
+                    else:
+                        log_decompress("smart_decompress_end", **summarize_result(r))
+                        return r
                 except Exception as e:
                     logger.warning("[smart_decompress] streaming failed, fallback to normal: %s", e)
                     log_decompress(
@@ -556,12 +627,22 @@ class CompressionEngine:
             )
             try:
                 r = self.pipeline_decompress(data, algorithm)
-                log_decompress(
-                    "smart_decompress_end",
-                    branch="pipeline_framed_wire",
-                    **summarize_result(r),
-                )
-                return r
+                if not r.success and "bad_alloc" in str(getattr(r, "error_message", "") or "").lower():
+                    logger.warning(
+                        "[smart_decompress] framed pipeline returned std::bad_alloc; falling back to one-shot"
+                    )
+                    log_decompress(
+                        "smart_decompress_fallback",
+                        reason="framed_pipeline_bad_alloc",
+                        err=str(r.error_message),
+                    )
+                else:
+                    log_decompress(
+                        "smart_decompress_end",
+                        branch="pipeline_framed_wire",
+                        **summarize_result(r),
+                    )
+                    return r
             except Exception as e:
                 logger.warning(
                     "[smart_decompress] framed pipeline failed, fallback one_shot: %s",
@@ -647,6 +728,10 @@ class CompressionEngine:
             chunk_bytes,
             file_opts,
         )
+        _MEDIA_VIDEO_SET = frozenset({AlgorithmType.H264, AlgorithmType.OPENH264,
+                                       AlgorithmType.FFMPEG_H264, AlgorithmType.FFMPEG_H265})
+        if algorithm in _MEDIA_VIDEO_SET:
+            logger.info("[smart_compress_file] DEBUG: media video algo=%s about to call C++ pipeline_compress_file", algorithm.value)
         return self._engine.pipeline_compress_file(
             input_path,
             output_path,

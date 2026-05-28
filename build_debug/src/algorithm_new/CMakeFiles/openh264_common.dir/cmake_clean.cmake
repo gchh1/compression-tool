@@ -1,0 +1,41 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsTaskThread.cpp.obj"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsTaskThread.cpp.obj.d"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsThread.cpp.obj"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsThread.cpp.obj.d"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsThreadLib.cpp.obj"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsThreadLib.cpp.obj.d"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsThreadPool.cpp.obj"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/WelsThreadPool.cpp.obj.d"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/common_tables.cpp.obj"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/common_tables.cpp.obj.d"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/copy_mb.cpp.obj"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/copy_mb.cpp.obj.d"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/cpu.cpp.obj"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/cpu.cpp.obj.d"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.cpp.obj"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/crt_util_safe_x.cpp.obj.d"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/deblocking_common.cpp.obj"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/deblocking_common.cpp.obj.d"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/expand_pic.cpp.obj"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/expand_pic.cpp.obj.d"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/intra_pred_common.cpp.obj"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/intra_pred_common.cpp.obj.d"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/mc.cpp.obj"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/mc.cpp.obj.d"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/memory_align.cpp.obj"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/memory_align.cpp.obj.d"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/sad_common.cpp.obj"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/sad_common.cpp.obj.d"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/utils.cpp.obj"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/utils.cpp.obj.d"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/welsCodecTrace.cpp.obj"
+  "CMakeFiles/openh264_common.dir/__/__/_deps/openh264-src/codec/common/src/welsCodecTrace.cpp.obj.d"
+  "libopenh264_common.a"
+  "libopenh264_common.pdb"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/openh264_common.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

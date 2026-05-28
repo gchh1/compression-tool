@@ -10,6 +10,7 @@ target_include_directories(
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/src/core_new/include
+    ${CMAKE_SOURCE_DIR}/src/ade/include
 )
 
 target_link_libraries(

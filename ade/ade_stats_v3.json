@@ -2,7 +2,7 @@
   "total_samples": 79,
   "valid_samples": 79,
   "invalid_samples": 0,
-  "last_save_time": 1779583004.4655924,
+  "last_save_time": 1779877786.3291335,
   "last_retrain_total_samples": 0,
   "last_retrain_time": 0.0,
   "data_version": "3.0",
@@ -15,5 +15,9 @@
   },
   "type_distribution": {
     "UNKNOWN": 79
-  }
+  },
+  "last_rf_train_time": 1779877786.3291335,
+  "last_rf_train_samples": 78,
+  "last_rf_train_backend": "ade.train",
+  "last_rf_model_path": "D:\\AAA_C\\compression-tool\\ade\\default_model.bin"
 }

@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.obj"
+  "CMakeFiles/core_engine_new.dir/__/pybind/pybind_ade.cpp.obj.d"
   "CMakeFiles/core_engine_new.dir/pybind_module_new.cpp.obj"
   "CMakeFiles/core_engine_new.dir/pybind_module_new.cpp.obj.d"
   "core_engine_new.cp312-win_amd64.pyd"

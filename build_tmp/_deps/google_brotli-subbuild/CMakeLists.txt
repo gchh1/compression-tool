@@ -16,11 +16,19 @@ unset(ENV{CMAKE_TOOLCHAIN_FILE})
 project(google_brotli-populate NONE)
 
 
+# Pass through things we've already detected in the main project to avoid
+# paying the cost of redetecting them again in ExternalProject_Add()
+set(GIT_EXECUTABLE [==[D:/Git/cmd/git.exe]==])
+set(GIT_VERSION_STRING [==[2.51.2.windows.1]==])
+set_property(GLOBAL PROPERTY _CMAKE_FindGit_GIT_EXECUTABLE_VERSION
+  [==[D:/Git/cmd/git.exe;2.51.2.windows.1]==]
+)
+
 
 include(ExternalProject)
 ExternalProject_Add(google_brotli-populate
-                     "UPDATE_DISCONNECTED" "False" "EXTERNALPROJECT_INTERNAL_ARGUMENT_SEPARATOR"
-                    SOURCE_DIR          "D:/AAA_C/compression-tool/third_party/brotli"
+                     "UPDATE_DISCONNECTED" "False" "GIT_REPOSITORY" "https://github.com/google/brotli.git" "EXTERNALPROJECT_INTERNAL_ARGUMENT_SEPARATOR" "GIT_TAG" "v1.1.0" "GIT_SHALLOW" "TRUE"
+                    SOURCE_DIR          "D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-src"
                     BINARY_DIR          "D:/AAA_C/compression-tool/build_tmp/_deps/google_brotli-build"
                     CONFIGURE_COMMAND   ""
                     BUILD_COMMAND       ""

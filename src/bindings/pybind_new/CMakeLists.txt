@@ -11,15 +11,20 @@ find_package(pybind11 REQUIRED)
 pybind11_add_module(
     core_engine_new
     pybind_module_new.cpp
+    ../pybind/pybind_ade.cpp
 )
 
 target_include_directories(core_engine_new PRIVATE
     ${CMAKE_SOURCE_DIR}/src/core_new/include
     ${CMAKE_SOURCE_DIR}/src/algorithm_new/include
     ${CMAKE_SOURCE_DIR}/src/api_new/include
+    ${CMAKE_SOURCE_DIR}/src/ade/include
+    ${CMAKE_SOURCE_DIR}/src/ade/features
+    ${CMAKE_SOURCE_DIR}/src/ade/runtime
+    ${CMAKE_SOURCE_DIR}/src/ade/models
 )
 
-target_link_libraries(core_engine_new PRIVATE api_new core_new algorithm_new)
+target_link_libraries(core_engine_new PRIVATE api_new core_new algorithm_new ade)
 
 if(MINGW)
     target_compile_options(core_engine_new PRIVATE -Wa,-mbig-obj)
