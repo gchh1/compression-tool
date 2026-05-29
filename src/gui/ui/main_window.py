@@ -3316,7 +3316,8 @@ class MainWindow(QMainWindow):
                 if not result or not result.tokens:
                     raise RuntimeError("token 解析失败")
 
-                viz_dir = Path(source_path).parent if source_path else tempfile.gettempdir()
+                viz_dir = Path(tempfile.gettempdir()) / "webcompress_viz"
+                viz_dir.mkdir(parents=True, exist_ok=True)
                 viz_path = str(viz_dir / (Path(source_path).stem + ".viz"))
                 writer = VizWriter(viz_path)
                 writer.generate_from_tokens(

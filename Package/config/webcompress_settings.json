@@ -83,7 +83,7 @@
     }
   },
   "compression": {
-    "use_web_resource_dict": true,
+    "use_web_resource_dict": false,
     "use_media_compression": true
   },
   "streaming": {
