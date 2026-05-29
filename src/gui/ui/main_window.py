@@ -3324,6 +3324,7 @@ class MainWindow(QMainWindow):
                     raw_size=len(record.raw_data),
                     compressed_size=compressed_payload_size(record),
                     raw_data=record.raw_data,
+                    huffman_trees=result.huffman_trees,
                 )
                 writer.close()
                 record.viz_path = viz_path

@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "built_at": 1779885674.9863007,
+  "built_at": 1779978187.8768938,
   "top_quantile": 0.25,
   "by_algorithm": {
     "deflate": {
@@ -9,14 +9,15 @@
         "lookahead_size": 256,
         "min_match": 49,
         "dp_top": 12,
-        "window_size": 161257,
+        "dp_sub_match_max": 12,
         "max_chain_length": 505,
+        "window_size": 161257,
         "use_flag_encoding": 1,
         "use_3hfmtree": 0,
         "dp_range": 12
       },
-      "sample_count": 156,
-      "best_quantile_count": 39,
+      "sample_count": 162,
+      "best_quantile_count": 40,
       "median_ratio": 0.16822798709765974
     },
     "lzdp": {
@@ -36,25 +37,26 @@
     },
     "brotli": {
       "params": {
-        "window_size": 65536,
+        "window_size": 4096,
         "min_match": 49,
-        "max_chain_length": 506
+        "max_chain_length": 504
       },
-      "sample_count": 7,
-      "best_quantile_count": 1,
-      "median_ratio": 0.1656637432999882
+      "sample_count": 29,
+      "best_quantile_count": 7,
+      "median_ratio": 0.2609266092660927
     },
     "dpflate": {
       "params": {
-        "search_size": 34687,
-        "lookahead_size": 144,
-        "min_match": 24,
-        "dp_top": 9,
-        "use_flag_encoding": 1
+        "search_size": 32768,
+        "lookahead_size": 258,
+        "min_match": 49,
+        "dp_sub_match_max": 12,
+        "max_chain_length": 503,
+        "dp_top": 12
       },
-      "sample_count": 9,
-      "best_quantile_count": 2,
-      "median_ratio": 0.2111856562730036
+      "sample_count": 24,
+      "best_quantile_count": 6,
+      "median_ratio": 0.07472193677083963
     }
   }
 }

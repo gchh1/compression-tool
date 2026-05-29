@@ -1,38 +1,13 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.16)
+project(compression-tool LANGUAGES C CXX)
 
-project(
-    compression-tool
-    VERSION 1.0
-    LANGUAGES CXX
-)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# ========= set c++ standard =========
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-
-# Keep build products inside build tree to avoid polluting source repo.
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
-# ========= set variables for paths ========= 
-set(THIRD_PARTY ${CMAKE_SOURCE_DIR}/third_party)
-set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
-set(TESTS_DIR ${CMAKE_SOURCE_DIR}/tests)
-set(ALGORITHM_DIR ${SRC_DIR}/algorithm)
-set(BINDINGS_DIR ${SRC_DIR}/bindings)
-set(UTILS_DIR ${SRC_DIR}/utils)
-
-# ========= set build option ==========
 option(BUILD_PYTHON "Build Pybind11 bindings for PyQt desktop app" ON)
 
-# === DEBUG_BLOCK_BEGIN (可删除) ===
-add_definitions(-DDEBUG_LOG_ENABLED=1)
-# === DEBUG_BLOCK_END ===
-
-# ========= add subdirectories ========="
-add_subdirectory("${SRC_DIR}")
-add_subdirectory("${TESTS_DIR}")
+add_subdirectory(src)
 
 if(BUILD_PYTHON)
-    # add_subdirectory("${BINDINGS_DIR}/pybind")  # deprecated: use pybind_new only
-    add_subdirectory("${BINDINGS_DIR}/pybind_new")
+    add_subdirectory(src/bindings/pybind_new)
 endif()

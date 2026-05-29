@@ -181,6 +181,7 @@ class VizWriter:
         raw_data: bytes | None = None,
         block_index: int = 0,
         block_start: int = 0,
+        huffman_trees: list[object] | None = None,
     ) -> None:
         """Generate MatchEvents and BlockBoundary from parsed tokens.
 
@@ -245,6 +246,26 @@ class VizWriter:
             match_count=match_count,
             output_bytes=compressed_size,
         )
+
+        if huffman_trees:
+            for ht in huffman_trees:
+                codes = getattr(ht, "codes", None) or []
+                ttype_str = getattr(ht, "tree_type", "")
+                if ttype_str.startswith("literal"):
+                    tree_type = 0
+                elif ttype_str.startswith("offset"):
+                    tree_type = 1
+                elif ttype_str.startswith("length"):
+                    tree_type = 2
+                else:
+                    tree_type = 0
+                max_sym = max((c.symbol for c in codes), default=-1)
+                alphabet_size = max_sym + 1
+                code_lengths = [0] * alphabet_size
+                for c in codes:
+                    if c.symbol < alphabet_size:
+                        code_lengths[c.symbol] = c.code_length
+                self.add_huffman_tree(block_index, tree_type, code_lengths)
 
     def close(self) -> None:
         self.write()

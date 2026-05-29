@@ -1,8 +1,8 @@
 {
-  "total_samples": 79,
-  "valid_samples": 79,
+  "total_samples": 87,
+  "valid_samples": 87,
   "invalid_samples": 0,
-  "last_save_time": 1779877786.3291335,
+  "last_save_time": 1780014045.6949146,
   "last_retrain_total_samples": 0,
   "last_retrain_time": 0.0,
   "data_version": "3.0",
@@ -10,11 +10,12 @@
     "brotli": 1,
     "lzdp": 22,
     "dpflate": 11,
-    "deflate": 26,
+    "deflate": 34,
     "lzss": 19
   },
   "type_distribution": {
-    "UNKNOWN": 79
+    "UNKNOWN": 79,
+    "HTML": 8
   },
   "last_rf_train_time": 1779877786.3291335,
   "last_rf_train_samples": 78,

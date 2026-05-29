@@ -44,7 +44,7 @@ from PyQt6.QtCore import Qt, QUrl, pyqtSignal, QTimer
 
 from PyQt6.QtGui import QColor
 
-from PyQt6.QtWebEngineCore import QWebEnginePage
+from PyQt6.QtWebEngineCore import QWebEnginePage, QWebEngineSettings
 
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 
@@ -73,8 +73,57 @@ _RAW_WINDOW = 64 * 1024
 
 
 _HTML_DIR = Path(__file__).resolve().parent / "html"
-
 _HTML_PATH = _HTML_DIR / "deflate_dashboard.html"
+_D3_PATH = _HTML_DIR / "d3.v7.min.js"
+
+
+_D3_CDN = "https://d3js.org/d3.v7.min.js"
+
+
+def _build_html() -> str:
+    import logging as _logging
+    import sys
+
+    _log = _logging.getLogger(__name__)
+
+    try:
+        html_bytes = _HTML_PATH.read_bytes()
+    except Exception as e:
+        _log.warning("[viz] cannot read HTML %s: %s", _HTML_PATH, e)
+        return ""
+
+    html = html_bytes.decode("utf-8")
+
+    d3_js = None
+    d3_paths = [_D3_PATH]
+
+    if getattr(sys, 'frozen', False):
+        import os as _os
+        meipass = getattr(sys, '_MEIPASS', '')
+        if meipass:
+            d3_paths.append(Path(meipass) / "gui" / "ui" / "views" / "html" / "d3.v7.min.js")
+            d3_paths.append(Path(meipass) / "src" / "gui" / "ui" / "views" / "html" / "d3.v7.min.js")
+
+    for dp in d3_paths:
+        try:
+            d3_bytes = dp.read_bytes()
+            d3_js = d3_bytes.decode("utf-8")
+            _log.debug("[viz] D3 loaded from %s", dp)
+            break
+        except Exception:
+            continue
+
+    if d3_js is None:
+        _log.warning("[viz] D3 not found locally, fallback to CDN")
+        return html.replace(
+            '<script src="d3.v7.min.js"></script>',
+            f'<script src="{_D3_CDN}"></script>',
+        )
+
+    return html.replace(
+        '<script src="d3.v7.min.js"></script>',
+        f"<script>{d3_js}</script>",
+    )
 
 
 
@@ -87,10 +136,13 @@ class _VizPage(QWebEnginePage):
 
 
     def javaScriptConsoleMessage(self, level, message, line, source):
-
         if message.startswith("VIZ:"):
-
             self.js_message.emit(message[4:])
+        else:
+            import logging
+            logger = logging.getLogger("viz_js")
+            lvl_name = {0: "INFO", 1: "WARN", 2: "ERROR"}.get(level, "LOG")
+            logger.debug("[JS %s L%d] %s", lvl_name, line, message)
 
 
 
@@ -162,13 +214,11 @@ class VizDashboard(QWidget):
 
 
 
-        self.setWindowTitle(f"DEFLATE σÄïτ╝⌐σ¢₧µö╛ ΓÇö {Path(viz_path).name}")
+        self.setWindowTitle(f"DEFLATE 压缩回放 — {Path(viz_path).name}")
 
         self._setup_ui()
 
         self._load_data()
-
-        ThemeManager().theme_changed.connect(self._on_theme_changed)
 
 
 
@@ -198,7 +248,7 @@ class VizDashboard(QWidget):
 
 
 
-        self._info_lbl = QLabel("σèáΦ╜╜Σ╕¡...")
+        self._info_lbl = QLabel("加载中...")
 
         self._info_lbl.setStyleSheet(
 
@@ -210,11 +260,9 @@ class VizDashboard(QWidget):
 
 
 
-        prev_btn = QPushButton("σÉÄΘÇÇ")
-
+        prev_btn = QPushButton("后退")
         prev_btn.setFixedWidth(60)
-
-        prev_btn.setToolTip("Σ╕èΣ╕Çµ¡Ñ")
+        prev_btn.setToolTip("上一步")
 
         prev_btn.clicked.connect(self._prev_step)
 
@@ -222,11 +270,11 @@ class VizDashboard(QWidget):
 
 
 
-        self._auto_btn = QPushButton("µÆ¡µö╛")
+        self._auto_btn = QPushButton("播放")
 
         self._auto_btn.setFixedWidth(60)
 
-        self._auto_btn.setToolTip("Φç¬σè¿µÆ¡µö╛")
+        self._auto_btn.setToolTip("自动播放")
 
         self._auto_btn.clicked.connect(self._toggle_auto)
 
@@ -234,11 +282,9 @@ class VizDashboard(QWidget):
 
 
 
-        next_btn = QPushButton("σëìΦ┐¢")
-
+        next_btn = QPushButton("前进")
         next_btn.setFixedWidth(60)
-
-        next_btn.setToolTip("Σ╕ïΣ╕Çµ¡Ñ")
+        next_btn.setToolTip("下一步")
 
         next_btn.clicked.connect(self._next_step)
 
@@ -246,11 +292,9 @@ class VizDashboard(QWidget):
 
 
 
-        jump_btn = QPushButton("Φ╖│µáæ")
-
+        jump_btn = QPushButton("跳树")
         jump_btn.setFixedWidth(56)
-
-        jump_btn.setToolTip("Φ╖│Φ╜¼σê░ BUILD_TREE")
+        jump_btn.setToolTip("跳转到 BUILD_TREE")
 
         jump_btn.clicked.connect(self._jump_to_tree)
 
@@ -290,7 +334,7 @@ class VizDashboard(QWidget):
 
             btn.setCheckable(True)
 
-            btn.setToolTip(f"Φç¬σè¿µÆ¡µö╛ΘÇƒσ║ª {tip}")
+            btn.setToolTip(f"自动播放速度 {tip}")
 
             btn.clicked.connect(lambda checked, s=sp: self._set_speed(s))
 
@@ -317,11 +361,22 @@ class VizDashboard(QWidget):
         page.js_message.connect(self._on_js_message)
 
         self._webview.loadFinished.connect(self._on_page_loaded)
-
-        url = QUrl.fromLocalFile(str(_HTML_PATH))
-
-        self._webview.load(url)
-
+        html_content = _build_html()
+        if html_content:
+            page.settings().setAttribute(
+                QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True)
+            if _D3_CDN in html_content:
+                page.settings().setAttribute(
+                    QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, True)
+            self._webview.setHtml(
+                html_content, QUrl.fromLocalFile(str(_HTML_DIR) + "/"))
+        else:
+            page.settings().setAttribute(
+                QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True)
+            page.settings().setAttribute(
+                QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, False)
+            url = QUrl.fromLocalFile(str(_HTML_PATH))
+            self._webview.load(url)
         layout.addWidget(self._webview)
 
 
@@ -366,7 +421,7 @@ class VizDashboard(QWidget):
 
             self._info_lbl.setText(
 
-                f"σî╣ΘàìΣ║ïΣ╗╢: {self._total_match} | σ¥ù: {len(self._blocks)} | "
+                f"匹配事件: {self._total_match} | 块: {len(self._blocks)} | "
 
                 f"v{self._loader.version}" +
 
@@ -422,7 +477,7 @@ class VizDashboard(QWidget):
 
             logger.exception("Failed to load viz")
 
-            self._info_lbl.setText(f"σèáΦ╜╜σñ▒Φ┤Ñ: {e}")
+            self._info_lbl.setText(f"加载失败: {e}")
 
 
 
@@ -561,6 +616,9 @@ class VizDashboard(QWidget):
                 })
 
         self._block_huff[block_idx] = (lit_len, dist)
+
+        logger.debug("[viz] block=%d events=%d raw=%d huff_lit=%d huff_dist=%d",
+                     block_idx, len(events), len(raw_data), len(lit_len), len(dist))
 
 
 
@@ -1017,7 +1075,7 @@ class VizDashboard(QWidget):
 
 
     def _on_slider(self, value: int) -> None:
-
+        logger.debug("[viz] _on_slider value=%d total=%d bi=%d", value, self._total_match, self._current_block)
         self._step_lbl.setText(f"{value} / {self._total_match} events")
 
 
@@ -1096,7 +1154,7 @@ class VizDashboard(QWidget):
 
         self._auto_playing = True
 
-        self._auto_btn.setText("σü£µ¡ó")
+        self._auto_btn.setText("停止")
 
         self._auto_timer = QTimer(self)
 
@@ -1110,7 +1168,7 @@ class VizDashboard(QWidget):
 
         self._auto_playing = False
 
-        self._auto_btn.setText("µÆ¡µö╛")
+        self._auto_btn.setText("播放")
 
         if self._auto_timer:
 

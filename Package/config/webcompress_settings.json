@@ -54,20 +54,6 @@
     "png": {},
     "flac": {
       "quality": 5
-    },
-    "h264": {
-      "quality": 26
-    },
-    "openh264": {
-      "quality": 26
-    },
-    "ffmpeg_h264": {
-      "quality": 23,
-      "preset": 2
-    },
-    "ffmpeg_h265": {
-      "quality": 28,
-      "preset": 2
     }
   },
   "ade": {
